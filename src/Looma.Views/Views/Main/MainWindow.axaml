@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Looma.Presentation.ViewModels.Main"
+        x:Class="Looma.Views.Views.Main.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="Looma" Width="1024" Height="768">
+
+    <TabControl SelectedIndex="{Binding SelectedTabIndex}">
+
+        <TabItem Header="Projets">
+            <ContentControl Content="{Binding ProjectsSection.CurrentPage}" />
+        </TabItem>
+
+        <TabItem Header="Stocks">
+            <ContentControl Content="{Binding StocksSection.CurrentPage}" />
+        </TabItem>
+
+        <TabItem Header="Patrons">
+            <ContentControl Content="{Binding PatternsSection.CurrentPage}" />
+        </TabItem>
+
+        <TabItem Header="Mes documents">
+            <ContentControl Content="{Binding DocumentsSection.CurrentPage}" />
+        </TabItem>
+
+    </TabControl>
+</Window>

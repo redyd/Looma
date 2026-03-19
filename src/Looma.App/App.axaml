@@ -1,0 +1,14 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:app="clr-namespace:Looma.App"
+             x:Class="Looma.App.App"
+             RequestedThemeVariant="Light">
+
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+    
+    <Application.DataTemplates>
+        <app:ViewLocator/>
+    </Application.DataTemplates>
+</Application>

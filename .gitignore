@@ -1,0 +1,35 @@
+# Build
+bin/
+obj/
+out/
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS / VSCode
+.vs/
+.vscode/
+*.user
+*.suo
+
+# dotnet
+*.swp
+project.lock.json
+*.nupkg
+*.snupkg
+
+# EF Core migrations (optionnel — retire si tu versionnes tes migrations)
+# */Migrations/
+
+# SQLite
+*.db
+*.db-shm
+*.db-wal
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
