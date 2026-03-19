@@ -1,0 +1,46 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- global theme -->
+    <Color x:Key="SystemAccentColor">#F472B6</Color>
+    <Color x:Key="SystemAccentColorLight1">#F9A8D4</Color>
+    <Color x:Key="SystemAccentColorLight2">#FCE7F3</Color>
+    <Color x:Key="SystemAccentColorDark1">#DB2777</Color>
+    <Color x:Key="SystemAccentColorDark2">#9D174D</Color>
+
+    <!-- Couleurs principales - Rose pastel -->
+    <SolidColorBrush x:Key="PrimaryBrush">#F9A8D4</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryDarkBrush">#F472B6</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryLightBrush">#FCE7F3</SolidColorBrush>
+
+    <!-- Couleurs secondaires -->
+    <SolidColorBrush x:Key="SecondaryBrush">#DDA0DD</SolidColorBrush>
+    <SolidColorBrush x:Key="AccentBrush">#FFB6C1</SolidColorBrush>
+
+    <!-- Couleurs de texte -->
+    <SolidColorBrush x:Key="TextPrimaryBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="TextSecondaryBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="TextWhiteBrush">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="TextOnPrimaryBrush">#831843</SolidColorBrush>
+
+    <!-- Couleurs de fond -->
+    <SolidColorBrush x:Key="BackgroundBrush">#FFF5F7</SolidColorBrush>
+    <SolidColorBrush x:Key="BackgroundHoverBrush">#FDF2F8</SolidColorBrush>
+    <SolidColorBrush x:Key="BackgroundCardBrush">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="TransparentBrush">Transparent</SolidColorBrush>
+
+    <!-- Couleurs d'état -->
+    <SolidColorBrush x:Key="SuccessBrush">#A7F3D0</SolidColorBrush>
+    <SolidColorBrush x:Key="WarningBrush">#FED7AA</SolidColorBrush>
+    <SolidColorBrush x:Key="ErrorBrush">#FECACA</SolidColorBrush>
+    <SolidColorBrush x:Key="InfoBrush">#BFDBFE</SolidColorBrush>
+
+    <!-- Bordures et séparateurs -->
+    <SolidColorBrush x:Key="BorderBrush">#F3E8FF</SolidColorBrush>
+    <SolidColorBrush x:Key="DividerBrush">#FCE7F3</SolidColorBrush>
+
+    <!-- Valeurs numériques -->
+    <CornerRadius x:Key="DefaultCornerRadius">12</CornerRadius>
+    <CornerRadius x:Key="LargeCornerRadius">16</CornerRadius>
+    <Thickness x:Key="DefaultPadding">16,8</Thickness>
+    <Thickness x:Key="LargePadding">20,12</Thickness>
+</ResourceDictionary>
