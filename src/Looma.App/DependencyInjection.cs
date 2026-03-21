@@ -1,3 +1,6 @@
+using System;
+using Looma.Domain.Repositories;
+using Looma.Infrastructure.Repositories;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
 using Looma.Presentation.ViewModels.Main;
@@ -15,14 +18,16 @@ public static class DependencyInjection
     {
         // Un NavigationService PAR section (scope isolé)
         services.AddTransient<INavigationService, NavigationService>();
-
+        
         // ViewModels — Transient pour être réinstanciés à chaque navigation
 
         // PROJECTS
         services.AddTransient<ProjectsListViewModel>();
         
         // STOCKS
-        services.AddTransient<StocksListViewModel>();
+        services.AddTransient<WoolListViewModel>();
+        services.AddTransient<WoolDetailViewModel>();
+        services.AddTransient<WoolFormViewModel>();
 
         // PATTERNS
         services.AddTransient<PatternsListViewModel>();
@@ -32,21 +37,36 @@ public static class DependencyInjection
 
         services.AddSingleton<MainViewModel>(sp =>
         {
-            SectionNavigationViewModel MakeSection<TList>() where TList : PageViewModelBase
+            SectionNavigationViewModel MakeSection<TList>(
+                Func<INavigationService, TList> factory)
+                where TList : PageViewModelBase
             {
                 var nav = sp.GetRequiredService<INavigationService>();
-                var initialVm = sp.GetRequiredService<TList>();
+                var initialVm = factory(nav);
                 return new SectionNavigationViewModel(nav, initialVm);
             }
 
             return new MainViewModel(
-                MakeSection<ProjectsListViewModel>(),
-                MakeSection<StocksListViewModel>(),
-                MakeSection<PatternsListViewModel>(),
-                MakeSection<DocumentsListViewModel>()
+                MakeSection<ProjectsListViewModel>(nav =>
+                    new ProjectsListViewModel(nav)),
+
+                MakeSection<WoolListViewModel>(nav =>
+                    new WoolListViewModel(nav, sp.GetRequiredService<IWoolRepository>())),
+
+                MakeSection<PatternsListViewModel>(nav =>
+                    new PatternsListViewModel(nav)),
+
+                MakeSection<DocumentsListViewModel>(nav =>
+                    new DocumentsListViewModel(nav))
             );
         });
 
+        return services;
+    }
+    
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    {
+        services.AddScoped<IWoolRepository, WoolRepository>();
         return services;
     }
 }

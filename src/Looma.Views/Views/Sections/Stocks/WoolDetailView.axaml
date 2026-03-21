@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
+             x:Class="Looma.Views.Views.Sections.Stocks.WoolDetailView"
+             x:DataType="vm:WoolDetailViewModel">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <DockPanel Grid.Row="0" Margin="24 24 24 0">
+            <Button Content="← Retour"
+                    Command="{Binding GoBackCommand}"
+                    Classes="ghost"/>
+            <StackPanel DockPanel.Dock="Right"
+                        Orientation="Horizontal"
+                        Spacing="8">
+                <Button Content="Modifier"
+                        Command="{Binding EditCommand}"/>
+                <Button Content="Supprimer"
+                        Command="{Binding AskDeleteCommand}"
+                        Classes="danger"/>
+            </StackPanel>
+            <TextBlock Text="{Binding Name}"
+                       FontSize="22"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center"
+                       Margin="16 0"/>
+        </DockPanel>
+
+        <ScrollViewer Grid.Row="1" Margin="24">
+            <StackPanel Spacing="24" MaxWidth="600" HorizontalAlignment="Center">
+
+                <!-- Carte infos -->
+                <Border Padding="24"
+                        CornerRadius="{StaticResource DefaultCornerRadius}"
+                        Background="{StaticResource BackgroundSecondaryBrush}">
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" >
+                        <Grid.Styles>
+                            <Style Selector="TextBlock.label">
+                                <Setter Property="Opacity" Value="0.55"/>
+                                <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="Margin" Value="0 0 24 14"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                            <Style Selector="TextBlock.value">
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Margin" Value="0 0 0 14"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </Grid.Styles>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Classes="label" Text="Nom"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Classes="value" Text="{Binding Name}"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Classes="label" Text="Marque"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="value" Text="{Binding Brand}"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Classes="label" Text="Matière"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="value" Text="{Binding Material}"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Classes="label" Text="Couleur"/>
+                        <StackPanel Grid.Row="3" Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    Spacing="8"
+                                    Margin="0 0 0 14">
+                            <Ellipse Width="14" Height="14"
+                                     Fill="{StaticResource PrimaryBrush}"
+                                     VerticalAlignment="Center"/>
+                            <TextBlock Classes="value" Text="{Binding Color}" Margin="0"/>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Classes="label" Text="Ratio m/100g"/>
+                        <StackPanel Grid.Row="4" Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    Spacing="4">
+                            <TextBlock Classes="value" Text="{Binding LengthToWeightRatio}"/>
+                            <TextBlock Classes="value" Text="m / 100g" Opacity="0.5"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Confirmation suppression -->
+                <Border IsVisible="{Binding ShowDeleteConfirm}"
+                        Padding="20"
+                        CornerRadius="{StaticResource DefaultCornerRadius}"
+                        Background="{StaticResource DangerBackgroundBrush}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Supprimer cette laine ?"
+                                   FontWeight="SemiBold"/>
+                        <TextBlock Text="Cette action est irréversible. La laine sera retirée de tous les projets associés."
+                                   Opacity="0.75"
+                                   TextWrapping="Wrap"/>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button Content="Oui, supprimer"
+                                    Command="{Binding ConfirmDeleteCommand}"
+                                    Classes="danger"/>
+                            <Button Content="Annuler"
+                                    Command="{Binding CancelDeleteCommand}"
+                                    Classes="ghost"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

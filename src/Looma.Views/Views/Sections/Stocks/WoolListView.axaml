@@ -1,0 +1,132 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
+             xmlns:domain="using:Looma.Domain.Entities"
+             x:Class="Looma.Views.Views.Sections.Stocks.WoolListView"
+             x:DataType="vm:WoolListViewModel">
+
+    <DockPanel Margin="24">
+
+        <!-- Barre de recherche centrée sur 2/3 de la largeur -->
+        <Grid DockPanel.Dock="Top" Margin="0 0 0 24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="1"
+                     Text="{Binding SearchQuery}"
+                     Watermark="Rechercher par nom, marque, couleur, matière..."
+                     VerticalContentAlignment="Center"
+                     Height="40" />
+        </Grid>
+
+        <!-- Titre + bouton ajouter -->
+        <DockPanel DockPanel.Dock="Top" Margin="0 0 0 16">
+            <TextBlock Text="Mes laines"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center" />
+            <Button DockPanel.Dock="Right"
+                    Content="+ Ajouter une laine"
+                    Command="{Binding OpenAddFormCommand}"
+                    HorizontalAlignment="Right" />
+        </DockPanel>
+
+        <!-- Pagination bas de page -->
+        <StackPanel DockPanel.Dock="Bottom"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Spacing="12"
+                    Margin="0 16 0 0">
+            <Button Content="←"
+                    Command="{Binding PreviousPageCommand}"
+                    Width="36" Height="36" />
+            <TextBlock Text="{Binding PageInfo}"
+                       VerticalAlignment="Center"
+                       FontSize="14" />
+            <Button Content="→"
+                    Command="{Binding NextPageCommand}"
+                    Width="36" Height="36" />
+        </StackPanel>
+
+        <!-- Grille de cartes -->
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding CurrentPageWools}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="domain:Wool">
+                        <Button
+                            Command="{Binding $parent[UserControl].DataContext.OpenDetailCommand}"
+                            CommandParameter="{Binding}"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Cursor="Hand">
+                            <Border Width="200"
+                                    Height="130"
+                                    Margin="8"
+                                    Padding="16"
+                                    CornerRadius="{StaticResource DefaultCornerRadius}"
+                                    Background="{StaticResource BackgroundSecondaryBrush}"
+                                    Cursor="Hand">
+                                <Border.Styles>
+                                    <Style Selector="Border:pointerover">
+                                        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+                                    </Style>
+                                </Border.Styles>
+
+                                <StackPanel Spacing="6">
+                                    <!-- Pastille couleur + nom -->
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Ellipse Width="12" Height="12"
+                                                 Fill="{StaticResource PrimaryBrush}"
+                                                 VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="14"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+
+                                    <!-- Marque -->
+                                    <TextBlock Text="{Binding Brand}"
+                                               FontSize="12"
+                                               Opacity="0.65" />
+
+                                    <!-- Matière + couleur -->
+                                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0 4 0 0">
+                                        <Border Padding="6 2"
+                                                CornerRadius="4"
+                                                Background="{StaticResource BackgroundTertiaryBrush}">
+                                            <TextBlock Text="{Binding Material}"
+                                                       FontSize="11" />
+                                        </Border>
+                                        <Border Padding="6 2"
+                                                CornerRadius="4"
+                                                Background="{StaticResource BackgroundTertiaryBrush}">
+                                            <TextBlock Text="{Binding Color}"
+                                                       FontSize="11" />
+                                        </Border>
+                                    </StackPanel>
+
+                                    <!-- Ratio longueur/poids -->
+                                    <TextBlock FontSize="11"
+                                               Opacity="0.5"
+                                               Margin="0 2 0 0">
+                                        <Run Text="{Binding LengthToWeightRatio}" />
+                                        <Run Text="m / 100g" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+    </DockPanel>
+</UserControl>

@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Looma.Views.Views.Sections.Stocks;
 
-public partial class StocksListView : UserControl
+public partial class WoolListView : UserControl
 {
-    public StocksListView()
+    public WoolListView()
     {
         InitializeComponent();
     }

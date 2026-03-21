@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
+             x:Class="Looma.Views.Views.Sections.Stocks.WoolFormView"
+             x:DataType="vm:WoolFormViewModel">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <DockPanel Grid.Row="0" Margin="24 24 24 0">
+            <Button Content="← Annuler"
+                    Command="{Binding CancelCommand}"
+                    Classes="ghost"/>
+            <TextBlock Text="{Binding Title}"
+                       FontSize="22"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center"
+                       Margin="16 0"/>
+        </DockPanel>
+
+        <ScrollViewer Grid.Row="1" Margin="24">
+            <StackPanel Spacing="16" MaxWidth="480" HorizontalAlignment="Center">
+
+                <!-- Champs -->
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Nom" FontSize="13" Opacity="0.7"/>
+                    <TextBox Text="{Binding Name}"
+                             Watermark="Ex : Merino Extra Fine"/>
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Marque" FontSize="13" Opacity="0.7"/>
+                    <TextBox Text="{Binding Brand}"
+                             Watermark="Ex : Drops"/>
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Matière" FontSize="13" Opacity="0.7"/>
+                    <TextBox Text="{Binding Material}"
+                             Watermark="Ex : Mérinos, Coton, Alpaga..."/>
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Couleur" FontSize="13" Opacity="0.7"/>
+                    <TextBox Text="{Binding Color}"
+                             Watermark="Ex : Rouge cardinal"/>
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Longueur pour 100g (en mètres)" FontSize="13" Opacity="0.7"/>
+                    <TextBox Text="{Binding LengthToWeightRatioText}"
+                             Watermark="Ex : 200"/>
+                </StackPanel>
+
+                <!-- Erreur -->
+                <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        Padding="14"
+                        CornerRadius="{StaticResource DefaultCornerRadius}"
+                        Background="{StaticResource DangerBackgroundBrush}">
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="{StaticResource DangerForegroundBrush}"
+                               TextWrapping="Wrap"/>
+                </Border>
+
+                <!-- Bouton save -->
+                <Button Content="{Binding Title}"
+                        Command="{Binding SaveCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Margin="0 8 0 0"/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

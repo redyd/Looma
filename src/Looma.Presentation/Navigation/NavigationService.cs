@@ -21,7 +21,7 @@ public class NavigationService : INavigationService
     public void NavigateTo<TViewModel>(Action<TViewModel>? configure = null)
         where TViewModel : PageViewModelBase
     {
-        var vm = _services.GetRequiredService<TViewModel>();
+        var vm = ActivatorUtilities.CreateInstance<TViewModel>(_services, this);
         configure?.Invoke(vm);
         _stack.Push(vm);
         vm.OnNavigatedTo();

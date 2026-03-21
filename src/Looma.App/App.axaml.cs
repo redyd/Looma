@@ -21,6 +21,7 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
         services.AddPresentation();
+        services.AddInfrastructure();
         
         services.AddDbContext<LoomaDbContext>(options =>
             options.UseSqlite($"Data Source={AppPaths.DatabasePath}"));
