@@ -9,6 +9,8 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -41,14 +43,22 @@ jobs:
             --mainExe Looma.App \
             --outputDir ./releases/linux
 
-      - name: Upload Linux artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: releases-linux
-          path: releases/linux/
+      - name: Publish Linux to GitHub
+        run: |
+          vpk upload github \
+            --repoUrl https://github.com/${{ github.repository }} \
+            --publish \
+            --releaseName "Looma v${{ steps.version.outputs.VERSION }}" \
+            --tag ${{ github.ref_name }} \
+            --token ${{ secrets.GITHUB_TOKEN }} \
+            --outputDir ./releases/linux \
+            --merge
 
   build-windows:
     runs-on: windows-latest
+    needs: build-linux
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -82,57 +92,13 @@ jobs:
             --mainExe Looma.App.exe `
             --outputDir ./releases/win
 
-      - name: Upload Windows artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: releases-win
-          path: releases/win/
-
-  publish:
-    needs: [ build-linux, build-windows ]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Get version
-        id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
-
-      - name: Download Linux artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: releases-linux
-          path: releases/linux/
-
-      - name: Download Windows artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: releases-win
-          path: releases/win/
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Install vpk
-        run: dotnet tool install -g vpk
-
-      - name: Merge release dirs
+      - name: Publish Windows to GitHub
         run: |
-          mkdir -p releases/all
-          cp releases/linux/* releases/all/
-          cp releases/win/* releases/all/
-
-      - name: Publish to GitHub
-        run: |
-          vpk upload github \
-            --repoUrl https://github.com/${{ github.repository }} \
-            --publish \
-            --releaseName "Looma v${{ steps.version.outputs.VERSION }}" \
-            --tag ${{ github.ref_name }} \
-            --token ${{ secrets.GITHUB_TOKEN }} \
-            --outputDir ./releases/all \
+          vpk upload github `
+            --repoUrl https://github.com/${{ github.repository }} `
+            --publish `
+            --releaseName "Looma v${{ steps.version.outputs.VERSION }}" `
+            --tag ${{ github.ref_name }} `
+            --token ${{ secrets.GITHUB_TOKEN }} `
+            --outputDir ./releases/win `
             --merge
