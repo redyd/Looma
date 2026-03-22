@@ -127,12 +127,12 @@ jobs:
           cp releases/win/* releases/all/
 
       - name: Publish to GitHub
-          run: |
-            vpk upload github \
-              --repoUrl https://github.com/${{ github.repository }} \
-              --publish \
-              --releaseName "Looma v${{ steps.version.outputs.VERSION }}" \
-              --tag ${{ github.ref_name }} \
-              --token ${{ secrets.GITHUB_TOKEN }} \
-              --outputDir ./releases/all \
-              --merge
+        run: |
+          vpk upload github \
+            --repoUrl https://github.com/${{ github.repository }} \
+            --publish \
+            --releaseName "Looma v${{ steps.version.outputs.VERSION }}" \
+            --tag ${{ github.ref_name }} \
+            --token ${{ secrets.GITHUB_TOKEN }} \
+            --outputDir ./releases/all \
+            --merge
