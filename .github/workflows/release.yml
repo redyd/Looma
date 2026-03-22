@@ -1,0 +1,130 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish Linux
+        run: |
+          dotnet publish src/Looma.App/Looma.App.csproj \
+            -c Release -r linux-x64 \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -o ./publish/linux
+
+      - name: Install vpk
+        run: dotnet tool install -g vpk
+
+      - name: Pack Linux
+        run: |
+          vpk pack \
+            --packId Looma \
+            --packVersion ${{ github.ref_name }} \
+            --packDir ./publish/linux \
+            --mainExe Looma.App \
+            --outputDir ./releases/linux
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: releases-linux
+          path: releases/linux/
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish Windows
+        run: |
+          dotnet publish src/Looma.App/Looma.App.csproj `
+            -c Release -r win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -o ./publish/win
+
+      - name: Install vpk
+        run: dotnet tool install -g vpk
+
+      - name: Pack Windows
+        run: |
+          vpk pack `
+            --packId Looma `
+            --packVersion ${{ github.ref_name }} `
+            --packDir ./publish/win `
+            --mainExe Looma.App.exe `
+            --outputDir ./releases/win
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: releases-win
+          path: releases/win/
+
+  publish:
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: releases-linux
+          path: releases/linux/
+
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: releases-win
+          path: releases/win/
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install vpk
+        run: dotnet tool install -g vpk
+
+      - name: Publish Linux to GitHub
+        run: |
+          vpk upload github \
+            --repoUrl https://github.com/${{ github.repository }} \
+            --publish \
+            --releaseName "Looma ${{ github.ref_name }}" \
+            --tag ${{ github.ref_name }} \
+            --token ${{ secrets.GITHUB_TOKEN }} \
+            --outputDir ./releases/linux \
+            --channel linux
+
+      - name: Publish Windows to GitHub
+        run: |
+          vpk upload github \
+            --repoUrl https://github.com/${{ github.repository }} \
+            --publish \
+            --releaseName "Looma ${{ github.ref_name }}" \
+            --tag ${{ github.ref_name }} \
+            --token ${{ secrets.GITHUB_TOKEN }} \
+            --outputDir ./releases/win \
+            --channel win
