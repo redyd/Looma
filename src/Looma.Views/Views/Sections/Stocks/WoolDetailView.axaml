@@ -88,7 +88,7 @@
                         <StackPanel Spacing="0">
                             <TextBlock Classes="section-title" Text="🧶 Informations"
                                        Margin="0 0 0 14" />
-                            <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                            <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
                                 <Grid.Styles>
                                     <Style Selector="TextBlock.lbl">
                                         <Setter Property="FontSize" Value="13" />
@@ -123,6 +123,9 @@
                                     <TextBlock Classes="val" Text="{Binding LengthToWeightRatio}" />
                                     <TextBlock Classes="val" Opacity="0.4" Text="m/100g" />
                                 </StackPanel>
+                                <TextBlock Grid.Row="4" Grid.Column="0" Classes="lbl" Text="Aiguilles"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Classes="val"
+                                           Text="{Binding NeedleSizeDisplay}"/>
                             </Grid>
                         </StackPanel>
                     </Border>

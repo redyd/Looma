@@ -1,4 +1,3 @@
-using System.Globalization;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -16,25 +15,26 @@ public partial class WoolFormViewModel : PageViewModelBase
     private bool _isEdit;
     private int _editingId;
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _name = string.Empty;
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _brand = string.Empty;
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _material = string.Empty;
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private Color _selectedColor = Colors.Gray;
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _lengthToWeightRatioText = string.Empty;
+
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    private string _needleMinText = string.Empty;
+
+    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    private string _needleMaxText = string.Empty;
 
     [ObservableProperty] private string? _errorMessage;
 
@@ -51,12 +51,13 @@ public partial class WoolFormViewModel : PageViewModelBase
     {
         _isEdit = false;
         Title = "Nouvelle laine";
-        Name = Brand = Material = LengthToWeightRatioText = string.Empty;
+        Name = Brand = Material = LengthToWeightRatioText = NeedleMinText = NeedleMaxText = string.Empty;
         SelectedColor = Colors.Gray;
         ErrorMessage = null;
     }
 
-    public void InitEdit(int id, string name, string brand, string material, string colorHex, double ratio)
+    public void InitEdit(int id, string name, string brand, string material,
+        string colorHex, double ratio, double needleMin, double needleMax)
     {
         _isEdit = true;
         _editingId = id;
@@ -64,13 +65,14 @@ public partial class WoolFormViewModel : PageViewModelBase
         Name = name;
         Brand = brand;
         Material = material;
-        LengthToWeightRatioText = ratio.ToString(CultureInfo.InvariantCulture);
+        LengthToWeightRatioText = ratio.ToString("G");
+        NeedleMinText = needleMin.ToString("G");
+        NeedleMaxText = needleMax.ToString("G");
         ErrorMessage = null;
-
         try { SelectedColor = Color.Parse(colorHex); }
         catch { SelectedColor = Colors.Gray; }
     }
-    
+
     partial void OnSelectedColorChanged(Color value) =>
         OnPropertyChanged(nameof(SelectedColorHex));
 
@@ -78,7 +80,9 @@ public partial class WoolFormViewModel : PageViewModelBase
         !string.IsNullOrWhiteSpace(Name) &&
         !string.IsNullOrWhiteSpace(Brand) &&
         !string.IsNullOrWhiteSpace(Material) &&
-        double.TryParse(LengthToWeightRatioText, out var r) && r > 0;
+        double.TryParse(LengthToWeightRatioText, out var r) && r > 0 &&
+        double.TryParse(NeedleMinText, out var nmin) && nmin > 0 &&
+        double.TryParse(NeedleMaxText, out var nmax) && nmax >= nmin;
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()
@@ -86,38 +90,33 @@ public partial class WoolFormViewModel : PageViewModelBase
         ErrorMessage = null;
 
         if (!double.TryParse(LengthToWeightRatioText, out var ratio) || ratio <= 0)
-        {
-            ErrorMessage = "Le ratio longueur/poids doit être un nombre positif.";
-            return;
-        }
+        { ErrorMessage = "Le ratio longueur/poids doit être un nombre positif."; return; }
+
+        if (!double.TryParse(NeedleMinText, out var needleMin) || needleMin <= 0)
+        { ErrorMessage = "La taille min d'aiguille doit être un nombre positif."; return; }
+
+        if (!double.TryParse(NeedleMaxText, out var needleMax) || needleMax < needleMin)
+        { ErrorMessage = "La taille max doit être supérieure ou égale à la taille min."; return; }
 
         try
         {
             IsBusy = true;
-
             if (_isEdit)
             {
                 var wool = await _repo.GetByIdAsync(_editingId);
                 if (wool is null) { ErrorMessage = "Laine introuvable."; return; }
-                wool.Update(Name, Brand, Material, SelectedColorHex, ratio);
+                wool.Update(Name, Brand, Material, SelectedColorHex, ratio, needleMin, needleMax);
                 await _repo.UpdateAsync(wool);
             }
             else
             {
-                var wool = Wool.Create(Name, Brand, Material, SelectedColorHex, ratio);
+                var wool = Wool.Create(Name, Brand, Material, SelectedColorHex, ratio, needleMin, needleMax);
                 await _repo.AddAsync(wool);
             }
-
             _nav.GoBack();
         }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        catch (Exception ex) { ErrorMessage = ex.Message; }
+        finally { IsBusy = false; }
     }
 
     [RelayCommand]

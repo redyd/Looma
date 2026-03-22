@@ -147,6 +147,12 @@ namespace Looma.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<double>("NeedleMaxSize")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("NeedleMinSize")
+                        .HasColumnType("REAL");
+
                     b.HasKey("WoolId");
 
                     b.ToTable("Wools");

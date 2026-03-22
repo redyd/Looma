@@ -8,9 +8,9 @@ public class WoolSearchSpecTests
 {
     private static readonly List<Wool> Wools =
     [
-        Wool.Create("Alpaca Silk", "Drops", "Alpaca", "Beige", 400),
-        Wool.Create("Merino Extra Fine", "Drops", "Mérinos", "Rouge", 200),
-        Wool.Create("Cotton Light", "Paintbox", "Coton", "Bleu", 350),
+        Wool.Create("Alpaca Silk", "Drops", "Alpaca", "Beige", 400, 2.0, 5),
+        Wool.Create("Merino Extra Fine", "Drops", "Mérinos", "Rouge", 200, 2.5, 5),
+        Wool.Create("Cotton Light", "Paintbox", "Coton", "Bleu", 350, 2.5, 5),
     ];
 
     [Fact]

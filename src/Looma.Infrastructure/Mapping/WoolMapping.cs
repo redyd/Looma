@@ -12,7 +12,9 @@ public static class WoolMapping
             entity.Brand,
             entity.Material,
             entity.Color,
-            entity.LengthToWeightRatio
+            entity.LengthToWeightRatio,
+            entity.NeedleMinSize,
+            entity.NeedleMaxSize
         );
 
     public static WoolEntity ToEntity(this Wool domain) =>
@@ -22,7 +24,9 @@ public static class WoolMapping
             Brand = domain.Brand,
             Material = domain.Material,
             Color = domain.Color,
-            LengthToWeightRatio = domain.LengthToWeightRatio
+            LengthToWeightRatio = domain.LengthToWeightRatio,
+            NeedleMinSize = domain.NeedleMinSize,
+            NeedleMaxSize = domain.NeedleMaxSize
         };
 
     public static void UpdateEntity(this WoolEntity entity, Wool domain)
@@ -32,5 +36,7 @@ public static class WoolMapping
         entity.Material = domain.Material;
         entity.Color = domain.Color;
         entity.LengthToWeightRatio = domain.LengthToWeightRatio;
+        entity.NeedleMinSize = domain.NeedleMinSize;
+        entity.NeedleMaxSize = domain.NeedleMaxSize;
     }
 }
