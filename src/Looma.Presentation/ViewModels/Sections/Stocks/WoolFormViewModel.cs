@@ -1,3 +1,5 @@
+using System.Globalization;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
@@ -28,13 +30,16 @@ public partial class WoolFormViewModel : PageViewModelBase
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string _color = string.Empty;
+    private Color _selectedColor = Colors.Gray;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _lengthToWeightRatioText = string.Empty;
 
     [ObservableProperty] private string? _errorMessage;
+
+    public string SelectedColorHex =>
+        $"#{SelectedColor.R:X2}{SelectedColor.G:X2}{SelectedColor.B:X2}";
 
     public WoolFormViewModel(INavigationService nav, IWoolRepository repo)
     {
@@ -46,11 +51,12 @@ public partial class WoolFormViewModel : PageViewModelBase
     {
         _isEdit = false;
         Title = "Nouvelle laine";
-        Name = Brand = Material = Color = LengthToWeightRatioText = string.Empty;
+        Name = Brand = Material = LengthToWeightRatioText = string.Empty;
+        SelectedColor = Colors.Gray;
         ErrorMessage = null;
     }
 
-    public void InitEdit(int id, string name, string brand, string material, string color, double ratio)
+    public void InitEdit(int id, string name, string brand, string material, string colorHex, double ratio)
     {
         _isEdit = true;
         _editingId = id;
@@ -58,16 +64,20 @@ public partial class WoolFormViewModel : PageViewModelBase
         Name = name;
         Brand = brand;
         Material = material;
-        Color = color;
-        LengthToWeightRatioText = ratio.ToString();
+        LengthToWeightRatioText = ratio.ToString(CultureInfo.InvariantCulture);
         ErrorMessage = null;
+
+        try { SelectedColor = Color.Parse(colorHex); }
+        catch { SelectedColor = Colors.Gray; }
     }
+    
+    partial void OnSelectedColorChanged(Color value) =>
+        OnPropertyChanged(nameof(SelectedColorHex));
 
     private bool CanSave() =>
         !string.IsNullOrWhiteSpace(Name) &&
         !string.IsNullOrWhiteSpace(Brand) &&
         !string.IsNullOrWhiteSpace(Material) &&
-        !string.IsNullOrWhiteSpace(Color) &&
         double.TryParse(LengthToWeightRatioText, out var r) && r > 0;
 
     [RelayCommand(CanExecute = nameof(CanSave))]
@@ -89,12 +99,12 @@ public partial class WoolFormViewModel : PageViewModelBase
             {
                 var wool = await _repo.GetByIdAsync(_editingId);
                 if (wool is null) { ErrorMessage = "Laine introuvable."; return; }
-                wool.Update(Name, Brand, Material, Color, ratio);
+                wool.Update(Name, Brand, Material, SelectedColorHex, ratio);
                 await _repo.UpdateAsync(wool);
             }
             else
             {
-                var wool = Wool.Create(Name, Brand, Material, Color, ratio);
+                var wool = Wool.Create(Name, Brand, Material, SelectedColorHex, ratio);
                 await _repo.AddAsync(wool);
             }
 

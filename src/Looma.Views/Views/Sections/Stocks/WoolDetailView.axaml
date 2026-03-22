@@ -4,99 +4,306 @@
              x:Class="Looma.Views.Views.Sections.Stocks.WoolDetailView"
              x:DataType="vm:WoolDetailViewModel">
 
-    <Grid RowDefinitions="Auto,*">
+    <DockPanel>
 
         <!-- Header -->
-        <DockPanel Grid.Row="0" Margin="24 24 24 0">
-            <Button Content="← Retour"
-                    Command="{Binding GoBackCommand}"
-                    Classes="ghost"/>
-            <StackPanel DockPanel.Dock="Right"
-                        Orientation="Horizontal"
-                        Spacing="8">
-                <Button Content="Modifier"
-                        Command="{Binding EditCommand}"/>
-                <Button Content="Supprimer"
-                        Command="{Binding AskDeleteCommand}"
-                        Classes="danger"/>
-            </StackPanel>
-            <TextBlock Text="{Binding Name}"
-                       FontSize="22"
-                       FontWeight="SemiBold"
-                       VerticalAlignment="Center"
-                       Margin="16 0"/>
-        </DockPanel>
+        <Border DockPanel.Dock="Top"
+                Padding="24 16"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0 0 0 1"
+                Background="{StaticResource BackgroundCardBrush}">
+            <Grid ColumnDefinitions="Auto,*,Auto">
 
-        <ScrollViewer Grid.Row="1" Margin="24">
-            <StackPanel Spacing="24" MaxWidth="600" HorizontalAlignment="Center">
+                <Button Grid.Column="0"
+                        Content="← Retour"
+                        Command="{Binding GoBackCommand}"
+                        Classes="form-cancel" />
 
-                <!-- Carte infos -->
-                <Border Padding="24"
-                        CornerRadius="{StaticResource DefaultCornerRadius}"
-                        Background="{StaticResource BackgroundSecondaryBrush}">
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" >
-                        <Grid.Styles>
-                            <Style Selector="TextBlock.label">
-                                <Setter Property="Opacity" Value="0.55"/>
-                                <Setter Property="FontSize" Value="13"/>
-                                <Setter Property="Margin" Value="0 0 24 14"/>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                            </Style>
-                            <Style Selector="TextBlock.value">
-                                <Setter Property="FontSize" Value="14"/>
-                                <Setter Property="Margin" Value="0 0 0 14"/>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                            </Style>
-                        </Grid.Styles>
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <Ellipse Width="16" Height="16" VerticalAlignment="Center"
+                             Fill="{Binding Color, Converter={StaticResource HexToColor}}" />
+                    <TextBlock Text="{Binding Name}"
+                               FontSize="20" FontWeight="SemiBold"
+                               VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Brand}"
+                               FontSize="14" Opacity="0.5"
+                               VerticalAlignment="Center" />
+                </StackPanel>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Classes="label" Text="Nom"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Classes="value" Text="{Binding Name}"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <Button Content="Modifier"
+                            Command="{Binding EditCommand}"
+                            Classes="form-cancel" />
+                    <Button Content="Supprimer"
+                            Command="{Binding AskDeleteCommand}"
+                            Classes="btn-danger" />
+                </StackPanel>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Classes="label" Text="Marque"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Classes="value" Text="{Binding Brand}"/>
+            </Grid>
+        </Border>
 
-                        <TextBlock Grid.Row="2" Grid.Column="0" Classes="label" Text="Matière"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Classes="value" Text="{Binding Material}"/>
+        <ScrollViewer>
+            <StackPanel Spacing="16" Margin="32">
 
-                        <TextBlock Grid.Row="3" Grid.Column="0" Classes="label" Text="Couleur"/>
-                        <StackPanel Grid.Row="3" Grid.Column="1"
-                                    Orientation="Horizontal"
-                                    Spacing="8"
-                                    Margin="0 0 0 14">
-                            <Ellipse Width="14" Height="14"
-                                     Fill="{StaticResource PrimaryBrush}"
-                                     VerticalAlignment="Center"/>
-                            <TextBlock Classes="value" Text="{Binding Color}" Margin="0"/>
+                <!-- Ligne 1 : estimations + infos -->
+                <Grid ColumnDefinitions="*,16,Auto">
+
+                    <Border Grid.Column="0" Classes="form-section">
+                        <Grid ColumnDefinitions="*,1,*" MinHeight="80">
+                            <StackPanel Grid.Column="0" HorizontalAlignment="Center"
+                                        VerticalAlignment="Center" Spacing="4">
+                                <TextBlock Text="Stock total" FontSize="12" Opacity="0.5"
+                                           HorizontalAlignment="Center" />
+                                <StackPanel Orientation="Horizontal" Spacing="4"
+                                            HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding TotalWeightGrams, StringFormat='{}{0:N0}'}"
+                                               FontSize="32" FontWeight="SemiBold" />
+                                    <TextBlock Text="g" FontSize="18" Opacity="0.45"
+                                               VerticalAlignment="Bottom" Margin="0 0 0 5" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Border Grid.Column="1" Background="{StaticResource BorderBrush}" Width="1" />
+
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Center"
+                                        VerticalAlignment="Center" Spacing="4">
+                                <TextBlock Text="Longueur estimée" FontSize="12" Opacity="0.5"
+                                           HorizontalAlignment="Center" />
+                                <StackPanel Orientation="Horizontal" Spacing="4"
+                                            HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding TotalLengthMeters, StringFormat='{}{0:N0}'}"
+                                               FontSize="32" FontWeight="SemiBold" />
+                                    <TextBlock Text="m" FontSize="18" Opacity="0.45"
+                                               VerticalAlignment="Bottom" Margin="0 0 0 5" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="2" Classes="form-section" MinWidth="280">
+                        <StackPanel Spacing="0">
+                            <TextBlock Classes="section-title" Text="🧶 Informations"
+                                       Margin="0 0 0 14" />
+                            <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                                <Grid.Styles>
+                                    <Style Selector="TextBlock.lbl">
+                                        <Setter Property="FontSize" Value="13" />
+                                        <Setter Property="Opacity" Value="0.5" />
+                                        <Setter Property="Margin" Value="0 0 0 10" />
+                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                    </Style>
+                                    <Style Selector="TextBlock.val">
+                                        <Setter Property="FontSize" Value="14" />
+                                        <Setter Property="Margin" Value="0 0 0 10" />
+                                        <Setter Property="VerticalAlignment" Value="Center" />
+                                    </Style>
+                                </Grid.Styles>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Classes="lbl" Text="Marque" />
+                                <TextBlock Grid.Row="0" Grid.Column="1" Classes="val" Text="{Binding Brand}" />
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Classes="lbl" Text="Matière" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Classes="val" Text="{Binding Material}" />
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Classes="lbl" Text="Couleur" />
+                                <StackPanel Grid.Row="2" Grid.Column="1"
+                                            Orientation="Horizontal" Spacing="8" Margin="0 0 0 10">
+                                    <Ellipse Width="14" Height="14" VerticalAlignment="Center"
+                                             Fill="{Binding Color, Converter={StaticResource HexToColor}}" />
+                                    <TextBlock Classes="val" Text="{Binding Color}" Margin="0" />
+                                </StackPanel>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Classes="lbl" Text="Ratio" />
+                                <StackPanel Grid.Row="3" Grid.Column="1"
+                                            Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Classes="val" Text="{Binding LengthToWeightRatio}" />
+                                    <TextBlock Classes="val" Opacity="0.4" Text="m/100g" />
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
+                    </Border>
 
-                        <TextBlock Grid.Row="4" Grid.Column="0" Classes="label" Text="Ratio m/100g"/>
-                        <StackPanel Grid.Row="4" Grid.Column="1"
-                                    Orientation="Horizontal"
-                                    Spacing="4">
-                            <TextBlock Classes="value" Text="{Binding LengthToWeightRatio}"/>
-                            <TextBlock Classes="value" Text="m / 100g" Opacity="0.5"/>
-                        </StackPanel>
-                    </Grid>
+                </Grid>
+
+                <!-- Ligne 2 : tableau stock -->
+                <Border Classes="form-section">
+                    <StackPanel Spacing="16">
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0" Classes="section-title"
+                                       Text="📦 Stock" VerticalAlignment="Center" Margin="0" />
+                            <Button Grid.Column="1"
+                                    Content="+ Ajouter une entrée"
+                                    Command="{Binding AddStockRowCommand}"
+                                    Classes="form-submit" />
+                        </Grid>
+
+                        <!-- En-têtes -->
+                        <Grid ColumnDefinitions="*,140,120,180,240" Margin="0 0 0 4">
+                            <TextBlock Grid.Column="0" Classes="form-hint" Text="Entrée" />
+                            <TextBlock Grid.Column="1" Classes="form-hint"
+                                       HorizontalAlignment="Center" Text="Poids (g)" />
+                            <TextBlock Grid.Column="2" Classes="form-hint"
+                                       HorizontalAlignment="Center" Text="Longueur (m)" />
+                            <TextBlock Grid.Column="3" Classes="form-hint"
+                                       HorizontalAlignment="Center" Text="Mode de saisie" />
+                            <TextBlock Grid.Column="4" Classes="form-hint"
+                                       HorizontalAlignment="Center" Text="Actions" />
+                        </Grid>
+
+                        <Border Height="1" Background="{StaticResource BorderBrush}" Opacity="0.4" />
+
+                        <ItemsControl ItemsSource="{Binding StockRows}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:StockRowViewModel">
+                                    <StackPanel>
+
+                                        <Grid ColumnDefinitions="*,140,120,180,240"
+                                              MinHeight="56">
+
+                                            <!-- Col 0 : label ou input -->
+                                            <TextBlock Grid.Column="0"
+                                                       IsVisible="{Binding !IsEditing}"
+                                                       Text="Pelote"
+                                                       FontSize="13" Opacity="0.5"
+                                                       VerticalAlignment="Center" />
+
+                                            <StackPanel Grid.Column="0"
+                                                        IsVisible="{Binding IsEditing}"
+                                                        VerticalAlignment="Center"
+                                                        Margin="0 0 12 0">
+                                                <TextBox IsVisible="{Binding IsWeightMode}"
+                                                         Text="{Binding InputText}"
+                                                         Classes="form-input-sm"
+                                                         Watermark="Quantité en grammes" />
+                                                <TextBox IsVisible="{Binding IsLengthMode}"
+                                                         Text="{Binding InputText}"
+                                                         Classes="form-input-sm"
+                                                         Watermark="Quantité en mètres" />
+                                            </StackPanel>
+
+                                            <!-- Col 1 : poids -->
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding DisplayWeight}"
+                                                       FontSize="14" FontWeight="SemiBold"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+
+                                            <!-- Col 2 : longueur -->
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding DisplayLength}"
+                                                       FontSize="14" Opacity="0.6"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+
+                                            <!-- Col 3 : toggle mode -->
+                                            <Border Grid.Column="3"
+                                                    IsVisible="{Binding IsEditing}"
+                                                    CornerRadius="6"
+                                                    BorderThickness="1"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    Background="{StaticResource BackgroundCardBrush}"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"
+                                                    Padding="4 2">
+                                                <StackPanel Orientation="Horizontal" Spacing="2">
+                                                    <RadioButton Content="Poids"
+                                                                 GroupName="{Binding StockId}"
+                                                                 IsChecked="{Binding IsWeightMode}"
+                                                                 Command="{Binding SetWeightModeCommand}"
+                                                                 Classes="tab"
+                                                                 FontSize="12"
+                                                                 Padding="12 6" />
+                                                    <RadioButton Content="Longueur"
+                                                                 GroupName="{Binding StockId}"
+                                                                 IsChecked="{Binding IsLengthMode}"
+                                                                 Command="{Binding SetLengthModeCommand}"
+                                                                 Classes="tab"
+                                                                 FontSize="12"
+                                                                 Padding="12 6" />
+                                                </StackPanel>
+                                            </Border>
+
+                                            <!-- Col 4 : actions -->
+                                            <StackPanel Grid.Column="4"
+                                                        Orientation="Horizontal"
+                                                        Spacing="8"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center">
+
+                                                <Button IsVisible="{Binding IsEditing}"
+                                                        Content="Valider"
+                                                        Command="{Binding SaveRowCommand}"
+                                                        Classes="form-submit"
+                                                        MinWidth="80"
+                                                        Padding="14 0" />
+
+                                                <Button IsVisible="{Binding !IsEditing}"
+                                                        Content="Modifier"
+                                                        Command="{Binding EditRowCommand}"
+                                                        Classes="form-cancel"
+                                                        MinWidth="80"
+                                                        Padding="14 0" />
+
+                                                <Button Content="Supprimer"
+                                                        Command="{Binding DeleteRowCommand}"
+                                                        Classes="btn-danger"
+                                                        MinWidth="90"
+                                                        Padding="14 0" />
+                                            </StackPanel>
+
+                                        </Grid>
+
+                                        <!-- Erreur -->
+                                        <TextBlock
+                                            IsVisible="{Binding ErrorMessage,
+                               Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                            Text="{Binding ErrorMessage}"
+                                            Foreground="#EF4444"
+                                            FontSize="12"
+                                            Margin="0 0 0 6" />
+
+                                        <Border Height="1"
+                                                Background="{StaticResource BorderBrush}"
+                                                Opacity="0.2"
+                                                Margin="0 2 0 2" />
+
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock IsVisible="{Binding !StockRows.Count}"
+                                   Text="Aucun stock enregistré pour cette laine."
+                                   Classes="form-hint"
+                                   HorizontalAlignment="Center"
+                                   Margin="0 8" />
+
+                    </StackPanel>
                 </Border>
 
                 <!-- Confirmation suppression -->
                 <Border IsVisible="{Binding ShowDeleteConfirm}"
-                        Padding="20"
-                        CornerRadius="{StaticResource DefaultCornerRadius}"
-                        Background="{StaticResource DangerBackgroundBrush}">
+                        Padding="20" CornerRadius="8"
+                        Background="#FEF2F2"
+                        BorderBrush="#FECACA"
+                        BorderThickness="1">
                     <StackPanel Spacing="12">
                         <TextBlock Text="Supprimer cette laine ?"
-                                   FontWeight="SemiBold"/>
-                        <TextBlock Text="Cette action est irréversible. La laine sera retirée de tous les projets associés."
-                                   Opacity="0.75"
-                                   TextWrapping="Wrap"/>
+                                   FontWeight="SemiBold" Foreground="#EF4444" FontSize="15" />
+                        <TextBlock Text="Cette action est irréversible. Tout le stock associé sera supprimé."
+                                   Opacity="0.75" TextWrapping="Wrap" FontSize="13" />
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Button Content="Oui, supprimer"
                                     Command="{Binding ConfirmDeleteCommand}"
-                                    Classes="danger"/>
+                                    Classes="btn-danger-solid" />
                             <Button Content="Annuler"
                                     Command="{Binding CancelDeleteCommand}"
-                                    Classes="ghost"/>
+                                    Classes="form-cancel" />
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -104,5 +311,5 @@
             </StackPanel>
         </ScrollViewer>
 
-    </Grid>
+    </DockPanel>
 </UserControl>

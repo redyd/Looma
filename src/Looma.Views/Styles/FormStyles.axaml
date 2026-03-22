@@ -1,0 +1,300 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============================================ -->
+    <!-- BASE -->
+    <!-- ============================================ -->
+
+    <Style Selector="Button">
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- CONTENEUR -->
+    <!-- ============================================ -->
+
+    <Style Selector="Border.form-container">
+        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="24"/>
+        <Setter Property="BoxShadow" Value="0 2 12 0 #15000000"/>
+    </Style>
+
+    <Style Selector="Border.form-section">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style Selector="Border.form-divider">
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Background" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="Margin" Value="0 20 0 20"/>
+        <Setter Property="Opacity" Value="0.5"/>
+    </Style>
+
+    <Style Selector="Border.color-picker-container">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="12"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- TYPOGRAPHIE -->
+    <!-- ============================================ -->
+
+    <Style Selector="TextBlock.form-title">
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}"/>
+    </Style>
+
+    <Style Selector="TextBlock.form-subtitle">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+    </Style>
+
+    <Style Selector="TextBlock.section-title">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}"/>
+    </Style>
+
+    <Style Selector="TextBlock.form-label">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
+
+    <Style Selector="TextBlock.field-required">
+        <Setter Property="Foreground" Value="#EF4444"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <Style Selector="TextBlock.form-hint">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="Opacity" Value="0.75"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- LAYOUTS -->
+    <!-- ============================================ -->
+
+    <Style Selector="StackPanel.form-header">
+        <Setter Property="Spacing" Value="6"/>
+        <Setter Property="Margin" Value="0 0 0 24"/>
+    </Style>
+
+    <Style Selector="StackPanel.form-field">
+        <Setter Property="Spacing" Value="6"/>
+        <Setter Property="Margin" Value="0 0 0 16"/>
+    </Style>
+
+    <Style Selector="StackPanel.form-actions">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Spacing" Value="12"/>
+        <Setter Property="Margin" Value="0 24 0 0"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- INPUTS -->
+    <!-- ============================================ -->
+
+    <Style Selector="TextBox.form-input">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Padding" Value="12 0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
+    <Style Selector="TextBox.form-input:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}"/>
+    </Style>
+
+    <Style Selector="TextBox.form-input:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="#7C3AED"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <Style Selector="TextBox.form-input-sm">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="Height" Value="34"/>
+        <Setter Property="Padding" Value="10 0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
+    <Style Selector="TextBox.form-input-sm:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}"/>
+    </Style>
+
+    <Style Selector="TextBox.form-input-sm:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="#7C3AED"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <Style Selector="NumericUpDown.form-numeric">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="12 0"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="Height" Value="40"/>
+    </Style>
+
+    <Style Selector="NumericUpDown.form-numeric:pointerover /template/ Border#PART_Border">
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}"/>
+    </Style>
+
+    <Style Selector="NumericUpDown.form-numeric:focus-within /template/ Border#PART_Border">
+        <Setter Property="BorderBrush" Value="#7C3AED"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <Style Selector="ComboBox.form-select">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="12 0"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="Height" Value="40"/>
+    </Style>
+
+    <Style Selector="ComboBox.form-select:pointerover /template/ Border#Background">
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}"/>
+    </Style>
+
+    <Style Selector="ComboBox.form-select:focus /template/ Border#Background">
+        <Setter Property="BorderBrush" Value="#7C3AED"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- BOUTONS -->
+    <!-- ============================================ -->
+
+    <Style Selector="Button.form-submit">
+        <Setter Property="Background" Value="#7C3AED"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="20 0"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="MinWidth" Value="100"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.form-submit:pointerover">
+        <Setter Property="Background" Value="#6D28D9"/>
+    </Style>
+
+    <Style Selector="Button.form-submit:disabled">
+        <Setter Property="Background" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="Opacity" Value="0.5"/>
+    </Style>
+
+    <Style Selector="Button.form-cancel">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="20 0"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="MinWidth" Value="100"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.form-cancel:pointerover">
+        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}"/>
+    </Style>
+
+    <Style Selector="Button.btn-danger">
+        <Setter Property="Background" Value="#FEF2F2"/>
+        <Setter Property="Foreground" Value="#EF4444"/>
+        <Setter Property="BorderBrush" Value="#FECACA"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="20 0"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="MinWidth" Value="100"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.btn-danger:pointerover">
+        <Setter Property="Background" Value="#FEE2E2"/>
+    </Style>
+
+    <Style Selector="Button.btn-danger-solid">
+        <Setter Property="Background" Value="#EF4444"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="20 0"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="MinWidth" Value="100"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.btn-danger-solid:pointerover">
+        <Setter Property="Background" Value="#DC2626"/>
+    </Style>
+
+</Styles>

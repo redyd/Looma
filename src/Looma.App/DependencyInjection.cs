@@ -18,12 +18,12 @@ public static class DependencyInjection
     {
         // Un NavigationService PAR section (scope isolé)
         services.AddTransient<INavigationService, NavigationService>();
-        
+
         // ViewModels — Transient pour être réinstanciés à chaque navigation
 
         // PROJECTS
         services.AddTransient<ProjectsListViewModel>();
-        
+
         // STOCKS
         services.AddTransient<WoolListViewModel>();
         services.AddTransient<WoolDetailViewModel>();
@@ -49,13 +49,11 @@ public static class DependencyInjection
             return new MainViewModel(
                 MakeSection<ProjectsListViewModel>(nav =>
                     new ProjectsListViewModel(nav)),
-
                 MakeSection<WoolListViewModel>(nav =>
-                    new WoolListViewModel(nav, sp.GetRequiredService<IWoolRepository>())),
-
+                    new WoolListViewModel(nav, sp.GetRequiredService<IWoolRepository>(),
+                        sp.GetRequiredService<IStockRepository>())),
                 MakeSection<PatternsListViewModel>(nav =>
                     new PatternsListViewModel(nav)),
-
                 MakeSection<DocumentsListViewModel>(nav =>
                     new DocumentsListViewModel(nav))
             );
@@ -63,10 +61,11 @@ public static class DependencyInjection
 
         return services;
     }
-    
+
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IWoolRepository, WoolRepository>();
+        services.AddScoped<IStockRepository, StockRepository>();
         return services;
     }
 }

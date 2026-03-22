@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
@@ -10,7 +11,8 @@ namespace Looma.Presentation.ViewModels.Sections.Stocks;
 public partial class WoolDetailViewModel : PageViewModelBase
 {
     private readonly INavigationService _nav;
-    private readonly IWoolRepository _repo;
+    private readonly IWoolRepository _woolRepo;
+    private readonly IStockRepository _stockRepo;
 
     [ObservableProperty] private int _woolId;
     [ObservableProperty] private string _name = string.Empty;
@@ -19,11 +21,20 @@ public partial class WoolDetailViewModel : PageViewModelBase
     [ObservableProperty] private string _color = string.Empty;
     [ObservableProperty] private double _lengthToWeightRatio;
     [ObservableProperty] private bool _showDeleteConfirm;
+    [ObservableProperty] private double _totalWeightGrams;
+    [ObservableProperty] private ObservableCollection<StockRowViewModel> _stockRows = [];
 
-    public WoolDetailViewModel(INavigationService nav, IWoolRepository repo)
+    public double TotalLengthMeters =>
+        TotalWeightGrams / 100.0 * LengthToWeightRatio;
+
+    public WoolDetailViewModel(
+        INavigationService nav,
+        IWoolRepository woolRepo,
+        IStockRepository stockRepo)
     {
         _nav = nav;
-        _repo = repo;
+        _woolRepo = woolRepo;
+        _stockRepo = stockRepo;
         Title = "Détail laine";
     }
 
@@ -36,8 +47,9 @@ public partial class WoolDetailViewModel : PageViewModelBase
     public override async void OnNavigatedTo()
     {
         if (WoolId == 0) return;
-        var wool = await _repo.GetByIdAsync(WoolId);
+        var wool = await _woolRepo.GetByIdAsync(WoolId);
         if (wool is not null) Refresh(wool);
+        await LoadStocksAsync();
     }
 
     private void Refresh(Wool wool)
@@ -50,9 +62,57 @@ public partial class WoolDetailViewModel : PageViewModelBase
         ShowDeleteConfirm = false;
     }
 
+    private async Task LoadStocksAsync()
+    {
+        var stocks = await _stockRepo.GetByWoolIdAsync(WoolId);
+        TotalWeightGrams = stocks.Sum(s => s.WeightGrams);
+        OnPropertyChanged(nameof(TotalLengthMeters));
+
+        StockRows = new ObservableCollection<StockRowViewModel>(
+            stocks.Select(s => new StockRowViewModel(s, LengthToWeightRatio, OnSaveRow, OnDeleteRow))
+        );
+    }
+
+    private async Task OnSaveRow(StockRowViewModel row)
+    {
+        var weight = row.ParsedWeight();
+
+        if (row.IsNew)
+        {
+            var stock = Stock.Create(WoolId, weight);
+            await _stockRepo.AddAsync(stock);
+        }
+        else
+        {
+            var stock = await _stockRepo.GetByWoolIdAsync(WoolId)
+                .ContinueWith(t => t.Result.FirstOrDefault(s => s.Id == row.StockId));
+            if (stock is null) return;
+            stock.UpdateWeight(weight);
+            await _stockRepo.UpdateAsync(stock);
+        }
+
+        await LoadStocksAsync();
+    }
+
+    private async Task OnDeleteRow(StockRowViewModel row)
+    {
+        if (!row.IsNew)
+            await _stockRepo.DeleteAsync(row.StockId);
+        await LoadStocksAsync();
+    }
+
+    [RelayCommand]
+    private void AddStockRow()
+    {
+        var placeholder = Stock.Reconstitute(0, WoolId, 1);
+        var row = new StockRowViewModel(placeholder, LengthToWeightRatio, OnSaveRow, OnDeleteRow, isNew: true);
+        StockRows.Add(row);
+    }
+
     [RelayCommand]
     private void Edit() =>
-        _nav.NavigateTo<WoolFormViewModel>(vm => vm.InitEdit(WoolId, Name, Brand, Material, Color, LengthToWeightRatio));
+        _nav.NavigateTo<WoolFormViewModel>(vm =>
+            vm.InitEdit(WoolId, Name, Brand, Material, Color, LengthToWeightRatio));
 
     [RelayCommand]
     private void AskDelete() => ShowDeleteConfirm = true;
@@ -64,7 +124,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
     private async Task ConfirmDeleteAsync()
     {
         IsBusy = true;
-        await _repo.DeleteAsync(WoolId);
+        await _woolRepo.DeleteAsync(WoolId);
         IsBusy = false;
         _nav.GoBack();
     }
