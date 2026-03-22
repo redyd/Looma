@@ -3,8 +3,5 @@
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsListView"
              x:DataType="vm:ProjectsListViewModel">
-
-    <DockPanel>
-        <TextBlock>Hello</TextBlock>
-    </DockPanel>
+    Coming soon
 </UserControl>

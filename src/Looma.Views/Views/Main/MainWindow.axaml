@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Icon="avares://Looma.App/Assets/icon.ico"
         xmlns:vm="using:Looma.Presentation.ViewModels.Main"
         x:Class="Looma.Views.Views.Main.MainWindow"
         x:DataType="vm:MainViewModel"
