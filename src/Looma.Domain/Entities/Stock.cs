@@ -10,10 +10,9 @@ public class Stock
 
     public static Stock Create(int woolId, double weightGrams)
     {
-        if (weightGrams <= 0)
-            throw new ArgumentException("Le poids doit être positif.", nameof(weightGrams));
-
-        return new Stock { WoolId = woolId, WeightGrams = weightGrams };
+        return weightGrams <= 0
+            ? throw new ArgumentException("Le poids doit être positif.", nameof(weightGrams))
+            : new Stock { WoolId = woolId, WeightGrams = weightGrams };
     }
 
     public static Stock Reconstitute(int id, int woolId, double weightGrams) =>

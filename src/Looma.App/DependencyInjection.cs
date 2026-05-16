@@ -14,7 +14,7 @@ namespace Looma.App;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    public static void AddPresentation(this IServiceCollection services)
     {
         // Un NavigationService PAR section (scope isolé)
         services.AddTransient<INavigationService, NavigationService>();
@@ -58,14 +58,11 @@ public static class DependencyInjection
                     new DocumentsListViewModel(nav))
             );
         });
-
-        return services;
     }
 
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static void AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IWoolRepository, WoolRepository>();
         services.AddScoped<IStockRepository, StockRepository>();
-        return services;
     }
 }
