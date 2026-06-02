@@ -41,7 +41,9 @@ public partial class DocumentsListViewModel : PageViewModelBase
         Title = "Mes documents";
     }
 
-    public override async void OnNavigatedTo() => await LoadAsync();
+    public override async void OnNavigatedTo() => await RefreshAsync();
+
+    public Task RefreshAsync() => LoadAsync();
 
     private async Task LoadAsync()
     {
