@@ -27,15 +27,6 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         }
     }
 
-    public async Task<ResultT<IReadOnlyList<Wool>>> SearchAsync(string query)
-    {
-        var all = await GetAllAsync();
-        if (all.Failed)
-            return ResultT<IReadOnlyList<Wool>>.Failure(all.Error ?? "La recherche des laines a échoué.");
-
-        return ResultT<IReadOnlyList<Wool>>.Ok(WoolSearchSpec.Apply(all.Value ?? [], query).ToList());
-    }
-
     public async Task<ResultT<Wool>> GetByIdAsync(int id)
     {
         try

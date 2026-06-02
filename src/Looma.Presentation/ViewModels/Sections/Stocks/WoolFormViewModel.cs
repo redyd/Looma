@@ -9,11 +9,9 @@ using Looma.Presentation.ViewModels.Base;
 
 namespace Looma.Presentation.ViewModels.Sections.Stocks;
 
-public partial class WoolFormViewModel : PageViewModelBase
+public partial class WoolFormViewModel(INavigationService nav, IWoolRepository repo, INotificationService notifications)
+    : PageViewModelBase
 {
-    private readonly INavigationService _nav;
-    private readonly IWoolRepository _repo;
-    private readonly INotificationService _notifications;
     private bool _isEdit;
     private int _editingId;
 
@@ -42,13 +40,6 @@ public partial class WoolFormViewModel : PageViewModelBase
 
     public string SelectedColorHex =>
         $"#{SelectedColor.R:X2}{SelectedColor.G:X2}{SelectedColor.B:X2}";
-
-    public WoolFormViewModel(INavigationService nav, IWoolRepository repo, INotificationService notifications)
-    {
-        _nav = nav;
-        _repo = repo;
-        _notifications = notifications;
-    }
 
     public void InitCreate()
     {
@@ -121,7 +112,7 @@ public partial class WoolFormViewModel : PageViewModelBase
             IsBusy = true;
             if (_isEdit)
             {
-                var result = await _repo.UpdateAsync(new UpdateWoolRequest(
+                var result = await repo.UpdateAsync(new UpdateWoolRequest(
                     _editingId,
                     Name,
                     Brand,
@@ -133,15 +124,15 @@ public partial class WoolFormViewModel : PageViewModelBase
                 if (result.Failed)
                 {
                     ErrorMessage = result.Error;
-                    _notifications.Error(result.Error ?? "Impossible de sauvegarder la laine.");
+                    notifications.Error(result.Error ?? "Impossible de sauvegarder la laine.");
                     return;
                 }
 
-                _notifications.Success("La laine a été mise à jour.");
+                notifications.Success("La laine a été mise à jour.");
             }
             else
             {
-                var result = await _repo.AddAsync(new CreateWoolRequest(
+                var result = await repo.AddAsync(new CreateWoolRequest(
                     Name,
                     Brand,
                     Material,
@@ -152,14 +143,14 @@ public partial class WoolFormViewModel : PageViewModelBase
                 if (result.Failed)
                 {
                     ErrorMessage = result.Error;
-                    _notifications.Error(result.Error ?? "Impossible de créer la laine.");
+                    notifications.Error(result.Error ?? "Impossible de créer la laine.");
                     return;
                 }
 
-                _notifications.Success("La laine a été créée.");
+                notifications.Success("La laine a été créée.");
             }
 
-            _nav.GoBack();
+            nav.GoBack();
         }
         catch (Exception ex)
         {
@@ -172,5 +163,5 @@ public partial class WoolFormViewModel : PageViewModelBase
     }
 
     [RelayCommand]
-    private void Cancel() => _nav.GoBack();
+    private void Cancel() => nav.GoBack();
 }
