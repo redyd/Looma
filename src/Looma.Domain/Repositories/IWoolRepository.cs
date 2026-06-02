@@ -8,7 +8,7 @@ public interface IWoolRepository
     Task<ResultT<IReadOnlyList<Wool>>> GetAllAsync();
     Task<ResultT<IReadOnlyList<Wool>>> SearchAsync(string query);
     Task<ResultT<Wool>> GetByIdAsync(int id);
-    Task<ResultT<Wool>> AddAsync(Wool wool);
-    Task<ResultT<Wool>> UpdateAsync(Wool wool);
+    Task<ResultT<Wool>> AddAsync(CreateWoolRequest request);
+    Task<ResultT<Wool>> UpdateAsync(UpdateWoolRequest request);
     Task<Result> DeleteAsync(int id);
 }

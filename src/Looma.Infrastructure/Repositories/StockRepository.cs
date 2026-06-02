@@ -41,13 +41,23 @@ public class StockRepository(LoomaDbContext context) : IStockRepository
         }
     }
 
-    public async Task<ResultT<Stock>> AddAsync(Stock stock)
+    public async Task<ResultT<Stock>> AddAsync(CreateStockRequest request)
     {
         try
         {
-            var woolExists = await context.Wools.AnyAsync(w => w.WoolId == stock.WoolId);
+            if (!IsValid(request.WoolId, request.WeightGrams))
+                return ResultT<Stock>.Failure("Les donnees de creation de stock sont invalides.");
+
+            var woolExists = await context.Wools.AnyAsync(w => w.WoolId == request.WoolId);
             if (!woolExists)
-                return ResultT<Stock>.NotFound($"La laine {stock.WoolId} est introuvable.");
+                return ResultT<Stock>.NotFound($"La laine {request.WoolId} est introuvable.");
+
+            var stock = new Stock
+            {
+                Id = 0,
+                WoolId = request.WoolId,
+                WeightGrams = request.WeightGrams
+            };
 
             var entity = stock.ToEntity();
             context.Stocks.Add(entity);
@@ -64,33 +74,38 @@ public class StockRepository(LoomaDbContext context) : IStockRepository
         }
     }
 
-    public async Task<ResultT<Stock>> UpdateAsync(Stock stock)
+    public async Task<ResultT<Stock>> UpdateAsync(UpdateStockRequest request)
     {
         try
         {
-            var entity = await context.Stocks.FindAsync([stock.Id]);
+            var entity = await context.Stocks.FindAsync([request.Id]);
             if (entity is null)
-                return ResultT<Stock>.NotFound($"Le stock {stock.Id} est introuvable.");
+                return ResultT<Stock>.NotFound($"Le stock {request.Id} est introuvable.");
 
-            var woolExists = await context.Wools.AnyAsync(w => w.WoolId == stock.WoolId);
+            var current = entity.ToDomain();
+            var updated = BuildUpdate(current, request);
+            if (updated is null)
+                return ResultT<Stock>.Failure($"Les donnees de mise a jour du stock {request.Id} sont invalides.");
+
+            var woolExists = await context.Wools.AnyAsync(w => w.WoolId == updated.WoolId);
             if (!woolExists)
-                return ResultT<Stock>.NotFound($"La laine {stock.WoolId} est introuvable.");
+                return ResultT<Stock>.NotFound($"La laine {updated.WoolId} est introuvable.");
 
-            entity.UpdateEntity(stock);
+            context.Entry(entity).CurrentValues.SetValues(updated.ToEntity());
             await context.SaveChangesAsync();
             return ResultT<Stock>.Ok(entity.ToDomain());
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            return ResultT<Stock>.Failure($"Impossible de mettre à jour le stock {stock.Id}: {ex.Message}");
+            return ResultT<Stock>.Failure($"Impossible de mettre à jour le stock {request.Id}: {ex.Message}");
         }
         catch (DbUpdateException ex)
         {
-            return ResultT<Stock>.Failure($"Impossible de mettre à jour le stock {stock.Id}: {ex.Message}");
+            return ResultT<Stock>.Failure($"Impossible de mettre à jour le stock {request.Id}: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return ResultT<Stock>.Failure($"Impossible de mettre à jour le stock {stock.Id}: {ex.Message}");
+            return ResultT<Stock>.Failure($"Impossible de mettre à jour le stock {request.Id}: {ex.Message}");
         }
     }
 
@@ -114,5 +129,26 @@ public class StockRepository(LoomaDbContext context) : IStockRepository
         {
             return Result.Failure($"Impossible de supprimer le stock {stockId}: {ex.Message}");
         }
+    }
+
+    private static Stock? BuildUpdate(Stock current, UpdateStockRequest request)
+    {
+        var woolId = request.WoolId ?? current.WoolId;
+        var weight = request.WeightGrams ?? current.WeightGrams;
+
+        if (!IsValid(woolId, weight))
+            return null;
+
+        return new Stock
+        {
+            Id = current.Id,
+            WoolId = woolId,
+            WeightGrams = weight
+        };
+    }
+
+    private static bool IsValid(int woolId, double weightGrams)
+    {
+        return woolId > 0 && weightGrams > 0;
     }
 }
