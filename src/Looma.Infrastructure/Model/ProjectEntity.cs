@@ -5,12 +5,12 @@ namespace Looma.Infrastructure.Model;
 public class ProjectEntity
 {
     public int ProjectId { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
     public DateOnly? BeginDate { get; set; }
     public DateOnly? EndDate { get; set; }
 
     public int PatronId { get; set; }
-    public PatternEntity PatternEntity { get; set; }
+    public PatternEntity PatternEntity { get; set; } = null!;
 
     public Status Status { get; set; }
 
