@@ -73,12 +73,21 @@ jobs:
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
 
       - name: Publish Windows
+          run: |
+            dotnet publish src/Looma.App/Looma.App.csproj `
+              -c Release -r win-x64 `
+              --self-contained true `
+              -p:PublishSingleFile=true `
+              -o ./publish/win
+
+      - name: Inspect publish output
+        run: Get-ChildItem ./publish/win | Where-Object { $_.Name -like "*skia*" } | Select-Object Name, Length
+
+      - name: Check SkiaSharp version
         run: |
-          dotnet publish src/Looma.App/Looma.App.csproj `
-            -c Release -r win-x64 `
-            --self-contained true `
-            -p:PublishSingleFile=true `
-            -o ./publish/win
+          $dll = "./publish/win/libSkiaSharp.dll"
+          $ver = (Get-Item $dll).VersionInfo.FileVersion
+          Write-Host "libSkiaSharp.dll version: $ver"
 
       - name: Install vpk
         run: dotnet tool install -g vpk
