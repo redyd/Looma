@@ -1,22 +1,25 @@
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Domain.Search;
+using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
 
 namespace Looma.Presentation.ViewModels.Sections.Stocks;
 
-public record WoolSummary(Wool Wool, double TotalWeightGrams);
+public record WoolSummary(Wool Wool, double TotalWeightGrams, ICommand OpenDetailCommand);
 
-public partial class WoolListViewModel : PageViewModelBase
+public partial class WoolListViewModel(
+    INavigationService nav,
+    IWoolRepository woolRepo,
+    IStockRepository stockRepo,
+    INotificationService notifications)
+    : PageViewModelBase
 {
-    private readonly INavigationService _nav;
-    private readonly IWoolRepository _woolRepo;
-    private readonly IStockRepository _stockRepo;
-
     private IReadOnlyList<Wool> _allWools = [];
     private IReadOnlyList<WoolSummary> _allSummaries = [];
     private IReadOnlyList<WoolSummary> _filteredSummaries = [];
@@ -31,31 +34,45 @@ public partial class WoolListViewModel : PageViewModelBase
     [ObservableProperty] private bool _hasNextPage;
     [ObservableProperty] private string _pageInfo = string.Empty;
 
-    public WoolListViewModel(INavigationService nav, IWoolRepository woolRepo, IStockRepository stockRepo)
-    {
-        _nav = nav;
-        _woolRepo = woolRepo;
-        _stockRepo = stockRepo;
-    }
-
     public override async void OnNavigatedTo() => await LoadAsync();
 
     private async Task LoadAsync()
     {
         IsBusy = true;
-
-        _allWools = await _woolRepo.GetAllAsync();
-
-        var summaries = new List<WoolSummary>();
-        foreach (var wool in _allWools)
+        try
         {
-            var total = await _stockRepo.GetTotalWeightByWoolIdAsync(wool.Id);
-            summaries.Add(new WoolSummary(wool, total));
-        }
-        _allSummaries = summaries;
+            var woolsResult = await woolRepo.GetAllAsync();
+            if (woolsResult.Failed || woolsResult.Value is null)
+            {
+                _allWools = [];
+                _allSummaries = [];
+                notifications.Error(woolsResult.Error ?? "Impossible de charger les laines.");
+                ApplySearchAndPaging();
+                return;
+            }
 
-        ApplySearchAndPaging();
-        IsBusy = false;
+            _allWools = woolsResult.Value;
+
+            var summaries = new List<WoolSummary>();
+            foreach (var wool in _allWools)
+            {
+                var totalResult = await stockRepo.GetTotalWeightByWoolIdAsync(wool.Id);
+                if (totalResult.Failed)
+                    notifications.Warning(totalResult.Error ?? $"Impossible de calculer le stock de {wool.Name}.");
+                summaries.Add(new WoolSummary(
+                    wool,
+                    totalResult.Succeeded ? totalResult.Value : 0,
+                    new RelayCommand(() => nav.NavigateTo<WoolDetailViewModel>(vm => vm.Load(wool)))));
+            }
+
+            _allSummaries = summaries;
+
+            ApplySearchAndPaging();
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     partial void OnSearchQueryChanged(string value)
@@ -105,9 +122,5 @@ public partial class WoolListViewModel : PageViewModelBase
 
     [RelayCommand]
     private void OpenAddForm() =>
-        _nav.NavigateTo<WoolFormViewModel>(vm => vm.InitCreate());
-
-    [RelayCommand]
-    private void OpenDetail(WoolSummary summary) =>
-        _nav.NavigateTo<WoolDetailViewModel>(vm => vm.Load(summary.Wool));
+        nav.NavigateTo<WoolFormViewModel>(vm => vm.InitCreate());
 }

@@ -8,8 +8,7 @@ public partial class PatternsListViewModel : PageViewModelBase
 {
     private readonly INavigationService _nav;
 
-    [ObservableProperty]
-    private int _itemId;
+    [ObservableProperty] private int _itemId;
 
     public PatternsListViewModel(INavigationService nav)
     {

@@ -123,9 +123,9 @@
                                     <TextBlock Classes="val" Text="{Binding LengthToWeightRatio}" />
                                     <TextBlock Classes="val" Opacity="0.4" Text="m/100g" />
                                 </StackPanel>
-                                <TextBlock Grid.Row="4" Grid.Column="0" Classes="lbl" Text="Aiguilles"/>
+                                <TextBlock Grid.Row="4" Grid.Column="0" Classes="lbl" Text="Aiguilles" />
                                 <TextBlock Grid.Row="4" Grid.Column="1" Classes="val"
-                                           Text="{Binding NeedleSizeDisplay}"/>
+                                           Text="{Binding NeedleSizeDisplay}" />
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -182,11 +182,11 @@
                                                 <TextBox IsVisible="{Binding IsWeightMode}"
                                                          Text="{Binding InputText}"
                                                          Classes="form-input-sm"
-                                                         Watermark="Quantité en grammes" />
+                                                         PlaceholderText="Quantité en grammes" />
                                                 <TextBox IsVisible="{Binding IsLengthMode}"
                                                          Text="{Binding InputText}"
                                                          Classes="form-input-sm"
-                                                         Watermark="Quantité en mètres" />
+                                                         PlaceholderText="Quantité en mètres" />
                                             </StackPanel>
 
                                             <!-- Col 1 : poids -->

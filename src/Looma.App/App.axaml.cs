@@ -68,6 +68,8 @@ public partial class App : Application
             await mgr.DownloadUpdatesAsync(newVersion);
             mgr.ApplyUpdatesAndRestart(newVersion);
         }
-        catch { }
+        catch
+        {
+        }
     }
 }

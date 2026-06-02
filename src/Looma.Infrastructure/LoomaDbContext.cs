@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Looma.Infrastructure;
 
-public class LoomaDbContext : DbContext
+public class LoomaDbContext(DbContextOptions<LoomaDbContext> options) : DbContext(options)
 {
     public DbSet<WoolEntity> Wools => Set<WoolEntity>();
     public DbSet<StockEntity> Stocks => Set<StockEntity>();
@@ -12,8 +12,6 @@ public class LoomaDbContext : DbContext
     public DbSet<ProjectEntity> Projects => Set<ProjectEntity>();
     public DbSet<DocumentEntity> Documents => Set<DocumentEntity>();
     public DbSet<WoolsForProjectEntity> WoolsForProjects => Set<WoolsForProjectEntity>();
-
-    public LoomaDbContext(DbContextOptions<LoomaDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

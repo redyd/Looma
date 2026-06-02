@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
+using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
 
@@ -13,6 +14,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
     private readonly INavigationService _nav;
     private readonly IWoolRepository _woolRepo;
     private readonly IStockRepository _stockRepo;
+    private readonly INotificationService _notifications;
 
     [ObservableProperty] private int _woolId;
     [ObservableProperty] private string _name = string.Empty;
@@ -25,6 +27,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
     [ObservableProperty] private ObservableCollection<StockRowViewModel> _stockRows = [];
     [ObservableProperty] private double _needleMinSize;
     [ObservableProperty] private double _needleMaxSize;
+    [ObservableProperty] private string? _errorMessage;
 
     public string NeedleSizeDisplay =>
         $"{NeedleMinSize:G} – {NeedleMaxSize:G} mm";
@@ -35,11 +38,13 @@ public partial class WoolDetailViewModel : PageViewModelBase
     public WoolDetailViewModel(
         INavigationService nav,
         IWoolRepository woolRepo,
-        IStockRepository stockRepo)
+        IStockRepository stockRepo,
+        INotificationService notifications)
     {
         _nav = nav;
         _woolRepo = woolRepo;
         _stockRepo = stockRepo;
+        _notifications = notifications;
         Title = "Détail laine";
     }
 
@@ -53,12 +58,19 @@ public partial class WoolDetailViewModel : PageViewModelBase
     {
         if (WoolId == 0) return;
         var wool = await _woolRepo.GetByIdAsync(WoolId);
-        if (wool is not null) Refresh(wool);
+        if (wool.Failed || wool.Value is null)
+        {
+            ErrorMessage = wool.Error ?? $"La laine {WoolId} est introuvable.";
+            return;
+        }
+
+        Refresh(wool.Value);
         await LoadStocksAsync();
     }
 
     private void Refresh(Wool wool)
     {
+        ErrorMessage = null;
         Name = wool.Name;
         Brand = wool.Brand;
         Material = wool.Material;
@@ -72,9 +84,24 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
     private async Task LoadStocksAsync()
     {
-        var stocks = await _stockRepo.GetByWoolIdAsync(WoolId);
-        TotalWeightGrams = stocks.Sum(s => s.WeightGrams);
+        var stocksResult = await _stockRepo.GetByWoolIdAsync(WoolId);
+        if (stocksResult.Failed || stocksResult.Value is null)
+        {
+            ErrorMessage = stocksResult.Error ?? $"Impossible de charger les stocks de la laine {WoolId}.";
+            _notifications.Error(ErrorMessage);
+            StockRows = [];
+            TotalWeightGrams = 0;
+            OnPropertyChanged(nameof(TotalLengthMeters));
+            return;
+        }
+
+        var stocks = stocksResult.Value;
+        var totalResult = await _stockRepo.GetTotalWeightByWoolIdAsync(WoolId);
+        TotalWeightGrams = totalResult.Succeeded
+            ? totalResult.Value
+            : stocks.Sum(s => s.WeightGrams);
         OnPropertyChanged(nameof(TotalLengthMeters));
+        ErrorMessage = null;
 
         StockRows = new ObservableCollection<StockRowViewModel>(
             stocks.Select(s => new StockRowViewModel(s, LengthToWeightRatio, OnSaveRow, OnDeleteRow))
@@ -85,34 +112,43 @@ public partial class WoolDetailViewModel : PageViewModelBase
     {
         var weight = row.ParsedWeight();
 
-        if (row.IsNew)
+        var result = await _stockRepo.AddAsync(new CreateStockRequest(WoolId, weight));
+        if (result.Failed)
         {
-            var stock = Stock.Create(WoolId, weight);
-            await _stockRepo.AddAsync(stock);
+            ErrorMessage = result.Error;
+            _notifications.Error(result.Error ?? "Impossible d'ajouter le stock.");
+            return;
         }
-        else
-        {
-            var stock = await _stockRepo.GetByWoolIdAsync(WoolId)
-                .ContinueWith(t => t.Result.FirstOrDefault(s => s.Id == row.StockId));
-            if (stock is null) return;
-            stock.UpdateWeight(weight);
-            await _stockRepo.UpdateAsync(stock);
-        }
+
+        _notifications.Success("Stock ajouté.");
 
         await LoadStocksAsync();
     }
 
     private async Task OnDeleteRow(StockRowViewModel row)
     {
-        if (!row.IsNew)
-            await _stockRepo.DeleteAsync(row.StockId);
+        var result = await _stockRepo.DeleteAsync(row.StockId);
+        if (result.Failed)
+        {
+            ErrorMessage = result.Error;
+            _notifications.Error(result.Error ?? "Impossible de supprimer le stock.");
+            return;
+        }
+
+        _notifications.Success("Stock supprimé.");
+
         await LoadStocksAsync();
     }
 
     [RelayCommand]
     private void AddStockRow()
     {
-        var placeholder = Stock.Reconstitute(0, WoolId, 1);
+        var placeholder = new Stock
+        {
+            Id = 0,
+            WoolId = WoolId,
+            WeightGrams = 0
+        };
         var row = new StockRowViewModel(placeholder, LengthToWeightRatio, OnSaveRow, OnDeleteRow, isNew: true);
         StockRows.Add(row);
     }
@@ -133,9 +169,23 @@ public partial class WoolDetailViewModel : PageViewModelBase
     private async Task ConfirmDeleteAsync()
     {
         IsBusy = true;
-        await _woolRepo.DeleteAsync(WoolId);
-        IsBusy = false;
-        _nav.GoBack();
+        try
+        {
+            var result = await _woolRepo.DeleteAsync(WoolId);
+            if (result.Failed)
+            {
+                ErrorMessage = result.Error;
+                _notifications.Error(result.Error ?? "Impossible de supprimer la laine.");
+                return;
+            }
+
+            _notifications.Success("La laine a été supprimée.");
+            _nav.GoBack();
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]

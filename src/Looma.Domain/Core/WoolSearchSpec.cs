@@ -18,8 +18,8 @@ public static class WoolSearchSpec
             .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
         return source.Where(w => words.All(word =>
-            w.Name.Contains(word, StringComparison.OrdinalIgnoreCase)     ||
-            w.Brand.Contains(word, StringComparison.OrdinalIgnoreCase)    ||
+            w.Name.Contains(word, StringComparison.OrdinalIgnoreCase) ||
+            w.Brand.Contains(word, StringComparison.OrdinalIgnoreCase) ||
             w.Material.Contains(word, StringComparison.OrdinalIgnoreCase) ||
             w.Color.Contains(word, StringComparison.OrdinalIgnoreCase)
         ));

@@ -4,7 +4,11 @@ using Looma.Domain.Entities;
 
 namespace Looma.Presentation.ViewModels.Sections.Stocks;
 
-public enum StockInputMode { Weight, Length }
+public enum StockInputMode
+{
+    Weight,
+    Length
+}
 
 public partial class StockRowViewModel : ObservableObject
 {
@@ -13,8 +17,6 @@ public partial class StockRowViewModel : ObservableObject
     private readonly double _lengthToWeightRatio;
 
     public int StockId { get; }
-    public int WoolId { get; }
-    public bool IsNew { get; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveRowCommand))]
@@ -69,12 +71,10 @@ public partial class StockRowViewModel : ObservableObject
         bool isNew = false)
     {
         StockId = stock.Id;
-        WoolId = stock.WoolId;
         _lengthToWeightRatio = lengthToWeightRatio;
         InputMode = StockInputMode.Weight;
         InputText = isNew ? string.Empty : stock.WeightGrams.ToString("G");
         IsEditing = isNew;
-        IsNew = isNew;
         _onSave = onSave;
         _onDelete = onDelete;
     }
@@ -85,15 +85,27 @@ public partial class StockRowViewModel : ObservableObject
     private async Task SaveRowAsync()
     {
         ErrorMessage = null;
-        try { await _onSave(this); }
-        catch (Exception ex) { ErrorMessage = ex.Message; }
+        try
+        {
+            await _onSave(this);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
     }
 
     [RelayCommand]
     private async Task DeleteRowAsync()
     {
-        try { await _onDelete(this); }
-        catch (Exception ex) { ErrorMessage = ex.Message; }
+        try
+        {
+            await _onDelete(this);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
     }
 
     [RelayCommand]

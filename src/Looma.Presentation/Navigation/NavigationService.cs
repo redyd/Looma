@@ -27,7 +27,7 @@ public class NavigationService : INavigationService
         vm.OnNavigatedTo();
         Navigated?.Invoke(this, vm);
     }
-    
+
     public void PushPage(PageViewModelBase page)
     {
         _stack.Push(page);

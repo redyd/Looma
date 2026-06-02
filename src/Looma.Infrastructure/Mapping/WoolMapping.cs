@@ -6,16 +6,17 @@ namespace Looma.Infrastructure.Mapping;
 public static class WoolMapping
 {
     public static Wool ToDomain(this WoolEntity entity) =>
-        Wool.Reconstitute(
-            entity.WoolId,
-            entity.Name,
-            entity.Brand,
-            entity.Material,
-            entity.Color,
-            entity.LengthToWeightRatio,
-            entity.NeedleMinSize,
-            entity.NeedleMaxSize
-        );
+        new()
+        {
+            Id = entity.WoolId,
+            Name = entity.Name,
+            Brand = entity.Brand,
+            Material = entity.Material,
+            Color = entity.Color,
+            LengthToWeightRatio = entity.LengthToWeightRatio,
+            NeedleMinSize = entity.NeedleMinSize,
+            NeedleMaxSize = entity.NeedleMaxSize
+        };
 
     public static WoolEntity ToEntity(this Wool domain) =>
         new()
@@ -28,15 +29,4 @@ public static class WoolMapping
             NeedleMinSize = domain.NeedleMinSize,
             NeedleMaxSize = domain.NeedleMaxSize
         };
-
-    public static void UpdateEntity(this WoolEntity entity, Wool domain)
-    {
-        entity.Name = domain.Name;
-        entity.Brand = domain.Brand;
-        entity.Material = domain.Material;
-        entity.Color = domain.Color;
-        entity.LengthToWeightRatio = domain.LengthToWeightRatio;
-        entity.NeedleMinSize = domain.NeedleMinSize;
-        entity.NeedleMaxSize = domain.NeedleMaxSize;
-    }
 }

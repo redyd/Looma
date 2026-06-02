@@ -1,6 +1,7 @@
 using System;
 using Looma.Domain.Repositories;
 using Looma.Infrastructure.Repositories;
+using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
 using Looma.Presentation.ViewModels.Main;
@@ -14,10 +15,11 @@ namespace Looma.App;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    public static void AddPresentation(this IServiceCollection services)
     {
         // Un NavigationService PAR section (scope isolé)
         services.AddTransient<INavigationService, NavigationService>();
+        services.AddSingleton<INotificationService, NotificationService>();
 
         // ViewModels — Transient pour être réinstanciés à chaque navigation
 
@@ -51,21 +53,20 @@ public static class DependencyInjection
                     new ProjectsListViewModel(nav)),
                 MakeSection<WoolListViewModel>(nav =>
                     new WoolListViewModel(nav, sp.GetRequiredService<IWoolRepository>(),
-                        sp.GetRequiredService<IStockRepository>())),
+                        sp.GetRequiredService<IStockRepository>(),
+                        sp.GetRequiredService<INotificationService>())),
                 MakeSection<PatternsListViewModel>(nav =>
                     new PatternsListViewModel(nav)),
                 MakeSection<DocumentsListViewModel>(nav =>
-                    new DocumentsListViewModel(nav))
+                    new DocumentsListViewModel(nav)),
+                sp.GetRequiredService<INotificationService>()
             );
         });
-
-        return services;
     }
 
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static void AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IWoolRepository, WoolRepository>();
         services.AddScoped<IStockRepository, StockRepository>();
-        return services;
     }
 }
