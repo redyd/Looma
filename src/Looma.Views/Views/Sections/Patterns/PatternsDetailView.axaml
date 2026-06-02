@@ -1,0 +1,235 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
+             x:Class="Looma.Views.Views.Sections.Patterns.PatternsDetailView"
+             x:DataType="vm:PatternsDetailViewModel">
+
+    <DockPanel>
+
+        <Border DockPanel.Dock="Top"
+                Padding="24 16"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0 0 0 1"
+                Background="{StaticResource BackgroundCardBrush}">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+
+                <Button Grid.Column="0"
+                        Content="← Retour"
+                        Command="{Binding GoBackCommand}"
+                        Classes="form-cancel" />
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Vertical"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Spacing="4">
+                    <TextBlock Text="{Binding Name}"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding Url}"
+                               FontSize="12"
+                               Opacity="0.55"
+                               HorizontalAlignment="Center"
+                               TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <Button Content="Ouvrir le lien"
+                            Command="{Binding OpenUrlCommand}"
+                            Classes="form-cancel"
+                            IsEnabled="{Binding HasUrl}" />
+                    <Button Content="Modifier"
+                            Command="{Binding EditCommand}"
+                            Classes="form-cancel" />
+                    <Button Content="Supprimer"
+                            Command="{Binding AskDeleteCommand}"
+                            Classes="btn-danger" />
+                </StackPanel>
+
+            </Grid>
+        </Border>
+
+        <ScrollViewer>
+            <StackPanel Margin="32" Spacing="16">
+
+                <Grid ColumnDefinitions="*,16,*">
+
+                    <StackPanel Grid.Column="0" Spacing="16">
+
+                        <Border Classes="form-section">
+                            <StackPanel Spacing="0">
+                                <TextBlock Classes="section-title"
+                                           Text="Informations"
+                                           Margin="0 0 0 14" />
+                                <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                                    <Grid.Styles>
+                                        <Style Selector="TextBlock.lbl">
+                                            <Setter Property="FontSize" Value="13" />
+                                            <Setter Property="Opacity" Value="0.5" />
+                                            <Setter Property="Margin" Value="0 0 0 10" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        </Style>
+                                        <Style Selector="TextBlock.val">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="Margin" Value="0 0 0 10" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        </Style>
+                                    </Grid.Styles>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Classes="lbl" Text="Nom" />
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Classes="val" Text="{Binding Name}" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Classes="lbl" Text="Lien" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Classes="val"
+                                               Text="{Binding Url}"
+                                               IsVisible="{Binding HasUrl}"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Classes="val"
+                                               Text="Aucun lien"
+                                               IsVisible="{Binding !HasUrl}" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Classes="lbl" Text="Documents" />
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Classes="val"
+                                               Text="{Binding Documents.Count}" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Classes="lbl" Text="Projets" />
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Classes="val"
+                                               Text="{Binding Projects.Count}" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="form-section">
+                            <StackPanel Spacing="12">
+                                <TextBlock Classes="section-title" Text="Note" />
+                                <TextBlock Text="{Binding NoteDisplay}"
+                                           TextWrapping="Wrap"
+                                           FontSize="14"
+                                           LineHeight="20" />
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Spacing="16">
+
+                        <Border Classes="form-section">
+                            <StackPanel Spacing="12">
+                                <TextBlock Classes="section-title" Text="Documents liés" />
+                                <TextBlock Text="Aucun document"
+                                           Classes="form-hint"
+                                           IsVisible="{Binding !HasDocuments}" />
+                                <ItemsControl ItemsSource="{Binding Documents}"
+                                              IsVisible="{Binding HasDocuments}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="0" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:PatternDocumentViewModel">
+                                            <StackPanel>
+                                                <Grid ColumnDefinitions="*,140,120,Auto"
+                                                      MinHeight="56">
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="{Binding Document.Nickname}"
+                                                               FontSize="14"
+                                                               FontWeight="SemiBold"
+                                                               VerticalAlignment="Center"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding TypeDisplay}"
+                                                               FontSize="13"
+                                                               Opacity="0.7"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center" />
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding SizeDisplay}"
+                                                               FontSize="13"
+                                                               Opacity="0.7"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center" />
+                                                    <Button Grid.Column="3"
+                                                            Content="Ouvrir"
+                                                            Command="{Binding OpenCommand}"
+                                                            Classes="form-cancel"
+                                                            MinWidth="80"
+                                                            VerticalAlignment="Center" />
+                                                </Grid>
+                                                <Border Height="1"
+                                                        Background="{StaticResource BorderBrush}"
+                                                        Opacity="0.2"
+                                                        Margin="0 2 0 2" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="form-section">
+                            <StackPanel Spacing="12">
+                                <TextBlock Classes="section-title" Text="Projets liés" />
+                                <TextBlock Text="Aucun projet"
+                                           Classes="form-hint"
+                                           IsVisible="{Binding !HasProjects}" />
+                                <ItemsControl ItemsSource="{Binding Projects}"
+                                              IsVisible="{Binding HasProjects}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="8" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:PatternProjectViewModel">
+                                            <Border Padding="12 10"
+                                                    Background="{StaticResource BackgroundCardBrush}"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="1">
+                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                                                    <TextBlock Text="{Binding Project.Name}"
+                                                               FontWeight="SemiBold"
+                                                               VerticalAlignment="Center" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding StatusDisplay}"
+                                                               VerticalAlignment="Center"
+                                                               Opacity="0.75" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0 18 18 0"
+                Background="Transparent"
+                IsVisible="{Binding ShowDeleteConfirm}">
+            <Border Classes="form-container" Padding="16" Width="320">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Supprimer ce patron ?" FontWeight="SemiBold" />
+                    <TextBlock Text="Cette action est définitive." Classes="form-hint" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                        <Button Content="Annuler"
+                                Command="{Binding CancelDeleteCommand}"
+                                Classes="form-cancel" />
+                        <Button Content="Supprimer"
+                                Command="{Binding ConfirmDeleteCommand}"
+                                Classes="btn-danger" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+
+    </DockPanel>
+</UserControl>

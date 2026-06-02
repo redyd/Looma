@@ -17,6 +17,21 @@ namespace Looma.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
 
+            modelBuilder.Entity("DocumentEntityPatternEntity", b =>
+                {
+                    b.Property<Guid>("DocumentsDocumentId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PatternsPatternId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DocumentsDocumentId", "PatternsPatternId");
+
+                    b.HasIndex("PatternsPatternId");
+
+                    b.ToTable("DocumentPattern", (string)null);
+                });
+
             modelBuilder.Entity("Looma.Infrastructure.Model.DocumentEntity", b =>
                 {
                     b.Property<Guid>("DocumentId")
@@ -152,6 +167,21 @@ namespace Looma.Infrastructure.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("WoolsForProjects");
+                });
+
+            modelBuilder.Entity("DocumentEntityPatternEntity", b =>
+                {
+                    b.HasOne("Looma.Infrastructure.Model.DocumentEntity", null)
+                        .WithMany()
+                        .HasForeignKey("DocumentsDocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Looma.Infrastructure.Model.PatternEntity", null)
+                        .WithMany()
+                        .HasForeignKey("PatternsPatternId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Looma.Infrastructure.Model.ProjectEntity", b =>

@@ -1,8 +1,132 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Looma.Views.Views.Sections.Patterns.PatternsListView">
-    Coming soon
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
+             x:Class="Looma.Views.Views.Sections.Patterns.PatternsListView"
+             x:DataType="vm:PatternsListViewModel">
+
+    <DockPanel Margin="32">
+
+        <Grid DockPanel.Dock="Top" Margin="0 0 0 24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="1"
+                     Classes="form-input"
+                     Text="{Binding SearchQuery}"
+                     PlaceholderText="Rechercher par nom, url ou note..."
+                     VerticalContentAlignment="Center" />
+        </Grid>
+
+        <DockPanel DockPanel.Dock="Top"
+                   Margin="0 0 0 20"
+                   HorizontalSpacing="20">
+            <TextBlock Text="Mes patrons"
+                       Classes="page-title"
+                       VerticalAlignment="Center" />
+            <Button DockPanel.Dock="Right"
+                    Content="+ Ajouter un patron"
+                    Command="{Binding OpenAddFormCommand}"
+                    Classes="form-submit" />
+        </DockPanel>
+
+        <Border DockPanel.Dock="Bottom"
+                Margin="0 16 0 0"
+                Padding="16 10"
+                CornerRadius="8"
+                Background="{StaticResource BackgroundCardBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="12">
+                <Button Content="←"
+                        Command="{Binding PreviousPageCommand}"
+                        Classes="form-cancel"
+                        Width="36"
+                        Height="36"
+                        Padding="0" />
+                <TextBlock Text="{Binding PageInfo}"
+                           VerticalAlignment="Center"
+                           FontSize="14" />
+                <Button Content="→"
+                        Command="{Binding NextPageCommand}"
+                        Classes="form-cancel"
+                        Width="36"
+                        Height="36"
+                        Padding="0" />
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding CurrentPagePatterns}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:PatternSummaryViewModel">
+                        <Button Classes="card-button"
+                                Command="{Binding OpenDetailCommand}"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                HorizontalAlignment="Left">
+                            <Border Width="240"
+                                    Margin="8"
+                                    Padding="16"
+                                    Classes="surface-card">
+                                <Border.Styles>
+                                    <Style Selector="Border:pointerover">
+                                        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+                                        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+                                    </Style>
+                                </Border.Styles>
+
+                                <StackPanel Spacing="10">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{Binding Pattern.Name}"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding Pattern.Url}"
+                                                   IsVisible="{Binding HasUrl}"
+                                                   FontSize="12"
+                                                   Opacity="0.6"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal"
+                                                Spacing="6">
+                                        <Border Classes="surface-chip" Padding="8 3">
+                                            <TextBlock Text="{Binding DocumentCount, StringFormat='{}{0} doc(s)'}"
+                                                       FontSize="11" />
+                                        </Border>
+                                        <Border Classes="surface-chip" Padding="8 3">
+                                            <TextBlock Text="{Binding ProjectCount, StringFormat='{}{0} projet(s)'}"
+                                                       FontSize="11" />
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Border Height="1"
+                                            Background="{StaticResource BorderBrush}"
+                                            Opacity="0.5" />
+
+                                    <TextBlock Text="{Binding NotePreview}"
+                                               TextWrapping="Wrap"
+                                               FontSize="13"
+                                               LineHeight="18"
+                                               Opacity="0.85"
+                                               MaxHeight="72" />
+                                </StackPanel>
+                            </Border>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+    </DockPanel>
 </UserControl>

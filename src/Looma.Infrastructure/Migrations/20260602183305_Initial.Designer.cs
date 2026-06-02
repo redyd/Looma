@@ -11,19 +11,19 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Looma.Infrastructure.Migrations
 {
     [DbContext(typeof(LoomaDbContext))]
-    [Migration("20260321200801_Initial")]
+    [Migration("20260602183305_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.25");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
 
             modelBuilder.Entity("DocumentEntityPatternEntity", b =>
                 {
-                    b.Property<int>("DocumentsDocumentId")
-                        .HasColumnType("INTEGER");
+                    b.Property<Guid>("DocumentsDocumentId")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("PatternsPatternId")
                         .HasColumnType("INTEGER");
@@ -37,14 +37,10 @@ namespace Looma.Infrastructure.Migrations
 
             modelBuilder.Entity("Looma.Infrastructure.Model.DocumentEntity", b =>
                 {
-                    b.Property<int>("DocumentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Nickname")
+                    b.Property<Guid>("DocumentId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RelativePath")
+                    b.Property<string>("Nickname")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -149,6 +145,12 @@ namespace Looma.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<double>("NeedleMaxSize")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("NeedleMinSize")
+                        .HasColumnType("REAL");
 
                     b.HasKey("WoolId");
 

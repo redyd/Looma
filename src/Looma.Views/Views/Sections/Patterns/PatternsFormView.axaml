@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
+             x:Class="Looma.Views.Views.Sections.Patterns.PatternsFormView"
+             x:DataType="vm:PatternsFormViewModel">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <StackPanel HorizontalAlignment="Center"
+                    Margin="32"
+                    Width="820"
+                    MinWidth="820">
+
+            <Border Classes="form-container" Width="820" MinWidth="820">
+                <StackPanel Spacing="0">
+
+                    <StackPanel Classes="form-header">
+                        <TextBlock Classes="form-title" Text="{Binding Title}" />
+                        <TextBlock Classes="form-subtitle"
+                                   Text="Renseignez le nom, le lien éventuel, la note et les documents liés du patron." />
+                    </StackPanel>
+
+                    <Border Classes="form-section">
+                        <StackPanel Spacing="0">
+                            <TextBlock Classes="section-title"
+                                       Text="Informations"
+                                       Margin="0 0 0 16" />
+
+                            <StackPanel Classes="form-field">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Classes="form-label" Text="Nom" />
+                                    <TextBlock Classes="field-required" Text="*" />
+                                </StackPanel>
+                                <TextBox Classes="form-input"
+                                         Text="{Binding Name}"
+                                         PlaceholderText="Ex : Happy Hexagon" />
+                            </StackPanel>
+
+                            <StackPanel Classes="form-field">
+                                <TextBlock Classes="form-label" Text="URL" />
+                                <TextBox Classes="form-input"
+                                         Text="{Binding Url}"
+                                         PlaceholderText="Lien vers le patron (optionnel)" />
+                            </StackPanel>
+
+                            <StackPanel Classes="form-field">
+                                <TextBlock Classes="form-label" Text="Note" />
+                                <TextBox Classes="form-input"
+                                         Text="{Binding Note}"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"
+                                         Height="180"
+                                         VerticalContentAlignment="Top"
+                                         PlaceholderText="Notes, instructions, remarques..." />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="form-section">
+                        <StackPanel Spacing="0">
+                            <TextBlock Classes="section-title"
+                                       Text="Documents liés"
+                                       Margin="0 0 0 16" />
+
+                            <TextBlock Classes="form-hint"
+                                       Text="Cochez les documents à associer à ce patron."
+                                       Margin="0 0 0 12" />
+
+                            <TextBlock Text="Aucun document disponible."
+                                       Classes="form-hint"
+                                       IsVisible="{Binding !Documents.Count}" />
+
+                            <ItemsControl ItemsSource="{Binding Documents}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:PatternDocumentSelectionViewModel">
+                                        <Border Padding="12 10"
+                                                Margin="0 0 0 8"
+                                                Background="{StaticResource BackgroundCardBrush}"
+                                                BorderBrush="{StaticResource BorderBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="8">
+                                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                                <CheckBox Grid.Column="0"
+                                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                          VerticalAlignment="Center" />
+                                                <StackPanel Grid.Column="1" Spacing="2">
+                                                    <TextBlock Text="{Binding Document.Nickname}"
+                                                               FontWeight="SemiBold"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding DetailText}"
+                                                               FontSize="11"
+                                                               Opacity="0.6" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding TypeDisplay}"
+                                                           VerticalAlignment="Center"
+                                                           Opacity="0.75" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Classes="form-actions">
+                        <Button Classes="form-cancel"
+                                Content="Annuler"
+                                Command="{Binding CancelCommand}" />
+                        <Button Classes="form-submit"
+                                Content="{Binding Title}"
+                                Command="{Binding SaveCommand}" />
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

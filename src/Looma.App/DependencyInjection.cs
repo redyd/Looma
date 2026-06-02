@@ -34,6 +34,8 @@ public static class DependencyInjection
         services.AddTransient<WoolFormViewModel>();
 
         // PATTERNS
+        services.AddTransient<PatternsFormViewModel>();
+        services.AddTransient<PatternsDetailViewModel>();
         services.AddTransient<PatternsListViewModel>();
 
         // DOCUMENTS
@@ -59,7 +61,9 @@ public static class DependencyInjection
                         sp.GetRequiredService<IStockRepository>(),
                         sp.GetRequiredService<INotificationService>())),
                 MakeSection<PatternsListViewModel>(nav =>
-                    new PatternsListViewModel(nav)),
+                    new PatternsListViewModel(nav,
+                        sp.GetRequiredService<IPatternRepository>(),
+                        sp.GetRequiredService<INotificationService>())),
                 MakeSection<DocumentsListViewModel>(nav =>
                     new DocumentsListViewModel(nav,
                         sp.GetRequiredService<IDocumentRepository>(),
@@ -73,6 +77,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<IDocumentFilePicker, AvaloniaDocumentFilePicker>();
         services.AddScoped<IDocumentRepository, DocumentRepository>();
+        services.AddScoped<IPatternRepository, PatternRepository>();
         services.AddScoped<IWoolRepository, WoolRepository>();
         services.AddScoped<IStockRepository, StockRepository>();
     }
