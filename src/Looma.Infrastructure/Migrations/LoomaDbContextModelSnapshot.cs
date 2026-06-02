@@ -15,33 +15,14 @@ namespace Looma.Infrastructure.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.25");
-
-            modelBuilder.Entity("DocumentEntityPatternEntity", b =>
-                {
-                    b.Property<int>("DocumentsDocumentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PatternsPatternId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("DocumentsDocumentId", "PatternsPatternId");
-
-                    b.HasIndex("PatternsPatternId");
-
-                    b.ToTable("DocumentPattern", (string)null);
-                });
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
 
             modelBuilder.Entity("Looma.Infrastructure.Model.DocumentEntity", b =>
                 {
-                    b.Property<int>("DocumentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Nickname")
+                    b.Property<Guid>("DocumentId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RelativePath")
+                    b.Property<string>("Nickname")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -171,21 +152,6 @@ namespace Looma.Infrastructure.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("WoolsForProjects");
-                });
-
-            modelBuilder.Entity("DocumentEntityPatternEntity", b =>
-                {
-                    b.HasOne("Looma.Infrastructure.Model.DocumentEntity", null)
-                        .WithMany()
-                        .HasForeignKey("DocumentsDocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Looma.Infrastructure.Model.PatternEntity", null)
-                        .WithMany()
-                        .HasForeignKey("PatternsPatternId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Looma.Infrastructure.Model.ProjectEntity", b =>

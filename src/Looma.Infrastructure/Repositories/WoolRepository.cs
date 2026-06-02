@@ -1,7 +1,6 @@
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
-using Looma.Domain.Search;
 using Looma.Infrastructure.Mapping;
 using Microsoft.EntityFrameworkCore;
 

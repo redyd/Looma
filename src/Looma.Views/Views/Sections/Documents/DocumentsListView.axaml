@@ -1,8 +1,154 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Looma.Views.Views.Sections.Documents.DocumentsListView">
-    Coming soon
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Documents"
+             x:Class="Looma.Views.Views.Sections.Documents.DocumentsListView"
+             x:DataType="vm:DocumentsListViewModel">
+
+    <DockPanel Margin="32">
+
+        <Grid DockPanel.Dock="Top" Margin="0 0 0 24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="1"
+                     Classes="form-input"
+                     Text="{Binding SearchQuery}"
+                     PlaceholderText="Rechercher par nom ou identifiant..."
+                     VerticalContentAlignment="Center" />
+        </Grid>
+
+        <DockPanel DockPanel.Dock="Top"
+                   Margin="0 0 0 20"
+                   HorizontalSpacing="20">
+            <TextBlock Text="Mes documents"
+                       Classes="page-title"
+                       VerticalAlignment="Center" />
+            <Button DockPanel.Dock="Right"
+                    Content="+ Ajouter un document"
+                    Command="{Binding OpenAddFormCommand}"
+                    Classes="form-submit" />
+        </DockPanel>
+
+        <Border DockPanel.Dock="Bottom"
+                Margin="0 16 0 0"
+                Padding="16 10"
+                CornerRadius="8"
+                Background="{StaticResource BackgroundCardBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="12">
+                <Button Content="←"
+                        Command="{Binding PreviousPageCommand}"
+                        Classes="form-cancel"
+                        Width="36"
+                        Height="36"
+                        Padding="0" />
+                <TextBlock Text="{Binding PageInfo}"
+                           VerticalAlignment="Center"
+                           FontSize="14" />
+                <Button Content="→"
+                        Command="{Binding NextPageCommand}"
+                        Classes="form-cancel"
+                        Width="36"
+                        Height="36"
+                        Padding="0" />
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer>
+            <StackPanel Spacing="0">
+                <Border Padding="12 10"
+                        Background="{StaticResource BackgroundCardBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8 8 0 0">
+                    <Grid ColumnDefinitions="*,120,110,320" ColumnSpacing="16">
+                        <TextBlock Text="Nom"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Opacity="0.55"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="1"
+                                   Text="Type"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Opacity="0.55"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="2"
+                                   Text="Taille"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Opacity="0.55"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="3"
+                                   Text="Actions"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Opacity="0.55"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+
+                <ItemsControl ItemsSource="{Binding CurrentPageDocuments}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="0" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:DocumentSummaryViewModel">
+                            <Border Padding="12 10"
+                                    Background="{StaticResource BackgroundCardBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1 0 1 1">
+                                <Grid ColumnDefinitions="*,120,110,320" ColumnSpacing="16">
+                                    <StackPanel Spacing="4" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Document.Nickname}"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding TypeDisplay}"
+                                               VerticalAlignment="Center"
+                                               FontSize="13"
+                                               Opacity="0.8"
+                                               TextAlignment="Left" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding SizeDisplay}"
+                                               VerticalAlignment="Center"
+                                               FontSize="13"
+                                               Opacity="0.7"
+                                               TextAlignment="Left" />
+                                    <StackPanel Grid.Column="3"
+                                                Orientation="Horizontal"
+                                                Spacing="8"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left">
+                                        <Button Content="Ouvrir"
+                                                Command="{Binding OpenCommand}"
+                                                Classes="form-cancel"
+                                                MinWidth="80" />
+                                        <Button Content="Modifier"
+                                                Command="{Binding EditCommand}"
+                                                Classes="form-cancel"
+                                                MinWidth="80" />
+                                        <Button Content="Supprimer"
+                                                Command="{Binding DeleteCommand}"
+                                                Classes="btn-danger"
+                                                MinWidth="96" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+</DockPanel>
 </UserControl>

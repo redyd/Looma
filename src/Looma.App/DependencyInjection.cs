@@ -1,8 +1,10 @@
 using System;
 using Looma.Domain.Repositories;
+using Looma.App.Services;
 using Looma.Infrastructure.Repositories;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
+using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
 using Looma.Presentation.ViewModels.Main;
 using Looma.Presentation.ViewModels.Sections.Stocks;
@@ -35,6 +37,7 @@ public static class DependencyInjection
         services.AddTransient<PatternsListViewModel>();
 
         // DOCUMENTS
+        services.AddTransient<DocumentsFormViewModel>();
         services.AddTransient<DocumentsListViewModel>();
 
         services.AddSingleton<MainViewModel>(sp =>
@@ -58,7 +61,9 @@ public static class DependencyInjection
                 MakeSection<PatternsListViewModel>(nav =>
                     new PatternsListViewModel(nav)),
                 MakeSection<DocumentsListViewModel>(nav =>
-                    new DocumentsListViewModel(nav)),
+                    new DocumentsListViewModel(nav,
+                        sp.GetRequiredService<IDocumentRepository>(),
+                        sp.GetRequiredService<INotificationService>())),
                 sp.GetRequiredService<INotificationService>()
             );
         });
@@ -66,6 +71,8 @@ public static class DependencyInjection
 
     public static void AddInfrastructure(this IServiceCollection services)
     {
+        services.AddSingleton<IDocumentFilePicker, AvaloniaDocumentFilePicker>();
+        services.AddScoped<IDocumentRepository, DocumentRepository>();
         services.AddScoped<IWoolRepository, WoolRepository>();
         services.AddScoped<IStockRepository, StockRepository>();
     }

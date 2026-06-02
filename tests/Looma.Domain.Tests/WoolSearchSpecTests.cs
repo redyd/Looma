@@ -1,6 +1,6 @@
 using Looma.Domain.Entities;
-using Looma.Domain.Search;
 using FluentAssertions;
+using Looma.Domain.Core;
 
 namespace Looma.Domain.Tests;
 
