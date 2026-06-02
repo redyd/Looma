@@ -113,7 +113,8 @@
                     <DataTemplate x:DataType="notifications:NotificationItemViewModel">
                         <Border Classes="notification-toast"
                                 Background="{Binding BackgroundBrush}"
-                                BorderBrush="{Binding BorderBrush}">
+                                BorderBrush="{Binding BorderBrush}"
+                                ClipToBounds="True">
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                                 <Border Width="34"
                                         Height="34"

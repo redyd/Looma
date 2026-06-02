@@ -71,7 +71,8 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:WoolSummary">
-                        <Button Command="{ReflectionBinding OpenDetailCommand}"
+                        <Button Classes="card-button"
+                                Command="{ReflectionBinding OpenDetailCommand}"
                                 CommandParameter="{Binding}"
                                 Padding="0"
                                 Background="Transparent"
@@ -82,6 +83,14 @@
                                     Padding="16"
                                     Classes="surface-card">
                                 <Border.Styles>
+                                    <Style Selector="Button.card-button:pointerover">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                    </Style>
+                                    <Style Selector="Button.card-button:pressed">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                    </Style>
                                     <Style Selector="Border:pointerover">
                                         <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}"/>
                                         <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}"/>
