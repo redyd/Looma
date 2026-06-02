@@ -18,9 +18,17 @@ public partial class DocumentsListViewModel : PageViewModelBase
 
     private IReadOnlyList<Document> _allDocuments = [];
     private IReadOnlyList<DocumentSummaryViewModel> _allSummaries = [];
+    private IReadOnlyList<DocumentSummaryViewModel> _filteredSummaries = [];
 
-    [ObservableProperty] private ObservableCollection<DocumentSummaryViewModel> _currentDocuments = [];
+    private const int PageSize = 12;
+
+    [ObservableProperty] private ObservableCollection<DocumentSummaryViewModel> _currentPageDocuments = [];
     [ObservableProperty] private string _searchQuery = string.Empty;
+    [ObservableProperty] private int _currentPage = 1;
+    [ObservableProperty] private int _totalPages = 1;
+    [ObservableProperty] private bool _hasPreviousPage;
+    [ObservableProperty] private bool _hasNextPage;
+    [ObservableProperty] private string _pageInfo = string.Empty;
 
     public DocumentsListViewModel(
         INavigationService nav,
@@ -45,8 +53,9 @@ public partial class DocumentsListViewModel : PageViewModelBase
             {
                 _allDocuments = [];
                 _allSummaries = [];
+                _filteredSummaries = [];
                 _notifications.Error(result.Error ?? "Impossible de charger les documents.");
-                ApplySearch();
+                ApplySearchAndPaging();
                 return;
             }
 
@@ -55,7 +64,7 @@ public partial class DocumentsListViewModel : PageViewModelBase
                 .Select(BuildSummary)
                 .ToList();
 
-            ApplySearch();
+            ApplySearchAndPaging();
         }
         finally
         {
@@ -70,15 +79,36 @@ public partial class DocumentsListViewModel : PageViewModelBase
             new RelayCommand(() => _nav.NavigateTo<DocumentsFormViewModel>(vm => vm.InitEdit(document.Id, document.Nickname))),
             new AsyncRelayCommand(() => DeleteAsync(document.Id)));
 
-    partial void OnSearchQueryChanged(string value) => ApplySearch();
+    partial void OnSearchQueryChanged(string value)
+    {
+        CurrentPage = 1;
+        ApplySearchAndPaging();
+    }
 
-    private void ApplySearch()
+    partial void OnCurrentPageChanged(int value) => ApplySearchAndPaging();
+
+    private void ApplySearchAndPaging()
     {
         var filteredIds = DocumentSearchSpec.Apply(_allDocuments, SearchQuery)
             .Select(document => document.Id)
             .ToHashSet();
-        CurrentDocuments = new ObservableCollection<DocumentSummaryViewModel>(
-            _allSummaries.Where(summary => filteredIds.Contains(summary.Document.Id)));
+
+        _filteredSummaries = _allSummaries
+            .Where(summary => filteredIds.Contains(summary.Document.Id))
+            .ToList();
+
+        TotalPages = Math.Max(1, (int)Math.Ceiling(_filteredSummaries.Count / (double)PageSize));
+        CurrentPage = Math.Clamp(CurrentPage, 1, TotalPages);
+
+        var page = _filteredSummaries
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize);
+
+        CurrentPageDocuments = new ObservableCollection<DocumentSummaryViewModel>(page);
+
+        HasPreviousPage = CurrentPage > 1;
+        HasNextPage = CurrentPage < TotalPages;
+        PageInfo = $"{CurrentPage} / {TotalPages}";
     }
 
     private async Task OpenAsync(Guid id)
@@ -99,6 +129,22 @@ public partial class DocumentsListViewModel : PageViewModelBase
 
         _notifications.Success("Le document a été supprimé.");
         await LoadAsync();
+    }
+
+    [RelayCommand(CanExecute = nameof(HasPreviousPage))]
+    private void PreviousPage()
+    {
+        CurrentPage--;
+        PreviousPageCommand.NotifyCanExecuteChanged();
+        NextPageCommand.NotifyCanExecuteChanged();
+    }
+
+    [RelayCommand(CanExecute = nameof(HasNextPage))]
+    private void NextPage()
+    {
+        CurrentPage++;
+        PreviousPageCommand.NotifyCanExecuteChanged();
+        NextPageCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand]
