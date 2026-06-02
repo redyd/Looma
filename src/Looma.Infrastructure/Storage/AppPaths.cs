@@ -2,29 +2,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Looma.Infrastructure.Storage;
 
-public static class AppPaths
+public class AppPaths(string baseRoot)
 {
-    private static readonly string Root = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "Looma"
-    );
+    public string DatabasePath => Path.Combine(baseRoot, "looma.db");
+    public string DocumentsFolder => Path.Combine(baseRoot, "documents");
 
-    public static string DatabasePath => Path.Combine(Root, "looma.db");
-    public static string DocumentsFolder => Path.Combine(Root, "documents");
-    public static string FilesFolder => DocumentsFolder;
-
-    public static void EnsureDirectoriesExist()
+    public void EnsureDirectoriesExist()
     {
-        Directory.CreateDirectory(Root);
+        Directory.CreateDirectory(baseRoot);
         Directory.CreateDirectory(DocumentsFolder);
     }
 
-    public static void EnsureDatabaseCreated(LoomaDbContext context)
+    public void EnsureDatabaseCreated(LoomaDbContext context)
     {
         context.Database.Migrate();
     }
 
-    public static string GetDocumentStoragePath(Guid id)
+    public string GetDocumentStoragePath(Guid id)
     {
         var exact = Path.Combine(DocumentsFolder, id.ToString());
         if (File.Exists(exact))

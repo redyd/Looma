@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Looma.Infrastructure.Repositories;
 
-public class DocumentRepository(LoomaDbContext context) : IDocumentRepository
+public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : IDocumentRepository
 {
     public async Task<ResultT<IReadOnlyList<Document>>> GetAllAsync()
     {
@@ -23,7 +23,7 @@ public class DocumentRepository(LoomaDbContext context) : IDocumentRepository
 
             var documents = entities
                 .Select(e => e.ToDomain())
-                .Select(ApplyFileMetadata)
+                .Select(e => ApplyFileMetadata(e, pathManager))
                 .ToList();
 
             return ResultT<IReadOnlyList<Document>>.Ok(documents);
@@ -44,7 +44,7 @@ public class DocumentRepository(LoomaDbContext context) : IDocumentRepository
 
             return entity is null
                 ? ResultT<Document>.NotFound($"Le document {id} est introuvable.")
-                : ResultT<Document>.Ok(ApplyFileMetadata(entity.ToDomain()));
+                : ResultT<Document>.Ok(ApplyFileMetadata(entity.ToDomain(), pathManager));
         }
         catch (Exception ex)
         {
@@ -69,11 +69,11 @@ public class DocumentRepository(LoomaDbContext context) : IDocumentRepository
             return ResultT<Document>.Failure("Le nom affiché du document est invalide.");
 
         var destinationFileName = AppPaths.BuildDocumentFileName(id, request.SourcePath);
-        var destinationPath = Path.Combine(AppPaths.DocumentsFolder, destinationFileName);
+        var destinationPath = Path.Combine(pathManager.DocumentsFolder, destinationFileName);
 
         try
         {
-            Directory.CreateDirectory(AppPaths.DocumentsFolder);
+            Directory.CreateDirectory(pathManager.DocumentsFolder);
             File.Copy(request.SourcePath, destinationPath, overwrite: false);
 
             var entity = new DocumentEntity
@@ -84,7 +84,7 @@ public class DocumentRepository(LoomaDbContext context) : IDocumentRepository
 
             context.Documents.Add(entity);
             await context.SaveChangesAsync();
-            return ResultT<Document>.Ok(ApplyFileMetadata(entity.ToDomain()));
+            return ResultT<Document>.Ok(ApplyFileMetadata(entity.ToDomain(), pathManager));
         }
         catch (DbUpdateException ex)
         {
@@ -117,7 +117,7 @@ public class DocumentRepository(LoomaDbContext context) : IDocumentRepository
             entity.Nickname = nickname;
             await context.SaveChangesAsync();
 
-            return ResultT<Document>.Ok(ApplyFileMetadata(entity.ToDomain()));
+            return ResultT<Document>.Ok(ApplyFileMetadata(entity.ToDomain(), pathManager));
         }
         catch (DbUpdateException ex)
         {
@@ -137,7 +137,7 @@ public class DocumentRepository(LoomaDbContext context) : IDocumentRepository
             if (entity is null)
                 return Result.NotFound($"Le document {id} est introuvable.");
 
-            var filePath = AppPaths.GetDocumentStoragePath(id);
+            var filePath = pathManager.GetDocumentStoragePath(id);
             if (File.Exists(filePath))
                 File.Delete(filePath);
 
@@ -159,7 +159,7 @@ public class DocumentRepository(LoomaDbContext context) : IDocumentRepository
     {
         try
         {
-            var filePath = AppPaths.GetDocumentStoragePath(id);
+            var filePath = pathManager.GetDocumentStoragePath(id);
             if (!File.Exists(filePath))
                 return Task.FromResult(Result.NotFound($"Le fichier du document {id} est introuvable."));
 
@@ -176,9 +176,9 @@ public class DocumentRepository(LoomaDbContext context) : IDocumentRepository
         }
     }
 
-    private static Document ApplyFileMetadata(Document document)
+    private static Document ApplyFileMetadata(Document document, AppPaths pathManager)
     {
-        var filePath = AppPaths.GetDocumentStoragePath(document.Id);
+        var filePath = pathManager.GetDocumentStoragePath(document.Id);
         if (!File.Exists(filePath))
         {
             return new Document
