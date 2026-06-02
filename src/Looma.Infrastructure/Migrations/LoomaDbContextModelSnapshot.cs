@@ -15,7 +15,7 @@ namespace Looma.Infrastructure.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.25");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
 
             modelBuilder.Entity("DocumentEntityPatternEntity", b =>
                 {
@@ -39,10 +39,6 @@ namespace Looma.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Nickname")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RelativePath")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("DocumentId");

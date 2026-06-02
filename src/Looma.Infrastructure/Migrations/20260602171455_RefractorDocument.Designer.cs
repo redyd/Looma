@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Looma.Infrastructure.Migrations
 {
     [DbContext(typeof(LoomaDbContext))]
-    [Migration("20260322100714_needle size")]
-    partial class needlesize
+    [Migration("20260602171455_RefractorDocument")]
+    partial class RefractorDocument
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.25");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
 
             modelBuilder.Entity("DocumentEntityPatternEntity", b =>
                 {
@@ -42,10 +42,6 @@ namespace Looma.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Nickname")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RelativePath")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("DocumentId");
