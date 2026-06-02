@@ -79,20 +79,16 @@ public class StockRepository(LoomaDbContext context) : IStockRepository
     {
         try
         {
-            var entity = await context.Stocks.FindAsync([request.Id]);
+            var entity = await context.Stocks.FindAsync(request.Id);
             if (entity is null)
                 return ResultT<Stock>.NotFound($"Le stock {request.Id} est introuvable.");
 
-            var current = entity.ToDomain();
-            var updated = BuildUpdate(current, request);
-            if (updated is null)
-                return ResultT<Stock>.Failure($"Les donnees de mise a jour du stock {request.Id} sont invalides.");
-
-            var woolExists = await context.Wools.AnyAsync(w => w.WoolId == updated.WoolId);
+            var woolExists = await context.Wools.AnyAsync(w => w.WoolId == entity.WoolId);
             if (!woolExists)
-                return ResultT<Stock>.NotFound($"La laine {updated.WoolId} est introuvable.");
+                return ResultT<Stock>.NotFound($"La laine {entity.WoolId} est introuvable.");
 
-            context.Entry(entity).CurrentValues.SetValues(updated.ToEntity());
+            entity.WeightQuantity = request.WeightGrams;
+            
             await context.SaveChangesAsync();
             return ResultT<Stock>.Ok(entity.ToDomain());
         }
@@ -130,22 +126,6 @@ public class StockRepository(LoomaDbContext context) : IStockRepository
         {
             return Result.Failure($"Impossible de supprimer le stock {stockId}: {ex.Message}");
         }
-    }
-
-    private static Stock? BuildUpdate(Stock current, UpdateStockRequest request)
-    {
-        var woolId = request.WoolId ?? current.WoolId;
-        var weight = request.WeightGrams ?? current.WeightGrams;
-
-        if (!IsValid(woolId, weight))
-            return null;
-
-        return new Stock
-        {
-            Id = current.Id,
-            WoolId = woolId,
-            WeightGrams = weight
-        };
     }
 
     private static bool IsValid(int woolId, double weightGrams)

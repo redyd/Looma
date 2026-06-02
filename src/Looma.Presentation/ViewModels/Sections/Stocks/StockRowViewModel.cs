@@ -17,7 +17,6 @@ public partial class StockRowViewModel : ObservableObject
     private readonly double _lengthToWeightRatio;
 
     public int StockId { get; }
-    public bool IsNew { get; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveRowCommand))]
@@ -76,7 +75,6 @@ public partial class StockRowViewModel : ObservableObject
         InputMode = StockInputMode.Weight;
         InputText = isNew ? string.Empty : stock.WeightGrams.ToString("G");
         IsEditing = isNew;
-        IsNew = isNew;
         _onSave = onSave;
         _onDelete = onDelete;
     }

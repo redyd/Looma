@@ -112,48 +112,30 @@ public partial class WoolDetailViewModel : PageViewModelBase
     {
         var weight = row.ParsedWeight();
 
-        if (row.IsNew)
+        var result = await _stockRepo.AddAsync(new CreateStockRequest(WoolId, weight));
+        if (result.Failed)
         {
-            var result = await _stockRepo.AddAsync(new CreateStockRequest(WoolId, weight));
-            if (result.Failed)
-            {
-                ErrorMessage = result.Error;
-                _notifications.Error(result.Error ?? "Impossible d'ajouter le stock.");
-                return;
-            }
-
-            _notifications.Success("Stock ajouté.");
+            ErrorMessage = result.Error;
+            _notifications.Error(result.Error ?? "Impossible d'ajouter le stock.");
+            return;
         }
-        else
-        {
-            var result = await _stockRepo.UpdateAsync(new UpdateStockRequest(row.StockId, null, weight));
-            if (result.Failed)
-            {
-                ErrorMessage = result.Error;
-                _notifications.Error(result.Error ?? "Impossible de mettre à jour le stock.");
-                return;
-            }
 
-            _notifications.Success("Stock mis à jour.");
-        }
+        _notifications.Success("Stock ajouté.");
 
         await LoadStocksAsync();
     }
 
     private async Task OnDeleteRow(StockRowViewModel row)
     {
-        if (!row.IsNew)
+        var result = await _stockRepo.DeleteAsync(row.StockId);
+        if (result.Failed)
         {
-            var result = await _stockRepo.DeleteAsync(row.StockId);
-            if (result.Failed)
-            {
-                ErrorMessage = result.Error;
-                _notifications.Error(result.Error ?? "Impossible de supprimer le stock.");
-                return;
-            }
-
-            _notifications.Success("Stock supprimé.");
+            ErrorMessage = result.Error;
+            _notifications.Error(result.Error ?? "Impossible de supprimer le stock.");
+            return;
         }
+
+        _notifications.Success("Stock supprimé.");
 
         await LoadStocksAsync();
     }

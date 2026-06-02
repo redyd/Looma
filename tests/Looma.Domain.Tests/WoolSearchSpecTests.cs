@@ -14,31 +14,31 @@ public class WoolSearchSpecTests
     ];
 
     [Fact]
-    public void Query_vide_retourne_tout()
+    public void ShouldReturnAllWoolsWhenTheQueryIsEmpty()
     {
         WoolSearchSpec.Apply(Wools, "").Should().HaveCount(3);
     }
 
     [Fact]
-    public void Recherche_par_marque()
+    public void ShouldFilterByBrandWhenTheQueryContainsABrandName()
     {
         WoolSearchSpec.Apply(Wools, "drops").Should().HaveCount(2);
     }
 
     [Fact]
-    public void Recherche_multi_mots()
+    public void ShouldMatchAllWordsWhenTheQueryContainsMultipleTerms()
     {
         WoolSearchSpec.Apply(Wools, "drops rouge").Should().HaveCount(1);
     }
 
     [Fact]
-    public void Recherche_insensible_casse()
+    public void ShouldIgnoreCaseWhenSearching()
     {
         WoolSearchSpec.Apply(Wools, "DROPS").Should().HaveCount(2);
     }
 
     [Fact]
-    public void Recherche_sans_resultat()
+    public void ShouldReturnNoResultWhenNothingMatches()
     {
         WoolSearchSpec.Apply(Wools, "inexistant").Should().BeEmpty();
     }

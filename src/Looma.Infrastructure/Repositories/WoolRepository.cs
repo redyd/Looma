@@ -76,12 +76,27 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             if (entity is null)
                 return ResultT<Wool>.NotFound($"La laine {request.Id} est introuvable.");
 
-            var current = entity.ToDomain();
-            var updated = BuildUpdate(current, request);
-            if (updated is null)
-                return ResultT<Wool>.Failure($"Les donnees de mise a jour de la laine {request.Id} sont invalides.");
+            var name = request.Name?.Trim() ?? entity.Name;
+            var brand = request.Brand?.Trim() ?? entity.Brand;
+            var material = request.Material?.Trim() ?? entity.Material;
+            var color = request.Color?.Trim() ?? entity.Color;
+            var lengthToWeightRatio = request.LengthToWeightRatio ?? entity.LengthToWeightRatio;
+            var needleMinSize = request.NeedleMinSize ?? entity.NeedleMinSize;
+            var needleMaxSize = request.NeedleMaxSize ?? entity.NeedleMaxSize;
 
-            context.Entry(entity).CurrentValues.SetValues(updated.ToEntity());
+            if (!IsValid(name, brand, material, color, lengthToWeightRatio, needleMinSize, needleMaxSize))
+            {
+                return ResultT<Wool>.Failure("Les données de mise à jours sont invalides");
+            }
+
+            entity.Name = name;
+            entity.Brand = brand;
+            entity.Material = material;
+            entity.Color = color;
+            entity.LengthToWeightRatio = lengthToWeightRatio;
+            entity.NeedleMinSize = needleMinSize;
+            entity.NeedleMaxSize = needleMaxSize;
+
             await context.SaveChangesAsync();
             return ResultT<Wool>.Ok(entity.ToDomain());
         }
@@ -141,33 +156,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             NeedleMaxSize = request.NeedleMaxSize
         };
     }
-
-    private static Wool? BuildUpdate(Wool current, UpdateWoolRequest request)
-    {
-        var name = request.Name ?? current.Name;
-        var brand = request.Brand ?? current.Brand;
-        var material = request.Material ?? current.Material;
-        var color = request.Color ?? current.Color;
-        var ratio = request.LengthToWeightRatio ?? current.LengthToWeightRatio;
-        var needleMin = request.NeedleMinSize ?? current.NeedleMinSize;
-        var needleMax = request.NeedleMaxSize ?? current.NeedleMaxSize;
-
-        if (!IsValid(name, brand, material, color, ratio, needleMin, needleMax))
-            return null;
-
-        return new Wool
-        {
-            Id = current.Id,
-            Name = name.Trim(),
-            Brand = brand.Trim(),
-            Material = material.Trim(),
-            Color = color.Trim(),
-            LengthToWeightRatio = ratio,
-            NeedleMinSize = needleMin,
-            NeedleMaxSize = needleMax
-        };
-    }
-
+    
     private static bool IsValid(string name, string brand, string material, string color,
         double lengthToWeightRatio, double needleMinSize, double needleMaxSize)
     {
