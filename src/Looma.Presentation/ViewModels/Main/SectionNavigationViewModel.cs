@@ -11,8 +11,7 @@ public partial class SectionNavigationViewModel : ViewModelBase
 
     public INavigationService Navigation => _nav;
 
-    [ObservableProperty]
-    private PageViewModelBase? _currentPage;
+    [ObservableProperty] private PageViewModelBase? _currentPage;
 
     public bool CanGoBack => _nav.CanGoBack;
 

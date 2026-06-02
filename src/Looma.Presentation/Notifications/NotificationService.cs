@@ -79,10 +79,7 @@ public partial class NotificationService : ObservableObject, INotificationServic
             notification => Dismiss(notification.Id));
         var timeout = duration ?? TimeSpan.FromSeconds(4);
 
-        Dispatcher.UIThread.Post(() =>
-        {
-            _notifications.Insert(0, item);
-        });
+        Dispatcher.UIThread.Post(() => { _notifications.Insert(0, item); });
 
         if (timeout > TimeSpan.Zero)
         {

@@ -17,9 +17,9 @@
 
                     <!-- En-tête -->
                     <StackPanel Classes="form-header">
-                        <TextBlock Classes="form-title" Text="{Binding Title}"/>
+                        <TextBlock Classes="form-title" Text="{Binding Title}" />
                         <TextBlock Classes="form-subtitle"
-                                   Text="Renseignez les informations de la laine"/>
+                                   Text="Renseignez les informations de la laine" />
                     </StackPanel>
 
                     <!-- Section détails -->
@@ -28,28 +28,28 @@
 
                             <TextBlock Classes="section-title"
                                        Text="Détails de la laine"
-                                       Margin="0 0 0 16"/>
+                                       Margin="0 0 0 16" />
 
                             <!-- Nom + Marque -->
                             <Grid ColumnDefinitions="*,16,*">
                                 <StackPanel Grid.Column="0" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Nom"/>
-                                        <TextBlock Classes="field-required" Text="*"/>
+                                        <TextBlock Classes="form-label" Text="Nom" />
+                                        <TextBlock Classes="field-required" Text="*" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding Name}"
-                                             PlaceholderText="Ex : Merino Extra Fine"/>
+                                             PlaceholderText="Ex : Merino Extra Fine" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Marque"/>
-                                        <TextBlock Classes="field-required" Text="*"/>
+                                        <TextBlock Classes="form-label" Text="Marque" />
+                                        <TextBlock Classes="field-required" Text="*" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding Brand}"
-                                             PlaceholderText="Ex : Drops"/>
+                                             PlaceholderText="Ex : Drops" />
                                 </StackPanel>
                             </Grid>
 
@@ -57,25 +57,25 @@
                             <Grid ColumnDefinitions="*,16,*">
                                 <StackPanel Grid.Column="0" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Matière"/>
-                                        <TextBlock Classes="field-required" Text="*"/>
+                                        <TextBlock Classes="form-label" Text="Matière" />
+                                        <TextBlock Classes="field-required" Text="*" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding Material}"
-                                             PlaceholderText="Ex : Mérinos, Coton, Alpaga..."/>
+                                             PlaceholderText="Ex : Mérinos, Coton, Alpaga..." />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Longueur pour 100g"/>
-                                        <TextBlock Classes="field-required" Text="*"/>
-                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(mètres)"/>
+                                        <TextBlock Classes="form-label" Text="Longueur pour 100g" />
+                                        <TextBlock Classes="field-required" Text="*" />
+                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(mètres)" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding LengthToWeightRatioText}"
-                                             PlaceholderText="Ex : 200"/>
+                                             PlaceholderText="Ex : 200" />
                                     <TextBlock Classes="form-hint"
-                                               Text="Permet de calculer la longueur totale de votre stock"/>
+                                               Text="Permet de calculer la longueur totale de votre stock" />
                                 </StackPanel>
                             </Grid>
 
@@ -83,24 +83,24 @@
                             <Grid ColumnDefinitions="*,16,*">
                                 <StackPanel Grid.Column="0" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Aiguille min"/>
-                                        <TextBlock Classes="field-required" Text="*"/>
-                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(mm)"/>
+                                        <TextBlock Classes="form-label" Text="Aiguille min" />
+                                        <TextBlock Classes="field-required" Text="*" />
+                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(mm)" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding NeedleMinText}"
-                                             PlaceholderText="Ex : 3.5"/>
+                                             PlaceholderText="Ex : 3.5" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Aiguille max"/>
-                                        <TextBlock Classes="field-required" Text="*"/>
-                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(mm)"/>
+                                        <TextBlock Classes="form-label" Text="Aiguille max" />
+                                        <TextBlock Classes="field-required" Text="*" />
+                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(mm)" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding NeedleMaxText}"
-                                             PlaceholderText="Ex : 4.5"/>
+                                             PlaceholderText="Ex : 4.5" />
                                 </StackPanel>
                             </Grid>
 
@@ -113,32 +113,32 @@
 
                             <TextBlock Classes="section-title"
                                        Text="Couleur"
-                                       Margin="0 0 0 16"/>
+                                       Margin="0 0 0 16" />
 
                             <StackPanel Classes="form-field">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                    <TextBlock Classes="form-label" Text="Couleur de la laine"/>
-                                    <TextBlock Classes="field-required" Text="*"/>
+                                    <TextBlock Classes="form-label" Text="Couleur de la laine" />
+                                    <TextBlock Classes="field-required" Text="*" />
                                 </StackPanel>
 
                                 <Border Classes="color-picker-container">
                                     <StackPanel Spacing="12">
 
                                         <cp:ColorPicker Color="{Binding SelectedColor, Mode=TwoWay}"
-                                                        HorizontalAlignment="Stretch"/>
+                                                        HorizontalAlignment="Stretch" />
 
                                         <Grid ColumnDefinitions="Auto,*,Auto">
                                             <TextBlock Grid.Column="0"
                                                        Classes="form-hint"
                                                        Text="Aperçu :"
                                                        VerticalAlignment="Center"
-                                                       Margin="0"/>
+                                                       Margin="0" />
                                             <Border Grid.Column="1"
                                                     Height="32"
                                                     Margin="12 0"
                                                     Classes="surface-panel">
                                                 <Border.Background>
-                                                    <SolidColorBrush Color="{Binding SelectedColor}"/>
+                                                    <SolidColorBrush Color="{Binding SelectedColor}" />
                                                 </Border.Background>
                                             </Border>
                                             <TextBlock Grid.Column="2"
@@ -147,7 +147,7 @@
                                                        FontSize="11"
                                                        FontFamily="Consolas"
                                                        Classes="form-hint"
-                                                       Margin="0"/>
+                                                       Margin="0" />
                                         </Grid>
 
                                     </StackPanel>
@@ -161,10 +161,10 @@
                     <StackPanel Classes="form-actions">
                         <Button Classes="form-cancel"
                                 Content="Annuler"
-                                Command="{Binding CancelCommand}"/>
+                                Command="{Binding CancelCommand}" />
                         <Button Classes="form-submit"
                                 Content="{Binding Title}"
-                                Command="{Binding SaveCommand}"/>
+                                Command="{Binding SaveCommand}" />
                     </StackPanel>
 
                 </StackPanel>

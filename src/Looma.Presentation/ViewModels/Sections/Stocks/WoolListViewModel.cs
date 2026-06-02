@@ -76,6 +76,7 @@ public partial class WoolListViewModel : PageViewModelBase
                     totalResult.Succeeded ? totalResult.Value : 0,
                     new RelayCommand(() => _nav.NavigateTo<WoolDetailViewModel>(vm => vm.Load(wool)))));
             }
+
             _allSummaries = summaries;
 
             ApplySearchAndPaging();
@@ -134,5 +135,4 @@ public partial class WoolListViewModel : PageViewModelBase
     [RelayCommand]
     private void OpenAddForm() =>
         _nav.NavigateTo<WoolFormViewModel>(vm => vm.InitCreate());
-
 }

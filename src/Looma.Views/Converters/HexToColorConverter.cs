@@ -12,9 +12,16 @@ public class HexToColorConverter : IValueConverter
     {
         if (value is string hex)
         {
-            try { return new SolidColorBrush(Color.Parse(hex)); }
-            catch { return new SolidColorBrush(Colors.Gray); }
+            try
+            {
+                return new SolidColorBrush(Color.Parse(hex));
+            }
+            catch
+            {
+                return new SolidColorBrush(Colors.Gray);
+            }
         }
+
         return new SolidColorBrush(Colors.Gray);
     }
 

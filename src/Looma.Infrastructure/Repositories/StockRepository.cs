@@ -21,7 +21,8 @@ public class StockRepository(LoomaDbContext context) : IStockRepository
         }
         catch (Exception ex)
         {
-            return ResultT<IReadOnlyList<Stock>>.Failure($"Impossible de charger les stocks de la laine {woolId}: {ex.Message}");
+            return ResultT<IReadOnlyList<Stock>>.Failure(
+                $"Impossible de charger les stocks de la laine {woolId}: {ex.Message}");
         }
     }
 

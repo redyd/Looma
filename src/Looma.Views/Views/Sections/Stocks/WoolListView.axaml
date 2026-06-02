@@ -9,29 +9,29 @@
         <!-- Barre de recherche centrée sur 2/3 de la largeur -->
         <Grid DockPanel.Dock="Top" Margin="0 0 0 24">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="1"
                      Classes="form-input"
                      Text="{Binding SearchQuery}"
                      PlaceholderText="Rechercher par nom, marque, couleur, matière..."
-                     VerticalContentAlignment="Center"/>
+                     VerticalContentAlignment="Center" />
         </Grid>
 
         <!-- Titre + bouton ajouter -->
-        <DockPanel 
-            DockPanel.Dock="Top" 
+        <DockPanel
+            DockPanel.Dock="Top"
             Margin="0 0 0 20"
             HorizontalSpacing="20">
             <TextBlock Text="Mes laines"
                        Classes="page-title"
-                       VerticalAlignment="Center"/>
+                       VerticalAlignment="Center" />
             <Button DockPanel.Dock="Right"
                     Content="+ Ajouter une laine"
                     Command="{Binding OpenAddFormCommand}"
-                    Classes="form-submit"/>
+                    Classes="form-submit" />
         </DockPanel>
 
         <!-- Pagination bas de page -->
@@ -49,15 +49,15 @@
                         Command="{Binding PreviousPageCommand}"
                         Classes="form-cancel"
                         Width="36" Height="36"
-                        Padding="0"/>
+                        Padding="0" />
                 <TextBlock Text="{Binding PageInfo}"
                            VerticalAlignment="Center"
-                           FontSize="14"/>
+                           FontSize="14" />
                 <Button Content="→"
                         Command="{Binding NextPageCommand}"
                         Classes="form-cancel"
                         Width="36" Height="36"
-                        Padding="0"/>
+                        Padding="0" />
             </StackPanel>
         </Border>
 
@@ -66,7 +66,7 @@
             <ItemsControl ItemsSource="{Binding CurrentPageWools}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal"/>
+                        <WrapPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -84,16 +84,16 @@
                                     Classes="surface-card">
                                 <Border.Styles>
                                     <Style Selector="Button.card-button:pointerover">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="BorderBrush" Value="Transparent" />
                                     </Style>
                                     <Style Selector="Button.card-button:pressed">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="BorderBrush" Value="Transparent" />
                                     </Style>
                                     <Style Selector="Border:pointerover">
-                                        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}"/>
-                                        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}"/>
+                                        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+                                        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
                                     </Style>
                                 </Border.Styles>
 
@@ -106,13 +106,13 @@
                                         <TextBlock Text="{Binding Wool.Name}"
                                                    FontWeight="SemiBold"
                                                    FontSize="14"
-                                                   TextTrimming="CharacterEllipsis"/>
+                                                   TextTrimming="CharacterEllipsis" />
                                     </StackPanel>
 
                                     <!-- Marque -->
                                     <TextBlock Text="{Binding Wool.Brand}"
                                                FontSize="12"
-                                               Opacity="0.6"/>
+                                               Opacity="0.6" />
 
                                     <!-- Matière + couleur -->
                                     <StackPanel Orientation="Horizontal" Spacing="6">
@@ -120,13 +120,13 @@
                                                 Background="{StaticResource BackgroundBrush}"
                                                 BorderBrush="{StaticResource BorderBrush}"
                                                 BorderThickness="1">
-                                            <TextBlock Text="{Binding Wool.Material}" FontSize="11"/>
+                                            <TextBlock Text="{Binding Wool.Material}" FontSize="11" />
                                         </Border>
                                         <Border Padding="6 2" CornerRadius="4"
                                                 Background="{StaticResource BackgroundBrush}"
                                                 BorderBrush="{StaticResource BorderBrush}"
                                                 BorderThickness="1">
-                                            <TextBlock Text="{Binding Wool.Color}" FontSize="11"/>
+                                            <TextBlock Text="{Binding Wool.Color}" FontSize="11" />
                                         </Border>
                                     </StackPanel>
 
@@ -134,27 +134,27 @@
                                     <Border Height="1"
                                             Background="{StaticResource BorderBrush}"
                                             Opacity="0.5"
-                                            Margin="0 2 0 2"/>
+                                            Margin="0 2 0 2" />
 
                                     <!-- Stock + ratio -->
                                     <Grid ColumnDefinitions="*,*">
                                         <StackPanel Grid.Column="0" Spacing="2">
-                                            <TextBlock Text="Stock" FontSize="10" Opacity="0.5"/>
+                                            <TextBlock Text="Stock" FontSize="10" Opacity="0.5" />
                                             <StackPanel Orientation="Horizontal" Spacing="3">
                                                 <TextBlock Text="{Binding TotalWeightGrams, StringFormat='{}{0:N0}'}"
-                                                           FontSize="13" FontWeight="SemiBold"/>
+                                                           FontSize="13" FontWeight="SemiBold" />
                                                 <TextBlock Text="g" FontSize="11" Opacity="0.5"
-                                                           VerticalAlignment="Bottom" Margin="0 0 0 1"/>
+                                                           VerticalAlignment="Bottom" Margin="0 0 0 1" />
                                             </StackPanel>
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1" Spacing="2">
-                                            <TextBlock Text="Ratio" FontSize="10" Opacity="0.5"/>
+                                            <TextBlock Text="Ratio" FontSize="10" Opacity="0.5" />
                                             <StackPanel Orientation="Horizontal" Spacing="3">
                                                 <TextBlock Text="{Binding Wool.LengthToWeightRatio}"
-                                                           FontSize="13" FontWeight="SemiBold"/>
+                                                           FontSize="13" FontWeight="SemiBold" />
                                                 <TextBlock Text="m/100g" FontSize="11" Opacity="0.5"
-                                                           VerticalAlignment="Bottom" Margin="0 0 0 1"/>
+                                                           VerticalAlignment="Bottom" Margin="0 0 0 1" />
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>

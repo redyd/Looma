@@ -4,7 +4,11 @@ using Looma.Domain.Entities;
 
 namespace Looma.Presentation.ViewModels.Sections.Stocks;
 
-public enum StockInputMode { Weight, Length }
+public enum StockInputMode
+{
+    Weight,
+    Length
+}
 
 public partial class StockRowViewModel : ObservableObject
 {
@@ -83,15 +87,27 @@ public partial class StockRowViewModel : ObservableObject
     private async Task SaveRowAsync()
     {
         ErrorMessage = null;
-        try { await _onSave(this); }
-        catch (Exception ex) { ErrorMessage = ex.Message; }
+        try
+        {
+            await _onSave(this);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
     }
 
     [RelayCommand]
     private async Task DeleteRowAsync()
     {
-        try { await _onDelete(this); }
-        catch (Exception ex) { ErrorMessage = ex.Message; }
+        try
+        {
+            await _onDelete(this);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
     }
 
     [RelayCommand]

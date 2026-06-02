@@ -123,9 +123,9 @@
                                     <TextBlock Classes="val" Text="{Binding LengthToWeightRatio}" />
                                     <TextBlock Classes="val" Opacity="0.4" Text="m/100g" />
                                 </StackPanel>
-                                <TextBlock Grid.Row="4" Grid.Column="0" Classes="lbl" Text="Aiguilles"/>
+                                <TextBlock Grid.Row="4" Grid.Column="0" Classes="lbl" Text="Aiguilles" />
                                 <TextBlock Grid.Row="4" Grid.Column="1" Classes="val"
-                                           Text="{Binding NeedleSizeDisplay}"/>
+                                           Text="{Binding NeedleSizeDisplay}" />
                             </Grid>
                         </StackPanel>
                     </Border>

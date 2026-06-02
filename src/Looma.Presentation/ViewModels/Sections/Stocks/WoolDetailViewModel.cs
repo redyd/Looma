@@ -121,6 +121,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
                 _notifications.Error(result.Error ?? "Impossible d'ajouter le stock.");
                 return;
             }
+
             _notifications.Success("Stock ajouté.");
         }
         else
@@ -132,6 +133,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
                 _notifications.Error(result.Error ?? "Impossible de mettre à jour le stock.");
                 return;
             }
+
             _notifications.Success("Stock mis à jour.");
         }
 
@@ -149,6 +151,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
                 _notifications.Error(result.Error ?? "Impossible de supprimer le stock.");
                 return;
             }
+
             _notifications.Success("Stock supprimé.");
         }
 

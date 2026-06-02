@@ -10,33 +10,33 @@
     <Grid>
 
         <TabControl
-                    SelectedIndex="{Binding SelectedTabIndex}"
-                    TabStripPlacement="Top"
-                    Margin="20 16 20 0">
+            SelectedIndex="{Binding SelectedTabIndex}"
+            TabStripPlacement="Top"
+            Margin="20 16 20 0">
 
             <TabControl.Styles>
 
                 <Style Selector="TabControl > TabStrip">
-                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
                 </Style>
 
                 <Style Selector="TabControl > TabStrip > ItemsPresenter > WrapPanel">
-                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
                 </Style>
 
                 <Style Selector="TabItem">
-                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
-                    <Setter Property="Padding" Value="0 10"/>
-                    <Setter Property="Margin" Value="4 0"/>
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="CornerRadius" Value="{StaticResource DefaultCornerRadius}"/>
-                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                    <Setter Property="Padding" Value="0 10" />
+                    <Setter Property="Margin" Value="4 0" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="CornerRadius" Value="{StaticResource DefaultCornerRadius}" />
+                    <Setter Property="Cursor" Value="Hand" />
                     <Setter Property="Transitions">
                         <Transitions>
-                            <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                            <BrushTransition Property="Background" Duration="0:0:0.25" />
                         </Transitions>
                     </Setter>
                     <Setter Property="Template">
@@ -47,52 +47,52 @@
                                     Padding="{TemplateBinding Padding}">
                                 <ContentPresenter Content="{TemplateBinding Header}"
                                                   HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"/>
+                                                  VerticalAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter>
                 </Style>
 
                 <Style Selector="TabItem:pointerover">
-                    <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}"/>
+                    <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
                 </Style>
 
                 <Style Selector="TabItem:selected">
-                    <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
-                    <Setter Property="Foreground" Value="{StaticResource TextOnPrimaryBrush}"/>
-                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource TextOnPrimaryBrush}" />
+                    <Setter Property="FontWeight" Value="SemiBold" />
                 </Style>
 
                 <Style Selector="TabItem:selected:pointerover">
-                    <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
+                    <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}" />
                 </Style>
 
             </TabControl.Styles>
 
             <TabControl.ItemContainerTheme>
-                <ControlTheme TargetType="TabItem"/>
+                <ControlTheme TargetType="TabItem" />
             </TabControl.ItemContainerTheme>
-            
+
             <TabControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Rows="1"/>
+                    <UniformGrid Rows="1" />
                 </ItemsPanelTemplate>
             </TabControl.ItemsPanel>
 
             <TabItem Header="Projets">
-                <ContentControl Content="{Binding ProjectsSection.CurrentPage}"/>
+                <ContentControl Content="{Binding ProjectsSection.CurrentPage}" />
             </TabItem>
 
             <TabItem Header="Stocks">
-                <ContentControl Content="{Binding StocksSection.CurrentPage}"/>
+                <ContentControl Content="{Binding StocksSection.CurrentPage}" />
             </TabItem>
 
             <TabItem Header="Patrons">
-                <ContentControl Content="{Binding PatternsSection.CurrentPage}"/>
+                <ContentControl Content="{Binding PatternsSection.CurrentPage}" />
             </TabItem>
 
             <TabItem Header="Mes documents">
-                <ContentControl Content="{Binding DocumentsSection.CurrentPage}"/>
+                <ContentControl Content="{Binding DocumentsSection.CurrentPage}" />
             </TabItem>
 
         </TabControl>
@@ -106,7 +106,7 @@
                           ItemsSource="{Binding Notifications.Notifications}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Spacing="10"/>
+                        <StackPanel Spacing="10" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -125,21 +125,21 @@
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontWeight="Bold"
-                                               Foreground="White"/>
+                                               Foreground="White" />
                                 </Border>
 
                                 <StackPanel Grid.Column="1" Spacing="4">
                                     <TextBlock Classes="notification-title"
-                                               Text="{Binding Title}"/>
+                                               Text="{Binding Title}" />
                                     <TextBlock Classes="notification-message"
-                                               Text="{Binding Message}"/>
+                                               Text="{Binding Message}" />
                                 </StackPanel>
 
                                 <Button Grid.Column="2"
                                         Classes="notification-dismiss"
                                         Command="{Binding DismissCommand}"
                                         Content="×"
-                                        VerticalAlignment="Top"/>
+                                        VerticalAlignment="Top" />
                             </Grid>
                         </Border>
                     </DataTemplate>

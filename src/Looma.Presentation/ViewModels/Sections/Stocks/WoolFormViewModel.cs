@@ -17,25 +17,25 @@ public partial class WoolFormViewModel : PageViewModelBase
     private bool _isEdit;
     private int _editingId;
 
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _name = string.Empty;
 
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _brand = string.Empty;
 
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _material = string.Empty;
 
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private Color _selectedColor = Colors.Gray;
 
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _lengthToWeightRatioText = string.Empty;
 
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _needleMinText = string.Empty;
 
-    [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _needleMaxText = string.Empty;
 
     [ObservableProperty] private string? _errorMessage;
@@ -72,8 +72,14 @@ public partial class WoolFormViewModel : PageViewModelBase
         NeedleMinText = needleMin.ToString("G");
         NeedleMaxText = needleMax.ToString("G");
         ErrorMessage = null;
-        try { SelectedColor = Color.Parse(colorHex); }
-        catch { SelectedColor = Colors.Gray; }
+        try
+        {
+            SelectedColor = Color.Parse(colorHex);
+        }
+        catch
+        {
+            SelectedColor = Colors.Gray;
+        }
     }
 
     partial void OnSelectedColorChanged(Color value) =>
@@ -93,13 +99,22 @@ public partial class WoolFormViewModel : PageViewModelBase
         ErrorMessage = null;
 
         if (!double.TryParse(LengthToWeightRatioText, out var ratio) || ratio <= 0)
-        { ErrorMessage = "Le ratio longueur/poids doit être un nombre positif."; return; }
+        {
+            ErrorMessage = "Le ratio longueur/poids doit être un nombre positif.";
+            return;
+        }
 
         if (!double.TryParse(NeedleMinText, out var needleMin) || needleMin <= 0)
-        { ErrorMessage = "La taille min d'aiguille doit être un nombre positif."; return; }
+        {
+            ErrorMessage = "La taille min d'aiguille doit être un nombre positif.";
+            return;
+        }
 
         if (!double.TryParse(NeedleMaxText, out var needleMax) || needleMax < needleMin)
-        { ErrorMessage = "La taille max doit être supérieure ou égale à la taille min."; return; }
+        {
+            ErrorMessage = "La taille max doit être supérieure ou égale à la taille min.";
+            return;
+        }
 
         try
         {
@@ -121,6 +136,7 @@ public partial class WoolFormViewModel : PageViewModelBase
                     _notifications.Error(result.Error ?? "Impossible de sauvegarder la laine.");
                     return;
                 }
+
                 _notifications.Success("La laine a été mise à jour.");
             }
             else
@@ -139,12 +155,20 @@ public partial class WoolFormViewModel : PageViewModelBase
                     _notifications.Error(result.Error ?? "Impossible de créer la laine.");
                     return;
                 }
+
                 _notifications.Success("La laine a été créée.");
             }
+
             _nav.GoBack();
         }
-        catch (Exception ex) { ErrorMessage = ex.Message; }
-        finally { IsBusy = false; }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]
