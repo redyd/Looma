@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
+using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
 
@@ -12,6 +13,7 @@ public partial class WoolFormViewModel : PageViewModelBase
 {
     private readonly INavigationService _nav;
     private readonly IWoolRepository _repo;
+    private readonly INotificationService _notifications;
     private bool _isEdit;
     private int _editingId;
 
@@ -41,10 +43,11 @@ public partial class WoolFormViewModel : PageViewModelBase
     public string SelectedColorHex =>
         $"#{SelectedColor.R:X2}{SelectedColor.G:X2}{SelectedColor.B:X2}";
 
-    public WoolFormViewModel(INavigationService nav, IWoolRepository repo)
+    public WoolFormViewModel(INavigationService nav, IWoolRepository repo, INotificationService notifications)
     {
         _nav = nav;
         _repo = repo;
+        _notifications = notifications;
     }
 
     public void InitCreate()
@@ -115,8 +118,10 @@ public partial class WoolFormViewModel : PageViewModelBase
                 if (result.Failed)
                 {
                     ErrorMessage = result.Error;
+                    _notifications.Error(result.Error ?? "Impossible de sauvegarder la laine.");
                     return;
                 }
+                _notifications.Success("La laine a été mise à jour.");
             }
             else
             {
@@ -131,8 +136,10 @@ public partial class WoolFormViewModel : PageViewModelBase
                 if (result.Failed)
                 {
                     ErrorMessage = result.Error;
+                    _notifications.Error(result.Error ?? "Impossible de créer la laine.");
                     return;
                 }
+                _notifications.Success("La laine a été créée.");
             }
             _nav.GoBack();
         }

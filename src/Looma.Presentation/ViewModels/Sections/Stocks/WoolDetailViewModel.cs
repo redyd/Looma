@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
+using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
 
@@ -13,6 +14,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
     private readonly INavigationService _nav;
     private readonly IWoolRepository _woolRepo;
     private readonly IStockRepository _stockRepo;
+    private readonly INotificationService _notifications;
 
     [ObservableProperty] private int _woolId;
     [ObservableProperty] private string _name = string.Empty;
@@ -36,11 +38,13 @@ public partial class WoolDetailViewModel : PageViewModelBase
     public WoolDetailViewModel(
         INavigationService nav,
         IWoolRepository woolRepo,
-        IStockRepository stockRepo)
+        IStockRepository stockRepo,
+        INotificationService notifications)
     {
         _nav = nav;
         _woolRepo = woolRepo;
         _stockRepo = stockRepo;
+        _notifications = notifications;
         Title = "Détail laine";
     }
 
@@ -84,6 +88,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
         if (stocksResult.Failed || stocksResult.Value is null)
         {
             ErrorMessage = stocksResult.Error ?? $"Impossible de charger les stocks de la laine {WoolId}.";
+            _notifications.Error(ErrorMessage);
             StockRows = [];
             TotalWeightGrams = 0;
             OnPropertyChanged(nameof(TotalLengthMeters));
@@ -113,8 +118,10 @@ public partial class WoolDetailViewModel : PageViewModelBase
             if (result.Failed)
             {
                 ErrorMessage = result.Error;
+                _notifications.Error(result.Error ?? "Impossible d'ajouter le stock.");
                 return;
             }
+            _notifications.Success("Stock ajouté.");
         }
         else
         {
@@ -122,8 +129,10 @@ public partial class WoolDetailViewModel : PageViewModelBase
             if (result.Failed)
             {
                 ErrorMessage = result.Error;
+                _notifications.Error(result.Error ?? "Impossible de mettre à jour le stock.");
                 return;
             }
+            _notifications.Success("Stock mis à jour.");
         }
 
         await LoadStocksAsync();
@@ -137,8 +146,10 @@ public partial class WoolDetailViewModel : PageViewModelBase
             if (result.Failed)
             {
                 ErrorMessage = result.Error;
+                _notifications.Error(result.Error ?? "Impossible de supprimer le stock.");
                 return;
             }
+            _notifications.Success("Stock supprimé.");
         }
 
         await LoadStocksAsync();
@@ -179,9 +190,11 @@ public partial class WoolDetailViewModel : PageViewModelBase
             if (result.Failed)
             {
                 ErrorMessage = result.Error;
+                _notifications.Error(result.Error ?? "Impossible de supprimer la laine.");
                 return;
             }
 
+            _notifications.Success("La laine a été supprimée.");
             _nav.GoBack();
         }
         finally

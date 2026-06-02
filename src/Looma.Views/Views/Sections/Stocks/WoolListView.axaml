@@ -26,8 +26,7 @@
             Margin="0 0 0 20"
             HorizontalSpacing="20">
             <TextBlock Text="Mes laines"
-                       FontSize="22"
-                       FontWeight="SemiBold"
+                       Classes="page-title"
                        VerticalAlignment="Center"/>
             <Button DockPanel.Dock="Right"
                     Content="+ Ajouter une laine"
@@ -72,7 +71,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:WoolSummary">
-                        <Button Command="{Binding $parent[UserControl].DataContext.OpenDetailCommand}"
+                        <Button Command="{ReflectionBinding OpenDetailCommand}"
                                 CommandParameter="{Binding}"
                                 Padding="0"
                                 Background="Transparent"
@@ -81,11 +80,7 @@
                             <Border Width="220"
                                     Margin="8"
                                     Padding="16"
-                                    CornerRadius="12"
-                                    Background="{StaticResource BackgroundCardBrush}"
-                                    BorderBrush="{StaticResource BorderBrush}"
-                                    BorderThickness="1"
-                                    BoxShadow="0 2 12 0 #10000000">
+                                    Classes="surface-card">
                                 <Border.Styles>
                                     <Style Selector="Border:pointerover">
                                         <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}"/>

@@ -1,0 +1,43 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="Border.surface-card">
+        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="BoxShadow" Value="0 2 12 0 #10000000"/>
+    </Style>
+
+    <Style Selector="Border.surface-panel">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+
+    <Style Selector="Border.surface-chip">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="6"/>
+    </Style>
+
+    <Style Selector="Border.alert-error">
+        <Setter Property="Background" Value="#FEF2F2"/>
+        <Setter Property="BorderBrush" Value="#FECACA"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+
+    <Style Selector="TextBlock.page-title">
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <Style Selector="TextBlock.page-subtitle">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Opacity" Value="0.6"/>
+    </Style>
+
+</Styles>
