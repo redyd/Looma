@@ -1,0 +1,94 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Documents"
+             x:Class="Looma.Views.Views.Sections.Documents.DocumentsFormView"
+             x:DataType="vm:DocumentsFormViewModel">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <StackPanel HorizontalAlignment="Center"
+                    Margin="32"
+                    Width="780"
+                    MinWidth="780">
+
+            <Border Classes="form-container" Width="780" MinWidth="780">
+                <StackPanel Spacing="0">
+
+                    <StackPanel Classes="form-header">
+                        <TextBlock Classes="form-title" Text="{Binding Title}" />
+                        <TextBlock Classes="form-subtitle"
+                                   Text="Ajoutez un fichier dans le dossier de l'application ou renommez son affichage." />
+                    </StackPanel>
+
+                    <Border Classes="form-section">
+                        <StackPanel Spacing="0">
+                            <TextBlock Classes="section-title"
+                                       Text="Informations"
+                                       Margin="0 0 0 16" />
+
+                            <StackPanel Classes="form-field">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Classes="form-label" Text="Nommer le document" />
+                                    <TextBlock Classes="form-label" Opacity="0.5" Text="(optionnel à la création)" />
+                                </StackPanel>
+                                <TextBox Classes="form-input"
+                                         Text="{Binding Nickname}"
+                                         PlaceholderText="Nom affiché du document" />
+                            </StackPanel>
+
+                            <StackPanel Classes="form-field" IsVisible="{Binding IsCreateMode}">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Classes="form-label" Text="Fichier source" />
+                                    <TextBlock Classes="field-required" Text="*" />
+                                </StackPanel>
+
+                                <Border Classes="surface-panel"
+                                        Padding="16"
+                                        Background="{StaticResource BackgroundBrush}">
+                                    <StackPanel Spacing="10">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                            <StackPanel Grid.Column="0" Spacing="4">
+                                                <TextBlock Text="{Binding SelectedFileName}"
+                                                           FontWeight="SemiBold"
+                                                           TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="{Binding SelectedFileDirectory}"
+                                                           Classes="form-hint"
+                                                           TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+
+                                            <Button Grid.Column="1"
+                                                    Content="Choisir un fichier"
+                                                    Command="{Binding BrowseFileCommand}"
+                                                    Classes="form-submit" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <Border Classes="surface-panel"
+                                    IsVisible="{Binding IsCreateMode}"
+                                    Padding="14"
+                                    Background="{StaticResource BackgroundCardBrush}">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Aperçu" FontSize="12" Opacity="0.55" />
+                                    <TextBlock Text="{Binding SelectedFileName}"
+                                               FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Classes="form-actions">
+                        <Button Classes="form-cancel"
+                                Content="Annuler"
+                                Command="{Binding CancelCommand}" />
+                        <Button Classes="form-submit"
+                                Content="{Binding Title}"
+                                Command="{Binding SaveCommand}" />
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

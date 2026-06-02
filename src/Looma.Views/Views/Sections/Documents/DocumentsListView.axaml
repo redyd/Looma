@@ -1,8 +1,91 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Looma.Views.Views.Sections.Documents.DocumentsListView">
-    Coming soon
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Documents"
+             x:Class="Looma.Views.Views.Sections.Documents.DocumentsListView"
+             x:DataType="vm:DocumentsListViewModel">
+
+    <DockPanel Margin="32">
+
+        <Grid DockPanel.Dock="Top" Margin="0 0 0 24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="1"
+                     Classes="form-input"
+                     Text="{Binding SearchQuery}"
+                     PlaceholderText="Rechercher par nom ou identifiant..."
+                     VerticalContentAlignment="Center" />
+        </Grid>
+
+        <DockPanel DockPanel.Dock="Top"
+                   Margin="0 0 0 20"
+                   HorizontalSpacing="20">
+            <TextBlock Text="Mes documents"
+                       Classes="page-title"
+                       VerticalAlignment="Center" />
+            <Button DockPanel.Dock="Right"
+                    Content="+ Ajouter un document"
+                    Command="{Binding OpenAddFormCommand}"
+                    Classes="form-submit" />
+        </DockPanel>
+
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding CurrentDocuments}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="12" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:DocumentSummaryViewModel">
+                        <Border Classes="surface-card"
+                                Padding="18"
+                                Margin="0 0 0 2">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="20">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{Binding Document.Nickname}"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Border Classes="surface-chip"
+                                                Padding="8 3">
+                                            <TextBlock Text="{Binding TypeDisplay}"
+                                                       Opacity="0.7"
+                                                       FontSize="12" />
+                                        </Border>
+                                        <TextBlock Text="{Binding SizeDisplay}"
+                                                   Opacity="0.55"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1"
+                                            Orientation="Horizontal"
+                                            Spacing="8"
+                                            VerticalAlignment="Center">
+                                    <Button Content="Ouvrir"
+                                            Command="{Binding OpenCommand}"
+                                            Classes="form-cancel"
+                                            MinWidth="90" />
+                                    <Button Content="Modifier"
+                                            Command="{Binding EditCommand}"
+                                            Classes="form-cancel"
+                                            MinWidth="90" />
+                                    <Button Content="Supprimer"
+                                            Command="{Binding DeleteCommand}"
+                                            Classes="btn-danger"
+                                            MinWidth="100" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+    </DockPanel>
 </UserControl>
