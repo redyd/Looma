@@ -38,7 +38,7 @@
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding Name}"
-                                             Watermark="Ex : Merino Extra Fine"/>
+                                             PlaceholderText="Ex : Merino Extra Fine"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
@@ -48,7 +48,7 @@
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding Brand}"
-                                             Watermark="Ex : Drops"/>
+                                             PlaceholderText="Ex : Drops"/>
                                 </StackPanel>
                             </Grid>
 
@@ -61,7 +61,7 @@
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding Material}"
-                                             Watermark="Ex : Mérinos, Coton, Alpaga..."/>
+                                             PlaceholderText="Ex : Mérinos, Coton, Alpaga..."/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
@@ -72,7 +72,7 @@
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding LengthToWeightRatioText}"
-                                             Watermark="Ex : 200"/>
+                                             PlaceholderText="Ex : 200"/>
                                     <TextBlock Classes="form-hint"
                                                Text="Permet de calculer la longueur totale de votre stock"/>
                                 </StackPanel>
@@ -88,7 +88,7 @@
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding NeedleMinText}"
-                                             Watermark="Ex : 3.5"/>
+                                             PlaceholderText="Ex : 3.5"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
@@ -99,7 +99,7 @@
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding NeedleMaxText}"
-                                             Watermark="Ex : 4.5"/>
+                                             PlaceholderText="Ex : 4.5"/>
                                     <TextBlock Classes="form-hint"
                                                Text="Fourchette recommandée par le fabricant"/>
                                 </StackPanel>

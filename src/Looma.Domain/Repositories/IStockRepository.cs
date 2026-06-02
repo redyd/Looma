@@ -1,12 +1,13 @@
 using Looma.Domain.Entities;
+using Looma.Domain.Core;
 
 namespace Looma.Domain.Repositories;
 
 public interface IStockRepository
 {
-    Task<IReadOnlyList<Stock>> GetByWoolIdAsync(int woolId, CancellationToken ct = default);
-    Task<double> GetTotalWeightByWoolIdAsync(int woolId, CancellationToken ct = default);
-    Task AddAsync(Stock stock, CancellationToken ct = default);
-    Task UpdateAsync(Stock stock, CancellationToken ct = default);
-    Task DeleteAsync(int stockId, CancellationToken ct = default);
+    Task<ResultT<IReadOnlyList<Stock>>> GetByWoolIdAsync(int woolId);
+    Task<ResultT<double>> GetTotalWeightByWoolIdAsync(int woolId);
+    Task<ResultT<Stock>> AddAsync(Stock stock);
+    Task<ResultT<Stock>> UpdateAsync(Stock stock);
+    Task<Result> DeleteAsync(int stockId);
 }

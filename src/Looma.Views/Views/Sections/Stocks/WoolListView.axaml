@@ -16,7 +16,7 @@
             <TextBox Grid.Column="1"
                      Classes="form-input"
                      Text="{Binding SearchQuery}"
-                     Watermark="Rechercher par nom, marque, couleur, matière..."
+                     PlaceholderText="Rechercher par nom, marque, couleur, matière..."
                      VerticalContentAlignment="Center"/>
         </Grid>
 

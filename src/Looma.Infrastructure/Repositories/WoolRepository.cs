@@ -1,3 +1,4 @@
+using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Domain.Search;
@@ -6,68 +7,120 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Looma.Infrastructure.Repositories;
 
-public class WoolRepository : IWoolRepository
+public class WoolRepository(LoomaDbContext context) : IWoolRepository
 {
-    private readonly LoomaDbContext _context;
-
-    public WoolRepository(LoomaDbContext context)
+    public async Task<ResultT<IReadOnlyList<Wool>>> GetAllAsync()
     {
-        _context = context;
+        try
+        {
+            var entities = await context.Wools
+                .AsNoTracking()
+                .OrderBy(w => w.Brand)
+                .ThenBy(w => w.Name)
+                .ToListAsync();
+
+            return ResultT<IReadOnlyList<Wool>>.Ok(entities.Select(e => e.ToDomain()).ToList());
+        }
+        catch (Exception ex)
+        {
+            return ResultT<IReadOnlyList<Wool>>.Failure($"Impossible de charger les laines: {ex.Message}");
+        }
     }
 
-    public async Task<IReadOnlyList<Wool>> GetAllAsync(CancellationToken ct = default)
+    public async Task<ResultT<IReadOnlyList<Wool>>> SearchAsync(string query)
     {
-        var entities = await _context.Wools
-            .AsNoTracking()
-            .OrderBy(w => w.Brand)
-            .ThenBy(w => w.Name)
-            .ToListAsync(ct);
+        var all = await GetAllAsync();
+        if (all.Failed)
+            return ResultT<IReadOnlyList<Wool>>.Failure(all.Error ?? "La recherche des laines a échoué.");
 
-        return entities.Select(e => e.ToDomain()).ToList();
+        return ResultT<IReadOnlyList<Wool>>.Ok(WoolSearchSpec.Apply(all.Value ?? [], query).ToList());
     }
 
-    public async Task<IReadOnlyList<Wool>> SearchAsync(string query, CancellationToken ct = default)
+    public async Task<ResultT<Wool>> GetByIdAsync(int id)
     {
-        var all = await GetAllAsync(ct);
-        return WoolSearchSpec.Apply(all, query).ToList();
+        try
+        {
+            var entity = await context.Wools
+                .AsNoTracking()
+                .FirstOrDefaultAsync(w => w.WoolId == id);
+
+            return entity is null
+                ? ResultT<Wool>.NotFound($"La laine {id} est introuvable.")
+                : ResultT<Wool>.Ok(entity.ToDomain());
+        }
+        catch (Exception ex)
+        {
+            return ResultT<Wool>.Failure($"Impossible de charger la laine {id}: {ex.Message}");
+        }
     }
 
-    public async Task<Wool?> GetByIdAsync(int id, CancellationToken ct = default)
+    public async Task<ResultT<Wool>> AddAsync(Wool wool)
     {
-        var entity = await _context.Wools
-            .AsNoTracking()
-            .FirstOrDefaultAsync(w => w.WoolId == id, ct);
-
-        return entity?.ToDomain();
+        try
+        {
+            var entity = wool.ToEntity();
+            context.Wools.Add(entity);
+            await context.SaveChangesAsync();
+            return ResultT<Wool>.Ok(entity.ToDomain());
+        }
+        catch (DbUpdateException ex)
+        {
+            return ResultT<Wool>.Failure($"Impossible d'ajouter la laine: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return ResultT<Wool>.Failure($"Impossible d'ajouter la laine: {ex.Message}");
+        }
     }
 
-    public async Task AddAsync(Wool wool, CancellationToken ct = default)
+    public async Task<ResultT<Wool>> UpdateAsync(Wool wool)
     {
-        var entity = wool.ToEntity();
-        _context.Wools.Add(entity);
-        await _context.SaveChangesAsync(ct);
+        try
+        {
+            var entity = await context.Wools
+                .FirstOrDefaultAsync(w => w.WoolId == wool.Id);
+
+            if (entity is null)
+                return ResultT<Wool>.NotFound($"La laine {wool.Id} est introuvable.");
+
+            entity.UpdateEntity(wool);
+            await context.SaveChangesAsync();
+            return ResultT<Wool>.Ok(entity.ToDomain());
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            return ResultT<Wool>.Failure($"Impossible de mettre à jour la laine {wool.Id}: {ex.Message}");
+        }
+        catch (DbUpdateException ex)
+        {
+            return ResultT<Wool>.Failure($"Impossible de mettre à jour la laine {wool.Id}: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return ResultT<Wool>.Failure($"Impossible de mettre à jour la laine {wool.Id}: {ex.Message}");
+        }
     }
 
-    public async Task UpdateAsync(Wool wool, CancellationToken ct = default)
+    public async Task<Result> DeleteAsync(int id)
     {
-        var entity = await _context.Wools
-            .FirstOrDefaultAsync(w => w.WoolId == wool.Id, ct);
+        try
+        {
+            var entity = await context.Wools.FindAsync([id]);
 
-        if (entity is null)
-            throw new InvalidOperationException($"Laine {wool.Id} introuvable.");
+            if (entity is null)
+                return Result.NotFound($"La laine {id} est introuvable.");
 
-        entity.UpdateEntity(wool);
-        await _context.SaveChangesAsync(ct);
-    }
-
-    public async Task DeleteAsync(int id, CancellationToken ct = default)
-    {
-        var entity = await _context.Wools.FindAsync([id], ct);
-
-        if (entity is null)
-            throw new InvalidOperationException($"Laine {id} introuvable.");
-
-        _context.Wools.Remove(entity);
-        await _context.SaveChangesAsync(ct);
+            context.Wools.Remove(entity);
+            await context.SaveChangesAsync();
+            return Result.Ok();
+        }
+        catch (DbUpdateException ex)
+        {
+            return Result.Failure($"Impossible de supprimer la laine {id}: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure($"Impossible de supprimer la laine {id}: {ex.Message}");
+        }
     }
 }
