@@ -103,15 +103,36 @@ public partial class WoolFormViewModel : PageViewModelBase
             IsBusy = true;
             if (_isEdit)
             {
-                var wool = await _repo.GetByIdAsync(_editingId);
-                if (wool is null) { ErrorMessage = "Laine introuvable."; return; }
-                wool.Update(Name, Brand, Material, SelectedColorHex, ratio, needleMin, needleMax);
-                await _repo.UpdateAsync(wool);
+                var result = await _repo.UpdateAsync(new UpdateWoolRequest(
+                    _editingId,
+                    Name,
+                    Brand,
+                    Material,
+                    SelectedColorHex,
+                    ratio,
+                    needleMin,
+                    needleMax));
+                if (result.Failed)
+                {
+                    ErrorMessage = result.Error;
+                    return;
+                }
             }
             else
             {
-                var wool = Wool.Create(Name, Brand, Material, SelectedColorHex, ratio, needleMin, needleMax);
-                await _repo.AddAsync(wool);
+                var result = await _repo.AddAsync(new CreateWoolRequest(
+                    Name,
+                    Brand,
+                    Material,
+                    SelectedColorHex,
+                    ratio,
+                    needleMin,
+                    needleMax));
+                if (result.Failed)
+                {
+                    ErrorMessage = result.Error;
+                    return;
+                }
             }
             _nav.GoBack();
         }

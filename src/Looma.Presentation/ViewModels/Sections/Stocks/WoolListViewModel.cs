@@ -43,19 +43,35 @@ public partial class WoolListViewModel : PageViewModelBase
     private async Task LoadAsync()
     {
         IsBusy = true;
-
-        _allWools = await _woolRepo.GetAllAsync();
-
-        var summaries = new List<WoolSummary>();
-        foreach (var wool in _allWools)
+        try
         {
-            var total = await _stockRepo.GetTotalWeightByWoolIdAsync(wool.Id);
-            summaries.Add(new WoolSummary(wool, total));
-        }
-        _allSummaries = summaries;
+            var woolsResult = await _woolRepo.GetAllAsync();
+            if (woolsResult.Failed || woolsResult.Value is null)
+            {
+                _allWools = [];
+                _allSummaries = [];
+                ApplySearchAndPaging();
+                return;
+            }
 
-        ApplySearchAndPaging();
-        IsBusy = false;
+            _allWools = woolsResult.Value;
+
+            var summaries = new List<WoolSummary>();
+            foreach (var wool in _allWools)
+            {
+                var totalResult = await _stockRepo.GetTotalWeightByWoolIdAsync(wool.Id);
+                summaries.Add(new WoolSummary(
+                    wool,
+                    totalResult.Succeeded ? totalResult.Value : 0));
+            }
+            _allSummaries = summaries;
+
+            ApplySearchAndPaging();
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     partial void OnSearchQueryChanged(string value)

@@ -13,7 +13,6 @@ public partial class StockRowViewModel : ObservableObject
     private readonly double _lengthToWeightRatio;
 
     public int StockId { get; }
-    public int WoolId { get; }
     public bool IsNew { get; }
 
     [ObservableProperty]
@@ -69,7 +68,6 @@ public partial class StockRowViewModel : ObservableObject
         bool isNew = false)
     {
         StockId = stock.Id;
-        WoolId = stock.WoolId;
         _lengthToWeightRatio = lengthToWeightRatio;
         InputMode = StockInputMode.Weight;
         InputText = isNew ? string.Empty : stock.WeightGrams.ToString("G");
