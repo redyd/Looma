@@ -1,6 +1,6 @@
 using Looma.Domain.Entities;
 
-namespace Looma.Domain.Search;
+namespace Looma.Domain.Core;
 
 public static class DocumentSearchSpec
 {
