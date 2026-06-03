@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Looma.Infrastructure.Migrations
 {
     [DbContext(typeof(LoomaDbContext))]
-    [Migration("20260602183305_Initial")]
+    [Migration("20260603085312_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
