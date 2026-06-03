@@ -1,136 +1,37 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
+             xmlns:controls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolDetailView"
              x:DataType="vm:WoolDetailViewModel">
-
     <DockPanel>
 
-        <!-- Header -->
-        <Border DockPanel.Dock="Top"
-                Padding="24 16"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0 0 0 1"
-                Background="{StaticResource BackgroundCardBrush}">
-            <Grid ColumnDefinitions="Auto,*,Auto">
+        <controls:DetailHeader
+            DockPanel.Dock="Top"
+            GoBackCommand="{Binding GoBackCommand}"
+            EditCommand="{Binding EditCommand}"
+            DeleteCommand="{Binding AskDeleteCommand}">
 
-                <Button Grid.Column="0"
-                        Content="← Retour"
-                        Command="{Binding GoBackCommand}"
-                        Classes="form-cancel" />
-
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            Spacing="10"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center">
+            <controls:DetailHeader.TitleContent>
+                <StackPanel Orientation="Horizontal" Spacing="10">
                     <Ellipse Width="16" Height="16" VerticalAlignment="Center"
                              Fill="{Binding Color, Converter={StaticResource HexToColor}}" />
-                    <TextBlock Text="{Binding Name}"
-                               FontSize="20" FontWeight="SemiBold"
+                    <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="SemiBold"
                                VerticalAlignment="Center" />
-                    <TextBlock Text="{Binding Brand}"
-                               FontSize="14" Opacity="0.5"
+                    <TextBlock Text="{Binding Brand}" FontSize="14" Opacity="0.5"
                                VerticalAlignment="Center" />
                 </StackPanel>
+            </controls:DetailHeader.TitleContent>
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
-                    <Button Content="Modifier"
-                            Command="{Binding EditCommand}"
-                            Classes="form-cancel" />
-                    <Button Content="Supprimer"
-                            Command="{Binding AskDeleteCommand}"
-                            Classes="btn-danger" />
-                </StackPanel>
-
-            </Grid>
-        </Border>
+        </controls:DetailHeader>
 
         <ScrollViewer>
             <StackPanel Spacing="16" Margin="32">
-
-                <!-- Ligne 1 : estimations + infos -->
-                <Grid ColumnDefinitions="*,16,Auto">
-
-                    <Border Grid.Column="0" Classes="form-section">
-                        <Grid ColumnDefinitions="*,1,*" MinHeight="80">
-                            <StackPanel Grid.Column="0" HorizontalAlignment="Center"
-                                        VerticalAlignment="Center" Spacing="4">
-                                <TextBlock Text="Stock total" FontSize="12" Opacity="0.5"
-                                           HorizontalAlignment="Center" />
-                                <StackPanel Orientation="Horizontal" Spacing="4"
-                                            HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding TotalWeightGrams, StringFormat='{}{0:N0}'}"
-                                               FontSize="32" FontWeight="SemiBold" />
-                                    <TextBlock Text="g" FontSize="18" Opacity="0.45"
-                                               VerticalAlignment="Bottom" Margin="0 0 0 5" />
-                                </StackPanel>
-                            </StackPanel>
-
-                            <Border Grid.Column="1" Background="{StaticResource BorderBrush}" Width="1" />
-
-                            <StackPanel Grid.Column="2" HorizontalAlignment="Center"
-                                        VerticalAlignment="Center" Spacing="4">
-                                <TextBlock Text="Longueur estimée" FontSize="12" Opacity="0.5"
-                                           HorizontalAlignment="Center" />
-                                <StackPanel Orientation="Horizontal" Spacing="4"
-                                            HorizontalAlignment="Center">
-                                    <TextBlock Text="{Binding TotalLengthMeters, StringFormat='{}{0:N0}'}"
-                                               FontSize="32" FontWeight="SemiBold" />
-                                    <TextBlock Text="m" FontSize="18" Opacity="0.45"
-                                               VerticalAlignment="Bottom" Margin="0 0 0 5" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-
-                    <Border Grid.Column="2" Classes="form-section" MinWidth="280">
-                        <StackPanel Spacing="0">
-                            <TextBlock Classes="section-title" Text="🧶 Informations"
-                                       Margin="0 0 0 14" />
-                            <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
-                                <Grid.Styles>
-                                    <Style Selector="TextBlock.lbl">
-                                        <Setter Property="FontSize" Value="13" />
-                                        <Setter Property="Opacity" Value="0.5" />
-                                        <Setter Property="Margin" Value="0 0 0 10" />
-                                        <Setter Property="VerticalAlignment" Value="Center" />
-                                    </Style>
-                                    <Style Selector="TextBlock.val">
-                                        <Setter Property="FontSize" Value="14" />
-                                        <Setter Property="Margin" Value="0 0 0 10" />
-                                        <Setter Property="VerticalAlignment" Value="Center" />
-                                    </Style>
-                                </Grid.Styles>
-
-                                <TextBlock Grid.Row="0" Grid.Column="0" Classes="lbl" Text="Marque" />
-                                <TextBlock Grid.Row="0" Grid.Column="1" Classes="val" Text="{Binding Brand}" />
-
-                                <TextBlock Grid.Row="1" Grid.Column="0" Classes="lbl" Text="Matière" />
-                                <TextBlock Grid.Row="1" Grid.Column="1" Classes="val" Text="{Binding Material}" />
-
-                                <TextBlock Grid.Row="2" Grid.Column="0" Classes="lbl" Text="Couleur" />
-                                <StackPanel Grid.Row="2" Grid.Column="1"
-                                            Orientation="Horizontal" Spacing="8" Margin="0 0 0 10">
-                                    <Ellipse Width="14" Height="14" VerticalAlignment="Center"
-                                             Fill="{Binding Color, Converter={StaticResource HexToColor}}" />
-                                    <TextBlock Classes="val" Text="{Binding Color}" Margin="0" />
-                                </StackPanel>
-
-                                <TextBlock Grid.Row="3" Grid.Column="0" Classes="lbl" Text="Ratio" />
-                                <StackPanel Grid.Row="3" Grid.Column="1"
-                                            Orientation="Horizontal" Spacing="4">
-                                    <TextBlock Classes="val" Text="{Binding LengthToWeightRatio}" />
-                                    <TextBlock Classes="val" Opacity="0.4" Text="m/100g" />
-                                </StackPanel>
-                                <TextBlock Grid.Row="4" Grid.Column="0" Classes="lbl" Text="Aiguilles" />
-                                <TextBlock Grid.Row="4" Grid.Column="1" Classes="val"
-                                           Text="{Binding NeedleSizeDisplay}" />
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-
-                </Grid>
+                
+                <controls:DetailInformations
+                    InfoTitle="🧶 Informations"
+                    Stats="{Binding DetailStats}"
+                    Infos="{Binding DetailInfos}" />
 
                 <!-- Ligne 2 : tableau stock -->
                 <Border Classes="form-section">
@@ -298,7 +199,7 @@
                     <StackPanel Spacing="12">
                         <TextBlock Text="Supprimer cette laine ?"
                                    FontWeight="SemiBold" Foreground="#EF4444" FontSize="15" />
-                        <TextBlock Text="Cette action est irréversible. Tout le stock associé sera supprimé."
+                        <TextBlock Text="Cette action est irréversible. Tous les éléments liés seront supprimés."
                                    Opacity="0.75" TextWrapping="Wrap" FontSize="13" />
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Button Content="Oui, supprimer"

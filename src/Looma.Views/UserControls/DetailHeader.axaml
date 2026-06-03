@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Looma.Views.UserControls.DetailHeader"
+             x:Name="This">
+
+    <Border Padding="24 16"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="0 0 0 1"
+            Background="{StaticResource BackgroundCardBrush}">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+
+            <Button Grid.Column="0"
+                    Content="← Retour"
+                    Command="{Binding GoBackCommand, ElementName=This}"
+                    Classes="form-cancel" />
+
+            <ContentPresenter Grid.Column="1"
+                              Content="{Binding TitleContent, ElementName=This}"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center" />
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                <Button Content="Modifier"
+                        Command="{Binding EditCommand, ElementName=This}"
+                        Classes="form-cancel" />
+                <Button Content="Supprimer"
+                        Command="{Binding DeleteCommand, ElementName=This}"
+                        Classes="btn-danger" />
+            </StackPanel>
+
+        </Grid>
+    </Border>
+    
+</UserControl>

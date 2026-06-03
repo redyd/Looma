@@ -1,54 +1,28 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
+             xmlns:controls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Patterns.PatternsDetailView"
              x:DataType="vm:PatternsDetailViewModel">
 
     <DockPanel>
 
-        <Border DockPanel.Dock="Top"
-                Padding="24 16"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0 0 0 1"
-                Background="{StaticResource BackgroundCardBrush}">
-            <Grid ColumnDefinitions="Auto,*,Auto">
+        <controls:DetailHeader
+            DockPanel.Dock="Top"
+            GoBackCommand="{Binding GoBackCommand}"
+            EditCommand="{Binding EditCommand}"
+            DeleteCommand="{Binding AskDeleteCommand}">
 
-                <Button Grid.Column="0"
-                        Content="← Retour"
-                        Command="{Binding GoBackCommand}"
-                        Classes="form-cancel" />
-
-                <StackPanel Grid.Column="1"
-                            Orientation="Vertical"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Spacing="4">
-                    <TextBlock Text="{Binding Name}"
-                               FontSize="20"
-                               FontWeight="SemiBold"
+            <controls:DetailHeader.TitleContent>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="SemiBold"
                                HorizontalAlignment="Center" />
-                    <TextBlock Text="{Binding Url}"
-                               FontSize="12"
-                               Opacity="0.55"
-                               HorizontalAlignment="Center"
-                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding Url}" FontSize="14" Opacity="0.5"
+                               HorizontalAlignment="Center" />
                 </StackPanel>
+            </controls:DetailHeader.TitleContent>
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
-                    <Button Content="Ouvrir le lien"
-                            Command="{Binding OpenUrlCommand}"
-                            Classes="form-cancel"
-                            IsEnabled="{Binding HasUrl}" />
-                    <Button Content="Modifier"
-                            Command="{Binding EditCommand}"
-                            Classes="form-cancel" />
-                    <Button Content="Supprimer"
-                            Command="{Binding AskDeleteCommand}"
-                            Classes="btn-danger" />
-                </StackPanel>
-
-            </Grid>
-        </Border>
+        </controls:DetailHeader>
 
         <ScrollViewer>
             <StackPanel Margin="32" Spacing="16">
