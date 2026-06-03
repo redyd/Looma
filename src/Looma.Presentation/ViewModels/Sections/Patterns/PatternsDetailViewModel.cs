@@ -21,7 +21,6 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     [ObservableProperty] private string _name = string.Empty;
     [ObservableProperty] private string? _url;
     [ObservableProperty] private string? _note;
-    [ObservableProperty] private bool _showDeleteConfirm;
     [ObservableProperty] private string? _errorMessage;
     [ObservableProperty] private ObservableCollection<PatternDocumentViewModel> _documents = [];
     [ObservableProperty] private ObservableCollection<PatternProjectViewModel> _projects = [];
@@ -71,7 +70,6 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         Name = pattern.Name;
         Url = pattern.Url;
         Note = pattern.Note;
-        ShowDeleteConfirm = false;
 
         Documents = new ObservableCollection<PatternDocumentViewModel>(
             pattern.Documents.Select(d => new PatternDocumentViewModel(
@@ -116,12 +114,6 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     [RelayCommand]
     private void Edit() =>
         _nav.NavigateTo<PatternsFormViewModel>(vm => vm.InitEdit(PatternId, Name, Url, Note, Documents.Select(d => d.Document.Id).ToList()));
-
-    [RelayCommand]
-    private void AskDelete() => ShowDeleteConfirm = true;
-
-    [RelayCommand]
-    private void CancelDelete() => ShowDeleteConfirm = false;
 
     [RelayCommand]
     private async Task ConfirmDeleteAsync()

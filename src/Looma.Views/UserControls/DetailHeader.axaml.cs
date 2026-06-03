@@ -1,7 +1,7 @@
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
 
 namespace Looma.Views.UserControls;
 
@@ -46,5 +46,22 @@ public partial class DetailHeader : UserControl
     public DetailHeader()
     {
         InitializeComponent();
+    }
+
+    private void OnDeleteClicked(object? sender, RoutedEventArgs e)
+    {
+        DeletePopup.IsOpen = true;
+    }
+
+    private void OnCancelClicked(object? sender, RoutedEventArgs e)
+    {
+        DeletePopup.IsOpen = false;
+    }
+
+    private void OnConfirmClicked(object? sender, RoutedEventArgs e)
+    {
+        DeletePopup.IsOpen = false;
+        if (DeleteCommand?.CanExecute(null) == true)
+            DeleteCommand.Execute(null);
     }
 }

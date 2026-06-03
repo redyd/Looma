@@ -23,7 +23,6 @@ public partial class WoolDetailViewModel : PageViewModelBase
     [ObservableProperty] private string _material = string.Empty;
     [ObservableProperty] private string _color = string.Empty;
     [ObservableProperty] private double _lengthToWeightRatio;
-    [ObservableProperty] private bool _showDeleteConfirm;
     [ObservableProperty] private double _totalWeightGrams;
     [ObservableProperty] private ObservableCollection<StockRowViewModel> _stockRows = [];
     [ObservableProperty] private double _needleMinSize;
@@ -95,7 +94,6 @@ public partial class WoolDetailViewModel : PageViewModelBase
         LengthToWeightRatio = wool.LengthToWeightRatio;
         NeedleMinSize = wool.NeedleMinSize;
         NeedleMaxSize = wool.NeedleMaxSize;
-        ShowDeleteConfirm = false;
 
         OnPropertyChanged(nameof(NeedleSizeDisplay));
         OnPropertyChanged(nameof(DetailStats));
@@ -182,12 +180,6 @@ public partial class WoolDetailViewModel : PageViewModelBase
         _nav.NavigateTo<WoolFormViewModel>(vm =>
             vm.InitEdit(WoolId, Name, Brand, Material, Color,
                 LengthToWeightRatio, NeedleMinSize, NeedleMaxSize));
-
-    [RelayCommand]
-    private void AskDelete() => ShowDeleteConfirm = true;
-
-    [RelayCommand]
-    private void CancelDelete() => ShowDeleteConfirm = false;
 
     [RelayCommand]
     private async Task ConfirmDeleteAsync()

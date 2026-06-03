@@ -26,9 +26,33 @@
                 <Button Content="Modifier"
                         Command="{Binding EditCommand, ElementName=This}"
                         Classes="form-cancel" />
-                <Button Content="Supprimer"
-                        Command="{Binding DeleteCommand, ElementName=This}"
-                        Classes="btn-danger" />
+
+                <Panel>
+                    <Button x:Name="DeleteButton"
+                            Content="Supprimer"
+                            Click="OnDeleteClicked"
+                            Classes="btn-danger" />
+
+                    <Popup x:Name="DeletePopup"
+                           PlacementTarget="{Binding #DeleteButton}"
+                           Placement="BottomEdgeAlignedLeft"
+                           HorizontalOffset="-220">
+                        <Border Classes="form-container" Padding="16" Width="280">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Supprimer ?" FontWeight="SemiBold" />
+                                <TextBlock Text="Cette action est définitive." Classes="form-hint" />
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                    <Button Content="Annuler"
+                                            Click="OnCancelClicked"
+                                            Classes="form-cancel" />
+                                    <Button Content="Supprimer"
+                                            Click="OnConfirmClicked"
+                                            Classes="btn-danger" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </Panel>
             </StackPanel>
 
         </Grid>

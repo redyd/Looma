@@ -10,7 +10,7 @@
             DockPanel.Dock="Top"
             GoBackCommand="{Binding GoBackCommand}"
             EditCommand="{Binding EditCommand}"
-            DeleteCommand="{Binding AskDeleteCommand}">
+            DeleteCommand="{Binding ConfirmDeleteCommand}">
 
             <controls:DetailHeader.TitleContent>
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -189,29 +189,6 @@
 
                     </StackPanel>
                 </Border>
-
-                <!-- Confirmation suppression -->
-                <Border IsVisible="{Binding ShowDeleteConfirm}"
-                        Padding="20" CornerRadius="8"
-                        Background="#FEF2F2"
-                        BorderBrush="#FECACA"
-                        BorderThickness="1">
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="Supprimer cette laine ?"
-                                   FontWeight="SemiBold" Foreground="#EF4444" FontSize="15" />
-                        <TextBlock Text="Cette action est irréversible. Tous les éléments liés seront supprimés."
-                                   Opacity="0.75" TextWrapping="Wrap" FontSize="13" />
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Button Content="Oui, supprimer"
-                                    Command="{Binding ConfirmDeleteCommand}"
-                                    Classes="btn-danger-solid" />
-                            <Button Content="Annuler"
-                                    Command="{Binding CancelDeleteCommand}"
-                                    Classes="form-cancel" />
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-
             </StackPanel>
         </ScrollViewer>
 
