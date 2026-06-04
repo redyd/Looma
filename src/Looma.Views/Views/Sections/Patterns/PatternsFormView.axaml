@@ -12,7 +12,7 @@
                     MinWidth="820">
 
             <Border Classes="form-container" Width="820" MinWidth="820">
-                <StackPanel Spacing="0">
+                <StackPanel Spacing="10">
 
                     <StackPanel Classes="form-header">
                         <TextBlock Classes="form-title" Text="{Binding Title}" />
@@ -49,6 +49,7 @@
                                          Text="{Binding Note}"
                                          AcceptsReturn="True"
                                          TextWrapping="Wrap"
+                                         Padding="10"
                                          Height="180"
                                          VerticalContentAlignment="Top"
                                          PlaceholderText="Notes, instructions, remarques..." />

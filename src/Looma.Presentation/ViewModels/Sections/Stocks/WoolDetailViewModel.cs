@@ -28,11 +28,11 @@ public partial class WoolDetailViewModel : PageViewModelBase
     [ObservableProperty] private double _needleMinSize;
     [ObservableProperty] private double _needleMaxSize;
     [ObservableProperty] private string? _errorMessage;
-    
+
     public IList<StatItem> DetailStats =>
     [
-        new() { Label = "Pelottes estimée", Value = "-1", Unit = "x"},
-        new() { Label = "Stock total", Value = TotalWeightGrams.ToString("N0"), Unit = "g" },
+        // new() { Label = "Pelottes estimée", Value = "-1", Unit = "x"},
+        new() { Label = "Stock total", Value = TotalWeightGrams.ToString("N0"), Unit = "g", IsFirst = true },
         new() { Label = "Longueur estimée", Value = TotalLengthMeters.ToString("N0"), Unit = "m" }
     ];
 

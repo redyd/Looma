@@ -6,6 +6,7 @@ using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
+using Looma.Presentation.UserControls;
 using Looma.Presentation.ViewModels.Base;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
@@ -29,6 +30,19 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     public bool HasDocuments => Documents.Count > 0;
     public bool HasProjects => Projects.Count > 0;
     public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? "Aucune note." : Note!;
+    
+    public IList<StatItem> DetailStats =>
+    [
+        // new() { Label = "Pelottes estimée", Value = "-1", Unit = "x"},
+        new() { Label = "Nombre de projets lié", Value = Projects.Count.ToString("N0"), Unit = "x", IsFirst = true },
+    ];
+
+    public IList<InfoItem> DetailInfos =>
+    [
+        new() { Label = "Nom", Value = Name },
+        new() { Label = "Lien", Value = Url ?? "Aucun" },
+        new() { Label = "Documents", Value = Documents.Count.ToString("N0")},
+    ];
 
     public PatternsDetailViewModel(
         INavigationService nav,

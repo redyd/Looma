@@ -3,18 +3,12 @@ using Looma.Domain.Entities;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
 
-public partial class PatternDocumentSelectionViewModel : ObservableObject
+public partial class PatternDocumentSelectionViewModel(Document document, bool isSelected = false) : ObservableObject
 {
-    public PatternDocumentSelectionViewModel(Document document, bool isSelected = false)
-    {
-        Document = document;
-        _isSelected = isSelected;
-    }
-
-    public Document Document { get; }
+    public Document Document { get; } = document;
 
     [ObservableProperty]
-    private bool _isSelected;
+    private bool _isSelected = isSelected;
 
     public string TypeDisplay => Document.Type;
     public string SizeDisplay => FormatSize(Document.SizeBytes);

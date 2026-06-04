@@ -10,8 +10,7 @@
     <Grid ColumnDefinitions="*,16,Auto">
 
         <Border Grid.Column="0" Classes="form-section" ClipToBounds="True">
-            <ItemsControl ItemsSource="{Binding Stats, ElementName=This}"
-                          Margin="-1 0 0 0">
+            <ItemsControl ItemsSource="{Binding Stats, ElementName=This}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Rows="1" />
@@ -19,9 +18,8 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:StatItem">
-                        <Border BorderThickness="1 0 0 0"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                Margin="0">
+                        <Border BorderThickness="{Binding IsFirst, Converter={StaticResource FirstItemBorderConverter}}"
+                                BorderBrush="{StaticResource BorderBrush}">
                             <StackPanel HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Spacing="4">

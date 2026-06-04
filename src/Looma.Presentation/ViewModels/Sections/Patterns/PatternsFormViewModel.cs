@@ -18,7 +18,6 @@ public partial class PatternsFormViewModel(
 {
     private bool _isEdit;
     private int _editingId;
-    private IReadOnlyList<Guid> _selectedDocumentIds = [];
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
@@ -49,7 +48,6 @@ public partial class PatternsFormViewModel(
         Note = null;
         ErrorMessage = null;
         Documents = [];
-        _selectedDocumentIds = [];
         OnPropertyChanged(nameof(IsCreateMode));
         OnPropertyChanged(nameof(IsEditMode));
         _ = LoadDocumentsAsync(Array.Empty<Guid>());
@@ -64,7 +62,6 @@ public partial class PatternsFormViewModel(
         Url = url;
         Note = note;
         ErrorMessage = null;
-        _selectedDocumentIds = documentIds.ToList();
         OnPropertyChanged(nameof(IsCreateMode));
         OnPropertyChanged(nameof(IsEditMode));
         _ = LoadDocumentsAsync(documentIds);

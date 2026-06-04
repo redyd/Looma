@@ -4,14 +4,15 @@
              xmlns:controls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolDetailView"
              x:DataType="vm:WoolDetailViewModel">
+    
     <DockPanel>
-
+        
         <controls:DetailHeader
             DockPanel.Dock="Top"
             GoBackCommand="{Binding GoBackCommand}"
             EditCommand="{Binding EditCommand}"
             DeleteCommand="{Binding ConfirmDeleteCommand}">
-
+            
             <controls:DetailHeader.TitleContent>
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <Ellipse Width="16" Height="16" VerticalAlignment="Center"
@@ -22,7 +23,7 @@
                                VerticalAlignment="Center" />
                 </StackPanel>
             </controls:DetailHeader.TitleContent>
-
+            
         </controls:DetailHeader>
 
         <ScrollViewer>
