@@ -1,5 +1,5 @@
 using Looma.Infrastructure.Configurations;
-using Looma.Infrastructure.Model;
+using Looma.Infrastructure.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Looma.Infrastructure;

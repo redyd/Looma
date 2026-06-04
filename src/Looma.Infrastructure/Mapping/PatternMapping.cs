@@ -1,6 +1,6 @@
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
-using Looma.Infrastructure.Model;
+using Looma.Infrastructure.Entity;
 
 namespace Looma.Infrastructure.Mapping;
 

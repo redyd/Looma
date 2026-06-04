@@ -2,8 +2,8 @@ using System.Diagnostics;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
+using Looma.Infrastructure.Entity;
 using Looma.Infrastructure.Mapping;
-using Looma.Infrastructure.Model;
 using Looma.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,5 @@
 using Looma.Domain.Entities;
-using Looma.Infrastructure.Model;
+using Looma.Infrastructure.Entity;
 
 namespace Looma.Infrastructure.Mapping;
 
@@ -9,7 +9,7 @@ public static class DocumentMapping
         new()
         {
             Id = entity.DocumentId,
-            Nickname = entity.Nickname ?? string.Empty,
+            Nickname = entity.Nickname,
             Type = string.Empty,
             SizeBytes = 0
         };

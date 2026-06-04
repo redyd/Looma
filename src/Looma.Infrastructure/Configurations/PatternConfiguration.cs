@@ -1,4 +1,4 @@
-using Looma.Infrastructure.Model;
+using Looma.Infrastructure.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,7 +14,6 @@ public class PatternConfiguration : IEntityTypeConfiguration<PatternEntity>
         builder.Property(p => p.Note).HasColumnType("TEXT");
         builder
             .HasMany(p => p.Documents)
-            .WithMany(d => d.Patterns)
-            .UsingEntity(j => j.ToTable("DocumentPattern"));
+            .WithOne(d => d.Pattern);
     }
 }

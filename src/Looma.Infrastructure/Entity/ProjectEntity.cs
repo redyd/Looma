@@ -1,6 +1,6 @@
 using Looma.Domain.Core;
 
-namespace Looma.Infrastructure.Model;
+namespace Looma.Infrastructure.Entity;
 
 public class ProjectEntity
 {

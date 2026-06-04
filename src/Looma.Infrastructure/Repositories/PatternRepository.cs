@@ -1,8 +1,8 @@
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
+using Looma.Infrastructure.Entity;
 using Looma.Infrastructure.Mapping;
-using Looma.Infrastructure.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace Looma.Infrastructure.Repositories;

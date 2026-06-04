@@ -1,4 +1,4 @@
-using Looma.Infrastructure.Model;
+using Looma.Infrastructure.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
