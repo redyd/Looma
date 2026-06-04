@@ -6,6 +6,7 @@ using Looma.Domain.Repositories;
 using Looma.Domain.Search;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
+using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
@@ -15,6 +16,7 @@ public partial class PatternsListViewModel : PageViewModelBase
     private readonly INavigationService _nav;
     private readonly IPatternRepository _repo;
     private readonly INotificationService _notifications;
+    private readonly IDataRefreshService _refresh;
 
     private IReadOnlyList<Pattern> _allPatterns = [];
     private IReadOnlyList<PatternSummaryViewModel> _allSummaries = [];
@@ -30,15 +32,25 @@ public partial class PatternsListViewModel : PageViewModelBase
     [ObservableProperty] private bool _hasNextPage;
     [ObservableProperty] private string _pageInfo = string.Empty;
 
-    public PatternsListViewModel(INavigationService nav, IPatternRepository repo, INotificationService notifications)
+    public PatternsListViewModel(
+        INavigationService nav,
+        IPatternRepository repo,
+        INotificationService notifications,
+        IDataRefreshService refresh)
     {
         _nav = nav;
         _repo = repo;
         _notifications = notifications;
+        _refresh = refresh;
         Title = "Mes patrons";
+        _refresh.PatternsRefreshRequested += OnPatternsRefreshRequested;
     }
 
     public override async void OnNavigatedTo() => await LoadAsync();
+
+    public Task RefreshAsync() => LoadAsync();
+
+    private void OnPatternsRefreshRequested(object? sender, EventArgs e) => _ = RefreshAsync();
 
     private async Task LoadAsync()
     {
@@ -75,9 +87,7 @@ public partial class PatternsListViewModel : PageViewModelBase
             pattern.Documents.Count,
             pattern.Projects.Count,
             !string.IsNullOrWhiteSpace(pattern.Url),
-            new RelayCommand(() => _nav.NavigateTo<PatternsDetailViewModel>(vm => vm.Load(pattern))),
-            new RelayCommand(() => _nav.NavigateTo<PatternsFormViewModel>(vm => vm.InitEdit(pattern.Id, pattern.Name, pattern.Url, pattern.Note, pattern.Documents.Select(d => d.Id).ToList()))),
-            new AsyncRelayCommand(() => DeleteAsync(pattern.Id)));
+            new RelayCommand(() => _nav.NavigateTo<PatternsDetailViewModel>(vm => vm.Load(pattern))));
 
     partial void OnSearchQueryChanged(string value)
     {

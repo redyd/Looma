@@ -4,6 +4,7 @@ using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
+using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
 using System.Collections.ObjectModel;
 
@@ -11,29 +12,31 @@ namespace Looma.Presentation.ViewModels.Sections.Patterns;
 
 public partial class PatternsFormViewModel(
     INavigationService nav,
+    IPatternRepository patternRepo,
     IDocumentRepository documentRepo,
-    IPatternRepository repo,
+    IDocumentFilePicker filePicker,
+    IDataRefreshService refresh,
     INotificationService notifications)
     : PageViewModelBase
 {
     private bool _isEdit;
     private int _editingId;
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _name = string.Empty;
 
-    [ObservableProperty]
-    private string? _url;
+    [ObservableProperty] private string? _url;
 
-    [ObservableProperty]
-    private string? _note;
+    [ObservableProperty] private string? _note;
 
-    [ObservableProperty]
-    private string? _errorMessage;
+    [ObservableProperty] private string? _errorMessage;
 
-    [ObservableProperty]
-    private ObservableCollection<PatternDocumentSelectionViewModel> _documents = [];
+    [ObservableProperty] private ObservableCollection<PatternExistingDocumentViewModel> _existingDocuments = [];
+
+    [ObservableProperty] private ObservableCollection<PatternDocumentDraftViewModel> _newDocuments = [];
+
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    private bool _documentsLoaded = true;
 
     public bool IsCreateMode => !_isEdit;
     public bool IsEditMode => _isEdit;
@@ -47,10 +50,12 @@ public partial class PatternsFormViewModel(
         Url = null;
         Note = null;
         ErrorMessage = null;
-        Documents = [];
+        _deletedDocumentIds.Clear();
+        ResetExistingDocuments();
+        ResetNewDocuments();
+        DocumentsLoaded = true;
         OnPropertyChanged(nameof(IsCreateMode));
         OnPropertyChanged(nameof(IsEditMode));
-        _ = LoadDocumentsAsync(Array.Empty<Guid>());
     }
 
     public void InitEdit(int id, string name, string? url, string? note, IReadOnlyList<Guid> documentIds)
@@ -62,33 +67,180 @@ public partial class PatternsFormViewModel(
         Url = url;
         Note = note;
         ErrorMessage = null;
+        _deletedDocumentIds.Clear();
+        ResetExistingDocuments();
+        ResetNewDocuments();
+        DocumentsLoaded = false;
+        IsBusy = true;
         OnPropertyChanged(nameof(IsCreateMode));
         OnPropertyChanged(nameof(IsEditMode));
-        _ = LoadDocumentsAsync(documentIds);
+        _ = LoadExistingDocumentsAsync(documentIds);
     }
 
-    private async Task LoadDocumentsAsync(IReadOnlyCollection<Guid> selectedIds)
-    {
-        var result = await documentRepo.GetAllAsync();
-        if (result.Failed || result.Value is null)
+    private readonly HashSet<Guid> _deletedDocumentIds = [];
+    private readonly IDataRefreshService _refresh = refresh;
+
+    private bool CanSave() => DocumentsLoaded && !string.IsNullOrWhiteSpace(Name);
+
+    [RelayCommand]
+    private void AddDocument() => NewDocuments.Add(CreateDocumentDraft());
+
+    private PatternDocumentDraftViewModel CreateDocumentDraft() =>
+        new(filePicker, RemoveDocument);
+
+    private void ResetNewDocuments() =>
+        NewDocuments = new ObservableCollection<PatternDocumentDraftViewModel>
         {
-            Documents = [];
+            CreateDocumentDraft()
+        };
+
+    private void ResetExistingDocuments() =>
+        ExistingDocuments = [];
+
+    private async Task LoadExistingDocumentsAsync(IReadOnlyCollection<Guid> selectedIds)
+    {
+        if (!_isEdit || selectedIds.Count == 0)
+        {
+            IsBusy = false;
+            DocumentsLoaded = true;
             return;
         }
 
-        Documents = new ObservableCollection<PatternDocumentSelectionViewModel>(
-            result.Value
-                .OrderBy(d => d.Nickname)
-                .Select(d => new PatternDocumentSelectionViewModel(d, selectedIds.Contains(d.Id))));
+        var result = await documentRepo.GetAllAsync();
+        if (result.Failed || result.Value is null)
+        {
+            ErrorMessage = result.Error;
+            notifications.Error(result.Error ?? "Impossible de charger les documents du patron.");
+            IsBusy = false;
+            DocumentsLoaded = true;
+            return;
+        }
+
+        var documents = result.Value
+            .Where(d => selectedIds.Contains(d.Id))
+            .OrderBy(d => d.Nickname)
+            .Select(d => new PatternExistingDocumentViewModel(
+                d.Id,
+                d.Nickname,
+                d.Type,
+                FormatSize(d.SizeBytes),
+                RemoveExistingDocument))
+            .ToList();
+
+        ExistingDocuments = new ObservableCollection<PatternExistingDocumentViewModel>(documents);
+        IsBusy = false;
+        DocumentsLoaded = true;
     }
 
-    private bool CanSave() => !string.IsNullOrWhiteSpace(Name);
+    private static string FormatSize(long bytes)
+    {
+        if (bytes <= 0)
+            return "0 B";
 
-    private IReadOnlyList<Guid> GetSelectedDocumentIds() =>
-        Documents
-            .Where(d => d.IsSelected)
-            .Select(d => d.Document.Id)
-            .ToList();
+        string[] units = ["B", "KB", "MB", "GB", "TB"];
+        var size = (double)bytes;
+        var unitIndex = 0;
+
+        while (size >= 1024 && unitIndex < units.Length - 1)
+        {
+            size /= 1024;
+            unitIndex++;
+        }
+
+        return unitIndex == 0
+            ? $"{bytes} {units[unitIndex]}"
+            : $"{size:0.##} {units[unitIndex]}";
+    }
+
+    private void RemoveDocument(PatternDocumentDraftViewModel draft)
+    {
+        if (NewDocuments.Count <= 1)
+        {
+            draft.Reset();
+            return;
+        }
+
+        NewDocuments.Remove(draft);
+    }
+
+    private void RemoveExistingDocument(PatternExistingDocumentViewModel document)
+    {
+        _deletedDocumentIds.Add(document.DocumentId);
+        ExistingDocuments.Remove(document);
+    }
+
+    private int CountPendingDocumentChanges() =>
+        _deletedDocumentIds.Count
+        + ExistingDocuments.Count(document => document.Nickname != document.OriginalNickname)
+        + NewDocuments.Count(document => !string.IsNullOrWhiteSpace(document.SourcePath));
+
+    private static string BuildSuccessMessage(bool wasEdit, bool hasDocumentChanges) =>
+        hasDocumentChanges
+            ? (wasEdit
+                ? "Le patron et ses documents ont été mis à jour."
+                : "Le patron et ses documents ont été ajoutés.")
+            : (wasEdit ? "Le patron a été mis à jour." : "Le patron a été ajouté.");
+
+    private async Task<bool> SyncExistingDocumentsAsync()
+    {
+        foreach (var deletedId in _deletedDocumentIds.ToList())
+        {
+            var deleteResult = await documentRepo.DeleteAsync(deletedId);
+            if (deleteResult.Failed)
+            {
+                ErrorMessage = deleteResult.Error;
+                notifications.Error(deleteResult.Error ?? "Impossible de supprimer le document.");
+                return false;
+            }
+        }
+
+        foreach (var document in ExistingDocuments)
+        {
+            if (_deletedDocumentIds.Contains(document.DocumentId))
+                continue;
+
+            if (document.Nickname == document.OriginalNickname)
+                continue;
+
+            var updateResult = await documentRepo.UpdateAsync(new UpdateDocumentRequest(
+                document.DocumentId,
+                document.Nickname));
+
+            if (updateResult.Failed)
+            {
+                ErrorMessage = updateResult.Error;
+                notifications.Error(updateResult.Error ?? "Impossible de renommer le document.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private async Task<bool> CreateNewDocumentsAsync(int patternId)
+    {
+        foreach (var draft in NewDocuments.Where(d => !string.IsNullOrWhiteSpace(d.SourcePath)))
+        {
+            if (string.IsNullOrWhiteSpace(draft.Nickname) && !string.IsNullOrWhiteSpace(draft.SourcePath))
+                draft.Nickname = Path.GetFileNameWithoutExtension(draft.SourcePath);
+
+            var documentResult = await documentRepo.AddAsync(new CreateDocumentRequest(
+                draft.SourcePath!,
+                draft.Nickname,
+                patternId));
+
+            if (documentResult.Failed)
+            {
+                ErrorMessage = documentResult.Error;
+                notifications.Error(documentResult.Error ?? "Impossible d'ajouter le document au patron.");
+                return false;
+            }
+
+            draft.Reset();
+        }
+
+        return true;
+    }
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()
@@ -98,41 +250,43 @@ public partial class PatternsFormViewModel(
         try
         {
             IsBusy = true;
+            var wasEdit = _isEdit;
 
-            if (_isEdit)
+            var patternResult = _isEdit
+                ? await patternRepo.UpdateAsync(new UpdatePatternRequest(_editingId, Name, Url, Note))
+                : await patternRepo.AddAsync(new CreatePatternRequest(Name, Url, Note));
+
+            if (patternResult.Failed || patternResult.Value is null)
             {
-                var result = await repo.UpdateAsync(new UpdatePatternRequest(
-                    _editingId,
-                    Name,
-                    Url,
-                    Note,
-                    GetSelectedDocumentIds()));
-                if (result.Failed)
-                {
-                    ErrorMessage = result.Error;
-                    notifications.Error(result.Error ?? "Impossible de mettre à jour le patron.");
-                    return;
-                }
-
-                notifications.Success("Le patron a été mis à jour.");
-            }
-            else
-            {
-                var result = await repo.AddAsync(new CreatePatternRequest(
-                    Name,
-                    Url,
-                    Note,
-                    GetSelectedDocumentIds()));
-                if (result.Failed)
-                {
-                    ErrorMessage = result.Error;
-                    notifications.Error(result.Error ?? "Impossible d'ajouter le patron.");
-                    return;
-                }
-
-                notifications.Success("Le patron a été ajouté.");
+                ErrorMessage = patternResult.Error;
+                notifications.Error(patternResult.Error ?? "Impossible de sauvegarder le patron.");
+                return;
             }
 
+            var savedPattern = patternResult.Value;
+            if (!wasEdit)
+            {
+                _isEdit = true;
+                _editingId = savedPattern.Id;
+                Title = "Modifier le patron";
+                OnPropertyChanged(nameof(IsCreateMode));
+                OnPropertyChanged(nameof(IsEditMode));
+            }
+
+            var hasDocumentChanges = CountPendingDocumentChanges() > 0;
+            if (!await SyncExistingDocumentsAsync())
+                return;
+
+            if (!await CreateNewDocumentsAsync(savedPattern.Id))
+                return;
+
+            if (hasDocumentChanges)
+            {
+                _refresh.RequestDocumentsRefresh();
+                _refresh.RequestPatternsRefresh();
+            }
+
+            notifications.Success(BuildSuccessMessage(wasEdit, hasDocumentChanges));
             nav.GoBack();
         }
         catch (Exception ex)

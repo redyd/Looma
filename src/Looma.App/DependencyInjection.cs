@@ -42,6 +42,8 @@ public static class DependencyInjection
         services.AddTransient<DocumentsFormViewModel>();
         services.AddTransient<DocumentsListViewModel>();
 
+        services.AddSingleton<IDataRefreshService, DataRefreshService>();
+
         services.AddSingleton<MainViewModel>(sp =>
         {
             SectionNavigationViewModel MakeSection<TList>(
@@ -63,11 +65,13 @@ public static class DependencyInjection
                 MakeSection<PatternsListViewModel>(nav =>
                     new PatternsListViewModel(nav,
                         sp.GetRequiredService<IPatternRepository>(),
-                        sp.GetRequiredService<INotificationService>())),
+                        sp.GetRequiredService<INotificationService>(),
+                        sp.GetRequiredService<IDataRefreshService>())),
                 MakeSection<DocumentsListViewModel>(nav =>
                     new DocumentsListViewModel(nav,
                         sp.GetRequiredService<IDocumentRepository>(),
-                        sp.GetRequiredService<INotificationService>())),
+                        sp.GetRequiredService<INotificationService>(),
+                        sp.GetRequiredService<IDataRefreshService>())),
                 sp.GetRequiredService<INotificationService>()
             );
         });

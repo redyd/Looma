@@ -6,6 +6,7 @@ using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
+using Looma.Presentation.Services;
 using Looma.Presentation.UserControls;
 using Looma.Presentation.ViewModels.Base;
 
@@ -17,6 +18,7 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     private readonly IPatternRepository _patternRepo;
     private readonly IDocumentRepository _documentRepo;
     private readonly INotificationService _notifications;
+    private readonly IDataRefreshService _refresh;
 
     [ObservableProperty] private int _patternId;
     [ObservableProperty] private string _name = string.Empty;
@@ -30,7 +32,7 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     public bool HasDocuments => Documents.Count > 0;
     public bool HasProjects => Projects.Count > 0;
     public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? "Aucune note." : Note!;
-    
+
     public IList<StatItem> DetailStats =>
     [
         // new() { Label = "Pelottes estimée", Value = "-1", Unit = "x"},
@@ -41,20 +43,23 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     [
         new() { Label = "Nom", Value = Name },
         new() { Label = "Lien", Value = Url ?? "Aucun" },
-        new() { Label = "Documents", Value = Documents.Count.ToString("N0")},
+        new() { Label = "Documents", Value = Documents.Count.ToString("N0") },
     ];
 
     public PatternsDetailViewModel(
         INavigationService nav,
         IPatternRepository patternRepo,
         IDocumentRepository documentRepo,
-        INotificationService notifications)
+        INotificationService notifications,
+        IDataRefreshService refresh)
     {
         _nav = nav;
         _patternRepo = patternRepo;
         _documentRepo = documentRepo;
         _notifications = notifications;
+        _refresh = refresh;
         Title = "Détail patron";
+        _refresh.PatternsRefreshRequested += OnPatternsRefreshRequested;
     }
 
     public void Load(Pattern pattern)
@@ -64,6 +69,11 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     }
 
     public override async void OnNavigatedTo()
+    {
+        await RefreshAsync();
+    }
+
+    public async Task RefreshAsync()
     {
         if (PatternId == 0)
             return;
@@ -77,6 +87,8 @@ public partial class PatternsDetailViewModel : PageViewModelBase
 
         ApplyPattern(pattern.Value);
     }
+
+    private void OnPatternsRefreshRequested(object? sender, EventArgs e) => _ = RefreshAsync();
 
     private void ApplyPattern(Pattern pattern)
     {
@@ -127,7 +139,8 @@ public partial class PatternsDetailViewModel : PageViewModelBase
 
     [RelayCommand]
     private void Edit() =>
-        _nav.NavigateTo<PatternsFormViewModel>(vm => vm.InitEdit(PatternId, Name, Url, Note, Documents.Select(d => d.Document.Id).ToList()));
+        _nav.NavigateTo<PatternsFormViewModel>(vm =>
+            vm.InitEdit(PatternId, Name, Url, Note, Documents.Select(d => d.Document.Id).ToList()));
 
     [RelayCommand]
     private async Task ConfirmDeleteAsync()

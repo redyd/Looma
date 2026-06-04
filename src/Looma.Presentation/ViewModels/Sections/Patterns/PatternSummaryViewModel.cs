@@ -8,12 +8,8 @@ public record PatternSummaryViewModel(
     int DocumentCount,
     int ProjectCount,
     bool HasUrl,
-    ICommand OpenDetailCommand,
-    ICommand EditCommand,
-    ICommand DeleteCommand)
+    ICommand OpenDetailCommand)
 {
-    public string UrlDisplay => HasUrl ? "Oui" : "Non";
-    public bool HasNote => !string.IsNullOrWhiteSpace(Pattern.Note);
     public string NotePreview
     {
         get

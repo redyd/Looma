@@ -3,11 +3,12 @@ using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Infrastructure.Entity;
 using Looma.Infrastructure.Mapping;
+using Looma.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace Looma.Infrastructure.Repositories;
 
-public class PatternRepository(LoomaDbContext context) : IPatternRepository
+public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : IPatternRepository
 {
     public async Task<ResultT<IReadOnlyList<Pattern>>> GetAllAsync()
     {
@@ -20,7 +21,8 @@ public class PatternRepository(LoomaDbContext context) : IPatternRepository
                 .OrderBy(p => p.Name)
                 .ToListAsync();
 
-            return ResultT<IReadOnlyList<Pattern>>.Ok(entities.Select(e => e.ToDomain()).ToList());
+            return ResultT<IReadOnlyList<Pattern>>.Ok(
+                entities.Select(e => ApplyFileMetadata(e.ToDomain())).ToList());
         }
         catch (Exception ex)
         {
@@ -40,7 +42,7 @@ public class PatternRepository(LoomaDbContext context) : IPatternRepository
 
             return entity is null
                 ? ResultT<Pattern>.NotFound($"Le patron {id} est introuvable.")
-                : ResultT<Pattern>.Ok(entity.ToDomain());
+                : ResultT<Pattern>.Ok(ApplyFileMetadata(entity.ToDomain()));
         }
         catch (Exception ex)
         {
@@ -56,26 +58,23 @@ public class PatternRepository(LoomaDbContext context) : IPatternRepository
             if (string.IsNullOrWhiteSpace(name))
                 return ResultT<Pattern>.Failure("Le nom du patron est invalide.");
 
-            var documents = await ResolveDocumentsAsync(request.DocumentIds);
-            if (documents.Failed)
-                return ResultT<Pattern>.Failure(documents.Error ?? "Impossible de résoudre les documents du patron.");
-
             var entity = new PatternEntity
             {
                 Name = name,
                 Url = NormalizeOptional(request.Url),
                 Note = NormalizeOptional(request.Note),
-                Documents = documents.Value!.ToList(),
                 Projects = []
             };
 
             context.Patterns.Add(entity);
             await context.SaveChangesAsync();
 
-            return ResultT<Pattern>.Ok((await context.Patterns.AsNoTracking()
+            var saved = await context.Patterns.AsNoTracking()
                 .Include(p => p.Documents)
                 .Include(p => p.Projects)
-                .FirstAsync(p => p.PatternId == entity.PatternId)).ToDomain());
+                .FirstAsync(p => p.PatternId == entity.PatternId);
+
+            return ResultT<Pattern>.Ok(ApplyFileMetadata(saved.ToDomain()));
         }
         catch (DbUpdateException ex)
         {
@@ -102,19 +101,12 @@ public class PatternRepository(LoomaDbContext context) : IPatternRepository
             if (string.IsNullOrWhiteSpace(name))
                 return ResultT<Pattern>.Failure("Le nom du patron est invalide.");
 
-            var documents = await ResolveDocumentsAsync(request.DocumentIds);
-            if (documents.Failed)
-                return ResultT<Pattern>.Failure(documents.Error ?? "Impossible de résoudre les documents du patron.");
-
             entity.Name = name;
             entity.Url = NormalizeOptional(request.Url);
             entity.Note = NormalizeOptional(request.Note);
-            entity.Documents.Clear();
-            foreach (var document in documents.Value!)
-                entity.Documents.Add(document);
 
             await context.SaveChangesAsync();
-            return ResultT<Pattern>.Ok(entity.ToDomain());
+            return ResultT<Pattern>.Ok(ApplyFileMetadata(entity.ToDomain()));
         }
         catch (DbUpdateException ex)
         {
@@ -208,26 +200,46 @@ public class PatternRepository(LoomaDbContext context) : IPatternRepository
         }
     }
 
-    private async Task<ResultT<IReadOnlyList<DocumentEntity>>> ResolveDocumentsAsync(IReadOnlyCollection<Guid> documentIds)
-    {
-        var ids = documentIds.Distinct().ToList();
-        if (ids.Count == 0)
-            return ResultT<IReadOnlyList<DocumentEntity>>.Ok([]);
-
-        var documents = await context.Documents
-            .Where(d => ids.Contains(d.DocumentId))
-            .ToListAsync();
-
-        if (documents.Count != ids.Count)
-        {
-            var missingIds = ids.Except(documents.Select(d => d.DocumentId)).ToList();
-            return ResultT<IReadOnlyList<DocumentEntity>>.NotFound(
-                $"Certains documents sont introuvables: {string.Join(", ", missingIds)}");
-        }
-
-        return ResultT<IReadOnlyList<DocumentEntity>>.Ok(documents);
-    }
-
     private static string? NormalizeOptional(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private Pattern ApplyFileMetadata(Pattern pattern) =>
+        new()
+        {
+            Id = pattern.Id,
+            Name = pattern.Name,
+            Url = pattern.Url,
+            Note = pattern.Note,
+            Documents = pattern.Documents.Select(ApplyFileMetadata).ToList(),
+            Projects = pattern.Projects
+        };
+
+    private Document ApplyFileMetadata(Document document)
+    {
+        var filePath = pathManager.GetDocumentStoragePath(document.Id);
+        if (!File.Exists(filePath))
+        {
+            return new Document
+            {
+                Id = document.Id,
+                Nickname = document.Nickname,
+                Type = "Inconnu",
+                SizeBytes = 0
+            };
+        }
+
+        var info = new FileInfo(filePath);
+        var extension = Path.GetExtension(filePath).TrimStart('.');
+        var type = string.IsNullOrWhiteSpace(extension)
+            ? "Sans extension"
+            : extension.ToUpperInvariant();
+
+        return new Document
+        {
+            Id = document.Id,
+            Nickname = document.Nickname,
+            Type = type,
+            SizeBytes = info.Length
+        };
+    }
 }

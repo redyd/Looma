@@ -4,5 +4,4 @@ public sealed record UpdatePatternRequest(
     int Id,
     string Name,
     string? Url,
-    string? Note,
-    IReadOnlyList<Guid> DocumentIds);
+    string? Note);

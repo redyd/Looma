@@ -6,6 +6,7 @@ using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
+using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
 
 namespace Looma.Presentation.ViewModels.Sections.Documents;
@@ -15,6 +16,7 @@ public partial class DocumentsListViewModel : PageViewModelBase
     private readonly INavigationService _nav;
     private readonly IDocumentRepository _repo;
     private readonly INotificationService _notifications;
+    private readonly IDataRefreshService _refresh;
 
     private IReadOnlyList<Document> _allDocuments = [];
     private IReadOnlyList<DocumentSummaryViewModel> _allSummaries = [];
@@ -33,17 +35,22 @@ public partial class DocumentsListViewModel : PageViewModelBase
     public DocumentsListViewModel(
         INavigationService nav,
         IDocumentRepository repo,
-        INotificationService notifications)
+        INotificationService notifications,
+        IDataRefreshService refresh)
     {
         _nav = nav;
         _repo = repo;
         _notifications = notifications;
+        _refresh = refresh;
         Title = "Mes documents";
+        _refresh.DocumentsRefreshRequested += OnDocumentsRefreshRequested;
     }
 
     public override async void OnNavigatedTo() => await RefreshAsync();
 
     public Task RefreshAsync() => LoadAsync();
+
+    private void OnDocumentsRefreshRequested(object? sender, EventArgs e) => _ = RefreshAsync();
 
     private async Task LoadAsync()
     {
@@ -130,6 +137,7 @@ public partial class DocumentsListViewModel : PageViewModelBase
         }
 
         _notifications.Success("Le document a été supprimé.");
+        _refresh.RequestPatternsRefresh();
         await LoadAsync();
     }
 

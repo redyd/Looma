@@ -73,6 +73,14 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
 
         try
         {
+            PatternEntity? pattern = null;
+            if (request.PatternId.HasValue)
+            {
+                pattern = await context.Patterns.FirstOrDefaultAsync(p => p.PatternId == request.PatternId.Value);
+                if (pattern is null)
+                    return ResultT<Document>.NotFound($"Le patron {request.PatternId.Value} est introuvable.");
+            }
+
             Directory.CreateDirectory(pathManager.DocumentsFolder);
             File.Copy(request.SourcePath, destinationPath, overwrite: false);
 
@@ -81,6 +89,9 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 DocumentId = id,
                 Nickname = nickname
             };
+
+            if (pattern is not null)
+                entity.Pattern = pattern;
 
             context.Documents.Add(entity);
             await context.SaveChangesAsync();
