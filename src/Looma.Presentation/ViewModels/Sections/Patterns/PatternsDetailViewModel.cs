@@ -102,7 +102,7 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         Note = pattern.Note;
         BeginDate = pattern.BeginDate;
         EndDate = pattern.EndDate;
-
+        
         Documents = new ObservableCollection<PatternDocumentViewModel>(
             pattern.Documents.Select(d => new PatternDocumentViewModel(
                 d,

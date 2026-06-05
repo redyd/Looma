@@ -117,19 +117,6 @@ public partial class PatternsListViewModel : PageViewModelBase
         PageInfo = $"{CurrentPage} / {TotalPages}";
     }
 
-    private async Task DeleteAsync(int id)
-    {
-        var result = await _repo.DeleteAsync(id);
-        if (result.Failed)
-        {
-            _notifications.Error(result.Error ?? "Impossible de supprimer le patron.");
-            return;
-        }
-
-        _notifications.Success("Le patron a été supprimé.");
-        await LoadAsync();
-    }
-
     [RelayCommand(CanExecute = nameof(HasPreviousPage))]
     private void PreviousPage()
     {

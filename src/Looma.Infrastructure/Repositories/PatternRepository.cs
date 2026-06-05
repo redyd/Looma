@@ -215,7 +215,9 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
             Url = pattern.Url,
             Note = pattern.Note,
             Documents = pattern.Documents.Select(ApplyFileMetadata).ToList(),
-            Projects = pattern.Projects
+            Projects = pattern.Projects,
+            BeginDate =  pattern.BeginDate,
+            EndDate =  pattern.EndDate,
         };
 
     private Document ApplyFileMetadata(Document document)
