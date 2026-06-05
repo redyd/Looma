@@ -70,6 +70,27 @@
                             </StackPanel>
                         </StackPanel>
                     </Border>
+                    
+                    <StackPanel Classes="form-field">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <TextBlock Classes="form-label" Text="Type de patron" />
+                            <TextBlock Classes="field-required" Text="*" />
+                        </StackPanel>
+                        <ComboBox ItemsSource="{Binding PatternTypes}"
+                                  SelectedItem="{Binding Type, Mode=TwoWay}"
+                                  HorizontalAlignment="Stretch">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource EnumDisplayName}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Classes="form-field">
+                        <CheckBox Content="Projet personnel"
+                                  IsChecked="{Binding IsPersonal, Mode=TwoWay}" />
+                    </StackPanel>
 
                     <Border Classes="form-section" IsVisible="{Binding IsEditMode}">
                         <StackPanel Spacing="0">

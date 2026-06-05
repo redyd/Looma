@@ -7,6 +7,8 @@ using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
 using System.Collections.ObjectModel;
+using Looma.Domain.Core;
+using Looma.Domain.Extensions;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
 
@@ -19,43 +21,124 @@ public partial class PatternsFormViewModel(
     INotificationService notifications)
     : PageViewModelBase
 {
+    private readonly HashSet<Guid> _deletedDocumentIds = [];
     private bool _isEdit;
     private int _editingId;
+
+    public bool IsCreateMode => !_isEdit;
+    public bool IsEditMode => _isEdit;
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _name = string.Empty;
 
-    [ObservableProperty] private string? _url;
-
-    [ObservableProperty] private string? _note;
-
-    [ObservableProperty] private DateTimeOffset? _beginDate;
-
-    [ObservableProperty] private DateTimeOffset? _endDate;
-
-    [ObservableProperty] private string? _errorMessage;
-
-    [ObservableProperty] private ObservableCollection<PatternExistingDocumentViewModel> _existingDocuments = [];
-
-    [ObservableProperty] private ObservableCollection<PatternDocumentDraftViewModel> _newDocuments = [];
-
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private bool _documentsLoaded = true;
 
-    public bool IsCreateMode => !_isEdit;
-    public bool IsEditMode => _isEdit;
+    public IReadOnlyList<PatternType> PatternTypes { get; } = Enum.GetValues<PatternType>().ToList();
+
+    [ObservableProperty] private string? _url;
+    [ObservableProperty] private string? _note;
+    [ObservableProperty] private PatternType _type;
+    [ObservableProperty] private bool _isPersonal;
+    [ObservableProperty] private DateTimeOffset? _beginDate;
+    [ObservableProperty] private DateTimeOffset? _endDate;
+    [ObservableProperty] private string? _errorMessage;
+    [ObservableProperty] private ObservableCollection<PatternExistingDocumentViewModel> _existingDocuments = [];
+    [ObservableProperty] private ObservableCollection<PatternDocumentDraftViewModel> _newDocuments = [];
+
+    [RelayCommand]
+    private void AddDocument() => NewDocuments.Add(CreateDocumentDraft());
+
+    [RelayCommand(CanExecute = nameof(CanSave))]
+    private async Task SaveAsync()
+    {
+        ErrorMessage = null;
+
+        try
+        {
+            IsBusy = true;
+            var wasEdit = _isEdit;
+
+            var patternResult = _isEdit
+                ? await patternRepo.UpdateAsync(new UpdatePatternRequest(
+                    _editingId,
+                    Name,
+                    Url,
+                    Note,
+                    Type,
+                    IsPersonal,
+                    BeginDate.ToDateOnly(),
+                    EndDate.ToDateOnly()))
+                : await patternRepo.AddAsync(new CreatePatternRequest(
+                    Name,
+                    Url,
+                    Note,
+                    Type,
+                    IsPersonal,
+                    BeginDate.ToDateOnly(),
+                    EndDate.ToDateOnly()));
+
+            if (patternResult.Failed || patternResult.Value is null)
+            {
+                ErrorMessage = patternResult.Error;
+                notifications.Error(patternResult.Error ?? "Impossible de sauvegarder le patron.");
+                return;
+            }
+
+            var savedPattern = patternResult.Value;
+            if (!wasEdit)
+            {
+                _isEdit = true;
+                _editingId = savedPattern.Id;
+                Title = "Modifier le patron";
+                OnPropertyChanged(nameof(IsCreateMode));
+                OnPropertyChanged(nameof(IsEditMode));
+            }
+
+            var hasDocumentChanges = CountPendingDocumentChanges() > 0;
+            if (!await SyncExistingDocumentsAsync())
+                return;
+
+            if (!await CreateNewDocumentsAsync(savedPattern.Id))
+                return;
+
+            if (hasDocumentChanges)
+            {
+                refresh.RequestDocumentsRefresh();
+                refresh.RequestPatternsRefresh();
+            }
+
+            notifications.Success(BuildSuccessMessage(wasEdit, hasDocumentChanges));
+            nav.GoBack();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private void Cancel() => nav.GoBack();
 
     public void InitCreate()
     {
         _isEdit = false;
         _editingId = 0;
         Title = "Nouveau patron";
+
         Name = string.Empty;
         Url = null;
         Note = null;
+        Type = PatternType.Crochet;
+        IsPersonal = false;
         BeginDate = null;
         EndDate = null;
         ErrorMessage = null;
+
         _deletedDocumentIds.Clear();
         ResetExistingDocuments();
         ResetNewDocuments();
@@ -64,17 +147,23 @@ public partial class PatternsFormViewModel(
         OnPropertyChanged(nameof(IsEditMode));
     }
 
-    public void InitEdit(int id, string name, string? url, string? note, DateOnly? beginDate, DateOnly? endDate, IReadOnlyList<Guid> documentIds)
+    public void InitEdit(int id, string name, string? url, string? note, PatternType? type, bool? isPersonal,
+        DateOnly? beginDate, DateOnly? endDate,
+        IReadOnlyList<Guid> documentIds)
     {
         _isEdit = true;
         _editingId = id;
         Title = "Modifier le patron";
+
         Name = name;
         Url = url;
         Note = note;
-        BeginDate = ToDateTimeOffset(beginDate);
-        EndDate = ToDateTimeOffset(endDate);
+        Type = type ?? PatternType.Crochet;
+        IsPersonal = isPersonal ?? false;
+        BeginDate = beginDate.ToDateTimeOffset();
+        EndDate = endDate.ToDateTimeOffset();
         ErrorMessage = null;
+
         _deletedDocumentIds.Clear();
         ResetExistingDocuments();
         ResetNewDocuments();
@@ -85,13 +174,7 @@ public partial class PatternsFormViewModel(
         _ = LoadExistingDocumentsAsync(documentIds);
     }
 
-    private readonly HashSet<Guid> _deletedDocumentIds = [];
-    private readonly IDataRefreshService _refresh = refresh;
-
     private bool CanSave() => DocumentsLoaded && !string.IsNullOrWhiteSpace(Name);
-
-    [RelayCommand]
-    private void AddDocument() => NewDocuments.Add(CreateDocumentDraft());
 
     private PatternDocumentDraftViewModel CreateDocumentDraft() =>
         new(filePicker, RemoveDocument);
@@ -189,12 +272,6 @@ public partial class PatternsFormViewModel(
                 : "Le patron et ses documents ont été ajoutés.")
             : (wasEdit ? "Le patron a été mis à jour." : "Le patron a été ajouté.");
 
-    private static DateOnly? ToDateOnly(DateTimeOffset? value) =>
-        value is null ? null : DateOnly.FromDateTime(value.Value.DateTime);
-
-    private static DateTimeOffset? ToDateTimeOffset(DateOnly? value) =>
-        value is null ? null : new DateTimeOffset(value.Value.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
-
     private async Task<bool> SyncExistingDocumentsAsync()
     {
         foreach (var deletedId in _deletedDocumentIds.ToList())
@@ -255,75 +332,4 @@ public partial class PatternsFormViewModel(
 
         return true;
     }
-
-    [RelayCommand(CanExecute = nameof(CanSave))]
-    private async Task SaveAsync()
-    {
-        ErrorMessage = null;
-
-        try
-        {
-            IsBusy = true;
-            var wasEdit = _isEdit;
-
-            var patternResult = _isEdit
-                ? await patternRepo.UpdateAsync(new UpdatePatternRequest(
-                    _editingId,
-                    Name,
-                    Url,
-                    Note,
-                    ToDateOnly(BeginDate),
-                    ToDateOnly(EndDate)))
-                : await patternRepo.AddAsync(new CreatePatternRequest(
-                    Name,
-                    Url,
-                    Note,
-                    ToDateOnly(BeginDate),
-                    ToDateOnly(EndDate)));
-
-            if (patternResult.Failed || patternResult.Value is null)
-            {
-                ErrorMessage = patternResult.Error;
-                notifications.Error(patternResult.Error ?? "Impossible de sauvegarder le patron.");
-                return;
-            }
-
-            var savedPattern = patternResult.Value;
-            if (!wasEdit)
-            {
-                _isEdit = true;
-                _editingId = savedPattern.Id;
-                Title = "Modifier le patron";
-                OnPropertyChanged(nameof(IsCreateMode));
-                OnPropertyChanged(nameof(IsEditMode));
-            }
-
-            var hasDocumentChanges = CountPendingDocumentChanges() > 0;
-            if (!await SyncExistingDocumentsAsync())
-                return;
-
-            if (!await CreateNewDocumentsAsync(savedPattern.Id))
-                return;
-
-            if (hasDocumentChanges)
-            {
-                _refresh.RequestDocumentsRefresh();
-                _refresh.RequestPatternsRefresh();
-            }
-
-            notifications.Success(BuildSuccessMessage(wasEdit, hasDocumentChanges));
-            nav.GoBack();
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
-    [RelayCommand]
-    private void Cancel() => nav.GoBack();
 }

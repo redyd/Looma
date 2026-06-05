@@ -18,7 +18,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:StatItem">
-                        <Border BorderThickness="{Binding IsFirst, Converter={StaticResource FirstItemBorderConverter}}"
+                        <Border BorderThickness="{Binding IsFirst, Converter={StaticResource FirstItemBorder}}"
                                 BorderBrush="{StaticResource BorderBrush}">
                             <StackPanel HorizontalAlignment="Center"
                                         VerticalAlignment="Center"

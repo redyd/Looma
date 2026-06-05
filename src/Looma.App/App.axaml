@@ -11,7 +11,8 @@
                 <ResourceInclude Source="avares://Looma.Views/Styles/Colors.axaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:HexToColorConverter x:Key="HexToColor" />
-            <converters:FirstItemBorderConverter x:Key="FirstItemBorderConverter" />
+            <converters:FirstItemBorderConverter x:Key="FirstItemBorder" />
+            <converters:EnumDisplayNameConverter x:Key="EnumDisplayName" />
         </ResourceDictionary>
     </Application.Resources>
 

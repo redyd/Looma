@@ -16,18 +16,9 @@ public static class PatternMapping
             BeginDate = entity.BeginDate,
             EndDate = entity.EndDate,
             Documents = entity.Documents.Select(d => d.ToDomain()).ToList(),
-            Projects = entity.Projects.Select(p => p.ToDomain()).ToList()
-        };
-
-    public static PatternEntity ToEntity(this Pattern domain) =>
-        new()
-        {
-            PatternId = domain.Id,
-            Name = domain.Name,
-            Url = domain.Url,
-            Note = domain.Note,
-            BeginDate = domain.BeginDate,
-            EndDate = domain.EndDate
+            Projects = entity.Projects.Select(p => p.ToDomain()).ToList(),
+            IsPersonal = entity.IsPersonal,
+            Type = entity.Type,
         };
 
     public static PatternProject ToDomain(this ProjectEntity entity) =>

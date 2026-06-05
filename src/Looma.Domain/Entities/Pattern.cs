@@ -10,6 +10,8 @@ public class Pattern
     public required string? Note { get; init; }
     public required DateOnly? BeginDate { get; init; }
     public required DateOnly? EndDate { get; init; }
+    public required PatternType Type { get; init; }
+    public required bool IsPersonal { get; init; }
     public required IReadOnlyList<Document> Documents { get; init; }
     public required IReadOnlyList<PatternProject> Projects { get; init; }
 }

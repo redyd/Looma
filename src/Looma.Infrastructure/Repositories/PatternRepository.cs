@@ -63,6 +63,8 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
                 Name = name,
                 Url = NormalizeOptional(request.Url),
                 Note = NormalizeOptional(request.Note),
+                Type = request.Type,
+                IsPersonal = request.IsPersonal,
                 BeginDate = request.BeginDate,
                 EndDate = request.EndDate,
                 Projects = []
@@ -106,6 +108,8 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
             entity.Name = name;
             entity.Url = NormalizeOptional(request.Url);
             entity.Note = NormalizeOptional(request.Note);
+            entity.Type = request.Type;
+            entity.IsPersonal = request.IsPersonal;
             entity.BeginDate = request.BeginDate;
             entity.EndDate = request.EndDate;
 
@@ -216,8 +220,10 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
             Note = pattern.Note,
             Documents = pattern.Documents.Select(ApplyFileMetadata).ToList(),
             Projects = pattern.Projects,
+            IsPersonal = pattern.IsPersonal,
+            Type = pattern.Type,
             BeginDate =  pattern.BeginDate,
-            EndDate =  pattern.EndDate,
+            EndDate =  pattern.EndDate
         };
 
     private Document ApplyFileMetadata(Document document)

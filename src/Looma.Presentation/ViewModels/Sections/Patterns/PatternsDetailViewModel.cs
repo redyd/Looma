@@ -2,7 +2,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Looma.Domain.Core;
 using Looma.Domain.Entities;
+using Looma.Domain.Extensions;
 using Looma.Domain.Repositories;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
@@ -24,9 +26,12 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     [ObservableProperty] private string _name = string.Empty;
     [ObservableProperty] private string? _url;
     [ObservableProperty] private string? _note;
+    [ObservableProperty] private PatternType _type;
+    [ObservableProperty] private bool _isPersonal;
     [ObservableProperty] private DateOnly? _beginDate;
     [ObservableProperty] private DateOnly? _endDate;
     [ObservableProperty] private string? _errorMessage;
+
     [ObservableProperty] private ObservableCollection<PatternDocumentViewModel> _documents = [];
     [ObservableProperty] private ObservableCollection<PatternProjectViewModel> _projects = [];
 
@@ -45,6 +50,8 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     [
         new() { Label = "Nom", Value = Name },
         new() { Label = "Lien", Value = Url ?? "Aucun" },
+        new() { Label = "Type", Value = Type.GetDisplayName() },
+        new() { Label = "Patron", Value = IsPersonal ? "Personnel" : "Non personnel" },
         new() { Label = "Début", Value = FormatDate(BeginDate) },
         new() { Label = "Fin", Value = FormatDate(EndDate) },
         new() { Label = "Documents", Value = Documents.Count.ToString("N0") },
@@ -77,7 +84,7 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         await RefreshAsync();
     }
 
-    public async Task RefreshAsync()
+    private async Task RefreshAsync()
     {
         if (PatternId == 0)
             return;
@@ -100,9 +107,11 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         Name = pattern.Name;
         Url = pattern.Url;
         Note = pattern.Note;
+        Type = pattern.Type;
+        IsPersonal = pattern.IsPersonal;
         BeginDate = pattern.BeginDate;
         EndDate = pattern.EndDate;
-        
+
         Documents = new ObservableCollection<PatternDocumentViewModel>(
             pattern.Documents.Select(d => new PatternDocumentViewModel(
                 d,
@@ -150,7 +159,8 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     [RelayCommand]
     private void Edit() =>
         _nav.NavigateTo<PatternsFormViewModel>(vm =>
-            vm.InitEdit(PatternId, Name, Url, Note, BeginDate, EndDate, Documents.Select(d => d.Document.Id).ToList()));
+            vm.InitEdit(PatternId, Name, Url, Note, Type, IsPersonal, BeginDate, EndDate,
+                Documents.Select(d => d.Document.Id).ToList()));
 
     [RelayCommand]
     private async Task ConfirmDeleteAsync()
