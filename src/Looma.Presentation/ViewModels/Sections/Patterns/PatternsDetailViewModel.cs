@@ -24,6 +24,8 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     [ObservableProperty] private string _name = string.Empty;
     [ObservableProperty] private string? _url;
     [ObservableProperty] private string? _note;
+    [ObservableProperty] private DateOnly? _beginDate;
+    [ObservableProperty] private DateOnly? _endDate;
     [ObservableProperty] private string? _errorMessage;
     [ObservableProperty] private ObservableCollection<PatternDocumentViewModel> _documents = [];
     [ObservableProperty] private ObservableCollection<PatternProjectViewModel> _projects = [];
@@ -43,6 +45,8 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     [
         new() { Label = "Nom", Value = Name },
         new() { Label = "Lien", Value = Url ?? "Aucun" },
+        new() { Label = "Début", Value = FormatDate(BeginDate) },
+        new() { Label = "Fin", Value = FormatDate(EndDate) },
         new() { Label = "Documents", Value = Documents.Count.ToString("N0") },
     ];
 
@@ -96,6 +100,8 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         Name = pattern.Name;
         Url = pattern.Url;
         Note = pattern.Note;
+        BeginDate = pattern.BeginDate;
+        EndDate = pattern.EndDate;
 
         Documents = new ObservableCollection<PatternDocumentViewModel>(
             pattern.Documents.Select(d => new PatternDocumentViewModel(
@@ -109,7 +115,11 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         OnPropertyChanged(nameof(HasDocuments));
         OnPropertyChanged(nameof(HasProjects));
         OnPropertyChanged(nameof(NoteDisplay));
+        OnPropertyChanged(nameof(DetailInfos));
     }
+
+    private static string FormatDate(DateOnly? value) =>
+        value is null ? "Aucune" : value.Value.ToString("dd/MM/yyyy");
 
     private async Task OpenDocumentAsync(Guid id)
     {
@@ -140,7 +150,7 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     [RelayCommand]
     private void Edit() =>
         _nav.NavigateTo<PatternsFormViewModel>(vm =>
-            vm.InitEdit(PatternId, Name, Url, Note, Documents.Select(d => d.Document.Id).ToList()));
+            vm.InitEdit(PatternId, Name, Url, Note, BeginDate, EndDate, Documents.Select(d => d.Document.Id).ToList()));
 
     [RelayCommand]
     private async Task ConfirmDeleteAsync()

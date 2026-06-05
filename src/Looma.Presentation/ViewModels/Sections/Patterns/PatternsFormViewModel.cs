@@ -29,6 +29,10 @@ public partial class PatternsFormViewModel(
 
     [ObservableProperty] private string? _note;
 
+    [ObservableProperty] private DateTimeOffset? _beginDate;
+
+    [ObservableProperty] private DateTimeOffset? _endDate;
+
     [ObservableProperty] private string? _errorMessage;
 
     [ObservableProperty] private ObservableCollection<PatternExistingDocumentViewModel> _existingDocuments = [];
@@ -49,6 +53,8 @@ public partial class PatternsFormViewModel(
         Name = string.Empty;
         Url = null;
         Note = null;
+        BeginDate = null;
+        EndDate = null;
         ErrorMessage = null;
         _deletedDocumentIds.Clear();
         ResetExistingDocuments();
@@ -58,7 +64,7 @@ public partial class PatternsFormViewModel(
         OnPropertyChanged(nameof(IsEditMode));
     }
 
-    public void InitEdit(int id, string name, string? url, string? note, IReadOnlyList<Guid> documentIds)
+    public void InitEdit(int id, string name, string? url, string? note, DateOnly? beginDate, DateOnly? endDate, IReadOnlyList<Guid> documentIds)
     {
         _isEdit = true;
         _editingId = id;
@@ -66,6 +72,8 @@ public partial class PatternsFormViewModel(
         Name = name;
         Url = url;
         Note = note;
+        BeginDate = ToDateTimeOffset(beginDate);
+        EndDate = ToDateTimeOffset(endDate);
         ErrorMessage = null;
         _deletedDocumentIds.Clear();
         ResetExistingDocuments();
@@ -181,6 +189,12 @@ public partial class PatternsFormViewModel(
                 : "Le patron et ses documents ont été ajoutés.")
             : (wasEdit ? "Le patron a été mis à jour." : "Le patron a été ajouté.");
 
+    private static DateOnly? ToDateOnly(DateTimeOffset? value) =>
+        value is null ? null : DateOnly.FromDateTime(value.Value.DateTime);
+
+    private static DateTimeOffset? ToDateTimeOffset(DateOnly? value) =>
+        value is null ? null : new DateTimeOffset(value.Value.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
+
     private async Task<bool> SyncExistingDocumentsAsync()
     {
         foreach (var deletedId in _deletedDocumentIds.ToList())
@@ -253,8 +267,19 @@ public partial class PatternsFormViewModel(
             var wasEdit = _isEdit;
 
             var patternResult = _isEdit
-                ? await patternRepo.UpdateAsync(new UpdatePatternRequest(_editingId, Name, Url, Note))
-                : await patternRepo.AddAsync(new CreatePatternRequest(Name, Url, Note));
+                ? await patternRepo.UpdateAsync(new UpdatePatternRequest(
+                    _editingId,
+                    Name,
+                    Url,
+                    Note,
+                    ToDateOnly(BeginDate),
+                    ToDateOnly(EndDate)))
+                : await patternRepo.AddAsync(new CreatePatternRequest(
+                    Name,
+                    Url,
+                    Note,
+                    ToDateOnly(BeginDate),
+                    ToDateOnly(EndDate)));
 
             if (patternResult.Failed || patternResult.Value is null)
             {

@@ -13,6 +13,8 @@ public static class PatternMapping
             Name = entity.Name,
             Url = entity.Url,
             Note = entity.Note,
+            BeginDate = entity.BeginDate,
+            EndDate = entity.EndDate,
             Documents = entity.Documents.Select(d => d.ToDomain()).ToList(),
             Projects = entity.Projects.Select(p => p.ToDomain()).ToList()
         };
@@ -23,7 +25,9 @@ public static class PatternMapping
             PatternId = domain.Id,
             Name = domain.Name,
             Url = domain.Url,
-            Note = domain.Note
+            Note = domain.Note,
+            BeginDate = domain.BeginDate,
+            EndDate = domain.EndDate
         };
 
     public static PatternProject ToDomain(this ProjectEntity entity) =>

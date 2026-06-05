@@ -43,6 +43,20 @@
                                          PlaceholderText="Lien vers le patron (optionnel)" />
                             </StackPanel>
 
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0" Classes="form-field">
+                                    <TextBlock Classes="form-label" Text="Date de début" />
+                                    <DatePicker SelectedDate="{Binding BeginDate, Mode=TwoWay}"
+                                                Classes="form-input" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Classes="form-field">
+                                    <TextBlock Classes="form-label" Text="Date de fin" />
+                                    <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay}"
+                                                Classes="form-input" />
+                                </StackPanel>
+                            </Grid>
+
                             <StackPanel Classes="form-field">
                                 <TextBlock Classes="form-label" Text="Note" />
                                 <TextBox Classes="form-input"

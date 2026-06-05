@@ -4,4 +4,6 @@ public sealed record UpdatePatternRequest(
     int Id,
     string Name,
     string? Url,
-    string? Note);
+    string? Note,
+    DateOnly? BeginDate = null,
+    DateOnly? EndDate = null);

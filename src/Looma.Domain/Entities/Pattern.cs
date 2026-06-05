@@ -8,6 +8,8 @@ public class Pattern
     public required string Name { get; init; }
     public string? Url { get; init; }
     public string? Note { get; init; }
+    public DateOnly? BeginDate { get; init; }
+    public DateOnly? EndDate { get; init; }
     public required IReadOnlyList<Document> Documents { get; init; }
     public required IReadOnlyList<PatternProject> Projects { get; init; }
 }

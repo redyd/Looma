@@ -51,12 +51,9 @@ Looma/
 ### Setup
 
 1. Clone the repository:
-
-   ```bash                                                                                                                                                                                                                          
-                                                                                                                                                                                                                                    
-   git clone https://github.com/yourusername/looma.git                                                                                                                                                                              
-                                                                                                                                                                                                                                    
-
+   ```bash                                                                                                                                                                                                                           
+   git clone https://github.com/yourusername/looma
+   
 2 Navigate to the project directory:
 
 cd looma
@@ -72,28 +69,3 @@ dotnet ef database update
 5 Run the application:
 
 dotnet run
-
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-📌 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1 Fork the
-repository.                                                                                                                                                                                                             
-2 Create a new branch for your feature or
-fix.                                                                                                                                                                                     
-3 Commit your
-changes.                                                                                                                                                                                                             
-4 Push to your
-fork.                                                                                                                                                                                                               
-5 Submit a pull request.
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-📄 License
-
-This project is licensed under the MIT License. See LICENSE for more information.   
