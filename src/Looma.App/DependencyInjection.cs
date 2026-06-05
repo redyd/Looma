@@ -34,11 +34,15 @@ public static class DependencyInjection
         services.AddTransient<WoolFormViewModel>();
 
         // PATTERNS
+        services.AddTransient<PatternsFormViewModel>();
+        services.AddTransient<PatternsDetailViewModel>();
         services.AddTransient<PatternsListViewModel>();
 
         // DOCUMENTS
         services.AddTransient<DocumentsFormViewModel>();
         services.AddTransient<DocumentsListViewModel>();
+
+        services.AddSingleton<IDataRefreshService, DataRefreshService>();
 
         services.AddSingleton<MainViewModel>(sp =>
         {
@@ -59,11 +63,15 @@ public static class DependencyInjection
                         sp.GetRequiredService<IStockRepository>(),
                         sp.GetRequiredService<INotificationService>())),
                 MakeSection<PatternsListViewModel>(nav =>
-                    new PatternsListViewModel(nav)),
+                    new PatternsListViewModel(nav,
+                        sp.GetRequiredService<IPatternRepository>(),
+                        sp.GetRequiredService<INotificationService>(),
+                        sp.GetRequiredService<IDataRefreshService>())),
                 MakeSection<DocumentsListViewModel>(nav =>
                     new DocumentsListViewModel(nav,
                         sp.GetRequiredService<IDocumentRepository>(),
-                        sp.GetRequiredService<INotificationService>())),
+                        sp.GetRequiredService<INotificationService>(),
+                        sp.GetRequiredService<IDataRefreshService>())),
                 sp.GetRequiredService<INotificationService>()
             );
         });
@@ -73,6 +81,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<IDocumentFilePicker, AvaloniaDocumentFilePicker>();
         services.AddScoped<IDocumentRepository, DocumentRepository>();
+        services.AddScoped<IPatternRepository, PatternRepository>();
         services.AddScoped<IWoolRepository, WoolRepository>();
         services.AddScoped<IStockRepository, StockRepository>();
     }

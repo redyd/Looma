@@ -1,4 +1,4 @@
-namespace Looma.Infrastructure.Model;
+namespace Looma.Infrastructure.Entity;
 
 public class StockEntity
 {

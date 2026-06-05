@@ -15,10 +15,8 @@ namespace Looma.Infrastructure.Migrations
                 name: "Documents",
                 columns: table => new
                 {
-                    DocumentId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RelativePath = table.Column<string>(type: "TEXT", nullable: false),
-                    Nickname = table.Column<string>(type: "TEXT", nullable: true)
+                    DocumentId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Nickname = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,7 +49,9 @@ namespace Looma.Infrastructure.Migrations
                     Brand = table.Column<string>(type: "TEXT", nullable: false),
                     Material = table.Column<string>(type: "TEXT", nullable: false),
                     Color = table.Column<string>(type: "TEXT", nullable: false),
-                    LengthToWeightRatio = table.Column<double>(type: "REAL", nullable: false)
+                    LengthToWeightRatio = table.Column<double>(type: "REAL", nullable: false),
+                    NeedleMinSize = table.Column<double>(type: "REAL", nullable: false),
+                    NeedleMaxSize = table.Column<double>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -62,7 +62,7 @@ namespace Looma.Infrastructure.Migrations
                 name: "DocumentPattern",
                 columns: table => new
                 {
-                    DocumentsDocumentId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DocumentsDocumentId = table.Column<Guid>(type: "TEXT", nullable: false),
                     PatternsPatternId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

@@ -5,6 +5,7 @@ using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
+using Looma.Presentation.UserControls;
 using Looma.Presentation.ViewModels.Base;
 
 namespace Looma.Presentation.ViewModels.Sections.Stocks;
@@ -22,12 +23,27 @@ public partial class WoolDetailViewModel : PageViewModelBase
     [ObservableProperty] private string _material = string.Empty;
     [ObservableProperty] private string _color = string.Empty;
     [ObservableProperty] private double _lengthToWeightRatio;
-    [ObservableProperty] private bool _showDeleteConfirm;
     [ObservableProperty] private double _totalWeightGrams;
     [ObservableProperty] private ObservableCollection<StockRowViewModel> _stockRows = [];
     [ObservableProperty] private double _needleMinSize;
     [ObservableProperty] private double _needleMaxSize;
     [ObservableProperty] private string? _errorMessage;
+
+    public IList<StatItem> DetailStats =>
+    [
+        // new() { Label = "Pelottes estimée", Value = "-1", Unit = "x"},
+        new() { Label = "Stock total", Value = TotalWeightGrams.ToString("N0"), Unit = "g", IsFirst = true },
+        new() { Label = "Longueur estimée", Value = TotalLengthMeters.ToString("N0"), Unit = "m" }
+    ];
+
+    public IList<InfoItem> DetailInfos =>
+    [
+        new() { Label = "Marque", Value = Brand },
+        new() { Label = "Matière", Value = Material },
+        new() { Label = "Couleur", Value = Color, ColorHex = Color },
+        new() { Label = "Ratio", Value = $"{LengthToWeightRatio:N1} m/100g" },
+        new() { Label = "Aiguilles", Value = NeedleSizeDisplay }
+    ];
 
     public string NeedleSizeDisplay =>
         $"{NeedleMinSize:G} – {NeedleMaxSize:G} mm";
@@ -78,8 +94,10 @@ public partial class WoolDetailViewModel : PageViewModelBase
         LengthToWeightRatio = wool.LengthToWeightRatio;
         NeedleMinSize = wool.NeedleMinSize;
         NeedleMaxSize = wool.NeedleMaxSize;
-        ShowDeleteConfirm = false;
+
         OnPropertyChanged(nameof(NeedleSizeDisplay));
+        OnPropertyChanged(nameof(DetailStats));
+        OnPropertyChanged(nameof(DetailInfos));
     }
 
     private async Task LoadStocksAsync()
@@ -92,6 +110,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
             StockRows = [];
             TotalWeightGrams = 0;
             OnPropertyChanged(nameof(TotalLengthMeters));
+            OnPropertyChanged(nameof(DetailStats));
             return;
         }
 
@@ -100,7 +119,10 @@ public partial class WoolDetailViewModel : PageViewModelBase
         TotalWeightGrams = totalResult.Succeeded
             ? totalResult.Value
             : stocks.Sum(s => s.WeightGrams);
+
         OnPropertyChanged(nameof(TotalLengthMeters));
+        OnPropertyChanged(nameof(DetailStats));
+
         ErrorMessage = null;
 
         StockRows = new ObservableCollection<StockRowViewModel>(
@@ -158,12 +180,6 @@ public partial class WoolDetailViewModel : PageViewModelBase
         _nav.NavigateTo<WoolFormViewModel>(vm =>
             vm.InitEdit(WoolId, Name, Brand, Material, Color,
                 LengthToWeightRatio, NeedleMinSize, NeedleMaxSize));
-
-    [RelayCommand]
-    private void AskDelete() => ShowDeleteConfirm = true;
-
-    [RelayCommand]
-    private void CancelDelete() => ShowDeleteConfirm = false;
 
     [RelayCommand]
     private async Task ConfirmDeleteAsync()

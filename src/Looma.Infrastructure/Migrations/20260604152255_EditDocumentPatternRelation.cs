@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Looma.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RefractorDocument : Migration
+    public partial class EditDocumentPatternRelation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,51 +14,45 @@ namespace Looma.Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "DocumentPattern");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "Nickname",
+            migrationBuilder.AddColumn<int>(
+                name: "PatternId",
                 table: "Documents",
-                type: "TEXT",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "TEXT",
-                oldNullable: true);
+                type: "INTEGER",
+                nullable: true);
 
-            migrationBuilder.AlterColumn<Guid>(
-                name: "DocumentId",
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_PatternId",
                 table: "Documents",
-                type: "TEXT",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "INTEGER")
-                .OldAnnotation("Sqlite:Autoincrement", true);
+                column: "PatternId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Documents_Patterns_PatternId",
+                table: "Documents",
+                column: "PatternId",
+                principalTable: "Patterns",
+                principalColumn: "PatternId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "Nickname",
-                table: "Documents",
-                type: "TEXT",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "TEXT");
+            migrationBuilder.DropForeignKey(
+                name: "FK_Documents_Patterns_PatternId",
+                table: "Documents");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "DocumentId",
-                table: "Documents",
-                type: "INTEGER",
-                nullable: false,
-                oldClrType: typeof(Guid),
-                oldType: "TEXT")
-                .Annotation("Sqlite:Autoincrement", true);
+            migrationBuilder.DropIndex(
+                name: "IX_Documents_PatternId",
+                table: "Documents");
+
+            migrationBuilder.DropColumn(
+                name: "PatternId",
+                table: "Documents");
 
             migrationBuilder.CreateTable(
                 name: "DocumentPattern",
                 columns: table => new
                 {
-                    DocumentsDocumentId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DocumentsDocumentId = table.Column<Guid>(type: "TEXT", nullable: false),
                     PatternsPatternId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

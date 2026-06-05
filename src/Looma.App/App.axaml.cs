@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -23,19 +24,49 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var services = new ServiceCollection();
+
+        var rootPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "Looma"
+        );
+
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desk)
+        {
+            var args = desk.Args;
+            if (args.Contains("--local"))
+            {
+                rootPath = Path.GetFullPath(Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "Data"
+                ));
+
+                Console.WriteLine($"DevPath: {rootPath}");
+            }
+
+            Console.WriteLine($"Current path is {Directory.GetCurrentDirectory()}");
+        }
+
         services.AddPresentation();
         services.AddInfrastructure();
+        services.AddSingleton<AppPaths>(_ => new AppPaths(rootPath));
 
-        services.AddDbContext<LoomaDbContext>(options =>
-            options.UseSqlite($"Data Source={AppPaths.DatabasePath}"));
+        services.AddDbContext<LoomaDbContext>((sp, options) =>
+            options.UseSqlite($"Data Source={sp.GetService<AppPaths>()?.DatabasePath}"));
 
         Services = services.BuildServiceProvider();
 
-        AppPaths.EnsureDirectoriesExist();
+        var pathManager = Services.GetService<AppPaths>();
+
+        if (pathManager is null)
+        {
+            throw new ArgumentException($"Could not find {nameof(AppPaths)}.");
+        }
+
+        pathManager.EnsureDirectoriesExist();
 
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<LoomaDbContext>();
-        AppPaths.EnsureDatabaseCreated(db);
+        pathManager.EnsureDatabaseCreated(db);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

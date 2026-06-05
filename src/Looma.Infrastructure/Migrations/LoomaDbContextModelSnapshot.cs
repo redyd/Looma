@@ -17,7 +17,7 @@ namespace Looma.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.DocumentEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.DocumentEntity", b =>
                 {
                     b.Property<Guid>("DocumentId")
                         .HasColumnType("TEXT");
@@ -26,15 +26,29 @@ namespace Looma.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("PatternId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("DocumentId");
+
+                    b.HasIndex("PatternId");
 
                     b.ToTable("Documents");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.PatternEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.PatternEntity", b =>
                 {
                     b.Property<int>("PatternId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly?>("BeginDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPersonal")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -44,8 +58,9 @@ namespace Looma.Infrastructure.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PatternType")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
@@ -55,7 +70,7 @@ namespace Looma.Infrastructure.Migrations
                     b.ToTable("Patterns");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.ProjectEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.ProjectEntity", b =>
                 {
                     b.Property<int>("ProjectId")
                         .ValueGeneratedOnAdd()
@@ -84,7 +99,7 @@ namespace Looma.Infrastructure.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.StockEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.StockEntity", b =>
                 {
                     b.Property<int>("StockId")
                         .ValueGeneratedOnAdd()
@@ -103,7 +118,7 @@ namespace Looma.Infrastructure.Migrations
                     b.ToTable("Stocks");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.WoolEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.WoolEntity", b =>
                 {
                     b.Property<int>("WoolId")
                         .ValueGeneratedOnAdd()
@@ -139,7 +154,7 @@ namespace Looma.Infrastructure.Migrations
                     b.ToTable("Wools");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.WoolsForProjectEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.WoolsForProjectEntity", b =>
                 {
                     b.Property<int>("WoolId")
                         .HasColumnType("INTEGER");
@@ -154,9 +169,18 @@ namespace Looma.Infrastructure.Migrations
                     b.ToTable("WoolsForProjects");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.ProjectEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.DocumentEntity", b =>
                 {
-                    b.HasOne("Looma.Infrastructure.Model.PatternEntity", "PatternEntity")
+                    b.HasOne("Looma.Infrastructure.Entity.PatternEntity", "Pattern")
+                        .WithMany("Documents")
+                        .HasForeignKey("PatternId");
+
+                    b.Navigation("Pattern");
+                });
+
+            modelBuilder.Entity("Looma.Infrastructure.Entity.ProjectEntity", b =>
+                {
+                    b.HasOne("Looma.Infrastructure.Entity.PatternEntity", "PatternEntity")
                         .WithMany("Projects")
                         .HasForeignKey("PatronId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -165,9 +189,9 @@ namespace Looma.Infrastructure.Migrations
                     b.Navigation("PatternEntity");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.StockEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.StockEntity", b =>
                 {
-                    b.HasOne("Looma.Infrastructure.Model.WoolEntity", "WoolEntity")
+                    b.HasOne("Looma.Infrastructure.Entity.WoolEntity", "WoolEntity")
                         .WithMany("Stocks")
                         .HasForeignKey("WoolId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -176,15 +200,15 @@ namespace Looma.Infrastructure.Migrations
                     b.Navigation("WoolEntity");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.WoolsForProjectEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.WoolsForProjectEntity", b =>
                 {
-                    b.HasOne("Looma.Infrastructure.Model.ProjectEntity", "ProjectEntity")
+                    b.HasOne("Looma.Infrastructure.Entity.ProjectEntity", "ProjectEntity")
                         .WithMany("WoolsForProjects")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Looma.Infrastructure.Model.WoolEntity", "WoolEntity")
+                    b.HasOne("Looma.Infrastructure.Entity.WoolEntity", "WoolEntity")
                         .WithMany("WoolsForProjects")
                         .HasForeignKey("WoolId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -195,17 +219,19 @@ namespace Looma.Infrastructure.Migrations
                     b.Navigation("WoolEntity");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.PatternEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.PatternEntity", b =>
                 {
+                    b.Navigation("Documents");
+
                     b.Navigation("Projects");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.ProjectEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.ProjectEntity", b =>
                 {
                     b.Navigation("WoolsForProjects");
                 });
 
-            modelBuilder.Entity("Looma.Infrastructure.Model.WoolEntity", b =>
+            modelBuilder.Entity("Looma.Infrastructure.Entity.WoolEntity", b =>
                 {
                     b.Navigation("Stocks");
 

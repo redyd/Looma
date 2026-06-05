@@ -28,4 +28,8 @@
     <ProjectReference Include="..\..\src\Looma.Domain\Looma.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Sections\Documents\" />
+  </ItemGroup>
+
 </Project>
