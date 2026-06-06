@@ -1,7 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
+using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.UserControls;
@@ -14,6 +16,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
     private readonly INavigationService _nav;
     private readonly IWoolRepository _woolRepo;
     private readonly INotificationService _notifications;
+    private readonly WoolStockCalculator _calculator;
     private Wool? _wool;
 
     [ObservableProperty] private int _woolId;
@@ -31,6 +34,43 @@ public partial class WoolDetailViewModel : PageViewModelBase
     [ObservableProperty] private double _needleMinSize;
     [ObservableProperty] private double _needleMaxSize;
     [ObservableProperty] private string? _errorMessage;
+
+    [ObservableProperty] private double? _adjustQuantity;
+    [ObservableProperty] private StockAdjustmentMode _adjustmentMode = StockAdjustmentMode.ByBall;
+
+    public bool CanAdjust => AdjustQuantity > 0;
+    partial void OnAdjustQuantityChanged(double? value) => OnPropertyChanged(nameof(CanAdjust));
+
+    [RelayCommand]
+    private async Task AdjustStockAsync(bool isAddition)
+    {
+        if (!CanAdjust || AdjustQuantity is null) return;
+
+        var factor = AdjustmentMode switch
+        {
+            StockAdjustmentMode.ByBall => 0,
+            StockAdjustmentMode.ByWeight => Weight,
+            StockAdjustmentMode.ByLength => Length,
+            _ => 0
+        };
+
+        var toSend = _calculator.ComputeStockQuantity(AdjustmentMode, isAddition, (double)AdjustQuantity, factor);
+        
+        var result = await _woolRepo.AddStock(WoolId, toSend);
+        if (result.Failed)
+        {
+            ErrorMessage = "Impossible de mettre à jour les données";
+            _notifications.Error(result.Error ?? "Une erreur est survenue");
+            return;
+        }
+
+        _notifications.Success("Stock correctement mis à jour");
+        var updated = await _woolRepo.GetByIdAsync(WoolId);
+        if (updated.Value is not null)
+        {
+            Refresh(updated.Value);
+        }
+    }
 
     public IList<StatItem> DetailStats =>
     [
@@ -53,11 +93,13 @@ public partial class WoolDetailViewModel : PageViewModelBase
     public WoolDetailViewModel(
         INavigationService nav,
         IWoolRepository woolRepo,
-        INotificationService notifications)
+        INotificationService notifications,
+        WoolStockCalculator calculator)
     {
         _nav = nav;
         _woolRepo = woolRepo;
         _notifications = notifications;
+        _calculator = calculator;
         Title = "Détail laine";
     }
 

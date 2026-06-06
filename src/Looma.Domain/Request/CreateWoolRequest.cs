@@ -1,7 +1,6 @@
-namespace Looma.Domain.Entities;
+namespace Looma.Domain.Request;
 
-public sealed record UpdateWoolRequest(
-    int Id,
+public sealed record CreateWoolRequest(
     string Name,
     string Brand,
     string Material,

@@ -1,6 +1,7 @@
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
+using Looma.Domain.Request;
 using Looma.Infrastructure.Mapping;
 using Microsoft.EntityFrameworkCore;
 
@@ -83,11 +84,10 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             var color = request.Color.Trim();
             var weight = request.Weight;
             var length = request.Length;
-            var stock = request.Stock;
             var needleMinSize = request.NeedleMinSize;
             var needleMaxSize = request.NeedleMaxSize;
 
-            if (!IsValid(name, brand, material, color, weight, length, stock, needleMinSize, needleMaxSize))
+            if (!IsValid(name, brand, material, color, weight, length, null, needleMinSize, needleMaxSize))
             {
                 return ResultT<Wool>.Failure("Les données de mise à jours sont invalides");
             }
@@ -98,7 +98,6 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             entity.Color = color;
             entity.Weight = weight;
             entity.Length = length;
-            entity.Stock = stock;
             entity.NeedleMinSize = needleMinSize;
             entity.NeedleMaxSize = needleMaxSize;
 
@@ -141,6 +140,29 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         }
     }
 
+    public async Task<Result> AddStock(int id, double quantity)
+    {
+        try
+        {
+            var entity = await context.Wools.FindAsync([id]);
+            if (entity is null)
+                return Result.NotFound($"La laine {id} est introuvable.");
+
+            entity.Stock = Math.Max(0, entity.Stock + quantity);
+
+            await context.SaveChangesAsync();
+            return Result.Ok();
+        }
+        catch (DbUpdateException ex)
+        {
+            return Result.Failure($"Impossible de mettre à jour le stock de la laine {id}: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure($"Impossible de mettre à jour le stock de la laine {id}: {ex.Message}");
+        }
+    }
+
     private static Wool? BuildCreate(CreateWoolRequest request)
     {
         if (!IsValid(request.Name, request.Brand, request.Material, request.Color,
@@ -163,9 +185,9 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             NeedleMaxSize = request.NeedleMaxSize
         };
     }
-    
+
     private static bool IsValid(string name, string brand, string material, string color,
-        double weight, double length, double stock, double needleMinSize, double needleMaxSize)
+        double weight, double length, double? stock, double needleMinSize, double needleMaxSize)
     {
         return !string.IsNullOrWhiteSpace(name)
                && !string.IsNullOrWhiteSpace(brand)
@@ -173,7 +195,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
                && !string.IsNullOrWhiteSpace(color)
                && weight > 0
                && length > 0
-               && stock >= 0
+               && stock is null or >= 0
                && needleMinSize > 0
                && needleMaxSize > 0
                && needleMinSize <= needleMaxSize;

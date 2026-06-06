@@ -9,6 +9,7 @@ using Looma.Presentation.ViewModels.Base;
 using System.Collections.ObjectModel;
 using Looma.Domain.Core;
 using Looma.Domain.Extensions;
+using Looma.Domain.Request;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
 

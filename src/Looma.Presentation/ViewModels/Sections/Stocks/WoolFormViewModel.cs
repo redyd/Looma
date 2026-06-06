@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
+using Looma.Domain.Request;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
@@ -14,7 +15,6 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
 {
     private bool _isEdit;
     private int _editingId;
-    private Wool? _wool;
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _name = string.Empty;
@@ -64,7 +64,6 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
         
         _isEdit = true;
         _editingId = wool.Id;
-        _wool = wool;
         Title = "Modifier la laine";
         Name = wool.Name;
         Brand = wool.Brand;
@@ -125,12 +124,6 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
             return;
         }
 
-        if (_wool is null)
-        {
-            ErrorMessage = "Aucune laine sélectionnée";
-            return;
-        }
-
         try
         {
             IsBusy = true;
@@ -144,7 +137,6 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
                     SelectedColorHex,
                     weight,
                     length,
-                    _wool.Stock,
                     needleMin,
                     needleMax));
                 if (result.Failed)

@@ -13,6 +13,7 @@
             <converters:HexToColorConverter x:Key="HexToColor" />
             <converters:FirstItemBorderConverter x:Key="FirstItemBorder" />
             <converters:EnumDisplayNameConverter x:Key="EnumDisplayName" />
+            <converters:EnumToBoolConverter x:Key="EnumToBool" />
         </ResourceDictionary>
     </Application.Resources>
 

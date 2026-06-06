@@ -4,15 +4,15 @@
              xmlns:controls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolDetailView"
              x:DataType="vm:WoolDetailViewModel">
-    
+
     <DockPanel>
-        
+
         <controls:DetailHeader
             DockPanel.Dock="Top"
             GoBackCommand="{Binding GoBackCommand}"
             EditCommand="{Binding EditCommand}"
             DeleteCommand="{Binding ConfirmDeleteCommand}">
-            
+
             <controls:DetailHeader.TitleContent>
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <Ellipse Width="16" Height="16" VerticalAlignment="Center"
@@ -23,20 +23,81 @@
                                VerticalAlignment="Center" />
                 </StackPanel>
             </controls:DetailHeader.TitleContent>
-            
+
         </controls:DetailHeader>
 
         <ScrollViewer>
             <StackPanel Spacing="16" Margin="32">
-                
+
                 <controls:DetailInformations
                     InfoTitle="🧶 Informations"
                     Stats="{Binding DetailStats}"
                     Infos="{Binding DetailInfos}" />
 
-                <!-- Ligne 2 : tableau stock -->
+                <!-- Ligne 2 : formulaire d'ajout/retrait -->
                 <Border Classes="form-section">
-                    <StackPanel Spacing="16">
+                    <StackPanel Spacing="20">
+
+                        <StackPanel Classes="form-header" Margin="0">
+                            <TextBlock Text="🔄 Ajustement du stock" Classes="section-title" FontSize="16" />
+                            <TextBlock Text="Modifiez la quantité de laine disponible en stock" Classes="form-subtitle" />
+                        </StackPanel>
+
+                        <Border Classes="form-divider" Margin="0 4" />
+
+                        <!-- Étape 1 : Choix du mode d'ajustement -->
+                        <StackPanel Classes="form-field">
+                            <TextBlock Text="Mode d'ajustement" Classes="form-label" Margin="0 0 0 4" />
+                            <StackPanel Orientation="Horizontal" Spacing="16">
+                                <RadioButton Content="Par pelote"
+                                             Cursor="Hand"
+                                             IsChecked="{Binding AdjustmentMode, Converter={StaticResource EnumToBool}, ConverterParameter=ByBall}" />
+                                <RadioButton Content="Par poids (g)"
+                                             Cursor="Hand"
+                                             IsChecked="{Binding AdjustmentMode, Converter={StaticResource EnumToBool}, ConverterParameter=ByWeight}" />
+                                <RadioButton Content="Par longueur (m)"
+                                             Cursor="Hand"
+                                             IsChecked="{Binding AdjustmentMode, Converter={StaticResource EnumToBool}, ConverterParameter=ByLength}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Étape 2 : Saisie de la quantité -->
+                        <StackPanel Classes="form-field">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock Text="Quantité à ajuster" Classes="form-label" />
+                                <TextBlock Text="*" Classes="field-required" />
+                            </StackPanel>
+
+                            <NumericUpDown Classes="form-numeric"
+                                           Value="{Binding AdjustQuantity}"
+                                           Minimum="0"
+                                           Increment="1"
+                                           FormatString="N2"
+                                           HorizontalAlignment="Stretch" />
+
+                            <TextBlock Text="Entrez une valeur positive, puis choisissez l'action ci-dessous."
+                                       Classes="form-hint" />
+                        </StackPanel>
+
+                        <!-- Étape 3 : Actions (Boutons Ajouter / Retirer) -->
+                        <StackPanel Classes="form-actions" Margin="0 8 0 0">
+
+                            <Button Content="➖ Retirer du stock"
+                                    Classes="btn-danger-solid"
+                                    IsEnabled="{Binding CanAdjust}"
+                                    Command="{Binding AdjustStockCommand}"
+                                    CommandParameter="{x:False}"
+                                    MinWidth="140" />
+
+                            <!-- Bouton Ajouter (Principal/Violet) -->
+                            <Button Content="➕ Ajouter au stock"
+                                    Classes="form-submit"
+                                    IsEnabled="{Binding CanAdjust}"
+                                    Command="{Binding AdjustStockCommand}"
+                                    CommandParameter="{x:True}"
+                                    MinWidth="140" />
+
+                        </StackPanel>
 
                     </StackPanel>
                 </Border>

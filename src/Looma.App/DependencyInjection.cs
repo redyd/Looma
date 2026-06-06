@@ -1,6 +1,7 @@
 using System;
 using Looma.Domain.Repositories;
 using Looma.App.Services;
+using Looma.Domain.Services;
 using Looma.Infrastructure.Repositories;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
@@ -17,6 +18,11 @@ namespace Looma.App;
 
 public static class DependencyInjection
 {
+    public static void AddDomain(this IServiceCollection services)
+    {
+        services.AddSingleton<WoolStockCalculator>();
+    }
+    
     public static void AddPresentation(this IServiceCollection services)
     {
         // Un NavigationService PAR section (scope isolé)
