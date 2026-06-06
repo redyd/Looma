@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Looma.Domain.Entities;
 
 namespace Looma.Presentation.ViewModels.Sections.Stocks;
 
@@ -64,7 +63,6 @@ public partial class StockRowViewModel : ObservableObject
     }
 
     public StockRowViewModel(
-        Stock stock,
         double lengthToWeightRatio,
         Func<StockRowViewModel, Task> onSave,
         Func<StockRowViewModel, Task> onDelete,

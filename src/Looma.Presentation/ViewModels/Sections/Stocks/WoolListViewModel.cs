@@ -16,7 +16,6 @@ public record WoolSummary(Wool Wool, double TotalWeightGrams, ICommand OpenDetai
 public partial class WoolListViewModel(
     INavigationService nav,
     IWoolRepository woolRepo,
-    IStockRepository stockRepo,
     INotificationService notifications)
     : PageViewModelBase
 {

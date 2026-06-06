@@ -7,7 +7,6 @@ namespace Looma.Infrastructure;
 public class LoomaDbContext(DbContextOptions<LoomaDbContext> options) : DbContext(options)
 {
     public DbSet<WoolEntity> Wools => Set<WoolEntity>();
-    public DbSet<StockEntity> Stocks => Set<StockEntity>();
     public DbSet<PatternEntity> Patterns => Set<PatternEntity>();
     public DbSet<ProjectEntity> Projects => Set<ProjectEntity>();
     public DbSet<DocumentEntity> Documents => Set<DocumentEntity>();
@@ -17,7 +16,6 @@ public class LoomaDbContext(DbContextOptions<LoomaDbContext> options) : DbContex
     {
         modelBuilder
             .ApplyConfiguration(new WoolForProjectConfiguration())
-            .ApplyConfiguration(new StockConfiguration())
             .ApplyConfiguration(new ProjectConfiguration())
             .ApplyConfiguration(new DocumentConfiguration())
             .ApplyConfiguration(new WoolConfiguration())

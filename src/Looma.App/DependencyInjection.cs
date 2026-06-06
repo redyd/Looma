@@ -60,7 +60,6 @@ public static class DependencyInjection
                     new ProjectsListViewModel(nav)),
                 MakeSection<WoolListViewModel>(nav =>
                     new WoolListViewModel(nav, sp.GetRequiredService<IWoolRepository>(),
-                        sp.GetRequiredService<IStockRepository>(),
                         sp.GetRequiredService<INotificationService>())),
                 MakeSection<PatternsListViewModel>(nav =>
                     new PatternsListViewModel(nav,
@@ -83,6 +82,5 @@ public static class DependencyInjection
         services.AddScoped<IDocumentRepository, DocumentRepository>();
         services.AddScoped<IPatternRepository, PatternRepository>();
         services.AddScoped<IWoolRepository, WoolRepository>();
-        services.AddScoped<IStockRepository, StockRepository>();
     }
 }

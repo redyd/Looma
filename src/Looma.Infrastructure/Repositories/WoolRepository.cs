@@ -50,7 +50,9 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         {
             var wool = BuildCreate(request);
             if (wool is null)
+            {
                 return ResultT<Wool>.Failure("Les donnees de creation de laine sont invalides.");
+            }
 
             var entity = wool.ToEntity();
             context.Wools.Add(entity);
@@ -79,11 +81,13 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             var brand = request.Brand?.Trim() ?? entity.Brand;
             var material = request.Material?.Trim() ?? entity.Material;
             var color = request.Color?.Trim() ?? entity.Color;
-            var lengthToWeightRatio = request.LengthToWeightRatio ?? entity.LengthToWeightRatio;
+            var weight = request.Weight ?? entity.Weight;
+            var length = request.Length ?? entity.Length;
+            var stock = request.Stock ?? entity.Stock;
             var needleMinSize = request.NeedleMinSize ?? entity.NeedleMinSize;
             var needleMaxSize = request.NeedleMaxSize ?? entity.NeedleMaxSize;
 
-            if (!IsValid(name, brand, material, color, lengthToWeightRatio, needleMinSize, needleMaxSize))
+            if (!IsValid(name, brand, material, color, weight, length, stock, needleMinSize, needleMaxSize))
             {
                 return ResultT<Wool>.Failure("Les données de mise à jours sont invalides");
             }
@@ -92,7 +96,9 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             entity.Brand = brand;
             entity.Material = material;
             entity.Color = color;
-            entity.LengthToWeightRatio = lengthToWeightRatio;
+            entity.Weight = weight;
+            entity.Length = length;
+            entity.Stock = stock;
             entity.NeedleMinSize = needleMinSize;
             entity.NeedleMaxSize = needleMaxSize;
 
@@ -138,7 +144,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
     private static Wool? BuildCreate(CreateWoolRequest request)
     {
         if (!IsValid(request.Name, request.Brand, request.Material, request.Color,
-                request.LengthToWeightRatio, request.NeedleMinSize, request.NeedleMaxSize))
+                request.Weight, request.Length, request.Stock, request.NeedleMinSize, request.NeedleMaxSize))
         {
             return null;
         }
@@ -150,20 +156,24 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             Brand = request.Brand.Trim(),
             Material = request.Material.Trim(),
             Color = request.Color.Trim(),
-            LengthToWeightRatio = request.LengthToWeightRatio,
+            Weight = request.Weight,
+            Length = request.Length,
+            Stock = request.Stock,
             NeedleMinSize = request.NeedleMinSize,
             NeedleMaxSize = request.NeedleMaxSize
         };
     }
     
     private static bool IsValid(string name, string brand, string material, string color,
-        double lengthToWeightRatio, double needleMinSize, double needleMaxSize)
+        double weight, double length, double stock, double needleMinSize, double needleMaxSize)
     {
         return !string.IsNullOrWhiteSpace(name)
                && !string.IsNullOrWhiteSpace(brand)
                && !string.IsNullOrWhiteSpace(material)
                && !string.IsNullOrWhiteSpace(color)
-               && lengthToWeightRatio > 0
+               && weight > 0
+               && length > 0
+               && stock >= 0
                && needleMinSize > 0
                && needleMaxSize > 0
                && needleMinSize <= needleMaxSize;
