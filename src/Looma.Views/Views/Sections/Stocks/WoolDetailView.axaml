@@ -32,7 +32,8 @@
                 <controls:DetailInformations
                     InfoTitle="🧶 Informations"
                     Stats="{Binding DetailStats}"
-                    Infos="{Binding DetailInfos}" />
+                    Infos="{Binding DetailInfos}"
+                    Images="{Binding Images}"/>
 
                 <!-- Ligne 2 : formulaire d'ajout/retrait -->
                 <Border Classes="form-section">

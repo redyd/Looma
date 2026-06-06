@@ -34,6 +34,8 @@ public partial class WoolDetailViewModel : PageViewModelBase
     [ObservableProperty] private double _needleMinSize;
     [ObservableProperty] private double _needleMaxSize;
     [ObservableProperty] private string? _errorMessage;
+    
+    [ObservableProperty] private List<string> _images = [];
 
     [ObservableProperty] private double? _adjustQuantity;
     [ObservableProperty] private StockAdjustmentMode _adjustmentMode = StockAdjustmentMode.ByBall;
@@ -74,7 +76,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
     public IList<StatItem> DetailStats =>
     [
-        new() { Label = "Pelotes estimées", Value = BatchQuantity.ToString("N0"), Unit = "x", IsFirst = true },
+        new() { Label = "Pelotes estimées", Value = BatchQuantity.ToString("N1"), Unit = "x", IsFirst = true },
         new() { Label = "Poids estimé", Value = StockWeight.ToString("N0"), Unit = "g" },
         new() { Label = "Longueur estimée", Value = StockLength.ToString("N0"), Unit = "m" }
     ];
@@ -84,7 +86,9 @@ public partial class WoolDetailViewModel : PageViewModelBase
         new() { Label = "Marque", Value = Brand },
         new() { Label = "Matière", Value = Material },
         new() { Label = "Couleur", Value = Color, ColorHex = Color },
-        new() { Label = "Aiguilles", Value = NeedleSizeDisplay }
+        new() { Label = "Aiguilles", Value = NeedleSizeDisplay },
+        new() { Label = "Poids", Value = $"{Weight:N0}g" },
+        new() { Label = "Longueur", Value = $"{Length:N0}m" },
     ];
 
     public string NeedleSizeDisplay =>
@@ -139,6 +143,13 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
         NeedleMinSize = wool.NeedleMinSize;
         NeedleMaxSize = wool.NeedleMaxSize;
+        
+        Images = wool.Types
+            .Select(t => t.ToString().ToLower())
+            .Select(s => $"avares://Looma.App/Assets/WoolTypeImages/{s}.png")
+            .ToList();
+        
+        Console.WriteLine($"Images are {string.Join(", ", Images)}");
 
         OnPropertyChanged(nameof(NeedleSizeDisplay));
         OnPropertyChanged(nameof(DetailStats));
