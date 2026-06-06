@@ -1,6 +1,7 @@
 using System;
 using Looma.Domain.Repositories;
 using Looma.App.Services;
+using Looma.Domain.Services;
 using Looma.Infrastructure.Repositories;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
@@ -17,6 +18,11 @@ namespace Looma.App;
 
 public static class DependencyInjection
 {
+    public static void AddDomain(this IServiceCollection services)
+    {
+        services.AddSingleton<WoolStockCalculator>();
+    }
+    
     public static void AddPresentation(this IServiceCollection services)
     {
         // Un NavigationService PAR section (scope isolé)
@@ -60,7 +66,6 @@ public static class DependencyInjection
                     new ProjectsListViewModel(nav)),
                 MakeSection<WoolListViewModel>(nav =>
                     new WoolListViewModel(nav, sp.GetRequiredService<IWoolRepository>(),
-                        sp.GetRequiredService<IStockRepository>(),
                         sp.GetRequiredService<INotificationService>())),
                 MakeSection<PatternsListViewModel>(nav =>
                     new PatternsListViewModel(nav,
@@ -83,6 +88,5 @@ public static class DependencyInjection
         services.AddScoped<IDocumentRepository, DocumentRepository>();
         services.AddScoped<IPatternRepository, PatternRepository>();
         services.AddScoped<IWoolRepository, WoolRepository>();
-        services.AddScoped<IStockRepository, StockRepository>();
     }
 }

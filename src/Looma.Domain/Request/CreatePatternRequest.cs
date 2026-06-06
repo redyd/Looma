@@ -1,6 +1,6 @@
 using Looma.Domain.Core;
 
-namespace Looma.Domain.Entities;
+namespace Looma.Domain.Request;
 
 public sealed record CreatePatternRequest(
     string Name,

@@ -7,10 +7,12 @@ public class WoolEntity
     public string Brand { get; set; } = null!;
     public string Material { get; set; } = null!;
     public string Color { get; set; } = null!;
-    public double LengthToWeightRatio { get; set; }
+    public double Weight { get; set; }
+    public double Length { get; set; }
+    // le stock représente une unité de pelotte multiplié par 1000 pour plus de précisions (1 pelotte = 1000, 3.21 pelottes = 3210)
+    public double Stock { get; set; }
     public double NeedleMinSize { get; set; }
     public double NeedleMaxSize { get; set; }
 
-    public ICollection<StockEntity> Stocks { get; set; } = new  List<StockEntity>();
     public ICollection<WoolsForProjectEntity> WoolsForProjects { get; set; } = new List<WoolsForProjectEntity>();
 }

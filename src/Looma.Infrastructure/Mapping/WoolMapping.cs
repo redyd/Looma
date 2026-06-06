@@ -13,7 +13,9 @@ public static class WoolMapping
             Brand = entity.Brand,
             Material = entity.Material,
             Color = entity.Color,
-            LengthToWeightRatio = entity.LengthToWeightRatio,
+            Length = entity.Length,
+            Weight = entity.Weight,
+            Stock = entity.Stock,
             NeedleMinSize = entity.NeedleMinSize,
             NeedleMaxSize = entity.NeedleMaxSize
         };
@@ -25,7 +27,9 @@ public static class WoolMapping
             Brand = domain.Brand,
             Material = domain.Material,
             Color = domain.Color,
-            LengthToWeightRatio = domain.LengthToWeightRatio,
+            Length = domain.Length,
+            Weight = domain.Weight,
+            Stock = domain.Stock,
             NeedleMinSize = domain.NeedleMinSize,
             NeedleMaxSize = domain.NeedleMaxSize
         };

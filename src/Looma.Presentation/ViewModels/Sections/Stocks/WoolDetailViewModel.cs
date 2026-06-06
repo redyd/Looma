@@ -1,8 +1,9 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
+using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.UserControls;
@@ -14,26 +15,70 @@ public partial class WoolDetailViewModel : PageViewModelBase
 {
     private readonly INavigationService _nav;
     private readonly IWoolRepository _woolRepo;
-    private readonly IStockRepository _stockRepo;
     private readonly INotificationService _notifications;
+    private readonly WoolStockCalculator _calculator;
+    private Wool? _wool;
 
     [ObservableProperty] private int _woolId;
     [ObservableProperty] private string _name = string.Empty;
     [ObservableProperty] private string _brand = string.Empty;
     [ObservableProperty] private string _material = string.Empty;
     [ObservableProperty] private string _color = string.Empty;
-    [ObservableProperty] private double _lengthToWeightRatio;
-    [ObservableProperty] private double _totalWeightGrams;
-    [ObservableProperty] private ObservableCollection<StockRowViewModel> _stockRows = [];
+
+    [ObservableProperty] private double _weight;
+    [ObservableProperty] private double _length;
+    [ObservableProperty] private double _stockWeight;
+    [ObservableProperty] private double _stockLength;
+    [ObservableProperty] private double _batchQuantity;
+
     [ObservableProperty] private double _needleMinSize;
     [ObservableProperty] private double _needleMaxSize;
     [ObservableProperty] private string? _errorMessage;
+    
+    [ObservableProperty] private List<string> _images = [];
+
+    [ObservableProperty] private double? _adjustQuantity;
+    [ObservableProperty] private StockAdjustmentMode _adjustmentMode = StockAdjustmentMode.ByBall;
+
+    public bool CanAdjust => AdjustQuantity > 0;
+    partial void OnAdjustQuantityChanged(double? value) => OnPropertyChanged(nameof(CanAdjust));
+
+    [RelayCommand]
+    private async Task AdjustStockAsync(bool isAddition)
+    {
+        if (!CanAdjust || AdjustQuantity is null) return;
+
+        var factor = AdjustmentMode switch
+        {
+            StockAdjustmentMode.ByBall => 0,
+            StockAdjustmentMode.ByWeight => Weight,
+            StockAdjustmentMode.ByLength => Length,
+            _ => 0
+        };
+
+        var toSend = _calculator.ComputeStockQuantity(AdjustmentMode, isAddition, (double)AdjustQuantity, factor);
+        
+        var result = await _woolRepo.AddStock(WoolId, toSend);
+        if (result.Failed)
+        {
+            ErrorMessage = "Impossible de mettre à jour les données";
+            _notifications.Error(result.Error ?? "Une erreur est survenue");
+            return;
+        }
+
+        _notifications.Success("Stock correctement mis à jour");
+        var updated = await _woolRepo.GetByIdAsync(WoolId);
+        if (updated.Value is not null)
+        {
+            Refresh(updated.Value);
+        }
+    }
 
     public IList<StatItem> DetailStats =>
     [
-        // new() { Label = "Pelottes estimée", Value = "-1", Unit = "x"},
-        new() { Label = "Stock total", Value = TotalWeightGrams.ToString("N0"), Unit = "g", IsFirst = true },
-        new() { Label = "Longueur estimée", Value = TotalLengthMeters.ToString("N0"), Unit = "m" }
+        new() { Label = "Pelotes estimées", Value = BatchQuantity.ToString("N1"), Unit = "x", IsFirst = true },
+        new() { Label = "Poids estimé", Value = StockWeight.ToString("N0"), Unit = "g" },
+        new() { Label = "Longueur estimée", Value = StockLength.ToString("N0"), Unit = "m" }
     ];
 
     public IList<InfoItem> DetailInfos =>
@@ -41,31 +86,30 @@ public partial class WoolDetailViewModel : PageViewModelBase
         new() { Label = "Marque", Value = Brand },
         new() { Label = "Matière", Value = Material },
         new() { Label = "Couleur", Value = Color, ColorHex = Color },
-        new() { Label = "Ratio", Value = $"{LengthToWeightRatio:N1} m/100g" },
-        new() { Label = "Aiguilles", Value = NeedleSizeDisplay }
+        new() { Label = "Aiguilles", Value = NeedleSizeDisplay },
+        new() { Label = "Poids", Value = $"{Weight:N0}g" },
+        new() { Label = "Longueur", Value = $"{Length:N0}m" },
     ];
 
     public string NeedleSizeDisplay =>
         $"{NeedleMinSize:G} – {NeedleMaxSize:G} mm";
 
-    public double TotalLengthMeters =>
-        TotalWeightGrams / 100.0 * LengthToWeightRatio;
-
     public WoolDetailViewModel(
         INavigationService nav,
         IWoolRepository woolRepo,
-        IStockRepository stockRepo,
-        INotificationService notifications)
+        INotificationService notifications,
+        WoolStockCalculator calculator)
     {
         _nav = nav;
         _woolRepo = woolRepo;
-        _stockRepo = stockRepo;
         _notifications = notifications;
+        _calculator = calculator;
         Title = "Détail laine";
     }
 
     public void Load(Wool wool)
     {
+        _wool = wool;
         WoolId = wool.Id;
         Refresh(wool);
     }
@@ -81,7 +125,6 @@ public partial class WoolDetailViewModel : PageViewModelBase
         }
 
         Refresh(wool.Value);
-        await LoadStocksAsync();
     }
 
     private void Refresh(Wool wool)
@@ -91,95 +134,30 @@ public partial class WoolDetailViewModel : PageViewModelBase
         Brand = wool.Brand;
         Material = wool.Material;
         Color = wool.Color;
-        LengthToWeightRatio = wool.LengthToWeightRatio;
+
+        Weight = wool.Weight;
+        Length = wool.Length;
+        StockWeight = wool.StockWeight;
+        StockLength = wool.StockLength;
+        BatchQuantity = wool.BatchQuantity;
+
         NeedleMinSize = wool.NeedleMinSize;
         NeedleMaxSize = wool.NeedleMaxSize;
+        
+        Images = wool.Types
+            .Select(t => t.ToString().ToLower())
+            .Select(s => $"avares://Looma.App/Assets/WoolTypeImages/{s}.png")
+            .ToList();
+        
+        Console.WriteLine($"Images are {string.Join(", ", Images)}");
 
         OnPropertyChanged(nameof(NeedleSizeDisplay));
         OnPropertyChanged(nameof(DetailStats));
         OnPropertyChanged(nameof(DetailInfos));
     }
 
-    private async Task LoadStocksAsync()
-    {
-        var stocksResult = await _stockRepo.GetByWoolIdAsync(WoolId);
-        if (stocksResult.Failed || stocksResult.Value is null)
-        {
-            ErrorMessage = stocksResult.Error ?? $"Impossible de charger les stocks de la laine {WoolId}.";
-            _notifications.Error(ErrorMessage);
-            StockRows = [];
-            TotalWeightGrams = 0;
-            OnPropertyChanged(nameof(TotalLengthMeters));
-            OnPropertyChanged(nameof(DetailStats));
-            return;
-        }
-
-        var stocks = stocksResult.Value;
-        var totalResult = await _stockRepo.GetTotalWeightByWoolIdAsync(WoolId);
-        TotalWeightGrams = totalResult.Succeeded
-            ? totalResult.Value
-            : stocks.Sum(s => s.WeightGrams);
-
-        OnPropertyChanged(nameof(TotalLengthMeters));
-        OnPropertyChanged(nameof(DetailStats));
-
-        ErrorMessage = null;
-
-        StockRows = new ObservableCollection<StockRowViewModel>(
-            stocks.Select(s => new StockRowViewModel(s, LengthToWeightRatio, OnSaveRow, OnDeleteRow))
-        );
-    }
-
-    private async Task OnSaveRow(StockRowViewModel row)
-    {
-        var weight = row.ParsedWeight();
-
-        var result = await _stockRepo.AddAsync(new CreateStockRequest(WoolId, weight));
-        if (result.Failed)
-        {
-            ErrorMessage = result.Error;
-            _notifications.Error(result.Error ?? "Impossible d'ajouter le stock.");
-            return;
-        }
-
-        _notifications.Success("Stock ajouté.");
-
-        await LoadStocksAsync();
-    }
-
-    private async Task OnDeleteRow(StockRowViewModel row)
-    {
-        var result = await _stockRepo.DeleteAsync(row.StockId);
-        if (result.Failed)
-        {
-            ErrorMessage = result.Error;
-            _notifications.Error(result.Error ?? "Impossible de supprimer le stock.");
-            return;
-        }
-
-        _notifications.Success("Stock supprimé.");
-
-        await LoadStocksAsync();
-    }
-
     [RelayCommand]
-    private void AddStockRow()
-    {
-        var placeholder = new Stock
-        {
-            Id = 0,
-            WoolId = WoolId,
-            WeightGrams = 0
-        };
-        var row = new StockRowViewModel(placeholder, LengthToWeightRatio, OnSaveRow, OnDeleteRow, isNew: true);
-        StockRows.Add(row);
-    }
-
-    [RelayCommand]
-    private void Edit() =>
-        _nav.NavigateTo<WoolFormViewModel>(vm =>
-            vm.InitEdit(WoolId, Name, Brand, Material, Color,
-                LengthToWeightRatio, NeedleMinSize, NeedleMaxSize));
+    private void Edit() => _nav.NavigateTo<WoolFormViewModel>(vm => vm.InitEdit(_wool));
 
     [RelayCommand]
     private async Task ConfirmDeleteAsync()

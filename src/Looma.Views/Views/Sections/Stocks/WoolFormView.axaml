@@ -13,7 +13,7 @@
                     MinWidth="800">
 
             <Border Classes="form-container" Width="800" MinWidth="800">
-                <StackPanel Spacing="0">
+                <StackPanel Spacing="16">
 
                     <!-- En-tête -->
                     <StackPanel Classes="form-header">
@@ -53,29 +53,39 @@
                                 </StackPanel>
                             </Grid>
 
-                            <!-- Matière + Ratio -->
+                            <!-- Matière -->
+                            <StackPanel Classes="form-field">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Classes="form-label" Text="Matière" />
+                                    <TextBlock Classes="field-required" Text="*" />
+                                </StackPanel>
+                                <TextBox Classes="form-input"
+                                         Text="{Binding Material}"
+                                         PlaceholderText="Ex : Mérinos, Coton, Alpaga..." />
+                            </StackPanel>
+
+                            <!-- Poids + Longueur -->
                             <Grid ColumnDefinitions="*,16,*">
                                 <StackPanel Grid.Column="0" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Matière" />
+                                        <TextBlock Classes="form-label" Text="Poids" />
                                         <TextBlock Classes="field-required" Text="*" />
+                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(g)" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
-                                             Text="{Binding Material}"
-                                             PlaceholderText="Ex : Mérinos, Coton, Alpaga..." />
+                                             Text="{Binding Weight}"
+                                             PlaceholderText="Ex : 100" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Longueur pour 100g" />
+                                        <TextBlock Classes="form-label" Text="Longueur" />
                                         <TextBlock Classes="field-required" Text="*" />
-                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(mètres)" />
+                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(m)" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
-                                             Text="{Binding LengthToWeightRatioText}"
+                                             Text="{Binding Length}"
                                              PlaceholderText="Ex : 200" />
-                                    <TextBlock Classes="form-hint"
-                                               Text="Permet de calculer la longueur totale de votre stock" />
                                 </StackPanel>
                             </Grid>
 
@@ -159,6 +169,9 @@
 
                     <!-- Boutons -->
                     <StackPanel Classes="form-actions">
+                        <TextBlock Classes="form-error"
+                                   Text="{Binding ErrorMessage}"
+                                   IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
                         <Button Classes="form-cancel"
                                 Content="Annuler"
                                 Command="{Binding CancelCommand}" />

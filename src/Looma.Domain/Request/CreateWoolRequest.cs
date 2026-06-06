@@ -1,10 +1,12 @@
-namespace Looma.Domain.Entities;
+namespace Looma.Domain.Request;
 
 public sealed record CreateWoolRequest(
     string Name,
     string Brand,
     string Material,
     string Color,
-    double LengthToWeightRatio,
+    double Weight,
+    double Length,
+    double Stock,
     double NeedleMinSize,
     double NeedleMaxSize);

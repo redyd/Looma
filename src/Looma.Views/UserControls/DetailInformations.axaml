@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Looma.Views.UserControls.DetailInformations"
              x:Name="This">
-    
+
     <Grid ColumnDefinitions="*,16,Auto">
 
         <Border Grid.Column="0" Classes="form-section" ClipToBounds="True">
@@ -71,9 +71,25 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <ItemsControl ItemsSource="{Binding Images, ElementName=This}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="3" HorizontalAlignment="Center" Margin="0 12 0 0" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Converter={StaticResource StringToUri}}"
+                                   Width="75" Height="75"
+                                   Margin="4"
+                                   Stretch="Uniform" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
         </Border>
 
     </Grid>
-    
+
 </UserControl>

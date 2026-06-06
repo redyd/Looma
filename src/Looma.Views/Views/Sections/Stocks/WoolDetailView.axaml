@@ -4,15 +4,15 @@
              xmlns:controls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolDetailView"
              x:DataType="vm:WoolDetailViewModel">
-    
+
     <DockPanel>
-        
+
         <controls:DetailHeader
             DockPanel.Dock="Top"
             GoBackCommand="{Binding GoBackCommand}"
             EditCommand="{Binding EditCommand}"
             DeleteCommand="{Binding ConfirmDeleteCommand}">
-            
+
             <controls:DetailHeader.TitleContent>
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <Ellipse Width="16" Height="16" VerticalAlignment="Center"
@@ -23,170 +23,82 @@
                                VerticalAlignment="Center" />
                 </StackPanel>
             </controls:DetailHeader.TitleContent>
-            
+
         </controls:DetailHeader>
 
         <ScrollViewer>
             <StackPanel Spacing="16" Margin="32">
-                
+
                 <controls:DetailInformations
                     InfoTitle="🧶 Informations"
                     Stats="{Binding DetailStats}"
-                    Infos="{Binding DetailInfos}" />
+                    Infos="{Binding DetailInfos}"
+                    Images="{Binding Images}"/>
 
-                <!-- Ligne 2 : tableau stock -->
+                <!-- Ligne 2 : formulaire d'ajout/retrait -->
                 <Border Classes="form-section">
-                    <StackPanel Spacing="16">
+                    <StackPanel Spacing="20">
 
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0" Classes="section-title"
-                                       Text="📦 Stock" VerticalAlignment="Center" Margin="0" />
-                            <Button Grid.Column="1"
-                                    Content="+ Ajouter une entrée"
-                                    Command="{Binding AddStockRowCommand}"
-                                    Classes="form-submit" />
-                        </Grid>
+                        <StackPanel Classes="form-header" Margin="0">
+                            <TextBlock Text="🔄 Ajustement du stock" Classes="section-title" FontSize="16" />
+                            <TextBlock Text="Modifiez la quantité de laine disponible en stock" Classes="form-subtitle" />
+                        </StackPanel>
 
-                        <!-- En-têtes -->
-                        <Grid ColumnDefinitions="*,140,120,180,240" Margin="0 0 0 4">
-                            <TextBlock Grid.Column="0" Classes="form-hint" Text="Entrée" />
-                            <TextBlock Grid.Column="1" Classes="form-hint"
-                                       HorizontalAlignment="Center" Text="Poids (g)" />
-                            <TextBlock Grid.Column="2" Classes="form-hint"
-                                       HorizontalAlignment="Center" Text="Longueur (m)" />
-                            <TextBlock Grid.Column="3" Classes="form-hint"
-                                       HorizontalAlignment="Center" Text="Mode de saisie" />
-                            <TextBlock Grid.Column="4" Classes="form-hint"
-                                       HorizontalAlignment="Center" Text="Actions" />
-                        </Grid>
+                        <Border Classes="form-divider" Margin="0 4" />
 
-                        <Border Height="1" Background="{StaticResource BorderBrush}" Opacity="0.4" />
+                        <!-- Étape 1 : Choix du mode d'ajustement -->
+                        <StackPanel Classes="form-field">
+                            <TextBlock Text="Mode d'ajustement" Classes="form-label" Margin="0 0 0 4" />
+                            <StackPanel Orientation="Horizontal" Spacing="16">
+                                <RadioButton Content="Par pelote"
+                                             Cursor="Hand"
+                                             IsChecked="{Binding AdjustmentMode, Converter={StaticResource EnumToBool}, ConverterParameter=ByBall}" />
+                                <RadioButton Content="Par poids (g)"
+                                             Cursor="Hand"
+                                             IsChecked="{Binding AdjustmentMode, Converter={StaticResource EnumToBool}, ConverterParameter=ByWeight}" />
+                                <RadioButton Content="Par longueur (m)"
+                                             Cursor="Hand"
+                                             IsChecked="{Binding AdjustmentMode, Converter={StaticResource EnumToBool}, ConverterParameter=ByLength}" />
+                            </StackPanel>
+                        </StackPanel>
 
-                        <ItemsControl ItemsSource="{Binding StockRows}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:StockRowViewModel">
-                                    <StackPanel>
+                        <!-- Étape 2 : Saisie de la quantité -->
+                        <StackPanel Classes="form-field">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock Text="Quantité à ajuster" Classes="form-label" />
+                                <TextBlock Text="*" Classes="field-required" />
+                            </StackPanel>
 
-                                        <Grid ColumnDefinitions="*,140,120,180,240"
-                                              MinHeight="56">
+                            <NumericUpDown Classes="form-numeric"
+                                           Value="{Binding AdjustQuantity}"
+                                           Minimum="0"
+                                           Increment="1"
+                                           FormatString="N2"
+                                           HorizontalAlignment="Stretch" />
 
-                                            <!-- Col 0 : label ou input -->
-                                            <TextBlock Grid.Column="0"
-                                                       IsVisible="{Binding !IsEditing}"
-                                                       Text="Pelote"
-                                                       FontSize="13" Opacity="0.5"
-                                                       VerticalAlignment="Center" />
+                            <TextBlock Text="Entrez une valeur positive, puis choisissez l'action ci-dessous."
+                                       Classes="form-hint" />
+                        </StackPanel>
 
-                                            <StackPanel Grid.Column="0"
-                                                        IsVisible="{Binding IsEditing}"
-                                                        VerticalAlignment="Center"
-                                                        Margin="0 0 12 0">
-                                                <TextBox IsVisible="{Binding IsWeightMode}"
-                                                         Text="{Binding InputText}"
-                                                         Classes="form-input-sm"
-                                                         PlaceholderText="Quantité en grammes" />
-                                                <TextBox IsVisible="{Binding IsLengthMode}"
-                                                         Text="{Binding InputText}"
-                                                         Classes="form-input-sm"
-                                                         PlaceholderText="Quantité en mètres" />
-                                            </StackPanel>
+                        <!-- Étape 3 : Actions (Boutons Ajouter / Retirer) -->
+                        <StackPanel Classes="form-actions" Margin="0 8 0 0">
 
-                                            <!-- Col 1 : poids -->
-                                            <TextBlock Grid.Column="1"
-                                                       Text="{Binding DisplayWeight}"
-                                                       FontSize="14" FontWeight="SemiBold"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center" />
+                            <Button Content="➖ Retirer du stock"
+                                    Classes="btn-danger-solid"
+                                    IsEnabled="{Binding CanAdjust}"
+                                    Command="{Binding AdjustStockCommand}"
+                                    CommandParameter="{x:False}"
+                                    MinWidth="140" />
 
-                                            <!-- Col 2 : longueur -->
-                                            <TextBlock Grid.Column="2"
-                                                       Text="{Binding DisplayLength}"
-                                                       FontSize="14" Opacity="0.6"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center" />
+                            <!-- Bouton Ajouter (Principal/Violet) -->
+                            <Button Content="➕ Ajouter au stock"
+                                    Classes="form-submit"
+                                    IsEnabled="{Binding CanAdjust}"
+                                    Command="{Binding AdjustStockCommand}"
+                                    CommandParameter="{x:True}"
+                                    MinWidth="140" />
 
-                                            <!-- Col 3 : toggle mode -->
-                                            <Border Grid.Column="3"
-                                                    IsVisible="{Binding IsEditing}"
-                                                    CornerRadius="6"
-                                                    BorderThickness="1"
-                                                    BorderBrush="{StaticResource BorderBrush}"
-                                                    Background="{StaticResource BackgroundCardBrush}"
-                                                    VerticalAlignment="Center"
-                                                    HorizontalAlignment="Center"
-                                                    Padding="4 2">
-                                                <StackPanel Orientation="Horizontal" Spacing="2">
-                                                    <RadioButton Content="Poids"
-                                                                 GroupName="{Binding StockId}"
-                                                                 IsChecked="{Binding IsWeightMode}"
-                                                                 Command="{Binding SetWeightModeCommand}"
-                                                                 Classes="tab"
-                                                                 FontSize="12"
-                                                                 Padding="12 6" />
-                                                    <RadioButton Content="Longueur"
-                                                                 GroupName="{Binding StockId}"
-                                                                 IsChecked="{Binding IsLengthMode}"
-                                                                 Command="{Binding SetLengthModeCommand}"
-                                                                 Classes="tab"
-                                                                 FontSize="12"
-                                                                 Padding="12 6" />
-                                                </StackPanel>
-                                            </Border>
-
-                                            <!-- Col 4 : actions -->
-                                            <StackPanel Grid.Column="4"
-                                                        Orientation="Horizontal"
-                                                        Spacing="8"
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center">
-
-                                                <Button IsVisible="{Binding IsEditing}"
-                                                        Content="Valider"
-                                                        Command="{Binding SaveRowCommand}"
-                                                        Classes="form-submit"
-                                                        MinWidth="80"
-                                                        Padding="14 0" />
-
-                                                <Button IsVisible="{Binding !IsEditing}"
-                                                        Content="Modifier"
-                                                        Command="{Binding EditRowCommand}"
-                                                        Classes="form-cancel"
-                                                        MinWidth="80"
-                                                        Padding="14 0" />
-
-                                                <Button Content="Supprimer"
-                                                        Command="{Binding DeleteRowCommand}"
-                                                        Classes="btn-danger"
-                                                        MinWidth="90"
-                                                        Padding="14 0" />
-                                            </StackPanel>
-
-                                        </Grid>
-
-                                        <!-- Erreur -->
-                                        <TextBlock
-                                            IsVisible="{Binding ErrorMessage,
-                               Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                            Text="{Binding ErrorMessage}"
-                                            Foreground="#EF4444"
-                                            FontSize="12"
-                                            Margin="0 0 0 6" />
-
-                                        <Border Height="1"
-                                                Background="{StaticResource BorderBrush}"
-                                                Opacity="0.2"
-                                                Margin="0 2 0 2" />
-
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                        <TextBlock IsVisible="{Binding !StockRows.Count}"
-                                   Text="Aucun stock enregistré pour cette laine."
-                                   Classes="form-hint"
-                                   HorizontalAlignment="Center"
-                                   Margin="0 8" />
+                        </StackPanel>
 
                     </StackPanel>
                 </Border>

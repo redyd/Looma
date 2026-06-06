@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
+using Looma.Domain.Request;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
@@ -28,7 +29,10 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
     private Color _selectedColor = Colors.Gray;
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string _lengthToWeightRatioText = string.Empty;
+    private string _weight = string.Empty;
+    
+    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    private string _length = string.Empty;
 
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _needleMinText = string.Empty;
@@ -45,27 +49,34 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
     {
         _isEdit = false;
         Title = "Nouvelle laine";
-        Name = Brand = Material = LengthToWeightRatioText = NeedleMinText = NeedleMaxText = string.Empty;
+        Name = Brand = Material = Weight = Length = NeedleMinText = NeedleMaxText = string.Empty;
         SelectedColor = Colors.Gray;
         ErrorMessage = null;
     }
 
-    public void InitEdit(int id, string name, string brand, string material,
-        string colorHex, double ratio, double needleMin, double needleMax)
+    public void InitEdit(Wool? wool)
     {
+        if (wool is null)
+        {
+            ErrorMessage = "Aucune laine sélectionnée";
+            return;
+        }
+        
         _isEdit = true;
-        _editingId = id;
+        _editingId = wool.Id;
         Title = "Modifier la laine";
-        Name = name;
-        Brand = brand;
-        Material = material;
-        LengthToWeightRatioText = ratio.ToString("G");
-        NeedleMinText = needleMin.ToString("G");
-        NeedleMaxText = needleMax.ToString("G");
+        Name = wool.Name;
+        Brand = wool.Brand;
+        Material = wool.Material;
+        Weight = wool.Weight.ToString("G");
+        Length = wool.Length.ToString("G");
+        NeedleMinText = wool.NeedleMinSize.ToString("G");
+        NeedleMaxText = wool.NeedleMaxSize.ToString("G");
         ErrorMessage = null;
+        
         try
         {
-            SelectedColor = Color.Parse(colorHex);
+            SelectedColor = Color.Parse(wool.Color);
         }
         catch
         {
@@ -73,14 +84,14 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
         }
     }
 
-    partial void OnSelectedColorChanged(Color value) =>
-        OnPropertyChanged(nameof(SelectedColorHex));
+    partial void OnSelectedColorChanged(Color value) => OnPropertyChanged(nameof(SelectedColorHex));
 
     private bool CanSave() =>
         !string.IsNullOrWhiteSpace(Name) &&
         !string.IsNullOrWhiteSpace(Brand) &&
         !string.IsNullOrWhiteSpace(Material) &&
-        double.TryParse(LengthToWeightRatioText, out var r) && r > 0 &&
+        double.TryParse(Weight, out var w) && w > 0 &&
+        double.TryParse(Length, out var l) && l > 0 &&
         double.TryParse(NeedleMinText, out var nmin) && nmin > 0 &&
         double.TryParse(NeedleMaxText, out var nmax) && nmax >= nmin;
 
@@ -89,9 +100,15 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
     {
         ErrorMessage = null;
 
-        if (!double.TryParse(LengthToWeightRatioText, out var ratio) || ratio <= 0)
+        if (!double.TryParse(Length, out var length) || length <= 0)
         {
-            ErrorMessage = "Le ratio longueur/poids doit être un nombre positif.";
+            ErrorMessage = "La longeur doit être un nombre positif.";
+            return;
+        }
+        
+        if (!double.TryParse(Weight, out var weight) || weight <= 0)
+        {
+            ErrorMessage = "Le poids doit être un nombre positif.";
             return;
         }
 
@@ -118,7 +135,8 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
                     Brand,
                     Material,
                     SelectedColorHex,
-                    ratio,
+                    weight,
+                    length,
                     needleMin,
                     needleMax));
                 if (result.Failed)
@@ -137,7 +155,9 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
                     Brand,
                     Material,
                     SelectedColorHex,
-                    ratio,
+                    weight,
+                    length,
+                    1000,
                     needleMin,
                     needleMax));
                 if (result.Failed)

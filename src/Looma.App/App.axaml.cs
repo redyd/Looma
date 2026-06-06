@@ -48,6 +48,7 @@ public partial class App : Application
 
         services.AddPresentation();
         services.AddInfrastructure();
+        services.AddDomain();
         services.AddSingleton<AppPaths>(_ => new AppPaths(rootPath));
 
         services.AddDbContext<LoomaDbContext>((sp, options) =>

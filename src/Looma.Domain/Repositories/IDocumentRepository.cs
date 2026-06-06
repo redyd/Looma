@@ -1,5 +1,6 @@
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
+using Looma.Domain.Request;
 
 namespace Looma.Domain.Repositories;
 

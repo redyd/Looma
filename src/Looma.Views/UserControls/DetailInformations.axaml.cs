@@ -17,6 +17,16 @@ public partial class DetailInformations : UserControl
 
     public static readonly StyledProperty<string> InfoTitleProperty =
         AvaloniaProperty.Register<DetailInformations, string>(nameof(InfoTitle), defaultValue: "Informations");
+    
+    public static readonly StyledProperty<IList<string>> ImagesProperty =
+        AvaloniaProperty.Register<DetailInformations, IList<string>>(
+            nameof(Images), defaultValue: []);
+
+    public IList<string> Images
+    {
+        get => GetValue(ImagesProperty);
+        set => SetValue(ImagesProperty, value);
+    }
 
     public IList<StatItem> Stats
     {

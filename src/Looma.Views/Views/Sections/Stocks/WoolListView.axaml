@@ -114,7 +114,7 @@
                                                FontSize="12"
                                                Opacity="0.6" />
 
-                                    <!-- Matière + couleur -->
+                                    <!-- Matière -->
                                     <StackPanel Orientation="Horizontal" Spacing="6">
                                         <Border Padding="6 2" CornerRadius="4"
                                                 Background="{StaticResource BackgroundBrush}"
@@ -126,7 +126,7 @@
                                                 Background="{StaticResource BackgroundBrush}"
                                                 BorderBrush="{StaticResource BorderBrush}"
                                                 BorderThickness="1">
-                                            <TextBlock Text="{Binding Wool.Color}" FontSize="11" />
+                                            <TextBlock Text="{Binding Wool.BatchQuantity, StringFormat='{}≃ {0:0} pelotes'}" FontSize="11" />
                                         </Border>
                                     </StackPanel>
 
@@ -136,12 +136,12 @@
                                             Opacity="0.5"
                                             Margin="0 2 0 2" />
 
-                                    <!-- Stock + ratio -->
+                                    <!-- Poids et longeur -->
                                     <Grid ColumnDefinitions="*,*">
                                         <StackPanel Grid.Column="0" Spacing="2">
-                                            <TextBlock Text="Stock" FontSize="10" Opacity="0.5" />
+                                            <TextBlock Text="Poids" FontSize="10" Opacity="0.5" />
                                             <StackPanel Orientation="Horizontal" Spacing="3">
-                                                <TextBlock Text="{Binding TotalWeightGrams, StringFormat='{}{0:N0}'}"
+                                                <TextBlock Text="{Binding Wool.StockLength, StringFormat='{}{0:N0}'}"
                                                            FontSize="13" FontWeight="SemiBold" />
                                                 <TextBlock Text="g" FontSize="11" Opacity="0.5"
                                                            VerticalAlignment="Bottom" Margin="0 0 0 1" />
@@ -149,11 +149,11 @@
                                         </StackPanel>
 
                                         <StackPanel Grid.Column="1" Spacing="2">
-                                            <TextBlock Text="Ratio" FontSize="10" Opacity="0.5" />
+                                            <TextBlock Text="Longueur" FontSize="10" Opacity="0.5" />
                                             <StackPanel Orientation="Horizontal" Spacing="3">
-                                                <TextBlock Text="{Binding Wool.LengthToWeightRatio}"
+                                                <TextBlock Text="{Binding Wool.StockWeight}"
                                                            FontSize="13" FontWeight="SemiBold" />
-                                                <TextBlock Text="m/100g" FontSize="11" Opacity="0.5"
+                                                <TextBlock Text="m" FontSize="11" Opacity="0.5"
                                                            VerticalAlignment="Bottom" Margin="0 0 0 1" />
                                             </StackPanel>
                                         </StackPanel>

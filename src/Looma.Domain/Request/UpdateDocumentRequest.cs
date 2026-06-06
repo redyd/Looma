@@ -1,4 +1,4 @@
-namespace Looma.Domain.Entities;
+namespace Looma.Domain.Request;
 
 public sealed record UpdateDocumentRequest(
     Guid Id,

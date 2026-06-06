@@ -13,5 +13,8 @@ public class WoolConfiguration : IEntityTypeConfiguration<WoolEntity>
         builder.Property(w => w.Brand).IsRequired();
         builder.Property(w => w.Material).IsRequired();
         builder.Property(w => w.Color).IsRequired();
+        builder.Property(w => w.Weight).IsRequired();
+        builder.Property(w => w.Length).IsRequired();
+        builder.Property(w => w.Stock).HasDefaultValue(1000).IsRequired();
     }
 }
