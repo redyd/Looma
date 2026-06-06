@@ -12,4 +12,8 @@ public class Wool
     public required double Stock { get; init; }
     public required double NeedleMinSize { get; init; }
     public required double NeedleMaxSize { get; init; }
+
+    public double BatchQuantity => Stock / 1000;
+    public double StockWeight => Weight * BatchQuantity;
+    public double StockLength => Length * BatchQuantity;
 }

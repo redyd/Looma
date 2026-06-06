@@ -77,15 +77,15 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             if (entity is null)
                 return ResultT<Wool>.NotFound($"La laine {request.Id} est introuvable.");
 
-            var name = request.Name?.Trim() ?? entity.Name;
-            var brand = request.Brand?.Trim() ?? entity.Brand;
-            var material = request.Material?.Trim() ?? entity.Material;
-            var color = request.Color?.Trim() ?? entity.Color;
-            var weight = request.Weight ?? entity.Weight;
-            var length = request.Length ?? entity.Length;
-            var stock = request.Stock ?? entity.Stock;
-            var needleMinSize = request.NeedleMinSize ?? entity.NeedleMinSize;
-            var needleMaxSize = request.NeedleMaxSize ?? entity.NeedleMaxSize;
+            var name = request.Name.Trim();
+            var brand = request.Brand.Trim();
+            var material = request.Material.Trim();
+            var color = request.Color.Trim();
+            var weight = request.Weight;
+            var length = request.Length;
+            var stock = request.Stock;
+            var needleMinSize = request.NeedleMinSize;
+            var needleMaxSize = request.NeedleMaxSize;
 
             if (!IsValid(name, brand, material, color, weight, length, stock, needleMinSize, needleMaxSize))
             {

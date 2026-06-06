@@ -11,7 +11,7 @@ using Looma.Presentation.ViewModels.Base;
 
 namespace Looma.Presentation.ViewModels.Sections.Stocks;
 
-public record WoolSummary(Wool Wool, double TotalWeightGrams, ICommand OpenDetailCommand);
+public record WoolSummary(Wool Wool, ICommand OpenDetailCommand);
 
 public partial class WoolListViewModel(
     INavigationService nav,
@@ -55,12 +55,8 @@ public partial class WoolListViewModel(
             var summaries = new List<WoolSummary>();
             foreach (var wool in _allWools)
             {
-                var totalResult = await stockRepo.GetTotalWeightByWoolIdAsync(wool.Id);
-                if (totalResult.Failed)
-                    notifications.Warning(totalResult.Error ?? $"Impossible de calculer le stock de {wool.Name}.");
                 summaries.Add(new WoolSummary(
                     wool,
-                    totalResult.Succeeded ? totalResult.Value : 0,
                     new RelayCommand(() => nav.NavigateTo<WoolDetailViewModel>(vm => vm.Load(wool)))));
             }
 
