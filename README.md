@@ -1,8 +1,7 @@
 <p align="center">
-  <img src="src/Looma.App/Assets/logo.png" alt="Looma" width="120" />
+  <img src="src/Looma.App/Assets/logo.png" alt="Looma" width="60" />
+  <h1 align="center">Looma</h1>
 </p>
-
-# Looma
 
 Looma is a personal desktop app for knitters and crafters who want to take back control of their stash. Track your wool inventory, organize your patterns and their documents, and manage your projects from start to finish — all stored locally, no account required.
 
