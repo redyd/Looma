@@ -8,12 +8,12 @@ public class Wool
     [
         (WoolType.Lace, 1.5, 2.25),
         (WoolType.SuperFine, 2.25, 3.25),
-        (WoolType.Fine, 3.25, 3.75),
-        (WoolType.Light, 3.75, 4.5),
-        (WoolType.Medium, 4.5, 5.5),
-        (WoolType.Bulky, 5.5, 8),
-        (WoolType.SuperBulky, 8, 12.75),
-        (WoolType.Jumbo, 12.75, double.MaxValue)
+        (WoolType.Fine, 3.25, 4),
+        (WoolType.Light, 4, 5),
+        (WoolType.Medium, 5, 6),
+        (WoolType.Bulky, 6, 8.5),
+        (WoolType.SuperBulky, 8.5, 14),
+        (WoolType.Jumbo, 14, double.MaxValue)
     ];
 
     public required int Id { get; init; }
