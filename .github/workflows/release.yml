@@ -80,15 +80,6 @@ jobs:
             -p:PublishSingleFile=true `
             -o ./publish/win
 
-      - name: Inspect publish output
-        run: Get-ChildItem ./publish/win | Where-Object { $_.Name -like "*skia*" } | Select-Object Name, Length
-
-      - name: Check SkiaSharp version
-        run: |
-          $dll = "./publish/win/libSkiaSharp.dll"
-          $ver = (Get-Item $dll).VersionInfo.FileVersion
-          Write-Host "libSkiaSharp.dll version: $ver"
-
       - name: Install vpk
         run: dotnet tool install -g vpk
 
