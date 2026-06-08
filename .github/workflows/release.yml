@@ -148,17 +148,37 @@ jobs:
       - name: Install vpk
         run: dotnet tool install -g vpk
 
+      - name: Pack macOS x64
+        run: |
+          vpk pack \
+            --packId Looma \
+            --packVersion ${{ steps.version.outputs.VERSION }} \
+            --packDir ./publish/osx-x64 \
+            --mainExe Looma.App \
+            --channel osx-x64 \
+            --outputDir ./releases/osx-x64
+
+      - name: Pack macOS arm64
+        run: |
+          vpk pack \
+            --packId Looma \
+            --packVersion ${{ steps.version.outputs.VERSION }} \
+            --packDir ./publish/osx-arm64 \
+            --mainExe Looma.App \
+            --channel osx-arm64 \
+            --outputDir ./releases/osx-arm64
+
       - name: Publish macOS x64 to GitHub
-          run: |
-            vpk upload github \
-              --repoUrl https://github.com/${{ github.repository }} \
-              --publish \
-              --releaseName "Looma v${{ steps.version.outputs.VERSION }}" \
-              --tag ${{ github.ref_name }} \
-              --token ${{ secrets.GITHUB_TOKEN }} \
-              --outputDir ./releases/osx-x64 \
-              --channel osx-x64 \
-              --merge
+        run: |
+          vpk upload github \
+            --repoUrl https://github.com/${{ github.repository }} \
+            --publish \
+            --releaseName "Looma v${{ steps.version.outputs.VERSION }}" \
+            --tag ${{ github.ref_name }} \
+            --token ${{ secrets.GITHUB_TOKEN }} \
+            --outputDir ./releases/osx-x64 \
+            --channel osx-x64 \
+            --merge
 
       - name: Publish macOS arm64 to GitHub
         run: |
@@ -170,26 +190,4 @@ jobs:
             --token ${{ secrets.GITHUB_TOKEN }} \
             --outputDir ./releases/osx-arm64 \
             --channel osx-arm64 \
-            --merge
-
-      - name: Publish macOS x64 to GitHub
-        run: |
-          vpk upload github \
-            --repoUrl https://github.com/${{ github.repository }} \
-            --publish \
-            --releaseName "Looma v${{ steps.version.outputs.VERSION }}" \
-            --tag ${{ github.ref_name }} \
-            --token ${{ secrets.GITHUB_TOKEN }} \
-            --outputDir ./releases/osx-x64 \
-            --merge
-
-      - name: Publish macOS arm64 to GitHub
-        run: |
-          vpk upload github \
-            --repoUrl https://github.com/${{ github.repository }} \
-            --publish \
-            --releaseName "Looma v${{ steps.version.outputs.VERSION }}" \
-            --tag ${{ github.ref_name }} \
-            --token ${{ secrets.GITHUB_TOKEN }} \
-            --outputDir ./releases/osx-arm64 \
             --merge
