@@ -34,3 +34,7 @@ Avalonia UI · Entity Framework Core · SQLite · Clean Architecture · C#
 ## License
 
 This project is licensed under the [GNU Affero General Public License v3.0](./LICENSE). It is open to read, but not open for contributions or commercial use.
+
+## Website & downloads
+
+Find [here](https://looma.redyd.dev) Looma's website: feel free to share it with your friends :)
