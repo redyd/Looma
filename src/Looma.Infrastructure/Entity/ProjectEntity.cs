@@ -12,8 +12,9 @@ public class ProjectEntity
     public string Name { get; set; } = null!;
     public DateOnly? BeginDate { get; set; }
     public DateOnly? EndDate { get; set; }
+    public string? Note { get; set; } = null!;
 
-    public int PatronId { get; set; }
+    public int PatternId { get; set; }
     public PatternEntity PatternEntity { get; set; } = null!;
 
     public Status Status { get; set; }

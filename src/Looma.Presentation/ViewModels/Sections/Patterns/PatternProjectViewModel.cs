@@ -14,6 +14,7 @@ public record PatternProjectViewModel(PatternProject Project)
         Status.Wishlist => "Wishlist",
         Status.InProgress => "En cours",
         Status.Finished => "Terminé",
+        Status.Paused => "En pause",
         _ => Project.Status.ToString()
     };
 }
