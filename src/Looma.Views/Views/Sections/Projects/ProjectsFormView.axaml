@@ -86,6 +86,95 @@
 
                     <Border Classes="form-section">
                         <StackPanel Spacing="12">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0"
+                                           Classes="section-title"
+                                           Text="Images" />
+                                <Button Grid.Column="1"
+                                        Classes="form-submit"
+                                        Content="Ajouter des images"
+                                        Command="{Binding BrowseImagesCommand}" />
+                            </Grid>
+
+                            <TextBlock Classes="form-hint"
+                                       Text="PNG, JPG, WEBP, BMP ou GIF. Plusieurs images peuvent être sélectionnées en une fois." />
+
+                            <TextBlock Text="Aucune image sélectionnée."
+                                       Classes="form-hint"
+                                       IsVisible="{Binding !HasImages}" />
+
+                            <ItemsControl ItemsSource="{Binding ExistingImages}"
+                                          IsVisible="{Binding HasExistingImages}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:ProjectImageViewModel">
+                                        <Border Classes="surface-panel"
+                                                Padding="12"
+                                                Margin="0 0 0 8">
+                                            <Grid ColumnDefinitions="120,16,*,Auto">
+                                                <Image Grid.Column="0"
+                                                       Source="{Binding SourcePath, Converter={StaticResource StringToUri}}"
+                                                       Width="120"
+                                                       Height="90"
+                                                       Stretch="UniformToFill" />
+                                                <StackPanel Grid.Column="2"
+                                                            Spacing="4"
+                                                            VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Name}"
+                                                               FontWeight="SemiBold"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding DetailText}"
+                                                               Classes="form-hint"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                </StackPanel>
+                                                <Button Grid.Column="3"
+                                                        Content="Retirer"
+                                                        Command="{Binding RemoveCommand}"
+                                                        Classes="form-cancel"
+                                                        VerticalAlignment="Center" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <ItemsControl ItemsSource="{Binding NewImages}"
+                                          IsVisible="{Binding HasNewImages}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:ProjectImageDraftViewModel">
+                                        <Border Classes="surface-panel"
+                                                Padding="12"
+                                                Margin="0 0 0 8">
+                                            <Grid ColumnDefinitions="120,16,*,Auto">
+                                                <Image Grid.Column="0"
+                                                       Source="{Binding SourcePath, Converter={StaticResource StringToUri}}"
+                                                       Width="120"
+                                                       Height="90"
+                                                       Stretch="UniformToFill" />
+                                                <StackPanel Grid.Column="2"
+                                                            Spacing="8"
+                                                            VerticalAlignment="Center">
+                                                    <TextBox Classes="form-input"
+                                                             Text="{Binding Nickname}"
+                                                             PlaceholderText="Nom affiché de l'image" />
+                                                    <TextBlock Text="{Binding SelectedFileName}"
+                                                               Classes="form-hint"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                </StackPanel>
+                                                <Button Grid.Column="3"
+                                                        Content="Retirer"
+                                                        Command="{Binding RemoveCommand}"
+                                                        Classes="form-cancel"
+                                                        VerticalAlignment="Center" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="form-section">
+                        <StackPanel Spacing="12">
                             <TextBlock Classes="section-title" Text="Patron" />
                             <Grid ColumnDefinitions="*,16,220">
                                 <StackPanel Grid.Column="0" Classes="form-field">

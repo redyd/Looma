@@ -27,6 +27,10 @@ public static class ProjectMapping
                 })
                 .OrderBy(w => w.Wool.Brand)
                 .ThenBy(w => w.Wool.Name)
+                .ToList(),
+            Files = entity.Files
+                .Select(d => d.ToDomain())
+                .OrderBy(d => d.Nickname)
                 .ToList()
         };
 

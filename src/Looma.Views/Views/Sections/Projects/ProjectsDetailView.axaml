@@ -38,6 +38,38 @@
         <ScrollViewer>
             <StackPanel Margin="32" Spacing="16">
 
+                <Border Classes="form-section"
+                        Padding="16"
+                        IsVisible="{Binding HasImages}">
+                    <Grid RowDefinitions="Auto,12,Auto">
+                        <Image Grid.Row="0"
+                               Source="{Binding SelectedImage.SourcePath, Converter={StaticResource StringToUri}}"
+                               MinHeight="220"
+                               MaxHeight="360"
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center" />
+
+                        <Grid Grid.Row="2"
+                              ColumnDefinitions="Auto,*,Auto"
+                              IsVisible="{Binding HasMultipleImages}">
+                            <Button Grid.Column="0"
+                                    Content="Précédent"
+                                    Command="{Binding PreviousImageCommand}"
+                                    Classes="form-cancel" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding ImagePositionDisplay}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontWeight="SemiBold"
+                                       Opacity="0.65" />
+                            <Button Grid.Column="2"
+                                    Content="Suivant"
+                                    Command="{Binding NextImageCommand}"
+                                    Classes="form-submit" />
+                        </Grid>
+                    </Grid>
+                </Border>
+
                 <Button Classes="card-button"
                         Command="{Binding OpenPatternCommand}"
                         HorizontalAlignment="Stretch">

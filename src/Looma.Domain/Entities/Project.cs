@@ -14,4 +14,5 @@ public class Project
 
     public required Pattern Pattern { get; init; }
     public IReadOnlyList<WoolUsage> Wools { get; init; } = [];
+    public IReadOnlyList<Document> Files { get; init; } = [];
 }

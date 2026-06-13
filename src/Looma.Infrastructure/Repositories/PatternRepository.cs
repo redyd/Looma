@@ -149,7 +149,10 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
             if (pattern.Documents.Any(d => d.DocumentId == documentId))
                 return Result.Ok();
 
-            pattern.Documents.Add(document);
+            if (document.ProjectId.HasValue)
+                return Result.Failure("Ce document est déjà lié à un projet.");
+
+            document.PatternId = patternId;
             await context.SaveChangesAsync();
             return Result.Ok();
         }
@@ -241,7 +244,8 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
                 Id = document.Id,
                 Nickname = document.Nickname,
                 Type = "Inconnu",
-                SizeBytes = 0
+                SizeBytes = 0,
+                StoragePath = null
             };
         }
 
@@ -256,7 +260,8 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
             Id = document.Id,
             Nickname = document.Nickname,
             Type = type,
-            SizeBytes = info.Length
+            SizeBytes = info.Length,
+            StoragePath = filePath
         };
     }
 }

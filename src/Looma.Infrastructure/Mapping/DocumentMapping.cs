@@ -14,14 +14,17 @@ public static class DocumentMapping
         {
             Id = entity.DocumentId,
             Nickname = entity.Nickname,
-            Type = string.Empty,
-            SizeBytes = 0
+            Type = entity.Type,
+            SizeBytes = entity.Size,
+            StoragePath = null
         };
 
     public static DocumentEntity ToEntity(this Document document) =>
         new()
         {
             DocumentId = document.Id,
-            Nickname = document.Nickname
+            Nickname = document.Nickname,
+            Type = document.Type,
+            Size = document.SizeBytes
         };
 }

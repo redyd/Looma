@@ -38,7 +38,7 @@ public partial class ProjectsListViewModel : PageViewModelBase
 
     public IReadOnlyList<ProjectStatusFilterViewModel> StatusFilters { get; } =
     [
-        new("Tous les statuts", null),
+        new("Tous les projets", null),
         .. Enum.GetValues<Status>()
             .Select(status => new ProjectStatusFilterViewModel(status.GetDisplayName(), status))
     ];

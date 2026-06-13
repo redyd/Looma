@@ -34,6 +34,8 @@ public partial class ProjectsDetailViewModel(
     [ObservableProperty] private Pattern? _pattern;
     [ObservableProperty] private string? _errorMessage;
     [ObservableProperty] private ObservableCollection<ProjectWoolUsageViewModel> _wools = [];
+    [ObservableProperty] private ObservableCollection<ProjectImageViewModel> _images = [];
+    [ObservableProperty] private int _selectedImageIndex;
 
     public string StatusDisplay => Status.GetDisplayName();
     public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? "Aucune note." : Note!;
@@ -41,6 +43,11 @@ public partial class ProjectsDetailViewModel(
     public string PatternTypeDisplay => Pattern?.Type.GetDisplayName() ?? "-";
     public string PatternNoteDisplay => string.IsNullOrWhiteSpace(Pattern?.Note) ? "Aucune note." : Pattern.Note!;
     public bool HasWools => Wools.Count > 0;
+    public bool HasImages => Images.Count > 0;
+    public bool HasMultipleImages => Images.Count > 1;
+    public ProjectImageViewModel? SelectedImage =>
+        SelectedImageIndex >= 0 && SelectedImageIndex < Images.Count ? Images[SelectedImageIndex] : null;
+    public string ImagePositionDisplay => HasImages ? $"{SelectedImageIndex + 1} / {Images.Count}" : string.Empty;
 
     public IList<StatItem> PatternStats =>
     [
@@ -106,6 +113,11 @@ public partial class ProjectsDetailViewModel(
                 usage,
                 new AsyncRelayCommand(() => AddWoolUsageAsync(usage)),
                 new AsyncRelayCommand(() => RemoveWoolUsageAsync(usage)))));
+        Images = new ObservableCollection<ProjectImageViewModel>(
+            project.Files
+                .Where(IsSupportedImage)
+                .Select(image => new ProjectImageViewModel(image)));
+        SelectedImageIndex = Images.Count == 0 ? -1 : Math.Clamp(SelectedImageIndex, 0, Images.Count - 1);
 
         OnPropertyChanged(nameof(StatusDisplay));
         OnPropertyChanged(nameof(NoteDisplay));
@@ -113,6 +125,10 @@ public partial class ProjectsDetailViewModel(
         OnPropertyChanged(nameof(PatternTypeDisplay));
         OnPropertyChanged(nameof(PatternNoteDisplay));
         OnPropertyChanged(nameof(HasWools));
+        OnPropertyChanged(nameof(HasImages));
+        OnPropertyChanged(nameof(HasMultipleImages));
+        OnPropertyChanged(nameof(SelectedImage));
+        OnPropertyChanged(nameof(ImagePositionDisplay));
         OnPropertyChanged(nameof(ProjectInfos));
         OnPropertyChanged(nameof(PatternInfos));
         OnPropertyChanged(nameof(PatternStats));
@@ -175,8 +191,41 @@ public partial class ProjectsDetailViewModel(
             BeginDate = BeginDate,
             EndDate = EndDate,
             Pattern = Pattern,
-            Wools = Wools.Select(w => w.Usage).ToList()
+            Wools = Wools.Select(w => w.Usage).ToList(),
+            Files = Images.Select(i => i.Document).ToList()
         }));
+    }
+
+    partial void OnImagesChanged(ObservableCollection<ProjectImageViewModel> value)
+    {
+        OnPropertyChanged(nameof(HasImages));
+        OnPropertyChanged(nameof(HasMultipleImages));
+        OnPropertyChanged(nameof(SelectedImage));
+        OnPropertyChanged(nameof(ImagePositionDisplay));
+    }
+
+    partial void OnSelectedImageIndexChanged(int value)
+    {
+        OnPropertyChanged(nameof(SelectedImage));
+        OnPropertyChanged(nameof(ImagePositionDisplay));
+    }
+
+    [RelayCommand]
+    private void PreviousImage()
+    {
+        if (Images.Count == 0)
+            return;
+
+        SelectedImageIndex = SelectedImageIndex <= 0 ? Images.Count - 1 : SelectedImageIndex - 1;
+    }
+
+    [RelayCommand]
+    private void NextImage()
+    {
+        if (Images.Count == 0)
+            return;
+
+        SelectedImageIndex = SelectedImageIndex >= Images.Count - 1 ? 0 : SelectedImageIndex + 1;
     }
 
     [RelayCommand]
@@ -204,4 +253,18 @@ public partial class ProjectsDetailViewModel(
 
     [RelayCommand]
     private void GoBack() => nav.GoBack();
+
+    private static bool IsSupportedImage(Document document) =>
+        document.StoragePath is not null && IsSupportedImagePath(document.StoragePath);
+
+    private static bool IsSupportedImagePath(string path)
+    {
+        var extension = Path.GetExtension(path);
+        return extension.Equals(".png", StringComparison.OrdinalIgnoreCase)
+            || extension.Equals(".jpg", StringComparison.OrdinalIgnoreCase)
+            || extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase)
+            || extension.Equals(".webp", StringComparison.OrdinalIgnoreCase)
+            || extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase)
+            || extension.Equals(".gif", StringComparison.OrdinalIgnoreCase);
+    }
 }

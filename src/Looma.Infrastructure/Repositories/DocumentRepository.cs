@@ -78,25 +78,36 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
 
         try
         {
-            PatternEntity? pattern = null;
+            if (request.PatternId.HasValue && request.ProjectId.HasValue)
+                return ResultT<Document>.Failure("Un document ne peut être lié qu'à un patron ou à un projet.");
+
             if (request.PatternId.HasValue)
             {
-                pattern = await context.Patterns.FirstOrDefaultAsync(p => p.PatternId == request.PatternId.Value);
-                if (pattern is null)
+                var patternExists = await context.Patterns.AnyAsync(p => p.PatternId == request.PatternId.Value);
+                if (!patternExists)
                     return ResultT<Document>.NotFound($"Le patron {request.PatternId.Value} est introuvable.");
+            }
+
+            if (request.ProjectId.HasValue)
+            {
+                var projectExists = await context.Projects.AnyAsync(p => p.ProjectId == request.ProjectId.Value);
+                if (!projectExists)
+                    return ResultT<Document>.NotFound($"Le projet {request.ProjectId.Value} est introuvable.");
             }
 
             Directory.CreateDirectory(pathManager.DocumentsFolder);
             File.Copy(request.SourcePath, destinationPath, overwrite: false);
 
+            var fileInfo = new FileInfo(destinationPath);
             var entity = new DocumentEntity
             {
                 DocumentId = id,
-                Nickname = nickname
+                Nickname = nickname,
+                Type = GetDocumentType(destinationPath),
+                Size = fileInfo.Length,
+                PatternId = request.PatternId,
+                ProjectId = request.ProjectId
             };
-
-            if (pattern is not null)
-                entity.Pattern = pattern;
 
             context.Documents.Add(entity);
             await context.SaveChangesAsync();
@@ -202,22 +213,27 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 Id = document.Id,
                 Nickname = document.Nickname,
                 Type = "Inconnu",
-                SizeBytes = 0
+                SizeBytes = 0,
+                StoragePath = null
             };
         }
 
         var info = new FileInfo(filePath);
-        var extension = Path.GetExtension(filePath).TrimStart('.');
-        var type = string.IsNullOrWhiteSpace(extension)
-            ? "Sans extension"
-            : extension.ToUpperInvariant();
-
         return new Document
         {
             Id = document.Id,
             Nickname = document.Nickname,
-            Type = type,
-            SizeBytes = info.Length
+            Type = GetDocumentType(filePath),
+            SizeBytes = info.Length,
+            StoragePath = filePath
         };
+    }
+
+    private static string GetDocumentType(string filePath)
+    {
+        var extension = Path.GetExtension(filePath).TrimStart('.');
+        return string.IsNullOrWhiteSpace(extension)
+            ? "Sans extension"
+            : extension.ToUpperInvariant();
     }
 }

@@ -10,4 +10,5 @@ public class Document
     public required string Nickname { get; init; }
     public required string Type { get; init; }
     public required long SizeBytes { get; init; }
+    public required string? StoragePath { get; init; }
 }

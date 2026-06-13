@@ -3,13 +3,14 @@
     This file is part of Looma, licensed under the AGPL-3.0.
     See LICENSE in the project root for full license text.
 -->
-
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
-             xmlns:controls="clr-namespace:Looma.Views.UserControls"
-             x:Class="Looma.Views.Views.Sections.Patterns.PatternsDetailView"
-             x:DataType="vm:PatternsDetailViewModel">
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
+    xmlns:controls="clr-namespace:Looma.Views.UserControls"
+    x:Class="Looma.Views.Views.Sections.Patterns.PatternsDetailView"
+    x:DataType="vm:PatternsDetailViewModel"
+>
 
     <DockPanel>
 
@@ -17,39 +18,54 @@
             DockPanel.Dock="Top"
             GoBackCommand="{Binding GoBackCommand}"
             EditCommand="{Binding EditCommand}"
-            DeleteCommand="{Binding ConfirmDeleteCommand}">
+            DeleteCommand="{Binding ConfirmDeleteCommand}"
+        >
 
             <controls:DetailHeader.TitleContent>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="SemiBold"
-                               HorizontalAlignment="Center" />
-                    <TextBlock Text="{Binding Url}" FontSize="14" Opacity="0.5"
-                               HorizontalAlignment="Center" />
+                    <TextBlock
+                        Text="{Binding Name}"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        HorizontalAlignment="Center"
+                    />
+                    <TextBlock
+                        Text="{Binding Url}"
+                        FontSize="14"
+                        Opacity="0.5"
+                        HorizontalAlignment="Center"
+                    />
                 </StackPanel>
             </controls:DetailHeader.TitleContent>
 
         </controls:DetailHeader>
-        
+
 
 
         <ScrollViewer>
             <StackPanel Margin="32" Spacing="16">
-                
+
                 <controls:DetailInformations
                     InfoTitle="📦 Informations"
                     Stats="{Binding DetailStats}"
-                    Infos="{Binding DetailInfos}" />
-                
+                    Infos="{Binding DetailInfos}"
+                />
+
                 <Grid ColumnDefinitions="*,16,*">
 
                     <StackPanel Grid.Column="0" Spacing="16">
                         <Border Classes="form-section">
                             <StackPanel Spacing="12">
-                                <TextBlock Classes="section-title" Text="Note" />
-                                <TextBlock Text="{Binding NoteDisplay}"
-                                           TextWrapping="Wrap"
-                                           FontSize="14"
-                                           LineHeight="20" />
+                                <TextBlock
+                                    Classes="section-title"
+                                    Text="Note"
+                                />
+                                <TextBlock
+                                    Text="{Binding NoteDisplay}"
+                                    TextWrapping="Wrap"
+                                    FontSize="14"
+                                    LineHeight="20"
+                                />
                             </StackPanel>
                         </Border>
 
@@ -59,51 +75,72 @@
 
                         <Border Classes="form-section">
                             <StackPanel Spacing="12">
-                                <TextBlock Classes="section-title" Text="Documents liés" />
-                                <TextBlock Text="Aucun document"
-                                           Classes="form-hint"
-                                           IsVisible="{Binding !HasDocuments}" />
-                                <ItemsControl ItemsSource="{Binding Documents}"
-                                              IsVisible="{Binding HasDocuments}">
+                                <TextBlock
+                                    Classes="section-title"
+                                    Text="Documents liés"
+                                />
+                                <TextBlock
+                                    Text="Aucun document"
+                                    Classes="form-hint"
+                                    IsVisible="{Binding !HasDocuments}"
+                                />
+                                <ItemsControl
+                                    ItemsSource="{Binding Documents}"
+                                    IsVisible="{Binding HasDocuments}"
+                                >
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <StackPanel Spacing="0" />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:PatternDocumentViewModel">
+                                        <DataTemplate
+                                            x:DataType="vm:PatternDocumentViewModel"
+                                        >
                                             <StackPanel>
-                                                <Grid ColumnDefinitions="*,140,120,Auto"
-                                                      MinHeight="56">
-                                                    <TextBlock Grid.Column="0"
-                                                               Text="{Binding Document.Nickname}"
-                                                               FontSize="14"
-                                                               FontWeight="SemiBold"
-                                                               VerticalAlignment="Center"
-                                                               TextTrimming="CharacterEllipsis" />
-                                                    <TextBlock Grid.Column="1"
-                                                               Text="{Binding TypeDisplay}"
-                                                               FontSize="13"
-                                                               Opacity="0.7"
-                                                               HorizontalAlignment="Center"
-                                                               VerticalAlignment="Center" />
-                                                    <TextBlock Grid.Column="2"
-                                                               Text="{Binding SizeDisplay}"
-                                                               FontSize="13"
-                                                               Opacity="0.7"
-                                                               HorizontalAlignment="Center"
-                                                               VerticalAlignment="Center" />
-                                                    <Button Grid.Column="3"
-                                                            Content="Ouvrir"
-                                                            Command="{Binding OpenCommand}"
-                                                            Classes="form-cancel"
-                                                            MinWidth="80"
-                                                            VerticalAlignment="Center" />
+                                                <Grid
+                                                    ColumnDefinitions="*,140,120,Auto"
+                                                    MinHeight="56"
+                                                >
+                                                    <TextBlock
+                                                        Grid.Column="0"
+                                                        Text="{Binding Document.Nickname}"
+                                                        FontSize="14"
+                                                        FontWeight="SemiBold"
+                                                        VerticalAlignment="Center"
+                                                        TextTrimming="CharacterEllipsis"
+                                                    />
+                                                    <TextBlock
+                                                        Grid.Column="1"
+                                                        Text="{Binding TypeDisplay}"
+                                                        FontSize="13"
+                                                        Opacity="0.7"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                    />
+                                                    <TextBlock
+                                                        Grid.Column="2"
+                                                        Text="{Binding SizeDisplay}"
+                                                        FontSize="13"
+                                                        Opacity="0.7"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                    />
+                                                    <Button
+                                                        Grid.Column="3"
+                                                        Content="Ouvrir"
+                                                        Command="{Binding OpenCommand}"
+                                                        Classes="form-cancel"
+                                                        MinWidth="80"
+                                                        VerticalAlignment="Center"
+                                                    />
                                                 </Grid>
-                                                <Border Height="1"
-                                                        Background="{StaticResource BorderBrush}"
-                                                        Opacity="0.2"
-                                                        Margin="0 2 0 2" />
+                                                <Border
+                                                    Height="1"
+                                                    Background="{StaticResource BorderBrush}"
+                                                    Opacity="0.2"
+                                                    Margin="0 2 0 2"
+                                                />
                                             </StackPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -113,31 +150,49 @@
 
                         <Border Classes="form-section">
                             <StackPanel Spacing="12">
-                                <TextBlock Classes="section-title" Text="Projets liés" />
-                                <TextBlock Text="Aucun projet"
-                                           Classes="form-hint"
-                                           IsVisible="{Binding !HasProjects}" />
-                                <ItemsControl ItemsSource="{Binding Projects}"
-                                              IsVisible="{Binding HasProjects}">
+                                <TextBlock
+                                    Classes="section-title"
+                                    Text="Projets liés"
+                                />
+                                <TextBlock
+                                    Text="Aucun projet"
+                                    Classes="form-hint"
+                                    IsVisible="{Binding !HasProjects}"
+                                />
+                                <ItemsControl
+                                    ItemsSource="{Binding Projects}"
+                                    IsVisible="{Binding HasProjects}"
+                                >
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <StackPanel Spacing="8" />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:PatternProjectViewModel">
-                                            <Border Padding="12 10"
-                                                    Background="{StaticResource BackgroundCardBrush}"
-                                                    BorderBrush="{StaticResource BorderBrush}"
-                                                    BorderThickness="1">
-                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-                                                    <TextBlock Text="{Binding Project.Name}"
-                                                               FontWeight="SemiBold"
-                                                               VerticalAlignment="Center" />
-                                                    <TextBlock Grid.Column="1"
-                                                               Text="{Binding StatusDisplay}"
-                                                               VerticalAlignment="Center"
-                                                               Opacity="0.75" />
+                                        <DataTemplate
+                                            x:DataType="vm:PatternProjectViewModel"
+                                        >
+                                            <Border
+                                                Padding="12 10"
+                                                Background="{StaticResource BackgroundCardBrush}"
+                                                BorderBrush="{StaticResource BorderBrush}"
+                                                BorderThickness="1"
+                                            >
+                                                <Grid
+                                                    ColumnDefinitions="*,Auto"
+                                                    ColumnSpacing="16"
+                                                >
+                                                    <TextBlock
+                                                        Text="{Binding Project.Name}"
+                                                        FontWeight="SemiBold"
+                                                        VerticalAlignment="Center"
+                                                    />
+                                                    <TextBlock
+                                                        Grid.Column="1"
+                                                        Text="{Binding StatusDisplay}"
+                                                        VerticalAlignment="Center"
+                                                        Opacity="0.75"
+                                                    />
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>

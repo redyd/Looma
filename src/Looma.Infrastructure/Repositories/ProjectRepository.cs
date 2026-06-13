@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Looma.Infrastructure.Repositories;
 
-public class ProjectRepository(LoomaDbContext context) : IProjectRepository
+public class ProjectRepository(LoomaDbContext context, Looma.Infrastructure.Storage.AppPaths pathManager) : IProjectRepository
 {
     public async Task<ResultT<IReadOnlyList<Project>>> GetAllAsync()
     {
@@ -24,7 +24,7 @@ public class ProjectRepository(LoomaDbContext context) : IProjectRepository
                 .ThenBy(p => p.Name)
                 .ToListAsync();
 
-            return ResultT<IReadOnlyList<Project>>.Ok(entities.Select(p => p.ToDomain()).ToList());
+            return ResultT<IReadOnlyList<Project>>.Ok(entities.Select(p => ApplyFileMetadata(p.ToDomain())).ToList());
         }
         catch (Exception ex)
         {
@@ -41,7 +41,7 @@ public class ProjectRepository(LoomaDbContext context) : IProjectRepository
 
             return entity is null
                 ? ResultT<Project>.NotFound($"Le projet {id} est introuvable.")
-                : ResultT<Project>.Ok(entity.ToDomain());
+                : ResultT<Project>.Ok(ApplyFileMetadata(entity.ToDomain()));
         }
         catch (Exception ex)
         {
@@ -182,6 +182,7 @@ public class ProjectRepository(LoomaDbContext context) : IProjectRepository
         query
             .Include(p => p.PatternEntity)
             .ThenInclude(p => p.Documents)
+            .Include(p => p.Files)
             .Include(p => p.WoolsForProjects)
             .ThenInclude(w => w.WoolEntity);
 
@@ -211,4 +212,49 @@ public class ProjectRepository(LoomaDbContext context) : IProjectRepository
 
     private static string? NormalizeOptional(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private Project ApplyFileMetadata(Project project) =>
+        new()
+        {
+            ProjectId = project.ProjectId,
+            Name = project.Name,
+            Status = project.Status,
+            Note = project.Note,
+            BeginDate = project.BeginDate,
+            EndDate = project.EndDate,
+            Pattern = project.Pattern,
+            Wools = project.Wools,
+            Files = project.Files.Select(ApplyFileMetadata).ToList()
+        };
+
+    private Document ApplyFileMetadata(Document document)
+    {
+        var filePath = pathManager.GetDocumentStoragePath(document.Id);
+        if (!File.Exists(filePath))
+        {
+            return new Document
+            {
+                Id = document.Id,
+                Nickname = document.Nickname,
+                Type = "Inconnu",
+                SizeBytes = 0,
+                StoragePath = null
+            };
+        }
+
+        var info = new FileInfo(filePath);
+        var extension = Path.GetExtension(filePath).TrimStart('.');
+        var type = string.IsNullOrWhiteSpace(extension)
+            ? "Sans extension"
+            : extension.ToUpperInvariant();
+
+        return new Document
+        {
+            Id = document.Id,
+            Nickname = document.Nickname,
+            Type = type,
+            SizeBytes = info.Length,
+            StoragePath = filePath
+        };
+    }
 }
