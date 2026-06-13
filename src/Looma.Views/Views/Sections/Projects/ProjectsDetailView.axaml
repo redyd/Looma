@@ -170,7 +170,7 @@
                     <Border Grid.Column="2" Classes="form-section">
                         <StackPanel Spacing="12">
                             <TextBlock Classes="section-title" Text="Laines du projet" />
-                            <Grid ColumnDefinitions="*,12,150" IsVisible="{Binding HasWools}">
+                            <Grid ColumnDefinitions="*,12,200" IsVisible="{Binding HasWools}">
                                 <StackPanel Grid.Column="0" Spacing="6">
                                     <TextBlock Classes="form-label" Text="Quantité" />
                                     <TextBox Classes="form-input"
