@@ -37,6 +37,8 @@ public static class DependencyInjection
 
         // PROJECTS
         services.AddTransient<ProjectsListViewModel>();
+        services.AddTransient<ProjectsFormViewModel>();
+        services.AddTransient<ProjectsDetailViewModel>();
 
         // STOCKS
         services.AddTransient<WoolListViewModel>();
@@ -67,7 +69,9 @@ public static class DependencyInjection
 
             return new MainViewModel(
                 MakeSection<ProjectsListViewModel>(nav =>
-                    new ProjectsListViewModel(nav)),
+                    new ProjectsListViewModel(nav,
+                        sp.GetRequiredService<IProjectRepository>(),
+                        sp.GetRequiredService<INotificationService>())),
                 MakeSection<WoolListViewModel>(nav =>
                     new WoolListViewModel(nav, sp.GetRequiredService<IWoolRepository>(),
                         sp.GetRequiredService<INotificationService>())),
@@ -92,5 +96,6 @@ public static class DependencyInjection
         services.AddScoped<IDocumentRepository, DocumentRepository>();
         services.AddScoped<IPatternRepository, PatternRepository>();
         services.AddScoped<IWoolRepository, WoolRepository>();
+        services.AddScoped<IProjectRepository, ProjectRepository>();
     }
 }

@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Looma.Presentation.Notifications;
 
-public partial class NotificationService : ObservableObject, INotificationService
+public class NotificationService : ObservableObject, INotificationService
 {
     private readonly ObservableCollection<NotificationItemViewModel> _notifications = [];
     private readonly Dictionary<Guid, CancellationTokenSource> _timers = new();

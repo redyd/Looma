@@ -1,0 +1,207 @@
+// Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+// This file is part of Looma, licensed under the AGPL-3.0.
+// See LICENSE in the project root for full license text.
+
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Looma.Domain.Core;
+using Looma.Domain.Entities;
+using Looma.Domain.Extensions;
+using Looma.Domain.Repositories;
+using Looma.Domain.Services;
+using Looma.Presentation.Navigation;
+using Looma.Presentation.Notifications;
+using Looma.Presentation.UserControls;
+using Looma.Presentation.ViewModels.Base;
+using Looma.Presentation.ViewModels.Sections.Patterns;
+
+namespace Looma.Presentation.ViewModels.Sections.Projects;
+
+public partial class ProjectsDetailViewModel(
+    INavigationService nav,
+    IProjectRepository projectRepo,
+    WoolStockCalculator stockCalculator,
+    INotificationService notifications)
+    : PageViewModelBase
+{
+    [ObservableProperty] private int _projectId;
+    [ObservableProperty] private string _name = string.Empty;
+    [ObservableProperty] private Status _status;
+    [ObservableProperty] private string? _note;
+    [ObservableProperty] private DateOnly? _beginDate;
+    [ObservableProperty] private DateOnly? _endDate;
+    [ObservableProperty] private Pattern? _pattern;
+    [ObservableProperty] private string? _errorMessage;
+    [ObservableProperty] private ObservableCollection<ProjectWoolUsageViewModel> _wools = [];
+
+    public string StatusDisplay => Status.GetDisplayName();
+    public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? "Aucune note." : Note!;
+    public string PatternName => Pattern?.Name ?? "Aucun patron";
+    public string PatternTypeDisplay => Pattern?.Type.GetDisplayName() ?? "-";
+    public string PatternNoteDisplay => string.IsNullOrWhiteSpace(Pattern?.Note) ? "Aucune note." : Pattern.Note!;
+    public bool HasWools => Wools.Count > 0;
+
+    public IList<StatItem> PatternStats =>
+    [
+        new() { Label = "Documents", Value = (Pattern?.Documents.Count ?? 0).ToString("N0"), Unit = "x", IsFirst = true },
+        new() { Label = "Projets liés", Value = (Pattern?.Projects.Count ?? 0).ToString("N0"), Unit = "x" }
+    ];
+
+    public IList<InfoItem> ProjectInfos =>
+    [
+        new() { Label = "Nom", Value = Name },
+        new() { Label = "Status", Value = StatusDisplay },
+        new() { Label = "Début", Value = FormatDate(BeginDate) },
+        new() { Label = "Fin", Value = FormatDate(EndDate) },
+        new() { Label = "Laines", Value = Wools.Count.ToString("N0") },
+    ];
+
+    public IList<InfoItem> PatternInfos =>
+    [
+        new() { Label = "Patron", Value = PatternName },
+        new() { Label = "Type", Value = PatternTypeDisplay },
+        new() { Label = "Origine", Value = Pattern?.IsPersonal == true ? "Personnel" : "Non personnel" },
+        new() { Label = "Lien", Value = Pattern?.Url ?? "Aucun" },
+        new() { Label = "Début", Value = FormatDate(Pattern?.BeginDate) },
+        new() { Label = "Fin", Value = FormatDate(Pattern?.EndDate) },
+    ];
+
+    public void Load(Project project)
+    {
+        ProjectId = project.ProjectId;
+        ApplyProject(project);
+    }
+
+    public override async void OnNavigatedTo() => await RefreshAsync();
+
+    private async Task RefreshAsync()
+    {
+        if (ProjectId == 0)
+            return;
+
+        var result = await projectRepo.GetByIdAsync(ProjectId);
+        if (result.Failed || result.Value is null)
+        {
+            ErrorMessage = result.Error ?? $"Le projet {ProjectId} est introuvable.";
+            notifications.Error(ErrorMessage);
+            return;
+        }
+
+        ApplyProject(result.Value);
+    }
+
+    private void ApplyProject(Project project)
+    {
+        ErrorMessage = null;
+        ProjectId = project.ProjectId;
+        Name = project.Name;
+        Status = project.Status;
+        Note = project.Note;
+        BeginDate = project.BeginDate;
+        EndDate = project.EndDate;
+        Pattern = project.Pattern;
+        Wools = new ObservableCollection<ProjectWoolUsageViewModel>(
+            project.Wools.Select(usage => new ProjectWoolUsageViewModel(
+                usage,
+                new AsyncRelayCommand(() => AddWoolUsageAsync(usage)),
+                new AsyncRelayCommand(() => RemoveWoolUsageAsync(usage)))));
+
+        OnPropertyChanged(nameof(StatusDisplay));
+        OnPropertyChanged(nameof(NoteDisplay));
+        OnPropertyChanged(nameof(PatternName));
+        OnPropertyChanged(nameof(PatternTypeDisplay));
+        OnPropertyChanged(nameof(PatternNoteDisplay));
+        OnPropertyChanged(nameof(HasWools));
+        OnPropertyChanged(nameof(ProjectInfos));
+        OnPropertyChanged(nameof(PatternInfos));
+        OnPropertyChanged(nameof(PatternStats));
+    }
+
+    private async Task AddWoolUsageAsync(WoolUsage usage)
+    {
+        var stockStep = stockCalculator.ComputeStockQuantity(StockAdjustmentMode.ByBall, true, 1, usage.Wool.Weight);
+        if (usage.StockUsed + stockStep > usage.Wool.Stock)
+        {
+            notifications.Error("Le stock disponible est insuffisant.");
+            return;
+        }
+
+        await UpdateUsageAsync(usage.Wool.Id, usage.StockUsed + stockStep);
+    }
+
+    private Task RemoveWoolUsageAsync(WoolUsage usage)
+    {
+        var stockStep = Math.Abs(stockCalculator.ComputeStockQuantity(StockAdjustmentMode.ByBall, false, 1, usage.Wool.Weight));
+        return UpdateUsageAsync(usage.Wool.Id, Math.Max(0, usage.StockUsed - stockStep));
+    }
+
+    private async Task UpdateUsageAsync(int woolId, double stockUsed)
+    {
+        var result = await projectRepo.UpdateWoolUsageAsync(ProjectId, woolId, stockUsed);
+        if (result.Failed || result.Value is null)
+        {
+            notifications.Error(result.Error ?? "Impossible de mettre à jour la laine utilisée.");
+            return;
+        }
+
+        ApplyProject(result.Value);
+    }
+
+    private static string FormatDate(DateOnly? value) =>
+        value is null ? "Aucune" : value.Value.ToString("dd/MM/yyyy");
+
+    [RelayCommand]
+    private void OpenPattern()
+    {
+        if (Pattern is null)
+            return;
+
+        nav.NavigateTo<PatternsDetailViewModel>(vm => vm.Load(Pattern));
+    }
+
+    [RelayCommand]
+    private void Edit()
+    {
+        if (Pattern is null)
+            return;
+
+        nav.NavigateTo<ProjectsFormViewModel>(vm => vm.InitEdit(new Project
+        {
+            ProjectId = ProjectId,
+            Name = Name,
+            Status = Status,
+            Note = Note,
+            BeginDate = BeginDate,
+            EndDate = EndDate,
+            Pattern = Pattern,
+            Wools = Wools.Select(w => w.Usage).ToList()
+        }));
+    }
+
+    [RelayCommand]
+    private async Task ConfirmDeleteAsync()
+    {
+        IsBusy = true;
+        try
+        {
+            var result = await projectRepo.DeleteAsync(ProjectId);
+            if (result.Failed)
+            {
+                ErrorMessage = result.Error;
+                notifications.Error(result.Error ?? "Impossible de supprimer le projet.");
+                return;
+            }
+
+            notifications.Success("Le projet a été supprimé.");
+            nav.GoBack();
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private void GoBack() => nav.GoBack();
+}

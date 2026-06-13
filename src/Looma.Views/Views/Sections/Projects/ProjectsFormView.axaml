@@ -1,0 +1,384 @@
+<!--
+    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+    This file is part of Looma, licensed under the AGPL-3.0.
+    See LICENSE in the project root for full license text.
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
+             x:Class="Looma.Views.Views.Sections.Projects.ProjectsFormView"
+             x:DataType="vm:ProjectsFormViewModel">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <StackPanel HorizontalAlignment="Center"
+                    Margin="32"
+                    Width="900"
+                    MinWidth="900">
+
+            <Border Classes="form-container" Width="900" MinWidth="900">
+                <StackPanel Spacing="10">
+
+                    <StackPanel Classes="form-header">
+                        <TextBlock Classes="form-title" Text="{Binding Title}" />
+                        <TextBlock Classes="form-subtitle"
+                                   Text="Renseignez le projet, choisissez le patron et les laines associées." />
+                    </StackPanel>
+
+                    <Border Classes="form-section">
+                        <StackPanel Spacing="0">
+                            <TextBlock Classes="section-title"
+                                       Text="Informations"
+                                       Margin="0 0 0 16" />
+
+                            <StackPanel Classes="form-field">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Classes="form-label" Text="Nom" />
+                                    <TextBlock Classes="field-required" Text="*" />
+                                </StackPanel>
+                                <TextBox Classes="form-input"
+                                         Text="{Binding Name}"
+                                         PlaceholderText="Ex : Pull d'hiver" />
+                            </StackPanel>
+
+                            <StackPanel Classes="form-field">
+                                <TextBlock Classes="form-label" Text="Status" />
+                                <ComboBox ItemsSource="{Binding Statuses}"
+                                          SelectedItem="{Binding Status, Mode=TwoWay}"
+                                          Classes="form-select"
+                                          HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource EnumDisplayName}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <Grid ColumnDefinitions="*,16,*">
+                                <StackPanel Grid.Column="0" Classes="form-field">
+                                    <TextBlock Classes="form-label" Text="Date de début" />
+                                    <DatePicker SelectedDate="{Binding BeginDate, Mode=TwoWay}"
+                                                Classes="form-input" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Classes="form-field">
+                                    <TextBlock Classes="form-label" Text="Date de fin" />
+                                    <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay}"
+                                                Classes="form-input" />
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Classes="form-field">
+                                <TextBlock Classes="form-label" Text="Note" />
+                                <TextBox Classes="form-input"
+                                         Text="{Binding Note}"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"
+                                         Padding="10"
+                                         Height="130"
+                                         VerticalContentAlignment="Top"
+                                         PlaceholderText="Notes de progression, ajustements, remarques..." />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="form-section">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="section-title" Text="Patron" />
+                            <Grid ColumnDefinitions="*,16,220">
+                                <StackPanel Grid.Column="0" Classes="form-field">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <TextBlock Classes="form-label" Text="Rechercher un patron" />
+                                        <TextBlock Classes="field-required" Text="*" />
+                                    </StackPanel>
+                                    <TextBox Classes="form-input"
+                                             Text="{Binding PatternSearchQuery}"
+                                             PlaceholderText="Nom, type, url ou note du patron..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Classes="form-field">
+                                    <TextBlock Classes="form-label" Text="Type de patron" />
+                                    <ComboBox ItemsSource="{Binding PatternTypeFilters}"
+                                              SelectedItem="{Binding SelectedPatternTypeFilter, Mode=TwoWay}"
+                                              Classes="form-select"
+                                              HorizontalAlignment="Stretch">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:ProjectPatternTypeFilterViewModel">
+                                                <TextBlock Text="{Binding Label}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Spacing="6" IsVisible="{Binding HasSelectedPattern}">
+                                <TextBlock Classes="form-label" Text="Patron sélectionné" />
+                                <ItemsControl ItemsSource="{Binding SelectedPatterns}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ProjectSelectablePatternViewModel">
+                                            <Border Padding="12 10"
+                                                    Background="{StaticResource BackgroundHoverBrush}"
+                                                    BorderBrush="{StaticResource PrimaryDarkBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="8">
+                                                <Grid ColumnDefinitions="*,130,130,110,110" ColumnSpacing="14">
+                                                    <TextBlock Text="{Binding Pattern.Name}"
+                                                               FontSize="14"
+                                                               FontWeight="SemiBold"
+                                                               VerticalAlignment="Center"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding TypeDisplay}"
+                                                               FontSize="13"
+                                                               Opacity="0.8"
+                                                               VerticalAlignment="Center" />
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding OriginDisplay}"
+                                                               FontSize="13"
+                                                               Opacity="0.8"
+                                                               VerticalAlignment="Center" />
+                                                    <TextBlock Grid.Column="3"
+                                                               Text="{Binding BeginDateDisplay}"
+                                                               FontSize="13"
+                                                               Opacity="0.7"
+                                                               VerticalAlignment="Center" />
+                                                    <TextBlock Grid.Column="4"
+                                                               Text="{Binding EndDateDisplay}"
+                                                               FontSize="13"
+                                                               Opacity="0.7"
+                                                               VerticalAlignment="Center" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <StackPanel Spacing="0">
+                                <Border Padding="12 10"
+                                        Background="{StaticResource BackgroundCardBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8 8 0 0">
+                                    <Grid ColumnDefinitions="*,130,130,110,110" ColumnSpacing="14">
+                                        <TextBlock Text="Nom" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                        <TextBlock Grid.Column="1" Text="Type" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                        <TextBlock Grid.Column="2" Text="Origine" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                        <TextBlock Grid.Column="3" Text="Début" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                        <TextBlock Grid.Column="4" Text="Fin" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                    </Grid>
+                                </Border>
+
+                                <ItemsControl ItemsSource="{Binding PatternResults}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ProjectSelectablePatternViewModel">
+                                            <Button Command="{Binding SelectCommand}"
+                                                    Padding="0"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Stretch">
+                                                <Border Padding="12 10"
+                                                        Background="{StaticResource BackgroundCardBrush}"
+                                                        BorderBrush="{StaticResource BorderBrush}"
+                                                        BorderThickness="1 0 1 1">
+                                                    <Border.Styles>
+                                                        <Style Selector="Border:pointerover">
+                                                            <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+                                                        </Style>
+                                                    </Border.Styles>
+                                                    <Grid ColumnDefinitions="*,130,130,110,110" ColumnSpacing="14">
+                                                        <TextBlock Text="{Binding Pattern.Name}"
+                                                                   FontSize="14"
+                                                                   FontWeight="SemiBold"
+                                                                   VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding TypeDisplay}"
+                                                                   FontSize="13"
+                                                                   Opacity="0.8"
+                                                                   VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="2"
+                                                                   Text="{Binding OriginDisplay}"
+                                                                   FontSize="13"
+                                                                   Opacity="0.8"
+                                                                   VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="3"
+                                                                   Text="{Binding BeginDateDisplay}"
+                                                                   FontSize="13"
+                                                                   Opacity="0.7"
+                                                                   VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="4"
+                                                                   Text="{Binding EndDateDisplay}"
+                                                                   FontSize="13"
+                                                                   Opacity="0.7"
+                                                                   VerticalAlignment="Center" />
+                                                    </Grid>
+                                                </Border>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="form-section">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="section-title" Text="Laines" />
+                            <StackPanel Classes="form-field">
+                                <TextBlock Classes="form-label" Text="Recherche intelligente" />
+                                <TextBox Classes="form-input"
+                                         Text="{Binding WoolSearchQuery}"
+                                         PlaceholderText="Ex : drops rouge coton..." />
+                            </StackPanel>
+
+                            <StackPanel Spacing="6" IsVisible="{Binding HasSelectedWools}">
+                                <TextBlock Classes="form-label" Text="Laines sélectionnées" />
+                                <ItemsControl ItemsSource="{Binding SelectedWools}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ProjectSelectableWoolViewModel">
+                                            <Button Command="{Binding ToggleCommand}"
+                                                    Padding="0"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Stretch">
+                                                <Border Padding="12 10"
+                                                        Background="{StaticResource BackgroundHoverBrush}"
+                                                        BorderBrush="{StaticResource PrimaryDarkBrush}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="8">
+                                                    <Grid ColumnDefinitions="28,*,130,130,110" ColumnSpacing="14">
+                                                        <Ellipse Grid.Column="0"
+                                                                 Width="14"
+                                                                 Height="14"
+                                                                 Fill="{Binding Wool.Color, Converter={StaticResource HexToColor}}"
+                                                                 VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding Wool.Name}"
+                                                                   FontSize="14"
+                                                                   FontWeight="SemiBold"
+                                                                   VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Grid.Column="2"
+                                                                   Text="{Binding Wool.Brand}"
+                                                                   FontSize="13"
+                                                                   Opacity="0.8"
+                                                                   VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Grid.Column="3"
+                                                                   Text="{Binding Wool.Material}"
+                                                                   FontSize="13"
+                                                                   Opacity="0.8"
+                                                                   VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Grid.Column="4"
+                                                                   Text="{Binding StockDisplay}"
+                                                                   FontSize="13"
+                                                                   Opacity="0.7"
+                                                                   VerticalAlignment="Center" />
+                                                    </Grid>
+                                                </Border>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <StackPanel Spacing="0">
+                                <Border Padding="12 10"
+                                        Background="{StaticResource BackgroundCardBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8 8 0 0">
+                                    <Grid ColumnDefinitions="28,*,130,130,110" ColumnSpacing="14">
+                                        <TextBlock Text="" />
+                                        <TextBlock Grid.Column="1" Text="Nom" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                        <TextBlock Grid.Column="2" Text="Marque" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                        <TextBlock Grid.Column="3" Text="Matière" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                        <TextBlock Grid.Column="4" Text="Stock" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                    </Grid>
+                                </Border>
+
+                                <ItemsControl ItemsSource="{Binding WoolResults}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ProjectSelectableWoolViewModel">
+                                            <Button Command="{Binding ToggleCommand}"
+                                                    Padding="0"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Stretch">
+                                                <Border Padding="12 10"
+                                                        Background="{StaticResource BackgroundCardBrush}"
+                                                        BorderBrush="{StaticResource BorderBrush}"
+                                                        BorderThickness="1 0 1 1">
+                                                    <Border.Styles>
+                                                        <Style Selector="Border:pointerover">
+                                                            <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+                                                        </Style>
+                                                    </Border.Styles>
+                                                    <Grid ColumnDefinitions="28,*,130,130,110" ColumnSpacing="14">
+                                                        <Ellipse Grid.Column="0"
+                                                                 Width="14"
+                                                                 Height="14"
+                                                                 Fill="{Binding Wool.Color, Converter={StaticResource HexToColor}}"
+                                                                 VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding Wool.Name}"
+                                                                   FontSize="14"
+                                                                   FontWeight="SemiBold"
+                                                                   VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Grid.Column="2"
+                                                                   Text="{Binding Wool.Brand}"
+                                                                   FontSize="13"
+                                                                   Opacity="0.8"
+                                                                   VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Grid.Column="3"
+                                                                   Text="{Binding Wool.Material}"
+                                                                   FontSize="13"
+                                                                   Opacity="0.8"
+                                                                   VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Grid.Column="4"
+                                                                   Text="{Binding StockDisplay}"
+                                                                   FontSize="13"
+                                                                   Opacity="0.7"
+                                                                   VerticalAlignment="Center" />
+                                                    </Grid>
+                                                </Border>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="alert-error"
+                            Padding="12"
+                            IsVisible="{Binding HasError}">
+                        <TextBlock Text="{Binding ErrorMessage}"
+                                   TextWrapping="Wrap"
+                                   Foreground="#991B1B" />
+                    </Border>
+
+                    <StackPanel Classes="form-actions">
+                        <Button Classes="form-cancel"
+                                Content="Annuler"
+                                Command="{Binding CancelCommand}" />
+                        <Button Classes="form-submit"
+                                Content="{Binding Title}"
+                                Command="{Binding SaveCommand}" />
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
