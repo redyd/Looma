@@ -9,5 +9,142 @@
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsListView"
              x:DataType="vm:ProjectsListViewModel">
-    Coming soon
+
+    <DockPanel Margin="32">
+
+        <Grid DockPanel.Dock="Top" Margin="0 0 0 24" ColumnDefinitions="2*,16,*">
+            <TextBox Grid.Column="0"
+                     Classes="form-input"
+                     Text="{Binding SearchQuery}"
+                     PlaceholderText="Rechercher par nom, statut, dates, patron, laine ou note..."
+                     VerticalContentAlignment="Center" />
+
+            <ComboBox Grid.Column="2"
+                      Classes="form-select"
+                      ItemsSource="{Binding StatusFilters}"
+                      SelectedItem="{Binding SelectedStatusFilter}"
+                      HorizontalAlignment="Stretch">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ProjectStatusFilterViewModel">
+                        <TextBlock Text="{Binding Label}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+
+        <DockPanel DockPanel.Dock="Top"
+                   Margin="0 0 0 20"
+                   HorizontalSpacing="20">
+            <TextBlock Text="Projets"
+                       Classes="page-title"
+                       VerticalAlignment="Center" />
+            <Button DockPanel.Dock="Right"
+                    Content="+ Ajouter un projet"
+                    Command="{Binding OpenAddFormCommand}"
+                    Classes="form-submit" />
+        </DockPanel>
+
+        <Border DockPanel.Dock="Bottom"
+                Margin="0 16 0 0"
+                Padding="16 10"
+                CornerRadius="8"
+                Background="{StaticResource BackgroundCardBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="1">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="12">
+                <Button Content="←"
+                        Command="{Binding PreviousPageCommand}"
+                        Classes="form-cancel"
+                        Width="36"
+                        Height="36"
+                        Padding="0" />
+                <TextBlock Text="{Binding PageInfo}"
+                           VerticalAlignment="Center"
+                           FontSize="14" />
+                <Button Content="→"
+                        Command="{Binding NextPageCommand}"
+                        Classes="form-cancel"
+                        Width="36"
+                        Height="36"
+                        Padding="0" />
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding CurrentPageProjects}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ProjectSummaryViewModel">
+                        <Button Classes="card-button"
+                                Command="{Binding OpenDetailCommand}"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                HorizontalAlignment="Left">
+                            <Border Width="260"
+                                    Margin="8"
+                                    Padding="16"
+                                    Classes="surface-card">
+                                <Border.Styles>
+                                    <Style Selector="Border:pointerover">
+                                        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+                                        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+                                    </Style>
+                                </Border.Styles>
+
+                                <StackPanel Spacing="10">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{Binding Project.Name}"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding PatternName}"
+                                                   FontSize="12"
+                                                   Opacity="0.65"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <Border Classes="surface-chip" Padding="8 3">
+                                            <TextBlock Text="{Binding StatusDisplay}" FontSize="11" />
+                                        </Border>
+                                        <Border Classes="surface-chip" Padding="8 3">
+                                            <TextBlock Text="{Binding WoolCountDisplay}" FontSize="11" />
+                                        </Border>
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{Binding BeginDateDisplay, StringFormat='Début: {0}'}"
+                                                   FontSize="11"
+                                                   Opacity="0.65" />
+                                        <TextBlock Text="{Binding EndDateDisplay, StringFormat='Fin: {0}'}"
+                                                   FontSize="11"
+                                                   Opacity="0.65" />
+                                    </StackPanel>
+
+                                    <Border Height="1"
+                                            Background="{StaticResource BorderBrush}"
+                                            Opacity="0.5" />
+
+                                    <TextBlock Text="{Binding NotePreview}"
+                                               TextWrapping="Wrap"
+                                               FontSize="13"
+                                               LineHeight="18"
+                                               Opacity="0.85"
+                                               MaxHeight="72" />
+                                </StackPanel>
+                            </Border>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+    </DockPanel>
 </UserControl>

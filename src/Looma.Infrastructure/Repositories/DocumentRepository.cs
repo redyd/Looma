@@ -21,10 +21,14 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         try
         {
             var entities = await context.Documents
-                .AsNoTracking()
+                .Include(d => d.Pattern)
+                .Include(d => d.Project)
                 .OrderBy(d => d.Nickname)
                 .ThenBy(d => d.DocumentId)
                 .ToListAsync();
+
+            if (DocumentMetadataBackfill.Apply(entities, pathManager))
+                await context.SaveChangesAsync();
 
             var documents = entities
                 .Select(e => e.ToDomain())
@@ -44,8 +48,12 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         try
         {
             var entity = await context.Documents
-                .AsNoTracking()
+                .Include(d => d.Pattern)
+                .Include(d => d.Project)
                 .FirstOrDefaultAsync(d => d.DocumentId == id);
+
+            if (entity is not null && DocumentMetadataBackfill.Apply([entity], pathManager))
+                await context.SaveChangesAsync();
 
             return entity is null
                 ? ResultT<Document>.NotFound($"Le document {id} est introuvable.")
@@ -78,25 +86,36 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
 
         try
         {
-            PatternEntity? pattern = null;
+            if (request is { PatternId: not null, ProjectId: not null })
+                return ResultT<Document>.Failure("Un document ne peut être lié qu'à un patron ou à un projet.");
+
             if (request.PatternId.HasValue)
             {
-                pattern = await context.Patterns.FirstOrDefaultAsync(p => p.PatternId == request.PatternId.Value);
-                if (pattern is null)
+                var patternExists = await context.Patterns.AnyAsync(p => p.PatternId == request.PatternId.Value);
+                if (!patternExists)
                     return ResultT<Document>.NotFound($"Le patron {request.PatternId.Value} est introuvable.");
+            }
+
+            if (request.ProjectId.HasValue)
+            {
+                var projectExists = await context.Projects.AnyAsync(p => p.ProjectId == request.ProjectId.Value);
+                if (!projectExists)
+                    return ResultT<Document>.NotFound($"Le projet {request.ProjectId.Value} est introuvable.");
             }
 
             Directory.CreateDirectory(pathManager.DocumentsFolder);
             File.Copy(request.SourcePath, destinationPath, overwrite: false);
 
+            var fileInfo = new FileInfo(destinationPath);
             var entity = new DocumentEntity
             {
                 DocumentId = id,
-                Nickname = nickname
+                Nickname = nickname,
+                Type = DocumentMetadataBackfill.GetDocumentType(destinationPath),
+                Size = fileInfo.Length,
+                PatternId = request.PatternId,
+                ProjectId = request.ProjectId
             };
-
-            if (pattern is not null)
-                entity.Pattern = pattern;
 
             context.Documents.Add(entity);
             await context.SaveChangesAsync();
@@ -202,22 +221,30 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 Id = document.Id,
                 Nickname = document.Nickname,
                 Type = "Inconnu",
-                SizeBytes = 0
+                SizeBytes = 0,
+                StoragePath = null,
+                PatternId = document.PatternId,
+                PatternName = document.PatternName,
+                ProjectId = document.ProjectId,
+                ProjectName = document.ProjectName
             };
         }
 
         var info = new FileInfo(filePath);
-        var extension = Path.GetExtension(filePath).TrimStart('.');
-        var type = string.IsNullOrWhiteSpace(extension)
-            ? "Sans extension"
-            : extension.ToUpperInvariant();
-
         return new Document
         {
             Id = document.Id,
             Nickname = document.Nickname,
-            Type = type,
-            SizeBytes = info.Length
+            Type = GetDocumentType(filePath),
+            SizeBytes = info.Length,
+            StoragePath = filePath,
+            PatternId = document.PatternId,
+            PatternName = document.PatternName,
+            ProjectId = document.ProjectId,
+            ProjectName = document.ProjectName
         };
     }
+
+    private static string GetDocumentType(string filePath) =>
+        DocumentMetadataBackfill.GetDocumentType(filePath);
 }

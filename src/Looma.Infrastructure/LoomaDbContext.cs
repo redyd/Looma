@@ -21,7 +21,7 @@ public class LoomaDbContext(DbContextOptions<LoomaDbContext> options) : DbContex
         modelBuilder
             .ApplyConfiguration(new WoolForProjectConfiguration())
             .ApplyConfiguration(new ProjectConfiguration())
-            .ApplyConfiguration(new DocumentConfiguration())
+            .ApplyConfiguration(new DocumentEntityConfiguration())
             .ApplyConfiguration(new WoolConfiguration())
             .ApplyConfiguration(new PatternConfiguration());
     }

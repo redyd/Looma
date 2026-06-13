@@ -2,7 +2,6 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
-using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Infrastructure.Entity;
 
@@ -20,12 +19,12 @@ public static class PatternMapping
             BeginDate = entity.BeginDate,
             EndDate = entity.EndDate,
             Documents = entity.Documents.Select(d => d.ToDomain()).ToList(),
-            Projects = entity.Projects.Select(p => p.ToDomain()).ToList(),
+            Projects = entity.Projects.Select(p => p.ToPatternProjectDomain()).ToList(),
             IsPersonal = entity.IsPersonal,
             Type = entity.Type,
         };
 
-    public static PatternProject ToDomain(this ProjectEntity entity) =>
+    public static PatternProject ToPatternProjectDomain(this ProjectEntity entity) =>
         new()
         {
             Id = entity.ProjectId,

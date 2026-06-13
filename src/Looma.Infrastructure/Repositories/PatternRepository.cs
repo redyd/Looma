@@ -20,11 +20,13 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
         try
         {
             var entities = await context.Patterns
-                .AsNoTracking()
                 .Include(p => p.Documents)
                 .Include(p => p.Projects)
                 .OrderBy(p => p.Name)
                 .ToListAsync();
+
+            if (DocumentMetadataBackfill.Apply(entities.SelectMany(p => p.Documents), pathManager))
+                await context.SaveChangesAsync();
 
             return ResultT<IReadOnlyList<Pattern>>.Ok(
                 entities.Select(e => ApplyFileMetadata(e.ToDomain())).ToList());
@@ -40,10 +42,12 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
         try
         {
             var entity = await context.Patterns
-                .AsNoTracking()
                 .Include(p => p.Documents)
                 .Include(p => p.Projects)
                 .FirstOrDefaultAsync(p => p.PatternId == id);
+
+            if (entity is not null && DocumentMetadataBackfill.Apply(entity.Documents, pathManager))
+                await context.SaveChangesAsync();
 
             return entity is null
                 ? ResultT<Pattern>.NotFound($"Le patron {id} est introuvable.")
@@ -149,7 +153,10 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
             if (pattern.Documents.Any(d => d.DocumentId == documentId))
                 return Result.Ok();
 
-            pattern.Documents.Add(document);
+            if (document.ProjectId.HasValue)
+                return Result.Failure("Ce document est déjà lié à un projet.");
+
+            document.PatternId = patternId;
             await context.SaveChangesAsync();
             return Result.Ok();
         }
@@ -241,22 +248,27 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
                 Id = document.Id,
                 Nickname = document.Nickname,
                 Type = "Inconnu",
-                SizeBytes = 0
+                SizeBytes = 0,
+                StoragePath = null,
+                PatternId = document.PatternId,
+                PatternName = document.PatternName,
+                ProjectId = document.ProjectId,
+                ProjectName = document.ProjectName
             };
         }
 
         var info = new FileInfo(filePath);
-        var extension = Path.GetExtension(filePath).TrimStart('.');
-        var type = string.IsNullOrWhiteSpace(extension)
-            ? "Sans extension"
-            : extension.ToUpperInvariant();
-
         return new Document
         {
             Id = document.Id,
             Nickname = document.Nickname,
-            Type = type,
-            SizeBytes = info.Length
+            Type = DocumentMetadataBackfill.GetDocumentType(filePath),
+            SizeBytes = info.Length,
+            StoragePath = filePath,
+            PatternId = document.PatternId,
+            PatternName = document.PatternName,
+            ProjectId = document.ProjectId,
+            ProjectName = document.ProjectName
         };
     }
 }

@@ -12,11 +12,13 @@ public class ProjectEntity
     public string Name { get; set; } = null!;
     public DateOnly? BeginDate { get; set; }
     public DateOnly? EndDate { get; set; }
-
-    public int PatronId { get; set; }
-    public PatternEntity PatternEntity { get; set; } = null!;
-
+    public string? Note { get; set; }
+    public string? Image { get; set; }
     public Status Status { get; set; }
 
-    public ICollection<WoolsForProjectEntity> WoolsForProjects { get; set; } = new List<WoolsForProjectEntity>();
+    public int PatternId { get; set; }
+    public PatternEntity PatternEntity { get; set; } = null!;
+
+    public ICollection<WoolsForProjectEntity> WoolsForProjects { get; set; } = [];
+    public ICollection<DocumentEntity> Files { get; set; } = [];
 }

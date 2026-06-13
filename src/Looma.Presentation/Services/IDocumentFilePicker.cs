@@ -7,4 +7,6 @@ namespace Looma.Presentation.Services;
 public interface IDocumentFilePicker
 {
     Task<string?> PickDocumentAsync();
+    Task<string?> PickImageAsync();
+    Task<IReadOnlyList<string>> PickImagesAsync();
 }

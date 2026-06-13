@@ -3,6 +3,7 @@
 // See LICENSE in the project root for full license text.
 
 using System.Globalization;
+using System.IO;
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -16,8 +17,19 @@ public class StringToUriConverter : IValueConverter
         if (value is not string s || string.IsNullOrWhiteSpace(s)) return null;
         try
         {
-            var uri = new Uri(s);
-            var stream = AssetLoader.Open(uri);
+            if (File.Exists(s))
+                return new Bitmap(s);
+
+            if (!Uri.TryCreate(s, UriKind.Absolute, out var uri))
+                return null;
+
+            if (uri.IsFile && File.Exists(uri.LocalPath))
+                return new Bitmap(uri.LocalPath);
+
+            if (uri.Scheme != "avares")
+                return null;
+
+            using var stream = AssetLoader.Open(uri);
             return new Bitmap(stream);
         }
         catch

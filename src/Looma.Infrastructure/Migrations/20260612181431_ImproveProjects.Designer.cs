@@ -3,6 +3,7 @@ using System;
 using Looma.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Looma.Infrastructure.Migrations
 {
     [DbContext(typeof(LoomaDbContext))]
-    partial class LoomaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260612181431_ImproveProjects")]
+    partial class ImproveProjects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
@@ -29,25 +32,11 @@ namespace Looma.Infrastructure.Migrations
                     b.Property<int?>("PatternId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long?>("Size")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("DocumentId");
 
                     b.HasIndex("PatternId");
 
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("Documents", t =>
-                        {
-                            t.HasCheckConstraint("CK_Document_SingleParent", "(\"PatternId\" IS NULL OR \"ProjectId\" IS NULL)");
-                        });
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("Looma.Infrastructure.Entity.PatternEntity", b =>
@@ -94,9 +83,6 @@ namespace Looma.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly?>("EndDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Image")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -171,9 +157,6 @@ namespace Looma.Infrastructure.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("StockAlreadyUsed")
-                        .HasColumnType("REAL");
-
                     b.Property<double>("StockUsed")
                         .HasColumnType("REAL");
 
@@ -190,13 +173,7 @@ namespace Looma.Infrastructure.Migrations
                         .WithMany("Documents")
                         .HasForeignKey("PatternId");
 
-                    b.HasOne("Looma.Infrastructure.Entity.ProjectEntity", "Project")
-                        .WithMany("Files")
-                        .HasForeignKey("ProjectId");
-
                     b.Navigation("Pattern");
-
-                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("Looma.Infrastructure.Entity.ProjectEntity", b =>
@@ -238,8 +215,6 @@ namespace Looma.Infrastructure.Migrations
 
             modelBuilder.Entity("Looma.Infrastructure.Entity.ProjectEntity", b =>
                 {
-                    b.Navigation("Files");
-
                     b.Navigation("WoolsForProjects");
                 });
 

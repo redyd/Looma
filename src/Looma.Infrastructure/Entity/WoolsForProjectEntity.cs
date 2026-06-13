@@ -6,6 +6,8 @@ namespace Looma.Infrastructure.Entity;
 
 public class WoolsForProjectEntity
 {
+    public double StockUsed { get; set; }
+    public double StockAlreadyUsed { get; set; }
     public int WoolId { get; set; }
     public WoolEntity WoolEntity { get; set; } = null!;
 

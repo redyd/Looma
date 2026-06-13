@@ -20,9 +20,5 @@ public class PatternConfiguration : IEntityTypeConfiguration<PatternEntity>
         builder.Property(p => p.EndDate).HasColumnType("TEXT");
         builder.Property(p => p.IsPersonal).IsRequired();
         builder.Property(p => p.Type).HasConversion<string>().IsRequired();
-        
-        builder
-            .HasMany(p => p.Documents)
-            .WithOne(d => d.Pattern);
     }
 }

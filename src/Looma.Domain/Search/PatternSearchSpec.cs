@@ -3,6 +3,7 @@
 // See LICENSE in the project root for full license text.
 
 using Looma.Domain.Entities;
+using Looma.Domain.Extensions;
 
 namespace Looma.Domain.Search;
 
@@ -19,6 +20,9 @@ public static class PatternSearchSpec
 
         return source.Where(pattern => words.All(word =>
             pattern.Name.Contains(word, StringComparison.OrdinalIgnoreCase) ||
+            pattern.Type.GetDisplayName().Contains(word, StringComparison.OrdinalIgnoreCase) ||
+            pattern.Type.ToString().Contains(word, StringComparison.OrdinalIgnoreCase) ||
+            (pattern.IsPersonal ? "personnel" : "non personnel").Contains(word, StringComparison.OrdinalIgnoreCase) ||
             (pattern.Url?.Contains(word, StringComparison.OrdinalIgnoreCase) ?? false) ||
             (pattern.Note?.Contains(word, StringComparison.OrdinalIgnoreCase) ?? false)));
     }

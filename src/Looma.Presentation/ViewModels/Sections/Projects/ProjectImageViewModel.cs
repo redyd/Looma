@@ -5,27 +5,15 @@
 using System.Windows.Input;
 using Looma.Domain.Entities;
 
-namespace Looma.Presentation.ViewModels.Sections.Documents;
+namespace Looma.Presentation.ViewModels.Sections.Projects;
 
-public record DocumentSummaryViewModel(
+public record ProjectImageViewModel(
     Document Document,
-    ICommand OpenCommand,
-    ICommand OpenOriginCommand,
-    ICommand EditCommand,
-    ICommand DeleteCommand)
+    ICommand? RemoveCommand = null)
 {
-    public string TypeDisplay => Document.Type;
-    public string SizeDisplay => FormatSize(Document.SizeBytes);
-    public bool HasOrigin => Document.PatternId.HasValue || Document.ProjectId.HasValue;
-    public string OriginTypeDisplay =>
-        Document.PatternId.HasValue ? "Patron" :
-        Document.ProjectId.HasValue ? "Projet" :
-        "Aucune";
-
-    public string OriginNameDisplay =>
-        Document.PatternName ??
-        Document.ProjectName ??
-        "Document libre";
+    public string Name => Document.Nickname;
+    public string? SourcePath => Document.StoragePath;
+    public string DetailText => $"{Document.Type} · {FormatSize(Document.SizeBytes)}";
 
     private static string FormatSize(long bytes)
     {

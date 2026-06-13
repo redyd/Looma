@@ -17,6 +17,6 @@ public class ProjectConfiguration : IEntityTypeConfiguration<ProjectEntity>
         builder
             .HasOne(p => p.PatternEntity)
             .WithMany(p => p.Projects)
-            .HasForeignKey(p => p.PatronId);
+            .HasForeignKey(p => p.PatternId);
     }
 }

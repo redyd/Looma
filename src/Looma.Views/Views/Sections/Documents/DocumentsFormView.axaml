@@ -41,46 +41,6 @@
                                          Text="{Binding Nickname}"
                                          PlaceholderText="Nom affiché du document" />
                             </StackPanel>
-
-                            <StackPanel Classes="form-field" IsVisible="{Binding IsCreateMode}">
-                                <StackPanel Orientation="Horizontal" Spacing="4">
-                                    <TextBlock Classes="form-label" Text="Fichier source" />
-                                    <TextBlock Classes="field-required" Text="*" />
-                                </StackPanel>
-
-                                <Border Classes="surface-panel"
-                                        Padding="16"
-                                        Background="{StaticResource BackgroundBrush}">
-                                    <StackPanel Spacing="10">
-                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                            <StackPanel Grid.Column="0" Spacing="4">
-                                                <TextBlock Text="{Binding SelectedFileName}"
-                                                           FontWeight="SemiBold"
-                                                           TextTrimming="CharacterEllipsis" />
-                                                <TextBlock Text="{Binding SelectedFileDirectory}"
-                                                           Classes="form-hint"
-                                                           TextTrimming="CharacterEllipsis" />
-                                            </StackPanel>
-
-                                            <Button Grid.Column="1"
-                                                    Content="Choisir un fichier"
-                                                    Command="{Binding BrowseFileCommand}"
-                                                    Classes="form-submit" />
-                                        </Grid>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-
-                            <Border Classes="surface-panel"
-                                    IsVisible="{Binding IsCreateMode}"
-                                    Padding="14"
-                                    Background="{StaticResource BackgroundCardBrush}">
-                                <StackPanel Spacing="4">
-                                    <TextBlock Text="Aperçu" FontSize="12" Opacity="0.55" />
-                                    <TextBlock Text="{Binding SelectedFileName}"
-                                               FontWeight="SemiBold" />
-                                </StackPanel>
-                            </Border>
                         </StackPanel>
                     </Border>
 
