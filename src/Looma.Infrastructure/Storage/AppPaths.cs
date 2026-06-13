@@ -10,7 +10,6 @@ public class AppPaths(string baseRoot)
 {
     public string DatabasePath => Path.Combine(baseRoot, "looma.db");
     public string DocumentsFolder => Path.Combine(baseRoot, "documents");
-    public string ImagesFolder => Path.Combine(baseRoot, "images");
 
     public void EnsureDirectoriesExist()
     {

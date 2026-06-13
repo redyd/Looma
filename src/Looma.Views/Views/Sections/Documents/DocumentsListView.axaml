@@ -31,10 +31,6 @@
             <TextBlock Text="Mes documents"
                        Classes="page-title"
                        VerticalAlignment="Center" />
-            <Button DockPanel.Dock="Right"
-                    Content="+ Ajouter un document"
-                    Command="{Binding OpenAddFormCommand}"
-                    Classes="form-submit" />
         </DockPanel>
 
         <Border DockPanel.Dock="Bottom"
@@ -72,7 +68,7 @@
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="1"
                         CornerRadius="8 8 0 0">
-                    <Grid ColumnDefinitions="*,120,110,320" ColumnSpacing="16">
+                    <Grid ColumnDefinitions="1.4*,110,100,190,400" ColumnSpacing="14">
                         <TextBlock Text="Nom"
                                    FontSize="12"
                                    FontWeight="SemiBold"
@@ -91,6 +87,12 @@
                                    Opacity="0.55"
                                    VerticalAlignment="Center" />
                         <TextBlock Grid.Column="3"
+                                   Text="Origine"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Opacity="0.55"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Column="4"
                                    Text="Actions"
                                    FontSize="12"
                                    FontWeight="SemiBold"
@@ -112,7 +114,7 @@
                                     Background="{StaticResource BackgroundCardBrush}"
                                     BorderBrush="{StaticResource BorderBrush}"
                                     BorderThickness="1 0 1 1">
-                                <Grid ColumnDefinitions="*,120,110,320" ColumnSpacing="16">
+                                <Grid ColumnDefinitions="1.4*,110,100,190,400" ColumnSpacing="14">
                                     <StackPanel Spacing="4" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding Document.Nickname}"
                                                    FontSize="15"
@@ -132,6 +134,23 @@
                                                Opacity="0.7"
                                                TextAlignment="Left" />
                                     <StackPanel Grid.Column="3"
+                                                Spacing="3"
+                                                VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding OriginTypeDisplay}"
+                                                   FontSize="12"
+                                                   Opacity="0.55"
+                                                   IsVisible="{Binding HasOrigin}" />
+                                        <TextBlock Text="{Binding OriginNameDisplay}"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   MaxWidth="180"
+                                                   IsVisible="{Binding HasOrigin}" />
+                                        <TextBlock Text="Document libre"
+                                                   Classes="form-hint"
+                                                   IsVisible="{Binding !HasOrigin}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4"
                                                 Orientation="Horizontal"
                                                 Spacing="8"
                                                 VerticalAlignment="Center"
@@ -140,6 +159,11 @@
                                                 Command="{Binding OpenCommand}"
                                                 Classes="form-cancel"
                                                 MinWidth="80" />
+                                        <Button Content="Voir"
+                                                Command="{Binding OpenOriginCommand}"
+                                                Classes="form-cancel"
+                                                MinWidth="80"
+                                                IsVisible="{Binding HasOrigin}" />
                                         <Button Content="Modifier"
                                                 Command="{Binding EditCommand}"
                                                 Classes="form-cancel"

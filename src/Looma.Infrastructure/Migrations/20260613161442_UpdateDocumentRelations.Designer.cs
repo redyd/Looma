@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Looma.Infrastructure.Migrations
 {
     [DbContext(typeof(LoomaDbContext))]
-    [Migration("20260613155833_UpdateDocumentsRelations")]
-    partial class UpdateDocumentsRelations
+    [Migration("20260613161442_UpdateDocumentRelations")]
+    partial class UpdateDocumentRelations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,11 +35,10 @@ namespace Looma.Infrastructure.Migrations
                     b.Property<int?>("ProjectId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("Size")
+                    b.Property<long?>("Size")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Type")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("DocumentId");

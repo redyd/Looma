@@ -15,8 +15,8 @@ public class DocumentEntityConfiguration : IEntityTypeConfiguration<DocumentEnti
         builder.HasKey(d => d.DocumentId);
         builder.Property(d => d.DocumentId).ValueGeneratedNever();
         builder.Property(d => d.Nickname).HasColumnType("TEXT").IsRequired();
-        builder.Property(d => d.Type).HasColumnType("TEXT").IsRequired();
-        builder.Property(d => d.Size).IsRequired();
+        builder.Property(d => d.Type).HasColumnType("TEXT");
+        builder.Property(d => d.Size);
         
         builder.HasOne(d => d.Pattern)
             .WithMany(p => p.Documents)

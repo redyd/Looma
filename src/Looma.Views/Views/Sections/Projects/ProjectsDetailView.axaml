@@ -37,48 +37,18 @@
 
         <ScrollViewer>
             <StackPanel Margin="32" Spacing="16">
-
-                <Border Classes="form-section"
-                        Padding="16"
-                        IsVisible="{Binding HasImages}">
-                    <Grid RowDefinitions="Auto,12,Auto">
-                        <Image Grid.Row="0"
-                               Source="{Binding SelectedImage.SourcePath, Converter={StaticResource StringToUri}}"
-                               MinHeight="220"
-                               MaxHeight="360"
-                               Stretch="Uniform"
-                               HorizontalAlignment="Center" />
-
-                        <Grid Grid.Row="2"
-                              ColumnDefinitions="Auto,*,Auto"
-                              IsVisible="{Binding HasMultipleImages}">
-                            <Button Grid.Column="0"
-                                    Content="Précédent"
-                                    Command="{Binding PreviousImageCommand}"
-                                    Classes="form-cancel" />
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding ImagePositionDisplay}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontWeight="SemiBold"
-                                       Opacity="0.65" />
-                            <Button Grid.Column="2"
-                                    Content="Suivant"
-                                    Command="{Binding NextImageCommand}"
-                                    Classes="form-submit" />
-                        </Grid>
-                    </Grid>
-                </Border>
-
+                
                 <Button Classes="card-button"
                         Command="{Binding OpenPatternCommand}"
-                        HorizontalAlignment="Stretch">
+                        Padding="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch">
                     <Border Classes="form-section"
                             Padding="16">
-                        <Grid ColumnDefinitions="*,120,140,100" ColumnSpacing="18">
+                        <Grid ColumnDefinitions="*,120,120,140,100" ColumnSpacing="18">
                             <StackPanel Grid.Column="0" Spacing="3">
                                 <TextBlock Text="{Binding PatternName}"
-                                           FontSize="16"
+                                           FontSize="18"
                                            FontWeight="SemiBold"
                                            TextTrimming="CharacterEllipsis" />
                                 <TextBlock Text="{Binding PatternNoteDisplay}"
@@ -93,12 +63,17 @@
                                        Opacity="0.8"
                                        VerticalAlignment="Center" />
                             <TextBlock Grid.Column="2"
+                                       Text="{Binding Pattern.Documents.Count, StringFormat='Documents: {0}'}"
+                                       FontSize="13"
+                                       Opacity="0.7"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="3"
                                        Text="{Binding Pattern.Url}"
                                        FontSize="13"
                                        Opacity="0.65"
                                        VerticalAlignment="Center"
                                        TextTrimming="CharacterEllipsis" />
-                            <TextBlock Grid.Column="3"
+                            <TextBlock Grid.Column="4"
                                        Text="Ouvrir"
                                        FontSize="13"
                                        FontWeight="SemiBold"
@@ -109,43 +84,88 @@
                     </Border>
                 </Button>
 
+                <Grid ColumnDefinitions="2.1*,16,0.9*">
+                    <Border Grid.Column="0"
+                            Classes="form-section"
+                            Padding="16"
+                            MinHeight="260"
+                            IsVisible="{Binding HasImages}">
+                        <Grid RowDefinitions="*,12,Auto">
+                            <Image Grid.Row="0"
+                                   Source="{Binding SelectedImage.SourcePath, Converter={StaticResource StringToUri}}"
+                                   MaxHeight="340"
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+
+                            <Grid Grid.Row="2"
+                                  ColumnDefinitions="Auto,*,Auto"
+                                  IsVisible="{Binding HasMultipleImages}">
+                                <Button Grid.Column="0"
+                                        Content="Précédent"
+                                        Command="{Binding PreviousImageCommand}"
+                                        Classes="form-cancel" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding ImagePositionDisplay}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontWeight="SemiBold"
+                                           Opacity="0.65" />
+                                <Button Grid.Column="2"
+                                        Content="Suivant"
+                                        Command="{Binding NextImageCommand}"
+                                        Classes="form-submit" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="0"
+                            Classes="form-section"
+                            IsVisible="{Binding !HasImages}">
+                        <StackPanel Spacing="8">
+                            <TextBlock Classes="section-title" Text="Images" />
+                            <TextBlock Text="Aucune image pour ce projet."
+                                       Classes="form-hint" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Classes="form-section">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="section-title" Text="Informations" />
+                            <ItemsControl ItemsSource="{Binding ProjectInfos}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="pcontrols:InfoItem">
+                                        <Grid ColumnDefinitions="92,*">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Label}"
+                                                       FontSize="13"
+                                                       Opacity="0.5"
+                                                       Margin="0 0 0 10" />
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Value}"
+                                                       FontSize="14"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0 0 0 10"
+                                                       TextTrimming="CharacterEllipsis" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
                 <Grid ColumnDefinitions="*,16,*">
 
-                    <StackPanel Grid.Column="0" Spacing="16">
-                        <Border Classes="form-section">
-                            <StackPanel Spacing="12">
-                                <TextBlock Classes="section-title" Text="Informations" />
-                                <ItemsControl ItemsSource="{Binding ProjectInfos}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="pcontrols:InfoItem">
-                                            <Grid ColumnDefinitions="110,*">
-                                                <TextBlock Grid.Column="0"
-                                                           Text="{Binding Label}"
-                                                           FontSize="13"
-                                                           Opacity="0.5"
-                                                           Margin="0 0 0 10" />
-                                                <TextBlock Grid.Column="1"
-                                                           Text="{Binding Value}"
-                                                           FontSize="14"
-                                                           Margin="0 0 0 10"
-                                                           TextTrimming="CharacterEllipsis" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Classes="form-section">
-                            <StackPanel Spacing="12">
-                                <TextBlock Classes="section-title" Text="Note" />
-                                <TextBlock Text="{Binding NoteDisplay}"
-                                           TextWrapping="Wrap"
-                                           FontSize="14"
-                                           LineHeight="20" />
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
+                    <Border Grid.Column="0" Classes="form-section">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="section-title" Text="Note" />
+                            <TextBlock Text="{Binding NoteDisplay}"
+                                       TextWrapping="Wrap"
+                                       FontSize="14"
+                                       LineHeight="20" />
+                        </StackPanel>
+                    </Border>
 
                     <Border Grid.Column="2" Classes="form-section">
                         <StackPanel Spacing="12">

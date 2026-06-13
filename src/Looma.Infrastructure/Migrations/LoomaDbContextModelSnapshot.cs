@@ -32,11 +32,10 @@ namespace Looma.Infrastructure.Migrations
                     b.Property<int?>("ProjectId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("Size")
+                    b.Property<long?>("Size")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Type")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("DocumentId");

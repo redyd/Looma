@@ -21,10 +21,14 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         try
         {
             var entities = await context.Documents
-                .AsNoTracking()
+                .Include(d => d.Pattern)
+                .Include(d => d.Project)
                 .OrderBy(d => d.Nickname)
                 .ThenBy(d => d.DocumentId)
                 .ToListAsync();
+
+            if (DocumentMetadataBackfill.Apply(entities, pathManager))
+                await context.SaveChangesAsync();
 
             var documents = entities
                 .Select(e => e.ToDomain())
@@ -44,8 +48,12 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         try
         {
             var entity = await context.Documents
-                .AsNoTracking()
+                .Include(d => d.Pattern)
+                .Include(d => d.Project)
                 .FirstOrDefaultAsync(d => d.DocumentId == id);
+
+            if (entity is not null && DocumentMetadataBackfill.Apply([entity], pathManager))
+                await context.SaveChangesAsync();
 
             return entity is null
                 ? ResultT<Document>.NotFound($"Le document {id} est introuvable.")
@@ -78,7 +86,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
 
         try
         {
-            if (request.PatternId.HasValue && request.ProjectId.HasValue)
+            if (request is { PatternId: not null, ProjectId: not null })
                 return ResultT<Document>.Failure("Un document ne peut être lié qu'à un patron ou à un projet.");
 
             if (request.PatternId.HasValue)
@@ -103,7 +111,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             {
                 DocumentId = id,
                 Nickname = nickname,
-                Type = GetDocumentType(destinationPath),
+                Type = DocumentMetadataBackfill.GetDocumentType(destinationPath),
                 Size = fileInfo.Length,
                 PatternId = request.PatternId,
                 ProjectId = request.ProjectId
@@ -214,7 +222,11 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 Nickname = document.Nickname,
                 Type = "Inconnu",
                 SizeBytes = 0,
-                StoragePath = null
+                StoragePath = null,
+                PatternId = document.PatternId,
+                PatternName = document.PatternName,
+                ProjectId = document.ProjectId,
+                ProjectName = document.ProjectName
             };
         }
 
@@ -225,15 +237,14 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             Nickname = document.Nickname,
             Type = GetDocumentType(filePath),
             SizeBytes = info.Length,
-            StoragePath = filePath
+            StoragePath = filePath,
+            PatternId = document.PatternId,
+            PatternName = document.PatternName,
+            ProjectId = document.ProjectId,
+            ProjectName = document.ProjectName
         };
     }
 
-    private static string GetDocumentType(string filePath)
-    {
-        var extension = Path.GetExtension(filePath).TrimStart('.');
-        return string.IsNullOrWhiteSpace(extension)
-            ? "Sans extension"
-            : extension.ToUpperInvariant();
-    }
+    private static string GetDocumentType(string filePath) =>
+        DocumentMetadataBackfill.GetDocumentType(filePath);
 }

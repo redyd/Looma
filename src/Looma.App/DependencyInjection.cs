@@ -83,6 +83,8 @@ public static class DependencyInjection
                 MakeSection<DocumentsListViewModel>(nav =>
                     new DocumentsListViewModel(nav,
                         sp.GetRequiredService<IDocumentRepository>(),
+                        sp.GetRequiredService<IPatternRepository>(),
+                        sp.GetRequiredService<IProjectRepository>(),
                         sp.GetRequiredService<INotificationService>(),
                         sp.GetRequiredService<IDataRefreshService>())),
                 sp.GetRequiredService<INotificationService>()

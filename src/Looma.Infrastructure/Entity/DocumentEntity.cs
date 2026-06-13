@@ -8,8 +8,8 @@ public class DocumentEntity
 {
     public Guid DocumentId { get; set; }
     public string Nickname { get; set; } = null!;
-    public string Type { get; set; } = null!;
-    public long Size { get; set; }
+    public string? Type { get; set; }
+    public long? Size { get; set; }
 
     public int? PatternId { get; set; }
     public PatternEntity? Pattern { get; set; }

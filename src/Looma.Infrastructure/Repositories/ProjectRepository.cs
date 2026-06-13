@@ -8,21 +8,25 @@ using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 using Looma.Infrastructure.Entity;
 using Looma.Infrastructure.Mapping;
+using Looma.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace Looma.Infrastructure.Repositories;
 
-public class ProjectRepository(LoomaDbContext context, Looma.Infrastructure.Storage.AppPaths pathManager) : IProjectRepository
+public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : IProjectRepository
 {
     public async Task<ResultT<IReadOnlyList<Project>>> GetAllAsync()
     {
         try
         {
-            var entities = await IncludeDetails(context.Projects.AsNoTracking())
+            var entities = await IncludeDetails(context.Projects)
                 .OrderBy(p => p.BeginDate == null)
                 .ThenBy(p => p.BeginDate)
                 .ThenBy(p => p.Name)
                 .ToListAsync();
+
+            if (DocumentMetadataBackfill.Apply(entities.SelectMany(p => p.Files), pathManager))
+                await context.SaveChangesAsync();
 
             return ResultT<IReadOnlyList<Project>>.Ok(entities.Select(p => ApplyFileMetadata(p.ToDomain())).ToList());
         }
@@ -36,8 +40,11 @@ public class ProjectRepository(LoomaDbContext context, Looma.Infrastructure.Stor
     {
         try
         {
-            var entity = await IncludeDetails(context.Projects.AsNoTracking())
+            var entity = await IncludeDetails(context.Projects)
                 .FirstOrDefaultAsync(p => p.ProjectId == id);
+
+            if (entity is not null && DocumentMetadataBackfill.Apply(entity.Files, pathManager))
+                await context.SaveChangesAsync();
 
             return entity is null
                 ? ResultT<Project>.NotFound($"Le projet {id} est introuvable.")
@@ -238,23 +245,26 @@ public class ProjectRepository(LoomaDbContext context, Looma.Infrastructure.Stor
                 Nickname = document.Nickname,
                 Type = "Inconnu",
                 SizeBytes = 0,
-                StoragePath = null
+                StoragePath = null,
+                PatternId = document.PatternId,
+                PatternName = document.PatternName,
+                ProjectId = document.ProjectId,
+                ProjectName = document.ProjectName
             };
         }
 
         var info = new FileInfo(filePath);
-        var extension = Path.GetExtension(filePath).TrimStart('.');
-        var type = string.IsNullOrWhiteSpace(extension)
-            ? "Sans extension"
-            : extension.ToUpperInvariant();
-
         return new Document
         {
             Id = document.Id,
             Nickname = document.Nickname,
-            Type = type,
+            Type = DocumentMetadataBackfill.GetDocumentType(filePath),
             SizeBytes = info.Length,
-            StoragePath = filePath
+            StoragePath = filePath,
+            PatternId = document.PatternId,
+            PatternName = document.PatternName,
+            ProjectId = document.ProjectId,
+            ProjectName = document.ProjectName
         };
     }
 }

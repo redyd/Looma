@@ -11,4 +11,8 @@ public class Document
     public required string Type { get; init; }
     public required long SizeBytes { get; init; }
     public required string? StoragePath { get; init; }
+    public required int? PatternId { get; init; }
+    public required string? PatternName { get; init; }
+    public required int? ProjectId { get; init; }
+    public required string? ProjectName { get; init; }
 }

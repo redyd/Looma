@@ -5,7 +5,7 @@
 namespace Looma.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateDocumentsRelations : Migration
+    public partial class UpdateDocumentRelations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,15 +26,13 @@ namespace Looma.Infrastructure.Migrations
                 name: "Size",
                 table: "Documents",
                 type: "INTEGER",
-                nullable: false,
-                defaultValue: 0L);
+                nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "Type",
                 table: "Documents",
                 type: "TEXT",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Documents_ProjectId",
