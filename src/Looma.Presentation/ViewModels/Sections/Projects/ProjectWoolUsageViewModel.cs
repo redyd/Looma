@@ -17,4 +17,6 @@ public class ProjectWoolUsageViewModel(WoolUsage usage, ICommand addCommand, ICo
     public string Color => Usage.Wool.Color;
     public string AvailableDisplay => $"{Math.Max(0, Usage.RemainingStock / 1000):N2} pelote(s)";
     public string UsedDisplay => $"{Usage.StockUsed / 1000:N2} pelote(s)";
+    public string AlreadyDeductedDisplay => $"{Usage.StockAlreadyUsed / 1000:N2} pelote(s)";
+    public string PendingDisplay => $"{Usage.PendingStockToDeduct / 1000:N2} pelote(s)";
 }

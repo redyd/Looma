@@ -9,7 +9,7 @@ using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
 using Looma.Domain.Repositories;
-using Looma.Domain.Services;
+using Looma.Domain.Request;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.UserControls;
@@ -21,7 +21,6 @@ namespace Looma.Presentation.ViewModels.Sections.Projects;
 public partial class ProjectsDetailViewModel(
     INavigationService nav,
     IProjectRepository projectRepo,
-    WoolStockCalculator stockCalculator,
     INotificationService notifications)
     : PageViewModelBase
 {
@@ -36,6 +35,9 @@ public partial class ProjectsDetailViewModel(
     [ObservableProperty] private ObservableCollection<ProjectWoolUsageViewModel> _wools = [];
     [ObservableProperty] private ObservableCollection<ProjectImageViewModel> _images = [];
     [ObservableProperty] private int _selectedImageIndex;
+    [ObservableProperty] private double? _woolAdjustmentQuantity;
+    [ObservableProperty] private StockAdjustmentMode _woolAdjustmentMode = StockAdjustmentMode.ByBall;
+    [ObservableProperty] private bool _deductWoolImmediately;
 
     public string StatusDisplay => Status.GetDisplayName();
     public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? "Aucune note." : Note!;
@@ -45,6 +47,12 @@ public partial class ProjectsDetailViewModel(
     public bool HasWools => Wools.Count > 0;
     public bool HasImages => Images.Count > 0;
     public bool HasMultipleImages => Images.Count > 1;
+    public bool IsWishlist => Status == Status.Wishlist;
+    public bool IsInProgress => Status == Status.InProgress;
+    public bool IsPaused => Status == Status.Paused;
+    public bool HasProjectActions => Status != Status.Finished;
+    public bool CanAdjustWool => WoolAdjustmentQuantity > 0;
+    public IReadOnlyList<StockAdjustmentMode> WoolAdjustmentModes { get; } = Enum.GetValues<StockAdjustmentMode>().ToList();
     public ProjectImageViewModel? SelectedImage =>
         SelectedImageIndex >= 0 && SelectedImageIndex < Images.Count ? Images[SelectedImageIndex] : null;
     public string ImagePositionDisplay => HasImages ? $"{SelectedImageIndex + 1} / {Images.Count}" : string.Empty;
@@ -124,6 +132,10 @@ public partial class ProjectsDetailViewModel(
         OnPropertyChanged(nameof(PatternName));
         OnPropertyChanged(nameof(PatternTypeDisplay));
         OnPropertyChanged(nameof(PatternNoteDisplay));
+        OnPropertyChanged(nameof(IsWishlist));
+        OnPropertyChanged(nameof(IsInProgress));
+        OnPropertyChanged(nameof(IsPaused));
+        OnPropertyChanged(nameof(HasProjectActions));
         OnPropertyChanged(nameof(HasWools));
         OnPropertyChanged(nameof(HasImages));
         OnPropertyChanged(nameof(HasMultipleImages));
@@ -134,27 +146,34 @@ public partial class ProjectsDetailViewModel(
         OnPropertyChanged(nameof(PatternStats));
     }
 
+    partial void OnWoolAdjustmentQuantityChanged(double? value) =>
+        OnPropertyChanged(nameof(CanAdjustWool));
+
     private async Task AddWoolUsageAsync(WoolUsage usage)
     {
-        var stockStep = stockCalculator.ComputeStockQuantity(StockAdjustmentMode.ByBall, true, 1, usage.Wool.Weight);
-        if (usage.StockUsed + stockStep > usage.Wool.Stock)
-        {
-            notifications.Error("Le stock disponible est insuffisant.");
-            return;
-        }
-
-        await UpdateUsageAsync(usage.Wool.Id, usage.StockUsed + stockStep);
+        await AdjustWoolUsageAsync(usage, true);
     }
 
     private Task RemoveWoolUsageAsync(WoolUsage usage)
     {
-        var stockStep = Math.Abs(stockCalculator.ComputeStockQuantity(StockAdjustmentMode.ByBall, false, 1, usage.Wool.Weight));
-        return UpdateUsageAsync(usage.Wool.Id, Math.Max(0, usage.StockUsed - stockStep));
+        return AdjustWoolUsageAsync(usage, false);
     }
 
-    private async Task UpdateUsageAsync(int woolId, double stockUsed)
+    private async Task AdjustWoolUsageAsync(WoolUsage usage, bool isAddition)
     {
-        var result = await projectRepo.UpdateWoolUsageAsync(ProjectId, woolId, stockUsed);
+        if (WoolAdjustmentQuantity is null || WoolAdjustmentQuantity <= 0)
+        {
+            notifications.Error("Indiquez une quantité supérieure à zéro.");
+            return;
+        }
+
+        var result = await projectRepo.AdjustWoolUsageAsync(new AdjustProjectWoolUsageRequest(
+            ProjectId,
+            usage.Wool.Id,
+            WoolAdjustmentMode,
+            isAddition,
+            WoolAdjustmentQuantity.Value,
+            DeductWoolImmediately));
         if (result.Failed || result.Value is null)
         {
             notifications.Error(result.Error ?? "Impossible de mettre à jour la laine utilisée.");
@@ -166,6 +185,55 @@ public partial class ProjectsDetailViewModel(
 
     private static string FormatDate(DateOnly? value) =>
         value is null ? "Aucune" : value.Value.ToString("dd/MM/yyyy");
+
+    private async Task UpdateStatusAsync(Status status, DateOnly? beginDate = null, DateOnly? endDate = null)
+    {
+        if (Pattern is null)
+            return;
+
+        IsBusy = true;
+        try
+        {
+            var result = await projectRepo.UpdateAsync(new UpdateProjectRequest(
+                ProjectId,
+                Name,
+                status,
+                Note,
+                beginDate ?? BeginDate,
+                endDate ?? EndDate,
+                Pattern.Id,
+                Wools.Select(w => w.Usage.Wool.Id).ToList()));
+
+            if (result.Failed || result.Value is null)
+            {
+                ErrorMessage = result.Error;
+                notifications.Error(result.Error ?? "Impossible de mettre à jour le projet.");
+                return;
+            }
+
+            ApplyProject(result.Value);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
+    private Task StartProjectAsync() =>
+        UpdateStatusAsync(Status.InProgress, DateOnly.FromDateTime(DateTime.Today));
+
+    [RelayCommand]
+    private Task PauseProjectAsync() =>
+        UpdateStatusAsync(Status.Paused);
+
+    [RelayCommand]
+    private Task ResumeProjectAsync() =>
+        UpdateStatusAsync(Status.InProgress);
+
+    [RelayCommand]
+    private Task FinishProjectAsync() =>
+        UpdateStatusAsync(Status.Finished, BeginDate, DateOnly.FromDateTime(DateTime.Today));
 
     [RelayCommand]
     private void OpenPattern()

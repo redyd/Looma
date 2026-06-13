@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Looma.Infrastructure.Migrations
 {
     [DbContext(typeof(LoomaDbContext))]
-    [Migration("20260613161442_UpdateDocumentRelations")]
+    [Migration("20260613165118_UpdateDocumentRelations")]
     partial class UpdateDocumentRelations
     {
         /// <inheritdoc />
@@ -173,6 +173,9 @@ namespace Looma.Infrastructure.Migrations
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<double>("StockAlreadyUsed")
+                        .HasColumnType("REAL");
 
                     b.Property<double>("StockUsed")
                         .HasColumnType("REAL");

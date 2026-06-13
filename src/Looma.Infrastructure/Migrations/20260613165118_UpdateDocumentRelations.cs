@@ -10,6 +10,13 @@ namespace Looma.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<double>(
+                name: "StockAlreadyUsed",
+                table: "WoolsForProjects",
+                type: "REAL",
+                nullable: false,
+                defaultValue: 0.0);
+
             migrationBuilder.AddColumn<string>(
                 name: "Image",
                 table: "Projects",
@@ -66,6 +73,10 @@ namespace Looma.Infrastructure.Migrations
             migrationBuilder.DropCheckConstraint(
                 name: "CK_Document_SingleParent",
                 table: "Documents");
+
+            migrationBuilder.DropColumn(
+                name: "StockAlreadyUsed",
+                table: "WoolsForProjects");
 
             migrationBuilder.DropColumn(
                 name: "Image",

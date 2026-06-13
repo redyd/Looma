@@ -23,7 +23,8 @@ public static class ProjectMapping
                 .Select(w => new WoolUsage
                 {
                     Wool = w.WoolEntity.ToDomain(),
-                    StockUsed = w.StockUsed
+                    StockUsed = w.StockUsed,
+                    StockAlreadyUsed = w.StockAlreadyUsed
                 })
                 .OrderBy(w => w.Wool.Brand)
                 .ThenBy(w => w.Wool.Name)

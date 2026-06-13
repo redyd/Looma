@@ -170,6 +170,30 @@
                     <Border Grid.Column="2" Classes="form-section">
                         <StackPanel Spacing="12">
                             <TextBlock Classes="section-title" Text="Laines du projet" />
+                            <Grid ColumnDefinitions="*,12,150" IsVisible="{Binding HasWools}">
+                                <StackPanel Grid.Column="0" Spacing="6">
+                                    <TextBlock Classes="form-label" Text="Quantité" />
+                                    <TextBox Classes="form-input"
+                                             Text="{Binding WoolAdjustmentQuantity}"
+                                             PlaceholderText="Ex : 1, 50, 120..." />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Spacing="6">
+                                    <TextBlock Classes="form-label" Text="Mode" />
+                                    <ComboBox ItemsSource="{Binding WoolAdjustmentModes}"
+                                              SelectedItem="{Binding WoolAdjustmentMode}"
+                                              Classes="form-select"
+                                              HorizontalAlignment="Stretch">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Converter={StaticResource EnumDisplayName}}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Grid>
+                            <CheckBox Content="Retirer immédiatement du stock"
+                                      IsChecked="{Binding DeductWoolImmediately}"
+                                      IsVisible="{Binding HasWools}" />
                             <TextBlock Text="Aucune laine sélectionnée"
                                        Classes="form-hint"
                                        IsVisible="{Binding !HasWools}" />
@@ -207,25 +231,33 @@
                                                                    FontSize="12"
                                                                    Opacity="0.75" />
                                                     </Grid>
+                                                    <Grid ColumnDefinitions="*,*">
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="{Binding AlreadyDeductedDisplay, StringFormat='Déduit: {0}'}"
+                                                                   FontSize="12"
+                                                                   Opacity="0.75" />
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding PendingDisplay, StringFormat='Restant: {0}'}"
+                                                                   FontSize="12"
+                                                                   Opacity="0.75" />
+                                                    </Grid>
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="2"
                                                             Orientation="Horizontal"
                                                             Spacing="6"
                                                             VerticalAlignment="Center">
-                                                    <Button Content="-"
+                                                    <Button Content="Remettre en stock"
                                                             Command="{Binding RemoveCommand}"
                                                             Classes="form-cancel"
-                                                            Width="36"
-                                                            MinWidth="36"
+                                                            MinWidth="130"
                                                             Height="36"
-                                                            Padding="0" />
-                                                    <Button Content="+"
+                                                            Padding="10 0" />
+                                                    <Button Content="Utiliser"
                                                             Command="{Binding AddCommand}"
                                                             Classes="form-submit"
-                                                            Width="36"
-                                                            MinWidth="36"
+                                                            MinWidth="90"
                                                             Height="36"
-                                                            Padding="0" />
+                                                            Padding="10 0" />
                                                 </StackPanel>
                                             </Grid>
                                         </Border>
@@ -235,6 +267,40 @@
                         </StackPanel>
                     </Border>
 
+                </Grid>
+
+                <Grid ColumnDefinitions="*,12,*"
+                      IsVisible="{Binding HasProjectActions}">
+                    <Button Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Content="Démarrer le projet"
+                            Command="{Binding StartProjectCommand}"
+                            Classes="form-submit"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            IsVisible="{Binding IsWishlist}" />
+                    <Button Grid.Column="0"
+                            Content="Mettre en pause"
+                            Command="{Binding PauseProjectCommand}"
+                            Classes="form-cancel"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            IsVisible="{Binding IsInProgress}" />
+                    <Button Grid.Column="2"
+                            Content="Terminer le projet"
+                            Command="{Binding FinishProjectCommand}"
+                            Classes="form-submit"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            IsVisible="{Binding IsInProgress}" />
+                    <Button Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Content="Reprendre"
+                            Command="{Binding ResumeProjectCommand}"
+                            Classes="form-submit"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            IsVisible="{Binding IsPaused}" />
                 </Grid>
 
             </StackPanel>
