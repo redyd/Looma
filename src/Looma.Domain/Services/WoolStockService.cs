@@ -1,5 +1,4 @@
 using Looma.Domain.Core;
-using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 
@@ -52,7 +51,11 @@ public class WoolStockService(IWoolUsageRepository repository)
             }
         }
 
-        await repository.UpdateStockUsedAsync(request.ProjectId, request.WoolId, usage.StockUsed + delta);
+        var updateResult = await repository.UpdateStockUsedAsync(request.ProjectId, request.WoolId, usage.StockUsed + delta);
+        if (updateResult.Failed)
+        {
+            return Result.Failure(updateResult?.Error ?? "Erreur inconnue");
+        }
 
         if (request.IsAddition && request.DeductImmediately)
         {

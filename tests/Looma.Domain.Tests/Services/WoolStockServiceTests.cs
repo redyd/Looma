@@ -480,15 +480,9 @@ public class WoolStockServiceTests
         await repo.Received(1).UpdateStockUsedAsync(42, 99, Arg.Any<double>());
     }
 
-    // ---------------------------------------------------------------------------
-    // 12. Bug documente : UpdateStockUsedAsync echoue mais Result.Ok() est retourne
-    // ---------------------------------------------------------------------------
-
     [Fact]
-    public async Task AdjustWoolUsageAsync_UpdateStockUsedFails_CurrentlyReturnsOk_DocumentingBug()
+    public async Task AdjustWoolUsageAsync_UpdateStockUsedFails_ReturnsFailure()
     {
-        // ATTENTION : ce test documente un bug. UpdateStockUsedAsync n'est pas verifie.
-        // Quand ce bug sera corrige, ce test devra etre mis a jour pour attendre un echec.
         var usage = MakeUsage();
         var repo = MakeRepo(usage);
         repo.UpdateStockUsedAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<double>())
@@ -497,7 +491,7 @@ public class WoolStockServiceTests
 
         var result = await sut.AdjustWoolUsageAsync(MakeRequest());
 
-        // comportement actuel (bugge) : retourne Ok meme si l'update a echoue
-        result.Succeeded.Should().BeTrue("BUG: UpdateStockUsedAsync failure is not checked");
+        result.Failed.Should().BeTrue();
+        result.Error.Should().Be("db error");
     }
 }

@@ -79,9 +79,7 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
                 BeginDate = request.BeginDate,
                 EndDate = request.EndDate,
                 PatternId = request.PatternId,
-                WoolsForProjects = woolIds
-                    .Select(woolId => new WoolsForProjectEntity { WoolId = woolId, StockUsed = 0, StockAlreadyUsed = 0 })
-                    .ToList()
+                WoolsForProjects = [.. woolIds.Select(woolId => new WoolsForProjectEntity { WoolId = woolId, StockUsed = 0, StockAlreadyUsed = 0 })]
             };
 
             context.Projects.Add(entity);
@@ -121,13 +119,6 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
                 return ResultT<Project>.Failure("Une ou plusieurs laines sélectionnées sont introuvables.");
 
             entity.Name = name;
-            if (request.Status == Status.Finished && entity.Status != Status.Finished)
-            {
-                var completeResult = CompleteProject(entity);
-                if (completeResult.Failed)
-                    return ResultT<Project>.Failure(completeResult.Error ?? "Impossible de terminer le projet.");
-            }
-
             entity.Status = request.Status;
             entity.Note = NormalizeOptional(request.Note);
             entity.BeginDate = request.BeginDate;
@@ -200,24 +191,6 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
         var existing = entity.WoolsForProjects.Select(w => w.WoolId).ToHashSet();
         foreach (var woolId in selected.Where(woolId => !existing.Contains(woolId)))
             entity.WoolsForProjects.Add(new WoolsForProjectEntity { WoolId = woolId, StockUsed = 0, StockAlreadyUsed = 0 });
-    }
-
-    private static Result CompleteProject(ProjectEntity entity)
-    {
-        foreach (var usage in entity.WoolsForProjects)
-        {
-            var remainingToDeduct = Math.Max(0, usage.StockUsed - usage.StockAlreadyUsed);
-            if (remainingToDeduct <= 0)
-                continue;
-
-            if (usage.WoolEntity.Stock < remainingToDeduct)
-                return Result.Failure($"Le stock disponible est insuffisant pour {usage.WoolEntity.Name}.");
-
-            usage.WoolEntity.Stock -= remainingToDeduct;
-            usage.StockAlreadyUsed += remainingToDeduct;
-        }
-
-        return Result.Ok();
     }
 
     private static string? NormalizeOptional(string? value) =>

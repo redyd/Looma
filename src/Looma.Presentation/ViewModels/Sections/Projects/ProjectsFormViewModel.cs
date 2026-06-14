@@ -11,6 +11,7 @@ using Looma.Domain.Extensions;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 using Looma.Domain.Search;
+using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
@@ -25,7 +26,8 @@ public partial class ProjectsFormViewModel(
     IWoolRepository woolRepo,
     IDocumentRepository documentRepo,
     IDocumentFilePicker filePicker,
-    INotificationService notifications)
+    INotificationService notifications,
+    ProjectService projectService)
     : PageViewModelBase
 {
     private bool _isEdit;
@@ -59,7 +61,8 @@ public partial class ProjectsFormViewModel(
     public bool HasNewImages => NewImages.Count > 0;
     public bool HasImages => HasExistingImages || HasNewImages;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string _name = string.Empty;
 
     [ObservableProperty] private Status _status = Status.InProgress;
@@ -69,7 +72,8 @@ public partial class ProjectsFormViewModel(
     [ObservableProperty] private string _patternSearchQuery = string.Empty;
     [ObservableProperty] private string _woolSearchQuery = string.Empty;
     [ObservableProperty] private ProjectPatternTypeFilterViewModel? _selectedPatternTypeFilter;
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private Pattern? _selectedPattern;
     [ObservableProperty] private string? _errorMessage;
     [ObservableProperty] private ObservableCollection<ProjectSelectablePatternViewModel> _selectedPatterns = [];
@@ -271,7 +275,7 @@ public partial class ProjectsFormViewModel(
         {
             var woolIds = _selectedWoolIds.ToList();
             var result = _isEdit
-                ? await projectRepo.UpdateAsync(new UpdateProjectRequest(
+                ? await projectService.UpdateAsync(new UpdateProjectRequest(
                     _editingId,
                     Name,
                     Status,

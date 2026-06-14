@@ -10,6 +10,7 @@ using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
+using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.UserControls;
@@ -21,23 +22,39 @@ namespace Looma.Presentation.ViewModels.Sections.Projects;
 public partial class ProjectsDetailViewModel(
     INavigationService nav,
     IProjectRepository projectRepo,
-    INotificationService notifications)
+    INotificationService notifications,
+    WoolStockService stockService,
+    ProjectService projectService)
     : PageViewModelBase
 {
-    [ObservableProperty] private int _projectId;
-    [ObservableProperty] private string _name = string.Empty;
-    [ObservableProperty] private Status _status;
-    [ObservableProperty] private string? _note;
-    [ObservableProperty] private DateOnly? _beginDate;
-    [ObservableProperty] private DateOnly? _endDate;
-    [ObservableProperty] private Pattern? _pattern;
-    [ObservableProperty] private string? _errorMessage;
-    [ObservableProperty] private ObservableCollection<ProjectWoolUsageViewModel> _wools = [];
-    [ObservableProperty] private ObservableCollection<ProjectImageViewModel> _images = [];
-    [ObservableProperty] private int _selectedImageIndex;
-    [ObservableProperty] private double? _woolAdjustmentQuantity;
-    [ObservableProperty] private StockAdjustmentMode _woolAdjustmentMode = StockAdjustmentMode.ByBall;
-    [ObservableProperty] private bool _deductWoolImmediately;
+    [ObservableProperty]
+    public partial int ProjectId { get; set; }
+    [ObservableProperty]
+    public partial string Name { get; set; } = string.Empty;
+    [ObservableProperty]
+    public partial Status Status { get; set; }
+    [ObservableProperty]
+    public partial string? Note { get; set; }
+    [ObservableProperty]
+    public partial DateOnly? BeginDate { get; set; }
+    [ObservableProperty]
+    public partial DateOnly? EndDate { get; set; }
+    [ObservableProperty]
+    public partial Pattern? Pattern { get; set; }
+    [ObservableProperty]
+    public partial string? ErrorMessage { get; set; }
+    [ObservableProperty]
+    public partial ObservableCollection<ProjectWoolUsageViewModel> Wools { get; set; } = [];
+    [ObservableProperty]
+    public partial ObservableCollection<ProjectImageViewModel> Images { get; set; } = [];
+    [ObservableProperty]
+    public partial int SelectedImageIndex { get; set; }
+    [ObservableProperty]
+    public partial double? WoolAdjustmentQuantity { get; set; }
+    [ObservableProperty]
+    public partial StockAdjustmentMode WoolAdjustmentMode { get; set; } = StockAdjustmentMode.ByBall;
+    [ObservableProperty]
+    public partial bool DeductWoolImmediately { get; set; }
 
     public string StatusDisplay => Status.GetDisplayName();
     public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? "Aucune note." : Note!;
@@ -167,20 +184,27 @@ public partial class ProjectsDetailViewModel(
             return;
         }
 
-        var result = await projectRepo.AdjustWoolUsageAsync(new AdjustProjectWoolUsageRequest(
+        var result = await stockService.AdjustWoolUsageAsync(new AdjustProjectWoolUsageRequest(
             ProjectId,
             usage.Wool.Id,
             WoolAdjustmentMode,
             isAddition,
             WoolAdjustmentQuantity.Value,
             DeductWoolImmediately));
-        if (result.Failed || result.Value is null)
+        if (result.Failed)
         {
             notifications.Error(result.Error ?? "Impossible de mettre à jour la laine utilisée.");
             return;
         }
 
-        ApplyProject(result.Value);
+        var projectResult = await projectRepo.GetByIdAsync(ProjectId);
+        if (projectResult.Failed || projectResult.Value is null)
+        {
+            notifications.Error(projectResult.Error ?? "Impossible de mettre à jour la laine utilisée.");
+            return;
+        }
+
+        ApplyProject(projectResult.Value);
     }
 
     private static string FormatDate(DateOnly? value) =>
@@ -194,7 +218,7 @@ public partial class ProjectsDetailViewModel(
         IsBusy = true;
         try
         {
-            var result = await projectRepo.UpdateAsync(new UpdateProjectRequest(
+            var result = await projectService.UpdateAsync(new UpdateProjectRequest(
                 ProjectId,
                 Name,
                 status,

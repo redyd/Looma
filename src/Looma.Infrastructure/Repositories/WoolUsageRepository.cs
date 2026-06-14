@@ -9,6 +9,29 @@ namespace Looma.Infrastructure.Repositories;
 public class WoolUsageRepository(LoomaDbContext context) : IWoolUsageRepository
 {
 
+    public Task<ResultT<IReadOnlyList<WoolUsage>>> GetAllUsagesAsync(int projectId)
+    {
+        try
+        {
+            var result = context.WoolsForProjects
+                .Where(w => w.ProjectId == projectId)
+                .Include(w => w.WoolEntity)
+                .Select(w => new WoolUsage
+                {
+                    Wool = w.WoolEntity.ToDomain(),
+                    StockUsed = w.StockUsed,
+                    StockAlreadyUsed = w.StockAlreadyUsed
+                })
+                .ToList();
+
+            return Task.FromResult(ResultT<IReadOnlyList<WoolUsage>>.Ok(result));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(ResultT<IReadOnlyList<WoolUsage>>.Failure(ex.Message));
+        }
+    }
+
     public Task<ResultT<WoolUsage>> GetUsageAsync(int projectId, int woolId)
     {
         try

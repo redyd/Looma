@@ -24,7 +24,8 @@ public static class DependencyInjection
 {
     public static void AddDomain(this IServiceCollection services)
     {
-        services.AddSingleton<WoolStockCalculator>();
+        services.AddScoped<WoolStockCalculator>();
+        services.AddScoped<WoolStockService>();
     }
 
     public static void AddPresentation(this IServiceCollection services)
