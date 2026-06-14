@@ -7,15 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Looma.Presentation.Navigation;
 
-public class NavigationService : INavigationService
+public class NavigationService(IServiceProvider services) : INavigationService
 {
-    private readonly IServiceProvider _services;
+    private readonly IServiceProvider _services = services;
     private readonly NavigationStack<PageViewModelBase> _stack = new();
-
-    public NavigationService(IServiceProvider services)
-    {
-        _services = services;
-    }
 
     public PageViewModelBase? CurrentPage => _stack.Current;
     public bool CanGoBack => _stack.CanGoBack;

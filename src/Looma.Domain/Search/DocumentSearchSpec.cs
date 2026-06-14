@@ -6,9 +6,9 @@ using Looma.Domain.Entities;
 
 namespace Looma.Domain.Search;
 
-public static class DocumentSearchSpec
+public class DocumentSearchSpec : ISearchSpec<Document>
 {
-    public static IEnumerable<Document> Apply(IEnumerable<Document> source, string? query)
+    public IEnumerable<Document> Apply(IEnumerable<Document> source, string? query)
     {
         if (string.IsNullOrWhiteSpace(query))
             return source;

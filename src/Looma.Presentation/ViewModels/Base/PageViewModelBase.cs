@@ -8,8 +8,11 @@ namespace Looma.Presentation.ViewModels.Base;
 
 public abstract partial class PageViewModelBase : ViewModelBase
 {
-    [ObservableProperty] private bool _isBusy;
-    [ObservableProperty] private string _title = string.Empty;
+    [ObservableProperty]
+    public partial bool IsBusy { get; set; }
+
+    [ObservableProperty]
+    public partial string Title { get; set; } = string.Empty;
 
     /// <summary>Appelé à chaque fois que la page devient active.</summary>
     public virtual void OnNavigatedTo()

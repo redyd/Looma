@@ -3,12 +3,13 @@
     This file is part of Looma, licensed under the AGPL-3.0.
     See LICENSE in the project root for full license text.
 -->
-
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Documents"
-             x:Class="Looma.Views.Views.Sections.Documents.DocumentsListView"
-             x:DataType="vm:DocumentsListViewModel">
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Documents"
+    x:Class="Looma.Views.Views.Sections.Documents.DocumentsListView"
+    x:DataType="vm:DocumentsListViewModel"
+>
 
     <DockPanel Margin="32">
 
@@ -18,87 +19,118 @@
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="1"
-                     Classes="form-input"
-                     Text="{Binding SearchQuery}"
-                     PlaceholderText="Rechercher par nom ou identifiant..."
-                     VerticalContentAlignment="Center" />
+            <TextBox
+                Grid.Column="1"
+                Classes="form-input"
+                Text="{Binding SearchQuery}"
+                PlaceholderText="Rechercher par nom ou identifiant..."
+                VerticalContentAlignment="Center"
+            />
         </Grid>
 
-        <DockPanel DockPanel.Dock="Top"
-                   Margin="0 0 0 20"
-                   HorizontalSpacing="20">
-            <TextBlock Text="Mes documents"
-                       Classes="page-title"
-                       VerticalAlignment="Center" />
+        <DockPanel
+            DockPanel.Dock="Top"
+            Margin="0 0 0 20"
+            HorizontalSpacing="20"
+        >
+            <TextBlock
+                Text="Mes documents"
+                Classes="page-title"
+                VerticalAlignment="Center"
+            />
         </DockPanel>
 
-        <Border DockPanel.Dock="Bottom"
-                Margin="0 16 0 0"
-                Padding="16 10"
-                CornerRadius="8"
-                Background="{StaticResource BackgroundCardBrush}"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="1">
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Spacing="12">
-                <Button Content="←"
-                        Command="{Binding PreviousPageCommand}"
-                        Classes="form-cancel"
-                        Width="36"
-                        Height="36"
-                        Padding="0" />
-                <TextBlock Text="{Binding PageInfo}"
-                           VerticalAlignment="Center"
-                           FontSize="14" />
-                <Button Content="→"
-                        Command="{Binding NextPageCommand}"
-                        Classes="form-cancel"
-                        Width="36"
-                        Height="36"
-                        Padding="0" />
+        <Border
+            DockPanel.Dock="Bottom"
+            Margin="0 16 0 0"
+            Padding="16 10"
+            CornerRadius="8"
+            Background="{StaticResource BackgroundCardBrush}"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+        >
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Spacing="12"
+            >
+                <Button
+                    Content="←"
+                    Command="{Binding PreviousPageCommand}"
+                    Classes="form-cancel"
+                    Width="36"
+                    Height="36"
+                    Padding="0"
+                />
+                <TextBlock
+                    Text="{Binding PageInfo}"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                />
+                <Button
+                    Content="→"
+                    Command="{Binding NextPageCommand}"
+                    Classes="form-cancel"
+                    Width="36"
+                    Height="36"
+                    Padding="0"
+                />
             </StackPanel>
         </Border>
 
         <ScrollViewer>
             <StackPanel Spacing="0">
-                <Border Padding="12 10"
-                        Background="{StaticResource BackgroundCardBrush}"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8 8 0 0">
-                    <Grid ColumnDefinitions="1.4*,110,100,190,400" ColumnSpacing="14">
-                        <TextBlock Text="Nom"
-                                   FontSize="12"
-                                   FontWeight="SemiBold"
-                                   Opacity="0.55"
-                                   VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="1"
-                                   Text="Type"
-                                   FontSize="12"
-                                   FontWeight="SemiBold"
-                                   Opacity="0.55"
-                                   VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="2"
-                                   Text="Taille"
-                                   FontSize="12"
-                                   FontWeight="SemiBold"
-                                   Opacity="0.55"
-                                   VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="3"
-                                   Text="Origine"
-                                   FontSize="12"
-                                   FontWeight="SemiBold"
-                                   Opacity="0.55"
-                                   VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="4"
-                                   Text="Actions"
-                                   FontSize="12"
-                                   FontWeight="SemiBold"
-                                   Opacity="0.55"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center" />
+                <Border
+                    Padding="12 10"
+                    Background="{StaticResource BackgroundCardBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8 8 0 0"
+                >
+                    <Grid
+                        ColumnDefinitions="1.4*,110,100,190,400"
+                        ColumnSpacing="14"
+                    >
+                        <TextBlock
+                            Text="Nom"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Opacity="0.55"
+                            VerticalAlignment="Center"
+                        />
+                        <TextBlock
+                            Grid.Column="1"
+                            Text="Type"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Opacity="0.55"
+                            VerticalAlignment="Center"
+                        />
+                        <TextBlock
+                            Grid.Column="2"
+                            Text="Taille"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Opacity="0.55"
+                            VerticalAlignment="Center"
+                        />
+                        <TextBlock
+                            Grid.Column="3"
+                            Text="Origine"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Opacity="0.55"
+                            VerticalAlignment="Center"
+                        />
+                        <TextBlock
+                            Grid.Column="4"
+                            Text="Actions"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Opacity="0.55"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                        />
                     </Grid>
                 </Border>
 
@@ -110,68 +142,92 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:DocumentSummaryViewModel">
-                            <Border Padding="12 10"
-                                    Background="{StaticResource BackgroundCardBrush}"
-                                    BorderBrush="{StaticResource BorderBrush}"
-                                    BorderThickness="1 0 1 1">
-                                <Grid ColumnDefinitions="1.4*,110,100,190,400" ColumnSpacing="14">
-                                    <StackPanel Spacing="4" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Document.Nickname}"
-                                                   FontSize="15"
-                                                   FontWeight="SemiBold"
-                                                   TextTrimming="CharacterEllipsis" />
+                            <Border
+                                Padding="12 10"
+                                Background="{StaticResource BackgroundCardBrush}"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1 0 1 1"
+                            >
+                                <Grid
+                                    ColumnDefinitions="1.4*,110,100,190,400"
+                                    ColumnSpacing="14"
+                                >
+                                    <StackPanel
+                                        Spacing="4"
+                                        VerticalAlignment="Center"
+                                    >
+                                        <TextBlock
+                                            Text="{Binding Document.Nickname}"
+                                            FontSize="15"
+                                            FontWeight="SemiBold"
+                                            TextTrimming="CharacterEllipsis"
+                                        />
                                     </StackPanel>
-                                    <TextBlock Grid.Column="1"
-                                               Text="{Binding TypeDisplay}"
-                                               VerticalAlignment="Center"
-                                               FontSize="13"
-                                               Opacity="0.8"
-                                               TextAlignment="Left" />
-                                    <TextBlock Grid.Column="2"
-                                               Text="{Binding SizeDisplay}"
-                                               VerticalAlignment="Center"
-                                               FontSize="13"
-                                               Opacity="0.7"
-                                               TextAlignment="Left" />
-                                    <StackPanel Grid.Column="3"
-                                                Spacing="3"
-                                                VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding OriginTypeDisplay}"
-                                                   FontSize="12"
-                                                   Opacity="0.55"
-                                                   IsVisible="{Binding HasOrigin}" />
-                                        <TextBlock Text="{Binding OriginNameDisplay}"
-                                                   FontSize="13"
-                                                   FontWeight="SemiBold"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   MaxWidth="180"
-                                                   IsVisible="{Binding HasOrigin}" />
-                                        <TextBlock Text="Document libre"
-                                                   Classes="form-hint"
-                                                   IsVisible="{Binding !HasOrigin}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Text="{Binding TypeDisplay}"
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Opacity="0.8"
+                                        TextAlignment="Left"
+                                    />
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        Text="{Binding SizeDisplay}"
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Opacity="0.7"
+                                        TextAlignment="Left"
+                                    />
+                                    <StackPanel
+                                        Grid.Column="3"
+                                        Spacing="3"
+                                        VerticalAlignment="Center"
+                                    >
+                                        <TextBlock
+                                            Text="{Binding OriginTypeDisplay}"
+                                            FontSize="12"
+                                            Opacity="0.55"
+                                            IsVisible="{Binding HasOrigin}"
+                                        />
+                                        <TextBlock
+                                            Text="Document libre"
+                                            Classes="form-hint"
+                                            IsVisible="{Binding !HasOrigin}"
+                                        />
                                     </StackPanel>
-                                    <StackPanel Grid.Column="4"
-                                                Orientation="Horizontal"
-                                                Spacing="8"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Left">
-                                        <Button Content="Ouvrir"
-                                                Command="{Binding OpenCommand}"
-                                                Classes="form-cancel"
-                                                MinWidth="80" />
-                                        <Button Content="Voir"
-                                                Command="{Binding OpenOriginCommand}"
-                                                Classes="form-cancel"
-                                                MinWidth="80"
-                                                IsVisible="{Binding HasOrigin}" />
-                                        <Button Content="Modifier"
-                                                Command="{Binding EditCommand}"
-                                                Classes="form-cancel"
-                                                MinWidth="80" />
-                                        <Button Content="Supprimer"
-                                                Command="{Binding DeleteCommand}"
-                                                Classes="btn-danger"
-                                                MinWidth="96" />
+                                    <StackPanel
+                                        Grid.Column="4"
+                                        Orientation="Horizontal"
+                                        Spacing="8"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                    >
+                                        <Button
+                                            Content="Ouvrir"
+                                            Command="{Binding OpenCommand}"
+                                            Classes="form-cancel"
+                                            MinWidth="80"
+                                        />
+                                        <Button
+                                            Content="Voir"
+                                            Command="{Binding OpenOriginCommand}"
+                                            Classes="form-cancel"
+                                            MinWidth="80"
+                                            IsVisible="{Binding HasOrigin}"
+                                        />
+                                        <Button
+                                            Content="Modifier"
+                                            Command="{Binding EditCommand}"
+                                            Classes="form-cancel"
+                                            MinWidth="80"
+                                        />
+                                        <Button
+                                            Content="Supprimer"
+                                            Command="{Binding DeleteCommand}"
+                                            Classes="btn-danger"
+                                            MinWidth="96"
+                                        />
                                     </StackPanel>
                                 </Grid>
                             </Border>

@@ -2,28 +2,23 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
-using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
 
 namespace Looma.Domain.Search;
 
-public static class ProjectSearchSpec
+public class ProjectSearchSpec : ISearchSpec<Project>
 {
-    public static IEnumerable<Project> Apply(IEnumerable<Project> source, string? query, Status? status)
+    public IEnumerable<Project> Apply(IEnumerable<Project> source, string? query)
     {
-        var filtered = status is null
-            ? source
-            : source.Where(project => project.Status == status.Value);
-
         if (string.IsNullOrWhiteSpace(query))
-            return filtered;
+            return source;
 
         var words = query
             .ToLowerInvariant()
             .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-        return filtered.Where(project => words.All(word =>
+        return source.Where(project => words.All(word =>
             project.Name.Contains(word, StringComparison.OrdinalIgnoreCase) ||
             project.Status.GetDisplayName().Contains(word, StringComparison.OrdinalIgnoreCase) ||
             (project.Note?.Contains(word, StringComparison.OrdinalIgnoreCase) ?? false) ||
