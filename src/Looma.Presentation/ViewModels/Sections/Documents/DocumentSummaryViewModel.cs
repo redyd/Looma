@@ -22,10 +22,8 @@ public record DocumentSummaryViewModel(
         Document.ProjectId.HasValue ? "Projet" :
         "Aucune";
 
-    public string OriginNameDisplay =>
-        Document.PatternName ??
-        Document.ProjectName ??
-        "Document libre";
+    public string OriginNameDisplay => // TODO fix here
+    "Document libre";
 
     private static string FormatSize(long bytes)
     {

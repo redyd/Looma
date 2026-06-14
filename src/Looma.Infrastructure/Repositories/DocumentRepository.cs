@@ -224,9 +224,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 SizeBytes = 0,
                 StoragePath = null,
                 PatternId = document.PatternId,
-                PatternName = document.PatternName,
                 ProjectId = document.ProjectId,
-                ProjectName = document.ProjectName
             };
         }
 
@@ -239,9 +237,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             SizeBytes = info.Length,
             StoragePath = filePath,
             PatternId = document.PatternId,
-            PatternName = document.PatternName,
             ProjectId = document.ProjectId,
-            ProjectName = document.ProjectName
         };
     }
 

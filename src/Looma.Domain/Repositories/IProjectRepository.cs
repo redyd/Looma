@@ -14,7 +14,5 @@ public interface IProjectRepository
     Task<ResultT<Project>> GetByIdAsync(int id);
     Task<ResultT<Project>> AddAsync(CreateProjectRequest request);
     Task<ResultT<Project>> UpdateAsync(UpdateProjectRequest request);
-    Task<ResultT<Project>> UpdateWoolUsageAsync(int projectId, int woolId, double stockUsed);
-    Task<ResultT<Project>> AdjustWoolUsageAsync(AdjustProjectWoolUsageRequest request);
     Task<Result> DeleteAsync(int id);
 }

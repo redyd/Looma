@@ -148,88 +148,6 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
     }
 
-    public async Task<ResultT<Project>> UpdateWoolUsageAsync(int projectId, int woolId, double stockUsed)
-    {
-        try
-        {
-            var usage = await context.WoolsForProjects
-                .FirstOrDefaultAsync(w => w.ProjectId == projectId && w.WoolId == woolId);
-            if (usage is null)
-                return ResultT<Project>.NotFound("La laine sélectionnée n'est pas liée à ce projet.");
-
-            usage.StockUsed = Math.Max(0, stockUsed);
-            await context.SaveChangesAsync();
-            return await GetByIdAsync(projectId);
-        }
-        catch (DbUpdateException ex)
-        {
-            return ResultT<Project>.Failure($"Impossible de mettre à jour l'utilisation de laine: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            return ResultT<Project>.Failure($"Impossible de mettre à jour l'utilisation de laine: {ex.Message}");
-        }
-    }
-
-    public async Task<ResultT<Project>> AdjustWoolUsageAsync(AdjustProjectWoolUsageRequest request)
-    {
-        try
-        {
-            if (request.Quantity <= 0)
-                return ResultT<Project>.Failure("La quantité doit être supérieure à zéro.");
-
-            var usage = await context.WoolsForProjects
-                .Include(w => w.WoolEntity)
-                .FirstOrDefaultAsync(w => w.ProjectId == request.ProjectId && w.WoolId == request.WoolId);
-            if (usage is null)
-                return ResultT<Project>.NotFound("La laine sélectionnée n'est pas liée à ce projet.");
-
-            var factor = request.Mode switch
-            {
-                StockAdjustmentMode.ByBall => 0,
-                StockAdjustmentMode.ByWeight => usage.WoolEntity.Weight,
-                StockAdjustmentMode.ByLength => usage.WoolEntity.Length,
-                _ => 0
-            };
-            var delta = ComputeStockQuantity(request.Mode, request.IsAddition, request.Quantity, factor);
-
-            if (!request.IsAddition && Math.Abs(delta) > usage.StockUsed)
-                delta = -usage.StockUsed;
-
-            if (request.IsAddition && request.DeductImmediately && delta > usage.WoolEntity.Stock)
-                return ResultT<Project>.Failure("Le stock disponible est insuffisant.");
-
-            if (!request.IsAddition && request.DeductImmediately)
-            {
-                var restore = Math.Min(Math.Abs(delta), usage.StockAlreadyUsed);
-                usage.WoolEntity.Stock += restore;
-                usage.StockAlreadyUsed -= restore;
-            }
-
-            usage.StockUsed = Math.Max(0, usage.StockUsed + delta);
-
-            if (request.IsAddition && request.DeductImmediately)
-            {
-                usage.WoolEntity.Stock -= delta;
-                usage.StockAlreadyUsed += delta;
-            }
-
-            if (usage.StockAlreadyUsed > usage.StockUsed)
-                usage.StockAlreadyUsed = usage.StockUsed;
-
-            await context.SaveChangesAsync();
-            return await GetByIdAsync(request.ProjectId);
-        }
-        catch (DbUpdateException ex)
-        {
-            return ResultT<Project>.Failure($"Impossible de mettre à jour l'utilisation de laine: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            return ResultT<Project>.Failure($"Impossible de mettre à jour l'utilisation de laine: {ex.Message}");
-        }
-    }
-
     public async Task<Result> DeleteAsync(int id)
     {
         try
@@ -302,18 +220,6 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
         return Result.Ok();
     }
 
-    private static double ComputeStockQuantity(StockAdjustmentMode mode, bool isAddition, double quantity, double factor)
-    {
-        var data = mode switch
-        {
-            StockAdjustmentMode.ByBall => quantity * 1000,
-            StockAdjustmentMode.ByWeight or StockAdjustmentMode.ByLength => quantity / factor * 1000,
-            _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
-        };
-
-        return isAddition ? data : -data;
-    }
-
     private static string? NormalizeOptional(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
@@ -344,9 +250,7 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
                 SizeBytes = 0,
                 StoragePath = null,
                 PatternId = document.PatternId,
-                PatternName = document.PatternName,
                 ProjectId = document.ProjectId,
-                ProjectName = document.ProjectName
             };
         }
 
@@ -359,9 +263,7 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
             SizeBytes = info.Length,
             StoragePath = filePath,
             PatternId = document.PatternId,
-            PatternName = document.PatternName,
             ProjectId = document.ProjectId,
-            ProjectName = document.ProjectName
         };
     }
 }

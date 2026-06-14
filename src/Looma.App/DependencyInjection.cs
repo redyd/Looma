@@ -26,7 +26,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<WoolStockCalculator>();
     }
-    
+
     public static void AddPresentation(this IServiceCollection services)
     {
         // Un NavigationService PAR section (scope isolé)
@@ -99,5 +99,6 @@ public static class DependencyInjection
         services.AddScoped<IPatternRepository, PatternRepository>();
         services.AddScoped<IWoolRepository, WoolRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<IWoolUsageRepository, WoolUsageRepository>();
     }
 }

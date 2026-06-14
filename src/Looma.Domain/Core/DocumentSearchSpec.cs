@@ -18,7 +18,7 @@ public static class DocumentSearchSpec
             .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
         return source.Where(document => words.All(word =>
-            document.Nickname.Contains(word, StringComparison.OrdinalIgnoreCase) ||
-            document.Id.ToString().Contains(word, StringComparison.OrdinalIgnoreCase)));
+            document.Nickname.Contains(word, StringComparison.OrdinalIgnoreCase)
+            || document.Type.Contains(word, StringComparison.OrdinalIgnoreCase)));
     }
 }
