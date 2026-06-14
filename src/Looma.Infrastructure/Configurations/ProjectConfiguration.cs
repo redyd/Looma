@@ -17,6 +17,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<ProjectEntity>
         builder
             .HasOne(p => p.PatternEntity)
             .WithMany(p => p.Projects)
-            .HasForeignKey(p => p.PatternId);
+            .HasForeignKey(p => p.PatternId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

@@ -212,9 +212,6 @@ public partial class ProjectsDetailViewModel(
 
     private async Task UpdateStatusAsync(Status status, DateOnly? beginDate = null, DateOnly? endDate = null)
     {
-        if (Pattern is null)
-            return;
-
         IsBusy = true;
         try
         {
@@ -225,7 +222,7 @@ public partial class ProjectsDetailViewModel(
                 Note,
                 beginDate ?? BeginDate,
                 endDate ?? EndDate,
-                Pattern.Id,
+                Pattern?.Id,
                 Wools.Select(w => w.Usage.Wool.Id).ToList()));
 
             if (result.Failed || result.Value is null)
@@ -271,9 +268,6 @@ public partial class ProjectsDetailViewModel(
     [RelayCommand]
     private void Edit()
     {
-        if (Pattern is null)
-            return;
-
         nav.NavigateTo<ProjectsFormViewModel>(vm => vm.InitEdit(new Project
         {
             ProjectId = ProjectId,

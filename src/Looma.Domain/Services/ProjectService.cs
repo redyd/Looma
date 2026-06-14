@@ -16,7 +16,9 @@ public class ProjectService(IProjectRepository repo, IWoolRepository woolReposit
     {
         var existing = await repo.GetByIdAsync(request.Id);
         if (existing.Failed || existing.Value is null)
-            return existing;
+        {
+            return ResultT<Project>.NotFound("Projet non trouvé.");
+        }
 
         if (request.Status == Status.Finished && existing.Value!.Status != Status.Finished)
         {
@@ -57,5 +59,4 @@ public class ProjectService(IProjectRepository repo, IWoolRepository woolReposit
 
         return Result.Ok();
     }
-}
 }

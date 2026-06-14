@@ -97,8 +97,8 @@ public class WoolUsageRepository(LoomaDbContext context) : IWoolUsageRepository
             return Result.NotFound($"No usage found for project {projectId} and wool {woolId}");
         }
 
-        usage.WoolEntity.Stock += stockUsed;
-        usage.StockAlreadyUsed -= stockUsed;
+        usage.WoolEntity.Stock = Math.Max(0, usage.WoolEntity.Stock + stockUsed);
+        usage.StockAlreadyUsed = Math.Max(0, usage.StockAlreadyUsed - stockUsed);
 
         await context.SaveChangesAsync();
         return Result.Ok();

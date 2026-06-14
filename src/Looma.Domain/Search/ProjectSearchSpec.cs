@@ -29,8 +29,8 @@ public static class ProjectSearchSpec
             (project.Note?.Contains(word, StringComparison.OrdinalIgnoreCase) ?? false) ||
             MatchesDate(project.BeginDate, word) ||
             MatchesDate(project.EndDate, word) ||
-            project.Pattern.Name.Contains(word, StringComparison.OrdinalIgnoreCase) ||
-            (project.Pattern.Url?.Contains(word, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (project.Pattern?.Name.Contains(word, StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (project.Pattern?.Url?.Contains(word, StringComparison.OrdinalIgnoreCase) ?? false) ||
             project.Wools.Any(usage => MatchesWool(usage.Wool, word))));
     }
 

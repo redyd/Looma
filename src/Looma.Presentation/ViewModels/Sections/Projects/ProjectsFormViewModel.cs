@@ -248,6 +248,13 @@ public partial class ProjectsFormViewModel(
         ApplyPatternSearch();
     }
 
+    [RelayCommand]
+    private void ClearPattern()
+    {
+        SelectedPattern = null;
+        ApplyPatternSearch();
+    }
+
     private void ToggleWool(Wool wool)
     {
         if (!_selectedWoolIds.Add(wool.Id))
@@ -258,17 +265,11 @@ public partial class ProjectsFormViewModel(
     }
 
     private bool CanSave() =>
-        !string.IsNullOrWhiteSpace(Name) && SelectedPattern is not null;
+        !string.IsNullOrWhiteSpace(Name);
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()
     {
-        if (SelectedPattern is null)
-        {
-            ErrorMessage = "Sélectionnez un patron.";
-            return;
-        }
-
         ErrorMessage = null;
         IsBusy = true;
         try
@@ -282,7 +283,7 @@ public partial class ProjectsFormViewModel(
                     Note,
                     BeginDate.ToDateOnly(),
                     EndDate.ToDateOnly(),
-                    SelectedPattern.Id,
+                    SelectedPattern?.Id,
                     woolIds))
                 : await projectRepo.AddAsync(new CreateProjectRequest(
                     Name,
@@ -290,7 +291,7 @@ public partial class ProjectsFormViewModel(
                     Note,
                     BeginDate.ToDateOnly(),
                     EndDate.ToDateOnly(),
-                    SelectedPattern.Id,
+                    SelectedPattern?.Id,
                     woolIds));
 
             if (result.Failed || result.Value is null)

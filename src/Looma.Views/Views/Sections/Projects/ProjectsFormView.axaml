@@ -23,7 +23,7 @@
                     <StackPanel Classes="form-header">
                         <TextBlock Classes="form-title" Text="{Binding Title}" />
                         <TextBlock Classes="form-subtitle"
-                                   Text="Renseignez le projet, choisissez le patron et les laines associées." />
+                                   Text="Renseignez le projet, le patron optionnel et les laines associées." />
                     </StackPanel>
 
                     <Border Classes="form-section">
@@ -178,10 +178,7 @@
                             <TextBlock Classes="section-title" Text="Patron" />
                             <Grid ColumnDefinitions="*,16,220">
                                 <StackPanel Grid.Column="0" Classes="form-field">
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Rechercher un patron" />
-                                        <TextBlock Classes="field-required" Text="*" />
-                                    </StackPanel>
+                                    <TextBlock Classes="form-label" Text="Rechercher un patron" />
                                     <TextBox Classes="form-input"
                                              Text="{Binding PatternSearchQuery}"
                                              PlaceholderText="Nom, type, url ou note du patron..." />
@@ -203,7 +200,16 @@
                             </Grid>
 
                             <StackPanel Spacing="6" IsVisible="{Binding HasSelectedPattern}">
-                                <TextBlock Classes="form-label" Text="Patron sélectionné" />
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0"
+                                               Classes="form-label"
+                                               Text="Patron sélectionné" />
+                                    <Button Grid.Column="1"
+                                            Content="Retirer"
+                                            Command="{Binding ClearPatternCommand}"
+                                            Classes="form-cancel"
+                                            Padding="10 4" />
+                                </Grid>
                                 <ItemsControl ItemsSource="{Binding SelectedPatterns}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:ProjectSelectablePatternViewModel">

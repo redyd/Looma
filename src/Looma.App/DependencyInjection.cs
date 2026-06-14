@@ -26,6 +26,7 @@ public static class DependencyInjection
     {
         services.AddScoped<WoolStockCalculator>();
         services.AddScoped<WoolStockService>();
+        services.AddScoped<ProjectService>();
     }
 
     public static void AddPresentation(this IServiceCollection services)
@@ -33,8 +34,6 @@ public static class DependencyInjection
         // Un NavigationService PAR section (scope isolé)
         services.AddTransient<INavigationService, NavigationService>();
         services.AddSingleton<INotificationService, NotificationService>();
-
-        // ViewModels — Transient pour être réinstanciés à chaque navigation
 
         // PROJECTS
         services.AddTransient<ProjectsListViewModel>();

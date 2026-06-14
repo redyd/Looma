@@ -16,8 +16,8 @@ public class ProjectEntity
     public string? Image { get; set; }
     public Status Status { get; set; }
 
-    public int PatternId { get; set; }
-    public PatternEntity PatternEntity { get; set; } = null!;
+    public int? PatternId { get; set; }
+    public PatternEntity? PatternEntity { get; set; }
 
     public ICollection<WoolsForProjectEntity> WoolsForProjects { get; set; } = [];
     public ICollection<DocumentEntity> Files { get; set; } = [];

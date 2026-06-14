@@ -64,7 +64,7 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
             if (string.IsNullOrWhiteSpace(name))
                 return ResultT<Project>.Failure("Le nom du projet est invalide.");
 
-            if (!await context.Patterns.AnyAsync(p => p.PatternId == request.PatternId))
+            if (request.PatternId.HasValue && !await context.Patterns.AnyAsync(p => p.PatternId == request.PatternId.Value))
                 return ResultT<Project>.NotFound($"Le patron {request.PatternId} est introuvable.");
 
             var woolIds = request.WoolIds.Distinct().ToList();
@@ -111,7 +111,7 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
             if (string.IsNullOrWhiteSpace(name))
                 return ResultT<Project>.Failure("Le nom du projet est invalide.");
 
-            if (!await context.Patterns.AnyAsync(p => p.PatternId == request.PatternId))
+            if (request.PatternId.HasValue && !await context.Patterns.AnyAsync(p => p.PatternId == request.PatternId.Value))
                 return ResultT<Project>.NotFound($"Le patron {request.PatternId} est introuvable.");
 
             var woolIds = request.WoolIds.Distinct().ToList();
@@ -164,7 +164,7 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
     private static IQueryable<ProjectEntity> IncludeDetails(IQueryable<ProjectEntity> query) =>
         query
             .Include(p => p.PatternEntity)
-            .ThenInclude(p => p.Documents)
+            .ThenInclude(p => p!.Documents)
             .Include(p => p.Files)
             .Include(p => p.WoolsForProjects)
             .ThenInclude(w => w.WoolEntity);
