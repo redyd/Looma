@@ -4,26 +4,25 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Looma.Domain.Core;
 using Looma.Presentation.Services;
 
-namespace Looma.Presentation.ViewModels.Sections.Patterns;
+namespace Looma.Presentation.Shared;
 
-public partial class PatternDocumentDraftViewModel(
-    IDocumentFilePicker filePicker,
-    Action<PatternDocumentDraftViewModel>? removeRequested = null)
+public partial class DocumentDraftViewModel(IDocumentFilePicker filePicker, DocumentPickerMode mode, Action<DocumentDraftViewModel>? removeRequested = null)
     : ObservableObject
 {
     [ObservableProperty]
-    private string? _sourcePath;
+    public partial string? SourcePath { get; set; }
 
     [ObservableProperty]
-    private string _nickname = string.Empty;
+    public partial string Nickname { get; set; } = string.Empty;
 
-    public string SelectedFileName =>
-        string.IsNullOrWhiteSpace(SourcePath) ? "Aucun fichier sélectionné" : Path.GetFileName(SourcePath);
+    public string SelectedFileName
+        => string.IsNullOrWhiteSpace(SourcePath) ? "Aucun fichier sélectionné" : Path.GetFileName(SourcePath);
 
-    public string SelectedFileDirectory =>
-        string.IsNullOrWhiteSpace(SourcePath) ? string.Empty : Path.GetDirectoryName(SourcePath) ?? string.Empty;
+    public string SelectedFileDirectory
+        => string.IsNullOrWhiteSpace(SourcePath) ? string.Empty : Path.GetDirectoryName(SourcePath) ?? string.Empty;
 
     partial void OnSourcePathChanged(string? value)
     {
@@ -34,7 +33,7 @@ public partial class PatternDocumentDraftViewModel(
     [RelayCommand]
     private async Task BrowseFileAsync()
     {
-        var path = await filePicker.PickDocumentAsync();
+        var path = await filePicker.PickAsync(mode);
         if (string.IsNullOrWhiteSpace(path))
             return;
 

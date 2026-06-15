@@ -17,6 +17,7 @@ using Looma.Presentation.ViewModels.Sections.Projects;
 using Looma.Presentation.ViewModels.Sections.Documents;
 using Looma.Presentation.ViewModels.Sections.Patterns;
 using Microsoft.Extensions.DependencyInjection;
+using Looma.Presentation.ViewModels.Shared;
 
 namespace Looma.App;
 
@@ -54,7 +55,7 @@ public static class DependencyInjection
         services.AddTransient<DocumentsFormViewModel>();
         services.AddTransient<DocumentsListViewModel>();
 
-        services.AddSingleton<IDataRefreshService, DataRefreshService>();
+        services.AddTransient<DocumentsPickerFormViewModel>();
 
         services.AddSingleton<MainViewModel>(sp =>
         {

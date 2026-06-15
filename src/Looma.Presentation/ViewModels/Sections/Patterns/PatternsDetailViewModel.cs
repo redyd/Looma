@@ -12,32 +12,49 @@ using Looma.Domain.Extensions;
 using Looma.Domain.Repositories;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
-using Looma.Presentation.Services;
 using Looma.Presentation.UserControls;
 using Looma.Presentation.ViewModels.Base;
+using Looma.Presentation.ViewModels.Sections.Documents;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
 
-public partial class PatternsDetailViewModel : PageViewModelBase
+public partial class PatternsDetailViewModel(
+    INavigationService nav,
+    IPatternRepository patternRepo,
+    IDocumentRepository documentRepo,
+    INotificationService notifications) : PageViewModelBase
 {
-    private readonly INavigationService _nav;
-    private readonly IPatternRepository _patternRepo;
-    private readonly IDocumentRepository _documentRepo;
-    private readonly INotificationService _notifications;
-    private readonly IDataRefreshService _refresh;
+    private int _patternId;
 
-    [ObservableProperty] private int _patternId;
-    [ObservableProperty] private string _name = string.Empty;
-    [ObservableProperty] private string? _url;
-    [ObservableProperty] private string? _note;
-    [ObservableProperty] private PatternType _type;
-    [ObservableProperty] private bool _isPersonal;
-    [ObservableProperty] private DateOnly? _beginDate;
-    [ObservableProperty] private DateOnly? _endDate;
-    [ObservableProperty] private string? _errorMessage;
+    [ObservableProperty]
+    public partial string Name { get; set; } = string.Empty;
 
-    [ObservableProperty] private ObservableCollection<PatternDocumentViewModel> _documents = [];
-    [ObservableProperty] private ObservableCollection<PatternProjectViewModel> _projects = [];
+    [ObservableProperty]
+    public partial string? Url { get; set; }
+
+    [ObservableProperty]
+    public partial string? Note { get; set; }
+
+    [ObservableProperty]
+    public partial PatternType Type { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsPersonal { get; set; }
+
+    [ObservableProperty]
+    public partial DateOnly? BeginDate { get; set; }
+
+    [ObservableProperty]
+    public partial DateOnly? EndDate { get; set; }
+
+    [ObservableProperty]
+    public partial string? ErrorMessage { get; set; }
+
+    [ObservableProperty]
+    public partial ObservableCollection<DocumentSummaryViewModel> Documents { get; set; } = [];
+
+    [ObservableProperty]
+    public partial ObservableCollection<PatternProject> Projects { get; set; } = [];
 
     public bool HasUrl => !string.IsNullOrWhiteSpace(Url);
     public bool HasDocuments => Documents.Count > 0;
@@ -46,7 +63,6 @@ public partial class PatternsDetailViewModel : PageViewModelBase
 
     public IList<StatItem> DetailStats =>
     [
-        // new() { Label = "Pelottes estimée", Value = "-1", Unit = "x"},
         new() { Label = "Nombre de projets lié", Value = Projects.Count.ToString("N0"), Unit = "x", IsFirst = true },
     ];
 
@@ -56,30 +72,16 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         new() { Label = "Lien", Value = Url ?? "Aucun" },
         new() { Label = "Type", Value = Type.GetDisplayName() },
         new() { Label = "Patron", Value = IsPersonal ? "Personnel" : "Non personnel" },
-        new() { Label = "Début", Value = FormatDate(BeginDate) },
-        new() { Label = "Fin", Value = FormatDate(EndDate) },
+        new() { Label = "Début", Value = BeginDate.FormatWithDefault("Aucune") },
+        new() { Label = "Fin", Value = EndDate.FormatWithDefault("Aucune") },
         new() { Label = "Documents", Value = Documents.Count.ToString("N0") },
     ];
 
-    public PatternsDetailViewModel(
-        INavigationService nav,
-        IPatternRepository patternRepo,
-        IDocumentRepository documentRepo,
-        INotificationService notifications,
-        IDataRefreshService refresh)
-    {
-        _nav = nav;
-        _patternRepo = patternRepo;
-        _documentRepo = documentRepo;
-        _notifications = notifications;
-        _refresh = refresh;
-        Title = "Détail patron";
-        _refresh.PatternsRefreshRequested += OnPatternsRefreshRequested;
-    }
-
     public void Load(Pattern pattern)
     {
-        PatternId = pattern.Id;
+        Title = "Détail patron";
+        _patternId = pattern.Id;
+
         ApplyPattern(pattern);
     }
 
@@ -90,20 +92,17 @@ public partial class PatternsDetailViewModel : PageViewModelBase
 
     private async Task RefreshAsync()
     {
-        if (PatternId == 0)
-            return;
+        if (_patternId == 0) return;
 
-        var pattern = await _patternRepo.GetByIdAsync(PatternId);
+        var pattern = await patternRepo.GetByIdAsync(_patternId);
         if (pattern.Failed || pattern.Value is null)
         {
-            ErrorMessage = pattern.Error ?? $"Le patron {PatternId} est introuvable.";
+            ErrorMessage = pattern.Error ?? $"Le patron {_patternId} est introuvable.";
             return;
         }
 
         ApplyPattern(pattern.Value);
     }
-
-    private void OnPatternsRefreshRequested(object? sender, EventArgs e) => _ = RefreshAsync();
 
     private void ApplyPattern(Pattern pattern)
     {
@@ -116,13 +115,12 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         BeginDate = pattern.BeginDate;
         EndDate = pattern.EndDate;
 
-        Documents = new ObservableCollection<PatternDocumentViewModel>(
-            pattern.Documents.Select(d => new PatternDocumentViewModel(
+        Documents = new ObservableCollection<DocumentSummaryViewModel>(
+            pattern.Documents.Select(d => new DocumentSummaryViewModel(
                 d,
                 new AsyncRelayCommand(() => OpenDocumentAsync(d.Id)))));
 
-        Projects = new ObservableCollection<PatternProjectViewModel>(
-            pattern.Projects.Select(p => new PatternProjectViewModel(p)));
+        Projects = new ObservableCollection<PatternProject>(pattern.Projects);
 
         OnPropertyChanged(nameof(HasUrl));
         OnPropertyChanged(nameof(HasDocuments));
@@ -131,14 +129,11 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         OnPropertyChanged(nameof(DetailInfos));
     }
 
-    private static string FormatDate(DateOnly? value) =>
-        value is null ? "Aucune" : value.Value.ToString("dd/MM/yyyy");
-
     private async Task OpenDocumentAsync(Guid id)
     {
-        var result = await _documentRepo.OpenAsync(id);
+        var result = await documentRepo.OpenAsync(id);
         if (result.Failed)
-            _notifications.Error(result.Error ?? "Impossible d'ouvrir le document.");
+            notifications.Error(result.Error ?? "Impossible d'ouvrir le document.");
     }
 
     [RelayCommand]
@@ -156,14 +151,14 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         }
         catch (Exception ex)
         {
-            _notifications.Error($"Impossible d'ouvrir le lien: {ex.Message}");
+            notifications.Error($"Impossible d'ouvrir le lien: {ex.Message}");
         }
     }
 
     [RelayCommand]
     private void Edit() =>
-        _nav.NavigateTo<PatternsFormViewModel>(vm =>
-            vm.InitEdit(PatternId, Name, Url, Note, Type, IsPersonal, BeginDate, EndDate,
+        nav.NavigateTo<PatternsFormViewModel>(vm =>
+            vm.InitEdit(_patternId, Name, Url, Note, Type, IsPersonal, BeginDate, EndDate,
                 Documents.Select(d => d.Document.Id).ToList()));
 
     [RelayCommand]
@@ -172,16 +167,16 @@ public partial class PatternsDetailViewModel : PageViewModelBase
         IsBusy = true;
         try
         {
-            var result = await _patternRepo.DeleteAsync(PatternId);
+            var result = await patternRepo.DeleteAsync(_patternId);
             if (result.Failed)
             {
                 ErrorMessage = result.Error;
-                _notifications.Error(result.Error ?? "Impossible de supprimer le patron.");
+                notifications.Error(result.Error ?? "Impossible de supprimer le patron.");
                 return;
             }
 
-            _notifications.Success("Le patron a été supprimé.");
-            _nav.GoBack();
+            notifications.Success("Le patron a été supprimé.");
+            nav.GoBack();
         }
         finally
         {
@@ -190,5 +185,5 @@ public partial class PatternsDetailViewModel : PageViewModelBase
     }
 
     [RelayCommand]
-    private void GoBack() => _nav.GoBack();
+    private void GoBack() => nav.GoBack();
 }

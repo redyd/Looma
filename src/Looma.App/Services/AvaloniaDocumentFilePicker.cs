@@ -9,28 +9,24 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Looma.Presentation.Services;
+using Looma.Domain.Core;
+using System;
 
 namespace Looma.App.Services;
 
 public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
 {
-    public Task<string?> PickDocumentAsync() =>
-        PickFileAsync("Sélectionner un document", false,
-        [
-            new FilePickerFileType("Tous les fichiers")
-            {
-                Patterns = ["*"]
-            }
-        ]);
-
-    public Task<string?> PickImageAsync() =>
-        PickFileAsync("Sélectionner une image", false, ImageFileTypes);
-
-    public async Task<IReadOnlyList<string>> PickImagesAsync()
+    public Task<string?> PickAsync(DocumentPickerMode mode) => mode switch
     {
-        var paths = await PickFilesAsync("Sélectionner des images", true, ImageFileTypes);
-        return paths;
-    }
+        DocumentPickerMode.Images => PickFileAsync("Sélectionner une image", false, ImageFileTypes),
+        DocumentPickerMode.Files or DocumentPickerMode.All => PickFileAsync("Sélectionner un document", false, AllFileTypes),
+        _ => throw new ArgumentOutOfRangeException(nameof(mode))
+    };
+
+    private static IReadOnlyList<FilePickerFileType> AllFileTypes =>
+    [
+        new FilePickerFileType("Tous les fichiers") { Patterns = ["*"] }
+    ];
 
     private static IReadOnlyList<FilePickerFileType> ImageFileTypes =>
     [
@@ -73,10 +69,9 @@ public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
             FileTypeFilter = fileTypes
         });
 
-        return files
+        return [.. files
             .Select(file => file.TryGetLocalPath())
             .Where(path => !string.IsNullOrWhiteSpace(path))
-            .Select(path => path!)
-            .ToList();
+            .Select(path => path!)];
     }
 }

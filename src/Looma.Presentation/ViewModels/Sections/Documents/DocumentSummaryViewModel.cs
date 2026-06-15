@@ -11,17 +11,16 @@ namespace Looma.Presentation.ViewModels.Sections.Documents;
 public record DocumentSummaryViewModel(
     Document Document,
     ICommand OpenCommand,
-    ICommand OpenOriginCommand,
-    ICommand EditCommand,
-    ICommand DeleteCommand)
+    ICommand? OpenOriginCommand = null,
+    ICommand? EditCommand = null,
+    ICommand? DeleteCommand = null)
 {
-
     public string TypeDisplay => Document.Type;
     public string SizeDisplay => Document.SizeBytes.ToBytesDisplay();
     public bool HasOrigin => Document.PatternId.HasValue || Document.ProjectId.HasValue;
+
     public string OriginTypeDisplay =>
         Document.PatternId.HasValue ? "Patron" :
         Document.ProjectId.HasValue ? "Projet" :
         "Aucune";
-
 }

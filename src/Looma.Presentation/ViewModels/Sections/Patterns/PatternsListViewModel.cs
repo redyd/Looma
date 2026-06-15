@@ -10,7 +10,6 @@ using Looma.Domain.Repositories;
 using Looma.Domain.Search;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
-using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
@@ -20,7 +19,6 @@ public partial class PatternsListViewModel : PageViewModelBase
     private readonly INavigationService _nav;
     private readonly IPatternRepository _repo;
     private readonly INotificationService _notifications;
-    private readonly IDataRefreshService _refresh;
 
     private IReadOnlyList<Pattern> _allPatterns = [];
     private IReadOnlyList<PatternSummaryViewModel> _allSummaries = [];
@@ -39,22 +37,17 @@ public partial class PatternsListViewModel : PageViewModelBase
     public PatternsListViewModel(
         INavigationService nav,
         IPatternRepository repo,
-        INotificationService notifications,
-        IDataRefreshService refresh)
+        INotificationService notifications)
     {
         _nav = nav;
         _repo = repo;
         _notifications = notifications;
-        _refresh = refresh;
         Title = "Mes patrons";
-        _refresh.PatternsRefreshRequested += OnPatternsRefreshRequested;
     }
 
     public override async void OnNavigatedTo() => await LoadAsync();
 
     public Task RefreshAsync() => LoadAsync();
-
-    private void OnPatternsRefreshRequested(object? sender, EventArgs e) => _ = RefreshAsync();
 
     private async Task LoadAsync()
     {

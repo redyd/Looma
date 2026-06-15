@@ -11,4 +11,7 @@ public static class DateExtensions
 
     public static DateTimeOffset? ToDateTimeOffset(this DateOnly? value) =>
         value is null ? null : new DateTimeOffset(value.Value.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
+
+    public static string FormatWithDefault(this DateOnly? value, string defaultValue) =>
+        value is null ? defaultValue : value.Value.ToString("dd/MM/yyyy");
 }
