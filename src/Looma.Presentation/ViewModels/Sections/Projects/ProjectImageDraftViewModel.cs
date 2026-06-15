@@ -13,10 +13,10 @@ public partial class ProjectImageDraftViewModel(
     : ObservableObject
 {
     [ObservableProperty]
-    private string _sourcePath = sourcePath;
+    public partial string SourcePath { get; set; } = sourcePath;
 
     [ObservableProperty]
-    private string _nickname = Path.GetFileNameWithoutExtension(sourcePath);
+    public partial string Nickname { get; set; } = Path.GetFileNameWithoutExtension(sourcePath);
 
     public string SelectedFileName => Path.GetFileName(SourcePath);
     public string SelectedFileDirectory => Path.GetDirectoryName(SourcePath) ?? string.Empty;

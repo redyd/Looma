@@ -5,7 +5,7 @@ using Looma.Domain.Search;
 
 namespace Looma.Presentation.ViewModels.Base;
 
-public abstract partial class PaginatePageViewModelBase<TEntity, TViewModel, TKey>(int pageSize = 12, ISearchSpec<TEntity> searcher) : PageViewModelBase
+public abstract partial class PaginatePageViewModelBase<TEntity, TViewModel, TKey>(ISearchSpec<TEntity> searcher, int pageSize = 12) : PageViewModelBase
 {
     private IReadOnlyList<TEntity> _allEntities = [];
     private IReadOnlyList<TViewModel> _allSummaries = [];
