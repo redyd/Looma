@@ -22,6 +22,9 @@ public partial class PatternsListViewModel(
 
     private async Task LoadAsync()
     {
+        GetEntityKey = pattern => pattern.Id;
+        GetSummaryKey = summary => summary.Pattern.Id;
+        
         Title = "Mes patrons";
         IsBusy = true;
         try

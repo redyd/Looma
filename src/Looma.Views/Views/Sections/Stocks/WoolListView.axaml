@@ -69,7 +69,7 @@
 
         <!-- Grille de cartes -->
         <ScrollViewer>
-            <ItemsControl ItemsSource="{Binding CurrentPageWools}">
+            <ItemsControl ItemsSource="{Binding CurrentPageEntities}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />

@@ -17,5 +17,4 @@ public class ProjectSummaryViewModel(Project project, ICommand openDetailCommand
     public string BeginDateDisplay => Project.BeginDate.FormatWithDefault("Aucune");
     public string EndDateDisplay => Project.EndDate.FormatWithDefault("Aucune");
     public string WoolCountDisplay => $"{Project.Wools.Count:N0} laine(s)";
-    public string NotePreview => string.IsNullOrWhiteSpace(Project.Note) ? "Aucune note." : Project.Note!;
 }

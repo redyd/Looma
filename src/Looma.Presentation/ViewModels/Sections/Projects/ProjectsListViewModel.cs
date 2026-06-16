@@ -24,19 +24,26 @@ public partial class ProjectsListViewModel(
 {
 
     [ObservableProperty]
-    public partial ProjectStatusFilterViewModel? SelectedPatternTypeFilter { get; set; }
+    public partial ProjectStatusFilterViewModel? SelectedStatusFilter { get; set; }
     
-    public IReadOnlyList<ProjectStatusFilterViewModel> PatternTypeFilters { get; } =
+    public IReadOnlyList<ProjectStatusFilterViewModel> StatusFilters { get; } =
     [
         new("Tous les status", null),
         ..Enum.GetValues<Status>()
             .Select(type => new ProjectStatusFilterViewModel(type.GetDisplayName(), type))
     ];
 
-    public override async void OnNavigatedTo() => await LoadAsync();
+    public override async void OnNavigatedTo()
+    {
+        SelectedStatusFilter = StatusFilters.FirstOrDefault();
+        await LoadAsync();
+    }
 
     public async Task LoadAsync()
     {
+        GetEntityKey = project => project.ProjectId;
+        GetSummaryKey = summary => summary.Project.ProjectId;
+        
         Title = "Projets";
         IsBusy = true;
 
@@ -51,19 +58,24 @@ public partial class ProjectsListViewModel(
             }
 
             var allProjects = result.Value;
-            var allSummaries = allProjects.Select(BuildSummary);
+            var allSummaries = allProjects.Select(BuildSummary).ToList();
 
-            if (SelectedPatternTypeFilter is not null)
-            {
-                allSummaries = allSummaries.Where(s => s.Project.Status == SelectedPatternTypeFilter.Type);
-            }
+            var filtered = SelectedStatusFilter?.Type is { } status
+                ? allSummaries.Where(s => s.Project.Status == status).ToList()
+                : allSummaries;
 
-            ReloadPagesData(allProjects, [.. allSummaries]);
+            ReloadPagesData(allProjects, [.. filtered]);
         }
         finally
         {
             IsBusy = false;
         }
+    }
+    
+    partial void OnSelectedStatusFilterChanged(ProjectStatusFilterViewModel? value)
+    {
+        CurrentPage = 1;
+        _ = LoadAsync();
     }
 
     private ProjectSummaryViewModel BuildSummary(Project project) =>

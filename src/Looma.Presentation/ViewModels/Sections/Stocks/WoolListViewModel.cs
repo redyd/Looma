@@ -26,6 +26,9 @@ public partial class WoolListViewModel(
 
     private async Task LoadAsync()
     {
+        GetEntityKey = wool => wool.Id;
+        GetSummaryKey = summary => summary.Wool.Id;
+        
         IsBusy = true;
         try
         {

@@ -26,7 +26,7 @@
                       SelectedItem="{Binding SelectedStatusFilter}"
                       HorizontalAlignment="Stretch">
                 <ComboBox.ItemTemplate>
-                    <DataTemplate x:DataType="vm:ProjectStatusFilterViewModel">
+                    <DataTemplate x:DataType="projects:ProjectStatusFilterViewModel">
                         <TextBlock Text="{Binding Label}" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
@@ -74,7 +74,7 @@
         </Border>
 
         <ScrollViewer>
-            <ItemsControl ItemsSource="{Binding CurrentPageProjects}">
+            <ItemsControl ItemsSource="{Binding CurrentPageEntities}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -128,17 +128,6 @@
                                                    FontSize="11"
                                                    Opacity="0.65" />
                                     </StackPanel>
-
-                                    <Border Height="1"
-                                            Background="{StaticResource BorderBrush}"
-                                            Opacity="0.5" />
-
-                                    <TextBlock Text="{Binding NotePreview}"
-                                               TextWrapping="Wrap"
-                                               FontSize="13"
-                                               LineHeight="18"
-                                               Opacity="0.85"
-                                               MaxHeight="72" />
                                 </StackPanel>
                             </Border>
                         </Button>
