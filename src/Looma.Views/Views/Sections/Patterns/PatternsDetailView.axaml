@@ -174,29 +174,46 @@
                                         <DataTemplate
                                             x:DataType="patterns:PatternProjectViewModel"
                                         >
-                                            <Border
-                                                Padding="12 10"
-                                                Background="{StaticResource BackgroundCardBrush}"
-                                                BorderBrush="{StaticResource BorderBrush}"
-                                                BorderThickness="1"
+                                            <Button
+                                                Classes="card-button"
+                                                Command="{Binding OpenCommand}"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"
                                             >
-                                                <Grid
-                                                    ColumnDefinitions="*,Auto"
-                                                    ColumnSpacing="16"
+                                                <Border
+                                                    Padding="12 10"
+                                                    Background="{StaticResource BackgroundCardBrush}"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="8"
                                                 >
-                                                    <TextBlock
-                                                        Text="{Binding Name}"
-                                                        FontWeight="SemiBold"
-                                                        VerticalAlignment="Center"
-                                                    />
-                                                    <TextBlock
-                                                        Grid.Column="1"
-                                                        Text="{Binding StatusDisplay}"
-                                                        VerticalAlignment="Center"
-                                                        Opacity="0.75"
-                                                    />
-                                                </Grid>
-                                            </Border>
+                                                    <Border.Styles>
+                                                        <Style Selector="Border:pointerover">
+                                                            <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+                                                            <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+                                                        </Style>
+                                                    </Border.Styles>
+                                                    <Grid
+                                                        ColumnDefinitions="*,Auto"
+                                                        ColumnSpacing="16"
+                                                    >
+                                                        <TextBlock
+                                                            Text="{Binding Name}"
+                                                            FontWeight="SemiBold"
+                                                            VerticalAlignment="Center"
+                                                        />
+                                                        <TextBlock
+                                                            Grid.Column="1"
+                                                            Text="{Binding StatusDisplay}"
+                                                            VerticalAlignment="Center"
+                                                            Opacity="0.75"
+                                                        />
+                                                    </Grid>
+                                                </Border>
+                                            </Button>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>

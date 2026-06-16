@@ -15,6 +15,9 @@ public record PatternSummaryViewModel(
     bool HasUrl,
     ICommand OpenDetailCommand)
 {
+    public bool HasBeginDate => Pattern.BeginDate is not null;
     public string BeginDateDisplay => Pattern.BeginDate.FormatWithDefault("Aucune");
+    public bool HasEndDate => Pattern.EndDate is not null;
     public string EndDateDisplay => Pattern.EndDate.FormatWithDefault("Aucune");
+    public string TypeDisplay => Pattern.Type.GetDisplayName();
 }

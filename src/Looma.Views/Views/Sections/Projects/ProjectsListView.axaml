@@ -186,8 +186,10 @@
                                                         Orientation="Horizontal"
                                                         Spacing="6"
                                                         VerticalAlignment="Center">
-                                                <Border Classes="surface-chip" Padding="8 3">
-                                                    <TextBlock Text="{Binding PatternTypeDisplay, TargetNullValue='Aucun type'}"
+                                                <Border Classes="surface-chip"
+                                                        Padding="8 3"
+                                                        IsVisible="{Binding HasPatternType}">
+                                                    <TextBlock Text="{Binding PatternTypeDisplay}"
                                                                FontSize="11" />
                                                 </Border>
                                                 <Border Classes="surface-chip" Padding="8 3">
@@ -197,9 +199,11 @@
 
                                             <StackPanel Grid.Row="2" Spacing="2">
                                                 <TextBlock Text="{Binding BeginDateDisplay, StringFormat='Début: {0}'}"
+                                                           IsVisible="{Binding HasBeginDate}"
                                                            FontSize="11"
                                                            Opacity="0.65" />
                                                 <TextBlock Text="{Binding EndDateDisplay, StringFormat='Fin: {0}'}"
+                                                           IsVisible="{Binding HasEndDate}"
                                                            FontSize="11"
                                                            Opacity="0.65" />
                                             </StackPanel>

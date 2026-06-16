@@ -68,6 +68,7 @@ public partial class ProjectsDetailViewModel(
     public string PatternName => Pattern?.Name ?? "Aucun patron";
     public string PatternTypeDisplay => Pattern?.Type.GetDisplayName() ?? "-";
     public string PatternNoteDisplay => string.IsNullOrWhiteSpace(Pattern?.Note) ? "Aucune note." : Pattern.Note!;
+    public string PatternActionText => Pattern is null ? "Ajouter" : "Ouvrir";
     public bool HasWools => Wools.Count > 0;
     public bool HasImages => Images.Count > 0;
     public bool HasMultipleImages => Images.Count > 1;
@@ -164,6 +165,7 @@ public partial class ProjectsDetailViewModel(
         OnPropertyChanged(nameof(PatternName));
         OnPropertyChanged(nameof(PatternTypeDisplay));
         OnPropertyChanged(nameof(PatternNoteDisplay));
+        OnPropertyChanged(nameof(PatternActionText));
         OnPropertyChanged(nameof(IsWishlist));
         OnPropertyChanged(nameof(IsInProgress));
         OnPropertyChanged(nameof(IsPaused));
@@ -269,10 +271,13 @@ public partial class ProjectsDetailViewModel(
     [RelayCommand]
     private void OpenPattern()
     {
-        if (Pattern is null)
+        if (Pattern is not null)
+        {
+            nav.NavigateTo<PatternsDetailViewModel>(vm => vm.Load(Pattern));
             return;
+        }
 
-        nav.NavigateTo<PatternsDetailViewModel>(vm => vm.Load(Pattern));
+        Edit();
     }
 
     [RelayCommand]

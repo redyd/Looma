@@ -16,6 +16,7 @@ using Looma.Presentation.Notifications;
 using Looma.Presentation.UserControls;
 using Looma.Presentation.ViewModels.Base;
 using Looma.Presentation.ViewModels.Sections.Documents;
+using Looma.Presentation.ViewModels.Sections.Projects;
 using Looma.Presentation.ViewModels.Shared.Patterns;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
@@ -23,6 +24,7 @@ namespace Looma.Presentation.ViewModels.Sections.Patterns;
 public partial class PatternsDetailViewModel(
     INavigationService nav,
     IPatternService patternService,
+    IProjectService projectService,
     IDocumentService documentService,
     INotificationService notifications,
     IDataRefreshService refreshService) : PageViewModelBase
@@ -72,7 +74,7 @@ public partial class PatternsDetailViewModel(
     public IList<InfoItem> DetailInfos =>
     [
         new() { Label = "Nom", Value = Name },
-        new() { Label = "Lien", Value = Url ?? "Aucun" },
+        new() { Label = "Lien", Value = Url ?? "Aucun", IsLink = HasUrl },
         new() { Label = "Type", Value = Type.GetDisplayName() },
         new() { Label = "Patron", Value = IsPersonal ? "Personnel" : "Non personnel" },
         new() { Label = "Début", Value = BeginDate.FormatWithDefault("Aucune") },
@@ -127,7 +129,8 @@ public partial class PatternsDetailViewModel(
         Projects = new ObservableCollection<PatternProjectViewModel>(pattern.Projects.Select(p => new PatternProjectViewModel
         {
             Name = p.Name,
-            StatusDisplay = p.Status.GetDisplayName()
+            StatusDisplay = p.Status.GetDisplayName(),
+            OpenCommand = new AsyncRelayCommand(() => OpenProjectAsync(p.Id))
         }));
 
         OnPropertyChanged(nameof(HasUrl));
@@ -142,6 +145,18 @@ public partial class PatternsDetailViewModel(
         var result = await documentService.OpenAsync(id);
         if (result.Failed)
             notifications.Error(result.Error ?? "Impossible d'ouvrir le document.");
+    }
+
+    private async Task OpenProjectAsync(int id)
+    {
+        var result = await projectService.GetByIdAsync(id);
+        if (result.Failed || result.Value is null)
+        {
+            notifications.Error(result.Error ?? "Impossible d'ouvrir le projet.");
+            return;
+        }
+
+        nav.NavigateTo<ProjectsDetailViewModel>(vm => vm.Load(result.Value));
     }
 
     [RelayCommand]

@@ -6,10 +6,30 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:core="clr-namespace:Looma.Domain.Core;assembly=Looma.Domain"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
              xmlns:patterns="clr-namespace:Looma.Presentation.ViewModels.Shared.Patterns;assembly=Looma.Presentation"
              x:Class="Looma.Views.Views.Sections.Patterns.PatternsListView"
              x:DataType="vm:PatternsListViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Border.pattern-type-ribbon">
+            <Setter Property="Height" Value="30" />
+            <Setter Property="CornerRadius" Value="12 12 0 0" />
+        </Style>
+
+        <Style Selector="Border.pattern-type-ribbon.type-crochet">
+            <Setter Property="Background" Value="#F9A8D4" />
+        </Style>
+
+        <Style Selector="Border.pattern-type-ribbon.type-tunisian-crochet">
+            <Setter Property="Background" Value="#93C5FD" />
+        </Style>
+
+        <Style Selector="Border.pattern-type-ribbon.type-tricot">
+            <Setter Property="Background" Value="#C4A484" />
+        </Style>
+    </UserControl.Styles>
 
     <DockPanel Margin="32">
 
@@ -82,50 +102,73 @@
                                 BorderThickness="0"
                                 HorizontalAlignment="Left">
                             <Border Width="240"
+                                    Height="176"
                                     Margin="8"
-                                    Padding="16"
+                                    Padding="0"
                                     Classes="surface-card">
                                 <Border.Styles>
-                                    <Style Selector="Border:pointerover">
+                                    <Style Selector="Border.surface-card:pointerover">
                                         <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
                                         <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
                                     </Style>
                                 </Border.Styles>
 
-                                <StackPanel Spacing="10">
-                                    <StackPanel Spacing="4">
-                                        <TextBlock Text="{Binding Pattern.Name}"
-                                                   FontSize="15"
-                                                   FontWeight="SemiBold"
-                                                   TextTrimming="CharacterEllipsis" />
-                                        <TextBlock Text="{Binding Pattern.Url}"
-                                                   IsVisible="{Binding HasUrl}"
+                                <Grid RowDefinitions="Auto,*">
+                                    <Border Grid.Row="0"
+                                            Classes="pattern-type-ribbon"
+                                            Classes.type-crochet="{Binding Pattern.Type, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static core:PatternType.Crochet}}"
+                                            Classes.type-tunisian-crochet="{Binding Pattern.Type, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static core:PatternType.TunisianCrochet}}"
+                                            Classes.type-tricot="{Binding Pattern.Type, Converter={StaticResource EnumToBool}, ConverterParameter={x:Static core:PatternType.Tricot}}">
+                                        <TextBlock Text="{Binding TypeDisplay}"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"
+                                                   Margin="16 0"
                                                    FontSize="12"
-                                                   Opacity="0.6"
-                                                   TextTrimming="CharacterEllipsis" />
-                                    </StackPanel>
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                                    </Border>
 
-                                    <StackPanel Orientation="Horizontal"
-                                                Spacing="6">
-                                        <Border Classes="surface-chip" Padding="8 3">
-                                            <TextBlock Text="{Binding DocumentCount, StringFormat='{}{0} doc(s)'}"
-                                                       FontSize="11" />
-                                        </Border>
-                                        <Border Classes="surface-chip" Padding="8 3">
-                                            <TextBlock Text="{Binding ProjectCount, StringFormat='{}{0} projet(s)'}"
-                                                       FontSize="11" />
-                                        </Border>
-                                    </StackPanel>
+                                    <Grid Grid.Row="1"
+                                          Margin="16"
+                                          RowDefinitions="Auto,*,Auto">
+                                        <StackPanel Grid.Row="0" Spacing="4">
+                                            <TextBlock Text="{Binding Pattern.Name}"
+                                                       FontSize="15"
+                                                       FontWeight="SemiBold"
+                                                       TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding Pattern.Url}"
+                                                       IsVisible="{Binding HasUrl}"
+                                                       FontSize="12"
+                                                       Opacity="0.6"
+                                                       TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
 
-                                    <StackPanel Spacing="2">
-                                        <TextBlock Text="{Binding BeginDateDisplay, StringFormat='Début: {0}'}"
-                                                   FontSize="11"
-                                                   Opacity="0.65" />
-                                        <TextBlock Text="{Binding EndDateDisplay, StringFormat='Fin: {0}'}"
-                                                   FontSize="11"
-                                                   Opacity="0.65" />
-                                    </StackPanel>
-                                </StackPanel>
+                                        <StackPanel Grid.Row="1"
+                                                    Orientation="Horizontal"
+                                                    Spacing="6"
+                                                    VerticalAlignment="Center">
+                                            <Border Classes="surface-chip" Padding="8 3">
+                                                <TextBlock Text="{Binding DocumentCount, StringFormat='{}{0} doc(s)'}"
+                                                           FontSize="11" />
+                                            </Border>
+                                            <Border Classes="surface-chip" Padding="8 3">
+                                                <TextBlock Text="{Binding ProjectCount, StringFormat='{}{0} projet(s)'}"
+                                                           FontSize="11" />
+                                            </Border>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="2" Spacing="2">
+                                            <TextBlock Text="{Binding BeginDateDisplay, StringFormat='Début: {0}'}"
+                                                       IsVisible="{Binding HasBeginDate}"
+                                                       FontSize="11"
+                                                       Opacity="0.65" />
+                                            <TextBlock Text="{Binding EndDateDisplay, StringFormat='Fin: {0}'}"
+                                                       IsVisible="{Binding HasEndDate}"
+                                                       FontSize="11"
+                                                       Opacity="0.65" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
                             </Border>
                         </Button>
                     </DataTemplate>

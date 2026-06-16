@@ -75,7 +75,7 @@
                                        VerticalAlignment="Center"
                                        TextTrimming="CharacterEllipsis" />
                             <TextBlock Grid.Column="4"
-                                       Text="Ouvrir"
+                                       Text="{Binding PatternActionText}"
                                        FontSize="13"
                                        FontWeight="SemiBold"
                                        Opacity="0.7"

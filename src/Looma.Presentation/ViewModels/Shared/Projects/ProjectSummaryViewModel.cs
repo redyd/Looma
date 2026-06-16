@@ -13,9 +13,12 @@ public class ProjectSummaryViewModel(Project project, ICommand openDetailCommand
     public Project Project { get; } = project;
     public ICommand OpenDetailCommand { get; } = openDetailCommand;
     public string StatusDisplay => Project.Status.GetDisplayName();
+    public bool HasPatternType => Project.Pattern is not null;
     public string? PatternTypeDisplay => Project.Pattern?.Type.GetDisplayName();
     public string PatternName => Project.Pattern?.Name ?? "Aucun patron";
+    public bool HasBeginDate => Project.BeginDate is not null;
     public string BeginDateDisplay => Project.BeginDate.FormatWithDefault("Aucune");
+    public bool HasEndDate => Project.EndDate is not null;
     public string EndDateDisplay => Project.EndDate.FormatWithDefault("Aucune");
     public string WoolCountDisplay => $"{Project.Wools.Count:N0} laine(s)";
 }
