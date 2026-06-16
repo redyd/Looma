@@ -260,8 +260,8 @@ public partial class ProjectsDetailViewModel(
         UpdateStatusAsync(Status.InProgress);
 
     [RelayCommand]
-    private Task FinishProjectAsync() =>
-        UpdateStatusAsync(Status.Finished, BeginDate, DateOnly.FromDateTime(DateTime.Today));
+    private void FinishProject() =>
+        nav.NavigateTo<ProjectsFinishViewModel>(vm => vm.Load(ProjectId));
 
     [RelayCommand]
     private void OpenPattern()

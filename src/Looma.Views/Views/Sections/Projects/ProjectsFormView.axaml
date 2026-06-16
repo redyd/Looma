@@ -335,6 +335,11 @@
                             <StackPanel Spacing="6" IsVisible="{Binding HasSelectedWools}">
                                 <TextBlock Classes="form-label" Text="Laines sélectionnées" />
                                 <ItemsControl ItemsSource="{Binding SelectedWools}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="6" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="projects:ProjectSelectableWoolViewModel">
                                             <Button Command="{Binding ToggleCommand}"

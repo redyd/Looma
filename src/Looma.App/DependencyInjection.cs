@@ -54,6 +54,7 @@ public static class DependencyInjection
         services.AddTransient<ProjectsListViewModel>();
         services.AddTransient<ProjectsFormViewModel>();
         services.AddTransient<ProjectsDetailViewModel>();
+        services.AddTransient<ProjectsFinishViewModel>();
 
         // STOCKS
         services.AddTransient<WoolListViewModel>();
