@@ -103,9 +103,9 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
     public IList<StatItem> DetailStats =>
     [
-        new() { Label = "Pelotes estimées", Value = BatchQuantity.ToString("N1"), Unit = "x", IsFirst = true },
-        new() { Label = "Poids estimé", Value = StockWeight.ToString("N0"), Unit = "g" },
-        new() { Label = "Longueur estimée", Value = StockLength.ToString("N0"), Unit = "m" }
+        new() { Label = "Pelotes", Value = BatchQuantity.ToString("N1"), Unit = "x", IsFirst = true },
+        new() { Label = "Poids", Value = StockWeight.ToString("N0"), Unit = "g" },
+        new() { Label = "Longueur", Value = StockLength.ToString("N0"), Unit = "m" }
     ];
 
     public IList<InfoItem> DetailInfos =>

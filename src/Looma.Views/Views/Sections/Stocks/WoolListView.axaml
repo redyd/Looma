@@ -188,7 +188,8 @@
                                                     Background="{StaticResource BackgroundBrush}"
                                                     BorderBrush="{StaticResource BorderBrush}"
                                                     BorderThickness="1">
-                                                <TextBlock Text="{Binding Wool.BatchQuantity, StringFormat='{}≃ {0:0} pelotes'}" FontSize="11" />
+                                                <TextBlock Text="{Binding Wool.BatchQuantityDisplay}"
+                                                           FontSize="11" />
                                             </Border>
                                         </StackPanel>
 
