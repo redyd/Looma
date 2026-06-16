@@ -18,7 +18,7 @@ public partial class ProjectWoolUsageViewModel(WoolUsage usage, ICommand addComm
 
     public string Name => Usage.Wool.Name;
     public string Brand => Usage.Wool.Brand;
-    public string Color => Usage.Wool.Color;
+    public List<string> Colors => Usage.Wool.Colors;
     public string AvailableDisplay => FormatStock(Usage.RemainingStock);
     public string UsedDisplay => FormatStock(Usage.StockUsed);
     public string AlreadyDeductedDisplay => FormatStock(Usage.StockAlreadyUsed);

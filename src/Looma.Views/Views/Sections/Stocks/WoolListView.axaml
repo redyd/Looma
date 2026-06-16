@@ -7,6 +7,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
+             xmlns:userControls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolListView"
              x:DataType="vm:WoolListViewModel">
 
@@ -163,8 +164,9 @@
 
                                         <!-- Pastille couleur + nom -->
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <Ellipse Width="16" Height="16" VerticalAlignment="Center"
-                                                     Fill="{Binding Wool.Color, Converter={StaticResource HexToColor}}" />
+                                            <userControls:ColorPieControl Colors="{Binding Wool.Colors}"
+                                                                      Width="16" Height="16"
+                                                                      VerticalAlignment="Center" />
                                             <TextBlock Text="{Binding Wool.Name}"
                                                        FontWeight="SemiBold"
                                                        FontSize="14"
@@ -188,7 +190,8 @@
                                                     Background="{StaticResource BackgroundBrush}"
                                                     BorderBrush="{StaticResource BorderBrush}"
                                                     BorderThickness="1">
-                                                <TextBlock Text="{Binding Wool.BatchQuantity, StringFormat='{}≃ {0:0} pelotes'}" FontSize="11" />
+                                                <TextBlock Text="{Binding Wool.BatchQuantityDisplay}"
+                                                           FontSize="11" />
                                             </Border>
                                         </StackPanel>
 

@@ -7,6 +7,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
+             xmlns:userControls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsFinishView"
              x:DataType="vm:ProjectsFinishViewModel">
 
@@ -86,12 +87,12 @@
                                     <DataTemplate x:DataType="vm:ProjectFinishWoolViewModel">
                                         <Border Classes="surface-panel" Padding="12">
                                             <Grid ColumnDefinitions="Auto,*,190" ColumnSpacing="12">
-                                                <Ellipse Grid.Column="0"
-                                                         Width="14"
-                                                         Height="14"
-                                                         Fill="{Binding Color, Converter={StaticResource HexToColor}}"
-                                                         VerticalAlignment="Top"
-                                                         Margin="0 4 0 0" />
+                                                <userControls:ColorPieControl
+                                                    Grid.Column="0"
+                                                    Colors="{Binding Colors}"
+                                                    Width="16" Height="16"
+                                                    VerticalAlignment="Top"
+                                                    Margin="0 4 0 0" />
 
                                                 <StackPanel Grid.Column="1" Spacing="4">
                                                     <TextBlock Text="{Binding Name}"
@@ -100,12 +101,14 @@
                                                     <TextBlock Text="{Binding Brand}"
                                                                Classes="form-hint"
                                                                TextTrimming="CharacterEllipsis" />
-                                                    <TextBlock Text="{Binding AvailableDisplay, StringFormat='Laine en stock: {0}'}"
-                                                               FontSize="12"
-                                                               Opacity="0.75" />
-                                                    <TextBlock Text="{Binding AlreadyDeductedDisplay, StringFormat='Laine déjà retirée du stock: {0}'}"
-                                                               FontSize="12"
-                                                               Opacity="0.75" />
+                                                    <TextBlock
+                                                        Text="{Binding AvailableDisplay, StringFormat='Laine en stock: {0}'}"
+                                                        FontSize="12"
+                                                        Opacity="0.75" />
+                                                    <TextBlock
+                                                        Text="{Binding AlreadyDeductedDisplay, StringFormat='Laine déjà retirée du stock: {0}'}"
+                                                        FontSize="12"
+                                                        Opacity="0.75" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Column="2" Spacing="6">

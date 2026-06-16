@@ -56,19 +56,35 @@
                 <Grid ColumnDefinitions="*,16,*">
 
                     <StackPanel Grid.Column="0" Spacing="16">
-                        <Border Classes="form-section">
-                            <StackPanel Spacing="12">
+                        <Border Classes="form-section" MinHeight="360">
+                            <Grid RowDefinitions="Auto,12,*,12,Auto">
                                 <TextBlock
+                                    Grid.Row="0"
                                     Classes="section-title"
                                     Text="Note"
                                 />
-                                <TextBlock
-                                    Text="{Binding NoteDisplay}"
+                                <TextBox
+                                    Grid.Row="2"
+                                    Classes="form-input"
+                                    Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    PlaceholderText="Aucune note."
+                                    AcceptsReturn="True"
                                     TextWrapping="Wrap"
-                                    FontSize="14"
-                                    LineHeight="20"
+                                    Height="NaN"
+                                    MinHeight="240"
+                                    Padding="12 10"
+                                    VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Top"
                                 />
-                            </StackPanel>
+                                <Button
+                                    Grid.Row="4"
+                                    Content="Modifier la note"
+                                    Command="{Binding SaveNoteCommand}"
+                                    Classes="form-submit"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                />
+                            </Grid>
                         </Border>
 
                     </StackPanel>

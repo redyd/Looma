@@ -186,6 +186,36 @@ public sealed class PatternsViewModelTests
     }
 
     [Fact]
+    public async Task PatternsDetail_SaveNote_Updates_Pattern_Note()
+    {
+        var patternService = new FakePatternService
+        {
+            UpdateResult = ResultT<Pattern>.Ok(TestData.Pattern(id: 3, note: "Nouvelle note"))
+        };
+        var notifications = new FakeNotificationService();
+        var vm = new PatternsDetailViewModel(
+            new FakeNavigationService(),
+            patternService,
+            new FakeProjectService(),
+            new FakeDocumentService(),
+            notifications,
+            new FakeRefreshService());
+        vm.Load(TestData.Pattern(id: 3, name: "Pull", note: "Ancienne note"));
+        vm.Note = "Nouvelle note";
+
+        await vm.SaveNoteCommand.ExecuteAsync();
+
+        patternService.UpdateRequests.Should().ContainSingle().Which.Should().BeEquivalentTo(new
+        {
+            Id = 3,
+            Name = "Pull",
+            Note = "Nouvelle note"
+        });
+        vm.Note.Should().Be("Nouvelle note");
+        notifications.Calls.Should().Contain(c => c.Severity == NotificationSeverity.Success);
+    }
+
+    [Fact]
     public async Task PatternsDetail_Delete_Success_Notifies_And_Goes_Back()
     {
         var nav = new FakeNavigationService();

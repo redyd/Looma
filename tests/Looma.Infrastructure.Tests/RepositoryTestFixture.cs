@@ -134,14 +134,8 @@ internal sealed class RepositoryTestFixture : IDisposable
         return entity;
     }
 
-    public CreateWoolRequest ValidCreateWoolRequest(
-        string name = "Merino DK",
-        string brand = "Drops",
-        double stock = 1000) =>
-        new(name, brand, "Merino", "Blue", 50, 120, stock, 3, 4);
-
     public UpdateWoolRequest ValidUpdateWoolRequest(int id, string name = "Updated wool") =>
-        new(id, name, "Updated brand", "Cotton", "Red", 100, 240, 4, 5);
+        new(id, name, "Updated brand", "Cotton", ["Red"], 100, 240, 4, 5);
 
     public void Dispose()
     {

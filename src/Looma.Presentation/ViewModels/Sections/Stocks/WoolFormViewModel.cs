@@ -2,6 +2,7 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
+using System.Collections.ObjectModel;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -31,11 +32,7 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public partial string Material { get; set; } = string.Empty;
-
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    public partial Color SelectedColor { get; set; } = Colors.Gray;
-
+    
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public partial string Weight { get; set; } = string.Empty;
@@ -54,9 +51,42 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
 
     [ObservableProperty]
     public partial string? ErrorMessage { get; set; }
+    
+    [ObservableProperty]
+    public partial Color SelectedColor { get; set; } = Colors.Gray;
+
+    [ObservableProperty]
+    public partial ObservableCollection<string> AllColors { get; set; } = [];
+    public bool HasColors => AllColors.Count > 0;
 
     public string SelectedColorHex =>
         $"#{SelectedColor.R:X2}{SelectedColor.G:X2}{SelectedColor.B:X2}";
+
+    partial void OnSelectedColorChanged(Color value) => OnPropertyChanged(nameof(SelectedColorHex));
+    
+    partial void OnAllColorsChanged(ObservableCollection<string> value)
+    {
+        value.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasColors));
+        OnPropertyChanged(nameof(HasColors));
+    }
+    
+    [RelayCommand]
+    private void AddColor()
+    {
+        var hex = SelectedColorHex;
+        if (!AllColors.Contains(hex))
+        {
+            AllColors.Add(hex);
+            OnPropertyChanged(nameof(HasColors));
+        }
+    }
+
+    [RelayCommand]
+    private void RemoveColor(string hex)
+    {
+        AllColors.Remove(hex);
+        OnPropertyChanged(nameof(HasColors));
+    }
 
     public void InitCreate()
     {
@@ -64,6 +94,7 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
         Title = "Nouvelle laine";
         Name = Brand = Material = Weight = Length = NeedleMinText = NeedleMaxText = string.Empty;
         SelectedColor = Colors.Gray;
+        AllColors.Clear();
         ErrorMessage = null;
     }
 
@@ -83,21 +114,22 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
         Material = wool.Material;
         Weight = wool.Weight.ToString("G");
         Length = wool.Length.ToString("G");
+        AllColors.Clear();
+        foreach (var color in wool.Colors)
+            AllColors.Add(color);
         NeedleMinText = wool.NeedleMinSize.ToString("G");
         NeedleMaxText = wool.NeedleMaxSize.ToString("G");
         ErrorMessage = null;
         
         try
         {
-            SelectedColor = Color.Parse(wool.Color);
+            SelectedColor = Colors.Gray;
         }
         catch
         {
             SelectedColor = Colors.Gray;
         }
     }
-
-    partial void OnSelectedColorChanged(Color value) => OnPropertyChanged(nameof(SelectedColorHex));
 
     private bool CanSave() =>
         !string.IsNullOrWhiteSpace(Name) &&
@@ -147,7 +179,7 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
                     Name,
                     Brand,
                     Material,
-                    SelectedColorHex,
+                    AllColors.ToList(),
                     weight,
                     length,
                     needleMin,
@@ -167,7 +199,7 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
                     Name,
                     Brand,
                     Material,
-                    SelectedColorHex,
+                    AllColors.ToList(),
                     weight,
                     length,
                     1000,

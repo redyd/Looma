@@ -24,7 +24,7 @@ public class WoolStockServiceTests
         Name = "Test Wool",
         Brand = "Brand",
         Material = "Wool",
-        Color = "Red",
+        Colors = ["Red"],
         Weight = weight,
         Length = length,
         Stock = stock,

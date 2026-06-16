@@ -19,7 +19,7 @@ public sealed class WoolRepositoryTests
         var repository = new WoolRepository(context);
 
         var result = await repository.AddAsync(new CreateWoolRequest(
-            "  Alpaca  ", "  Drops  ", "  Alpaca  ", "  Green  ", 50, 150, 2500, 3, 4.5));
+            "  Alpaca  ", "  Drops  ", "  Alpaca  ", ["  Green  "], 50, 150, 2500, 3, 4.5));
 
         result.Succeeded.Should().BeTrue(result.Error);
         result.Value.Should().NotBeNull();
@@ -55,7 +55,7 @@ public sealed class WoolRepositoryTests
         var repository = new WoolRepository(context);
 
         var result = await repository.AddAsync(new CreateWoolRequest(
-            name, brand, material, color, weight, length, stock, needleMin, needleMax));
+            name, brand, material, [color], weight, length, stock, needleMin, needleMax));
 
         result.Status.Should().Be(ResultStatus.Failure);
         context.Wools.Should().BeEmpty();

@@ -10,6 +10,7 @@ using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
 using Looma.Domain.Refresh;
+using Looma.Domain.Request;
 using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
@@ -157,6 +158,41 @@ public partial class PatternsDetailViewModel(
         }
 
         nav.NavigateTo<ProjectsDetailViewModel>(vm => vm.Load(result.Value));
+    }
+
+    [RelayCommand]
+    private async Task SaveNoteAsync()
+    {
+        if (_patternId == 0)
+            return;
+
+        IsBusy = true;
+        try
+        {
+            var result = await patternService.UpdateAsync(new UpdatePatternRequest(
+                _patternId,
+                Name,
+                Url,
+                Note,
+                Type,
+                IsPersonal,
+                BeginDate,
+                EndDate));
+
+            if (result.Failed || result.Value is null)
+            {
+                ErrorMessage = result.Error;
+                notifications.Error(result.Error ?? "Impossible de mettre à jour la note.");
+                return;
+            }
+
+            ApplyPattern(result.Value);
+            notifications.Success("La note a été mise à jour.");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]

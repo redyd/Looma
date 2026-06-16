@@ -9,6 +9,7 @@
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
              xmlns:shared="clr-namespace:Looma.Presentation.ViewModels.Shared;assembly=Looma.Presentation"
              xmlns:projects="clr-namespace:Looma.Presentation.ViewModels.Shared.Projects;assembly=Looma.Presentation"
+             xmlns:userControls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsFormView"
              x:DataType="vm:ProjectsFormViewModel">
 
@@ -261,10 +262,14 @@
                                         CornerRadius="8 8 0 0">
                                     <Grid ColumnDefinitions="*,130,130,110,110" ColumnSpacing="14">
                                         <TextBlock Text="Nom" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
-                                        <TextBlock Grid.Column="1" Text="Type" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
-                                        <TextBlock Grid.Column="2" Text="Origine" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
-                                        <TextBlock Grid.Column="3" Text="Début" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
-                                        <TextBlock Grid.Column="4" Text="Fin" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                        <TextBlock Grid.Column="1" Text="Type" FontSize="12" FontWeight="SemiBold"
+                                                   Opacity="0.55" />
+                                        <TextBlock Grid.Column="2" Text="Origine" FontSize="12" FontWeight="SemiBold"
+                                                   Opacity="0.55" />
+                                        <TextBlock Grid.Column="3" Text="Début" FontSize="12" FontWeight="SemiBold"
+                                                   Opacity="0.55" />
+                                        <TextBlock Grid.Column="4" Text="Fin" FontSize="12" FontWeight="SemiBold"
+                                                   Opacity="0.55" />
                                     </Grid>
                                 </Border>
 
@@ -283,7 +288,8 @@
                                                         BorderThickness="1 0 1 1">
                                                     <Border.Styles>
                                                         <Style Selector="Border:pointerover">
-                                                            <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+                                                            <Setter Property="Background"
+                                                                    Value="{StaticResource BackgroundHoverBrush}" />
                                                         </Style>
                                                     </Border.Styles>
                                                     <Grid ColumnDefinitions="*,130,130,110,110" ColumnSpacing="14">
@@ -354,11 +360,11 @@
                                                         BorderThickness="1"
                                                         CornerRadius="8">
                                                     <Grid ColumnDefinitions="28,*,130,130,110" ColumnSpacing="14">
-                                                        <Ellipse Grid.Column="0"
-                                                                 Width="14"
-                                                                 Height="14"
-                                                                 Fill="{Binding Wool.Color, Converter={StaticResource HexToColor}}"
-                                                                 VerticalAlignment="Center" />
+                                                        <userControls:ColorPieControl
+                                                            Grid.Column="0"
+                                                            Colors="{Binding Wool.Colors}"
+                                                            Width="16" Height="16"
+                                                            VerticalAlignment="Center" />
                                                         <TextBlock Grid.Column="1"
                                                                    Text="{Binding Wool.Name}"
                                                                    FontSize="14"
@@ -398,10 +404,14 @@
                                         CornerRadius="8 8 0 0">
                                     <Grid ColumnDefinitions="28,*,130,130,110" ColumnSpacing="14">
                                         <TextBlock Text="" />
-                                        <TextBlock Grid.Column="1" Text="Nom" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
-                                        <TextBlock Grid.Column="2" Text="Marque" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
-                                        <TextBlock Grid.Column="3" Text="Matière" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
-                                        <TextBlock Grid.Column="4" Text="Stock" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
+                                        <TextBlock Grid.Column="1" Text="Nom" FontSize="12" FontWeight="SemiBold"
+                                                   Opacity="0.55" />
+                                        <TextBlock Grid.Column="2" Text="Marque" FontSize="12" FontWeight="SemiBold"
+                                                   Opacity="0.55" />
+                                        <TextBlock Grid.Column="3" Text="Matière" FontSize="12" FontWeight="SemiBold"
+                                                   Opacity="0.55" />
+                                        <TextBlock Grid.Column="4" Text="Stock" FontSize="12" FontWeight="SemiBold"
+                                                   Opacity="0.55" />
                                     </Grid>
                                 </Border>
 
@@ -420,15 +430,16 @@
                                                         BorderThickness="1 0 1 1">
                                                     <Border.Styles>
                                                         <Style Selector="Border:pointerover">
-                                                            <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+                                                            <Setter Property="Background"
+                                                                    Value="{StaticResource BackgroundHoverBrush}" />
                                                         </Style>
                                                     </Border.Styles>
                                                     <Grid ColumnDefinitions="28,*,130,130,110" ColumnSpacing="14">
-                                                        <Ellipse Grid.Column="0"
-                                                                 Width="14"
-                                                                 Height="14"
-                                                                 Fill="{Binding Wool.Color, Converter={StaticResource HexToColor}}"
-                                                                 VerticalAlignment="Center" />
+                                                        <userControls:ColorPieControl
+                                                            Grid.Column="0"
+                                                            Colors="{Binding Wool.Colors}"
+                                                            Width="20" Height="20"
+                                                            VerticalAlignment="Center" />
                                                         <TextBlock Grid.Column="1"
                                                                    Text="{Binding Wool.Name}"
                                                                    FontSize="14"

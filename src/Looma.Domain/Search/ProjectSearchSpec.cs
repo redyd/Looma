@@ -37,6 +37,5 @@ public class ProjectSearchSpec : ISearchSpec<Project>
     private static bool MatchesWool(Wool wool, string word) =>
         wool.Name.Contains(word, StringComparison.OrdinalIgnoreCase) ||
         wool.Brand.Contains(word, StringComparison.OrdinalIgnoreCase) ||
-        wool.Material.Contains(word, StringComparison.OrdinalIgnoreCase) ||
-        wool.Color.Contains(word, StringComparison.OrdinalIgnoreCase);
+        wool.Material.Contains(word, StringComparison.OrdinalIgnoreCase);
 }
