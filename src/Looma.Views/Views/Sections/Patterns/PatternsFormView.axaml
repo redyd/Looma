@@ -7,6 +7,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
+             xmlns:documents="clr-namespace:Looma.Presentation.ViewModels.Shared.Documents;assembly=Looma.Presentation"
              x:Class="Looma.Views.Views.Sections.Patterns.PatternsFormView"
              x:DataType="vm:PatternsFormViewModel">
 
@@ -110,11 +111,11 @@
 
                             <TextBlock Text="Aucun document existant."
                                        Classes="form-hint"
-                                       IsVisible="{Binding !ExistingDocuments.Count}" />
+                                       IsVisible="{Binding !Documents.ExistingDocuments.Count}" />
 
-                            <ItemsControl ItemsSource="{Binding ExistingDocuments}">
+                            <ItemsControl ItemsSource="{Binding Documents.ExistingDocuments}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:PatternExistingDocumentViewModel">
+                                    <DataTemplate x:DataType="documents:DocumentFormSummaryViewModel">
                                         <Border Classes="surface-panel"
                                                 Margin="0 0 0 12"
                                                 Padding="16"
@@ -161,9 +162,9 @@
                                        Text="Ajoutez un ou plusieurs fichiers au patron."
                                        Margin="0 0 0 12" />
 
-                            <ItemsControl ItemsSource="{Binding NewDocuments}">
+                            <ItemsControl ItemsSource="{Binding Documents.NewDocuments}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:PatternDocumentDraftViewModel">
+                                    <DataTemplate x:DataType="documents:DocumentDraftViewModel">
                                         <Border Classes="surface-panel"
                                                 Margin="0 0 0 12"
                                                 Padding="16"
@@ -205,7 +206,7 @@
                             </ItemsControl>
 
                             <Button Content="Nouveau document"
-                                    Command="{Binding AddDocumentCommand}"
+                                    Command="{Binding Documents.AddDocumentCommand}"                                   
                                     Classes="form-submit"
                                     HorizontalAlignment="Left"
                                     MinWidth="160" />

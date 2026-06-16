@@ -7,6 +7,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
+             xmlns:shared="clr-namespace:Looma.Presentation.ViewModels.Shared;assembly=Looma.Presentation"
+             xmlns:projects="clr-namespace:Looma.Presentation.ViewModels.Shared.Projects;assembly=Looma.Presentation"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsFormView"
              x:DataType="vm:ProjectsFormViewModel">
 
@@ -23,7 +25,7 @@
                     <StackPanel Classes="form-header">
                         <TextBlock Classes="form-title" Text="{Binding Title}" />
                         <TextBlock Classes="form-subtitle"
-                                   Text="Renseignez le projet, choisissez le patron et les laines associées." />
+                                   Text="Renseignez le projet, le patron optionnel et les laines associées." />
                     </StackPanel>
 
                     <Border Classes="form-section">
@@ -106,7 +108,7 @@
                             <ItemsControl ItemsSource="{Binding ExistingImages}"
                                           IsVisible="{Binding HasExistingImages}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:ProjectImageViewModel">
+                                    <DataTemplate x:DataType="projects:ProjectImageViewModel">
                                         <Border Classes="surface-panel"
                                                 Padding="12"
                                                 Margin="0 0 0 8">
@@ -140,7 +142,7 @@
                             <ItemsControl ItemsSource="{Binding NewImages}"
                                           IsVisible="{Binding HasNewImages}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:ProjectImageDraftViewModel">
+                                    <DataTemplate x:DataType="projects:ProjectImageDraftViewModel">
                                         <Border Classes="surface-panel"
                                                 Padding="12"
                                                 Margin="0 0 0 8">
@@ -178,10 +180,7 @@
                             <TextBlock Classes="section-title" Text="Patron" />
                             <Grid ColumnDefinitions="*,16,220">
                                 <StackPanel Grid.Column="0" Classes="form-field">
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Rechercher un patron" />
-                                        <TextBlock Classes="field-required" Text="*" />
-                                    </StackPanel>
+                                    <TextBlock Classes="form-label" Text="Rechercher un patron" />
                                     <TextBox Classes="form-input"
                                              Text="{Binding PatternSearchQuery}"
                                              PlaceholderText="Nom, type, url ou note du patron..." />
@@ -194,7 +193,7 @@
                                               Classes="form-select"
                                               HorizontalAlignment="Stretch">
                                         <ComboBox.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:ProjectPatternTypeFilterViewModel">
+                                            <DataTemplate x:DataType="projects:ProjectPatternTypeFilterViewModel">
                                                 <TextBlock Text="{Binding Label}" />
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
@@ -203,10 +202,19 @@
                             </Grid>
 
                             <StackPanel Spacing="6" IsVisible="{Binding HasSelectedPattern}">
-                                <TextBlock Classes="form-label" Text="Patron sélectionné" />
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0"
+                                               Classes="form-label"
+                                               Text="Patron sélectionné" />
+                                    <Button Grid.Column="1"
+                                            Content="Retirer"
+                                            Command="{Binding ClearPatternCommand}"
+                                            Classes="form-cancel"
+                                            Padding="10 4" />
+                                </Grid>
                                 <ItemsControl ItemsSource="{Binding SelectedPatterns}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ProjectSelectablePatternViewModel">
+                                        <DataTemplate x:DataType="projects:ProjectSelectablePatternViewModel">
                                             <Border Padding="12 10"
                                                     Background="{StaticResource BackgroundHoverBrush}"
                                                     BorderBrush="{StaticResource PrimaryDarkBrush}"
@@ -262,7 +270,7 @@
 
                                 <ItemsControl ItemsSource="{Binding PatternResults}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ProjectSelectablePatternViewModel">
+                                        <DataTemplate x:DataType="projects:ProjectSelectablePatternViewModel">
                                             <Button Command="{Binding SelectCommand}"
                                                     Padding="0"
                                                     Background="Transparent"
@@ -327,8 +335,13 @@
                             <StackPanel Spacing="6" IsVisible="{Binding HasSelectedWools}">
                                 <TextBlock Classes="form-label" Text="Laines sélectionnées" />
                                 <ItemsControl ItemsSource="{Binding SelectedWools}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Spacing="6" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ProjectSelectableWoolViewModel">
+                                        <DataTemplate x:DataType="projects:ProjectSelectableWoolViewModel">
                                             <Button Command="{Binding ToggleCommand}"
                                                     Padding="0"
                                                     Background="Transparent"
@@ -394,7 +407,7 @@
 
                                 <ItemsControl ItemsSource="{Binding WoolResults}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ProjectSelectableWoolViewModel">
+                                        <DataTemplate x:DataType="projects:ProjectSelectableWoolViewModel">
                                             <Button Command="{Binding ToggleCommand}"
                                                     Padding="0"
                                                     Background="Transparent"

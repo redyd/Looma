@@ -43,11 +43,7 @@ public partial class App : Application
                     Directory.GetCurrentDirectory(),
                     "Data"
                 ));
-
-                Console.WriteLine($"DevPath: {rootPath}");
             }
-
-            Console.WriteLine($"Current path is {Directory.GetCurrentDirectory()}");
         }
 
         services.AddPresentation();

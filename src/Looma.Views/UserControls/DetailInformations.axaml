@@ -60,10 +60,26 @@
 
                                 <!-- Valeur simple -->
                                 <TextBlock Grid.Column="1"
-                                           IsVisible="{Binding ColorHex, Converter={x:Static ObjectConverters.IsNull}}"
+                                           IsVisible="{Binding IsSimple}"
                                            Text="{Binding Value}"
                                            FontSize="14" Margin="0 0 0 10"
                                            VerticalAlignment="Center" />
+
+                                <!-- Valeur lien -->
+                                <Button Grid.Column="1"
+                                        IsVisible="{Binding IsLink}"
+                                        Click="OnInfoLinkClicked"
+                                        Classes="card-button"
+                                        Padding="0"
+                                        HorizontalAlignment="Left"
+                                        Margin="0 0 0 10">
+                                    <TextBlock Text="{Binding Value}"
+                                               FontSize="14"
+                                               Foreground="{StaticResource PrimaryDarkBrush}"
+                                               TextDecorations="Underline"
+                                               VerticalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis" />
+                                </Button>
 
                                 <!-- Valeur couleur -->
                                 <StackPanel Grid.Column="1"

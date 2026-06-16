@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
-using Looma.Domain.Repositories;
+using Looma.Domain.Refresh;
 using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
@@ -18,31 +18,59 @@ namespace Looma.Presentation.ViewModels.Sections.Stocks;
 public partial class WoolDetailViewModel : PageViewModelBase
 {
     private readonly INavigationService _nav;
-    private readonly IWoolRepository _woolRepo;
+    private readonly IWoolService _woolService;
     private readonly INotificationService _notifications;
     private readonly WoolStockCalculator _calculator;
+    private readonly IDataRefreshService _refreshService;
     private Wool? _wool;
 
-    [ObservableProperty] private int _woolId;
-    [ObservableProperty] private string _name = string.Empty;
-    [ObservableProperty] private string _brand = string.Empty;
-    [ObservableProperty] private string _material = string.Empty;
-    [ObservableProperty] private string _color = string.Empty;
+    [ObservableProperty]
+    public partial int WoolId { get; set; }
 
-    [ObservableProperty] private double _weight;
-    [ObservableProperty] private double _length;
-    [ObservableProperty] private double _stockWeight;
-    [ObservableProperty] private double _stockLength;
-    [ObservableProperty] private double _batchQuantity;
+    [ObservableProperty]
+    public partial string Name { get; set; } = string.Empty;
 
-    [ObservableProperty] private double _needleMinSize;
-    [ObservableProperty] private double _needleMaxSize;
-    [ObservableProperty] private string? _errorMessage;
-    
-    [ObservableProperty] private List<string> _images = [];
+    [ObservableProperty]
+    public partial string Brand { get; set; } = string.Empty;
 
-    [ObservableProperty] private double? _adjustQuantity;
-    [ObservableProperty] private StockAdjustmentMode _adjustmentMode = StockAdjustmentMode.ByBall;
+    [ObservableProperty]
+    public partial string Material { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string Color { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial double Weight { get; set; }
+
+    [ObservableProperty]
+    public partial double Length { get; set; }
+
+    [ObservableProperty]
+    public partial double StockWeight { get; set; }
+
+    [ObservableProperty]
+    public partial double StockLength { get; set; }
+
+    [ObservableProperty]
+    public partial double BatchQuantity { get; set; }
+
+    [ObservableProperty]
+    public partial double NeedleMinSize { get; set; }
+
+    [ObservableProperty]
+    public partial double NeedleMaxSize { get; set; }
+
+    [ObservableProperty]
+    public partial string? ErrorMessage { get; set; }
+
+    [ObservableProperty]
+    public partial List<string> Images { get; set; } = [];
+
+    [ObservableProperty]
+    public partial double? AdjustQuantity { get; set; }
+
+    [ObservableProperty]
+    public partial StockAdjustmentMode AdjustmentMode { get; set; } = StockAdjustmentMode.ByBall;
 
     public bool CanAdjust => AdjustQuantity > 0;
     partial void OnAdjustQuantityChanged(double? value) => OnPropertyChanged(nameof(CanAdjust));
@@ -62,7 +90,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
         var toSend = _calculator.ComputeStockQuantity(AdjustmentMode, isAddition, (double)AdjustQuantity, factor);
         
-        var result = await _woolRepo.AddStock(WoolId, toSend);
+        var result = await _woolService.AddStockAsync(WoolId, toSend);
         if (result.Failed)
         {
             ErrorMessage = "Impossible de mettre à jour les données";
@@ -71,11 +99,6 @@ public partial class WoolDetailViewModel : PageViewModelBase
         }
 
         _notifications.Success("Stock correctement mis à jour");
-        var updated = await _woolRepo.GetByIdAsync(WoolId);
-        if (updated.Value is not null)
-        {
-            Refresh(updated.Value);
-        }
     }
 
     public IList<StatItem> DetailStats =>
@@ -100,14 +123,16 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
     public WoolDetailViewModel(
         INavigationService nav,
-        IWoolRepository woolRepo,
+        IWoolService woolService,
         INotificationService notifications,
-        WoolStockCalculator calculator)
+        WoolStockCalculator calculator,
+        IDataRefreshService refreshService)
     {
         _nav = nav;
-        _woolRepo = woolRepo;
+        _woolService = woolService;
         _notifications = notifications;
         _calculator = calculator;
+        _refreshService = refreshService;
         Title = "Détail laine";
     }
 
@@ -120,8 +145,14 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
     public override async void OnNavigatedTo()
     {
+        RegisterRefresh(_refreshService, RefreshScope.Wools, RefreshAsync);
+        await RefreshAsync();
+    }
+
+    private async Task RefreshAsync()
+    {
         if (WoolId == 0) return;
-        var wool = await _woolRepo.GetByIdAsync(WoolId);
+        var wool = await _woolService.GetByIdAsync(WoolId);
         if (wool.Failed || wool.Value is null)
         {
             ErrorMessage = wool.Error ?? $"La laine {WoolId} est introuvable.";
@@ -133,6 +164,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
     private void Refresh(Wool wool)
     {
+        _wool = wool;
         ErrorMessage = null;
         Name = wool.Name;
         Brand = wool.Brand;
@@ -153,8 +185,6 @@ public partial class WoolDetailViewModel : PageViewModelBase
             .Select(s => $"avares://Looma.App/Assets/WoolTypeImages/{s}.png")
             .ToList();
         
-        Console.WriteLine($"Images are {string.Join(", ", Images)}");
-
         OnPropertyChanged(nameof(NeedleSizeDisplay));
         OnPropertyChanged(nameof(DetailStats));
         OnPropertyChanged(nameof(DetailInfos));
@@ -169,7 +199,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
         IsBusy = true;
         try
         {
-            var result = await _woolRepo.DeleteAsync(WoolId);
+            var result = await _woolService.DeleteAsync(WoolId);
             if (result.Failed)
             {
                 ErrorMessage = result.Error;

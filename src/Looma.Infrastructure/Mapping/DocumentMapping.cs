@@ -18,8 +18,6 @@ public static class DocumentMapping
             SizeBytes = entity.Size ?? 0,
             StoragePath = null,
             PatternId = entity.PatternId,
-            PatternName = entity.Pattern?.Name,
             ProjectId = entity.ProjectId,
-            ProjectName = entity.Project?.Name
         };
 }

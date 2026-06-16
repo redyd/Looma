@@ -4,8 +4,9 @@
 
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
 using Looma.Presentation.UserControls;
+using System.Diagnostics;
 
 namespace Looma.Views.UserControls;
 
@@ -53,5 +54,24 @@ public partial class DetailInformations : UserControl
     public DetailInformations()
     {
         InitializeComponent();
+    }
+
+    private void OnInfoLinkClicked(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Control { DataContext: InfoItem { IsLink: true } item }
+            || string.IsNullOrWhiteSpace(item.Value))
+            return;
+
+        try
+        {
+            Process.Start(new ProcessStartInfo(item.Value)
+            {
+                UseShellExecute = true
+            });
+        }
+        catch
+        {
+            // The detail view should not crash if the system cannot open the link.
+        }
     }
 }

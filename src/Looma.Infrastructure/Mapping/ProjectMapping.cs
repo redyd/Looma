@@ -18,7 +18,7 @@ public static class ProjectMapping
             Note = entity.Note,
             BeginDate = entity.BeginDate,
             EndDate = entity.EndDate,
-            Pattern = entity.PatternEntity.ToDomainWithoutProjects(),
+            Pattern = entity.PatternEntity?.ToDomainWithoutProjects(),
             Wools = entity.WoolsForProjects
                 .Select(w => new WoolUsage
                 {

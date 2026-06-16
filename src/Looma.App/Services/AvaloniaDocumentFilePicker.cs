@@ -5,41 +5,63 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Looma.Presentation.Services;
+using Looma.Domain.Core;
+using System;
+using Looma.Domain.Entities;
 
 namespace Looma.App.Services;
 
 public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
 {
-    public Task<string?> PickDocumentAsync() =>
-        PickFileAsync("Sélectionner un document", false,
-        [
-            new FilePickerFileType("Tous les fichiers")
-            {
-                Patterns = ["*"]
-            }
-        ]);
-
-    public Task<string?> PickImageAsync() =>
-        PickFileAsync("Sélectionner une image", false, ImageFileTypes);
-
-    public async Task<IReadOnlyList<string>> PickImagesAsync()
+    private static readonly List<string> ImageExtensions = [".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif"];
+    public Task<string?> PickAsync(DocumentPickerMode mode) => mode switch
     {
-        var paths = await PickFilesAsync("Sélectionner des images", true, ImageFileTypes);
-        return paths;
+        DocumentPickerMode.Images => PickFileAsync("Sélectionner une image", false, ImageFileTypes),
+        DocumentPickerMode.All => PickFileAsync("Sélectionner un document", false, AllFileTypes),
+        _ => throw new ArgumentOutOfRangeException(nameof(mode))
+    };
+
+    public async Task<List<string>> PicksAsync(DocumentPickerMode mode)
+    {
+        var paths = mode switch
+        {
+            DocumentPickerMode.Images => await PickFilesAsync("Sélectionner des images", true, ImageFileTypes),
+            DocumentPickerMode.All => await PickFilesAsync("Sélectionner des documents", true, AllFileTypes),
+            _ => throw new ArgumentOutOfRangeException(nameof(mode))
+        };
+
+        return [.. paths];
     }
+
+    public bool IsSupportedFile(DocumentPickerMode mode, Document document)
+    {
+        if (document.StoragePath is null) return false;
+        if (mode == DocumentPickerMode.All) return true;
+        
+        var fileExt = Path.GetExtension(document.StoragePath);
+        var isImage = ImageExtensions.Any(ext => fileExt.Equals(ext, StringComparison.OrdinalIgnoreCase));
+        
+        return isImage;
+    }
+
+    private static IReadOnlyList<FilePickerFileType> AllFileTypes =>
+    [
+        new("Tous les fichiers") { Patterns = ["*"] }
+    ];
 
     private static IReadOnlyList<FilePickerFileType> ImageFileTypes =>
     [
-        new FilePickerFileType("Images")
+        new("Images")
         {
-            Patterns = ["*.png", "*.jpg", "*.jpeg", "*.webp", "*.bmp", "*.gif"],
-            MimeTypes = ["image/png", "image/jpeg", "image/webp", "image/bmp", "image/gif"]
+            Patterns = ImageExtensions.Select(ext => $"*{ext}").ToArray(),
+            MimeTypes = ImageExtensions.Select(ext => $"image/{ext}").ToArray()
         },
-        new FilePickerFileType("Tous les fichiers")
+        new("Tous les fichiers")
         {
             Patterns = ["*"]
         }
@@ -73,10 +95,9 @@ public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
             FileTypeFilter = fileTypes
         });
 
-        return files
+        return [.. files
             .Select(file => file.TryGetLocalPath())
             .Where(path => !string.IsNullOrWhiteSpace(path))
-            .Select(path => path!)
-            .ToList();
+            .Select(path => path!)];
     }
 }

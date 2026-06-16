@@ -1,0 +1,150 @@
+<!--
+    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+    This file is part of Looma, licensed under the AGPL-3.0.
+    See LICENSE in the project root for full license text.
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
+             x:Class="Looma.Views.Views.Sections.Projects.ProjectsFinishView"
+             x:DataType="vm:ProjectsFinishViewModel">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <StackPanel HorizontalAlignment="Center"
+                    Margin="32"
+                    Width="760"
+                    MinWidth="760">
+
+            <Border Classes="form-container" Width="760" MinWidth="760">
+                <StackPanel Spacing="14">
+
+                    <StackPanel Classes="form-header">
+                        <TextBlock Classes="form-title" Text="Terminer le projet" />
+                        <TextBlock Classes="form-subtitle" Text="{Binding ProjectName}" />
+                    </StackPanel>
+
+                    <Border Classes="form-section">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="section-title" Text="Récapitulatif" />
+
+                            <StackPanel Classes="form-field">
+                                <TextBlock Classes="form-label" Text="Date de fin du projet" />
+                                <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay}"
+                                            Classes="form-input" />
+                            </StackPanel>
+
+                            <StackPanel Classes="form-field">
+                                <TextBlock Classes="form-label" Text="Mode de retrait" />
+                                <ComboBox ItemsSource="{Binding DeductionModes}"
+                                          SelectedItem="{Binding DeductionMode}"
+                                          Classes="form-select"
+                                          HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource EnumDisplayName}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <Border Classes="surface-panel"
+                                    Padding="14"
+                                    Background="{StaticResource BackgroundBrush}">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0"
+                                               Text="Stock total qui va être retiré du stock"
+                                               FontSize="13"
+                                               Opacity="0.75"
+                                               VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding TotalToDeductDisplay}"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="form-section">
+                        <StackPanel Spacing="12">
+                            <TextBlock Classes="section-title" Text="Laines à retirer" />
+                            <TextBlock Text="Aucune laine à retirer."
+                                       Classes="form-hint"
+                                       IsVisible="{Binding !HasWools}" />
+
+                            <ItemsControl ItemsSource="{Binding Wools}"
+                                          IsVisible="{Binding HasWools}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Spacing="8" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:ProjectFinishWoolViewModel">
+                                        <Border Classes="surface-panel" Padding="12">
+                                            <Grid ColumnDefinitions="Auto,*,190" ColumnSpacing="12">
+                                                <Ellipse Grid.Column="0"
+                                                         Width="14"
+                                                         Height="14"
+                                                         Fill="{Binding Color, Converter={StaticResource HexToColor}}"
+                                                         VerticalAlignment="Top"
+                                                         Margin="0 4 0 0" />
+
+                                                <StackPanel Grid.Column="1" Spacing="4">
+                                                    <TextBlock Text="{Binding Name}"
+                                                               FontWeight="SemiBold"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding Brand}"
+                                                               Classes="form-hint"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding AvailableDisplay, StringFormat='Laine en stock: {0}'}"
+                                                               FontSize="12"
+                                                               Opacity="0.75" />
+                                                    <TextBlock Text="{Binding AlreadyDeductedDisplay, StringFormat='Laine déjà retirée du stock: {0}'}"
+                                                               FontSize="12"
+                                                               Opacity="0.75" />
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="2" Spacing="6">
+                                                    <TextBlock Classes="form-label" Text="À retirer" />
+                                                    <Grid ColumnDefinitions="*,8,Auto">
+                                                        <NumericUpDown Grid.Column="0"
+                                                                       Classes="form-numeric"
+                                                                       Value="{Binding QuantityToDeduct, Mode=TwoWay}"
+                                                                       Minimum="0"
+                                                                       Increment="0.25"
+                                                                       FormatString="N2" />
+                                                        <TextBlock Grid.Column="2"
+                                                                   Text="{Binding $parent[vm:ProjectsFinishViewModel].DeductionUnit}"
+                                                                   VerticalAlignment="Center"
+                                                                   FontSize="12"
+                                                                   Opacity="0.65" />
+                                                    </Grid>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Spacing="12">
+                        <Button Content="Annuler"
+                                Command="{Binding CancelCommand}"
+                                Classes="form-cancel" />
+                        <Button Content="Confirmer"
+                                Command="{Binding ConfirmCommand}"
+                                Classes="form-submit" />
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -13,5 +13,5 @@ public record UpdateProjectRequest(
     string? Note,
     DateOnly? BeginDate,
     DateOnly? EndDate,
-    int PatternId,
+    int? PatternId,
     IReadOnlyList<int> WoolIds);

@@ -6,13 +6,13 @@ using Looma.Domain.Entities;
 
 namespace Looma.Domain.Search;
 
-public static class WoolSearchSpec
+public class WoolSearchSpec : ISearchSpec<Wool>
 {
     /// <summary>
     /// Recherche souple : chaque mot du query doit matcher au moins un champ.
     /// Ex : "drops rouge" → trouve les laines Drops de couleur rouge.
     /// </summary>
-    public static IEnumerable<Wool> Apply(IEnumerable<Wool> source, string? query)
+    public IEnumerable<Wool> Apply(IEnumerable<Wool> source, string? query)
     {
         if (string.IsNullOrWhiteSpace(query))
             return source;

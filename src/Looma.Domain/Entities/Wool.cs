@@ -34,9 +34,9 @@ public class Wool
     public double BatchQuantity => Stock / 1000;
     public double StockWeight => Weight * BatchQuantity;
     public double StockLength => Length * BatchQuantity;
+
     public List<WoolType> Types =>
-        WoolRanges
+        [.. WoolRanges
             .Where(r => NeedleMinSize <= r.Max && NeedleMaxSize >= r.Min)
-            .Select(r => r.Type)
-            .ToList();
+            .Select(r => r.Type)];
 }

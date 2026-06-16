@@ -23,7 +23,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
                 .ThenBy(w => w.Name)
                 .ToListAsync();
 
-            return ResultT<IReadOnlyList<Wool>>.Ok(entities.Select(e => e.ToDomain()).ToList());
+            return ResultT<IReadOnlyList<Wool>>.Ok([.. entities.Select(e => e.ToDomain())]);
         }
         catch (Exception ex)
         {

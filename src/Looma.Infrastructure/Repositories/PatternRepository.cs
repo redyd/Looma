@@ -234,8 +234,8 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
             Projects = pattern.Projects,
             IsPersonal = pattern.IsPersonal,
             Type = pattern.Type,
-            BeginDate =  pattern.BeginDate,
-            EndDate =  pattern.EndDate
+            BeginDate = pattern.BeginDate,
+            EndDate = pattern.EndDate
         };
 
     private Document ApplyFileMetadata(Document document)
@@ -251,9 +251,7 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
                 SizeBytes = 0,
                 StoragePath = null,
                 PatternId = document.PatternId,
-                PatternName = document.PatternName,
                 ProjectId = document.ProjectId,
-                ProjectName = document.ProjectName
             };
         }
 
@@ -266,9 +264,7 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
             SizeBytes = info.Length,
             StoragePath = filePath,
             PatternId = document.PatternId,
-            PatternName = document.PatternName,
             ProjectId = document.ProjectId,
-            ProjectName = document.ProjectName
         };
     }
 }

@@ -28,7 +28,9 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 .ToListAsync();
 
             if (DocumentMetadataBackfill.Apply(entities, pathManager))
+            {
                 await context.SaveChangesAsync();
+            }
 
             var documents = entities
                 .Select(e => e.ToDomain())
@@ -53,7 +55,9 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 .FirstOrDefaultAsync(d => d.DocumentId == id);
 
             if (entity is not null && DocumentMetadataBackfill.Apply([entity], pathManager))
+            {
                 await context.SaveChangesAsync();
+            }
 
             return entity is null
                 ? ResultT<Document>.NotFound($"Le document {id} est introuvable.")
@@ -68,10 +72,14 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
     public async Task<ResultT<Document>> AddAsync(CreateDocumentRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.SourcePath))
+        {
             return ResultT<Document>.Failure("Le chemin source du document est invalide.");
+        }
 
         if (!File.Exists(request.SourcePath))
+        {
             return ResultT<Document>.NotFound($"Le fichier source \"{request.SourcePath}\" est introuvable.");
+        }
 
         var id = Guid.NewGuid();
         var nickname = string.IsNullOrWhiteSpace(request.Nickname)
@@ -87,20 +95,26 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         try
         {
             if (request is { PatternId: not null, ProjectId: not null })
+            {
                 return ResultT<Document>.Failure("Un document ne peut être lié qu'à un patron ou à un projet.");
+            }
 
             if (request.PatternId.HasValue)
             {
                 var patternExists = await context.Patterns.AnyAsync(p => p.PatternId == request.PatternId.Value);
                 if (!patternExists)
+                {
                     return ResultT<Document>.NotFound($"Le patron {request.PatternId.Value} est introuvable.");
+                }
             }
 
             if (request.ProjectId.HasValue)
             {
                 var projectExists = await context.Projects.AnyAsync(p => p.ProjectId == request.ProjectId.Value);
                 if (!projectExists)
+                {
                     return ResultT<Document>.NotFound($"Le projet {request.ProjectId.Value} est introuvable.");
+                }
             }
 
             Directory.CreateDirectory(pathManager.DocumentsFolder);
@@ -124,14 +138,18 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         catch (DbUpdateException ex)
         {
             if (File.Exists(destinationPath))
+            {
                 File.Delete(destinationPath);
+            }
 
             return ResultT<Document>.Failure($"Impossible d'ajouter le document: {ex.Message}");
         }
         catch (Exception ex)
         {
             if (File.Exists(destinationPath))
+            {
                 File.Delete(destinationPath);
+            }
 
             return ResultT<Document>.Failure($"Impossible d'ajouter le document: {ex.Message}");
         }
@@ -143,11 +161,15 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         {
             var entity = await context.Documents.FirstOrDefaultAsync(d => d.DocumentId == request.Id);
             if (entity is null)
+            {
                 return ResultT<Document>.NotFound($"Le document {request.Id} est introuvable.");
+            }
 
             var nickname = request.Nickname.Trim();
             if (string.IsNullOrWhiteSpace(nickname))
+            {
                 return ResultT<Document>.Failure("Le nom du document ne peut pas être vide.");
+            }
 
             entity.Nickname = nickname;
             await context.SaveChangesAsync();
@@ -170,11 +192,15 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         {
             var entity = await context.Documents.FindAsync(id);
             if (entity is null)
+            {
                 return Result.NotFound($"Le document {id} est introuvable.");
+            }
 
             var filePath = pathManager.GetDocumentStoragePath(id);
             if (File.Exists(filePath))
+            {
                 File.Delete(filePath);
+            }
 
             context.Documents.Remove(entity);
             await context.SaveChangesAsync();
@@ -196,7 +222,9 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         {
             var filePath = pathManager.GetDocumentStoragePath(id);
             if (!File.Exists(filePath))
+            {
                 return Task.FromResult(Result.NotFound($"Le fichier du document {id} est introuvable."));
+            }
 
             Process.Start(new ProcessStartInfo(filePath)
             {
@@ -224,9 +252,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 SizeBytes = 0,
                 StoragePath = null,
                 PatternId = document.PatternId,
-                PatternName = document.PatternName,
                 ProjectId = document.ProjectId,
-                ProjectName = document.ProjectName
             };
         }
 
@@ -239,12 +265,9 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             SizeBytes = info.Length,
             StoragePath = filePath,
             PatternId = document.PatternId,
-            PatternName = document.PatternName,
             ProjectId = document.ProjectId,
-            ProjectName = document.ProjectName
         };
     }
 
-    private static string GetDocumentType(string filePath) =>
-        DocumentMetadataBackfill.GetDocumentType(filePath);
+    private static string GetDocumentType(string filePath) => DocumentMetadataBackfill.GetDocumentType(filePath);
 }

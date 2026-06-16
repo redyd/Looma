@@ -8,24 +8,28 @@ using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
-using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 using Looma.Domain.Search;
+using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
+using Looma.Presentation.ViewModels.Shared;
+using Looma.Presentation.ViewModels.Shared.Projects;
 
 namespace Looma.Presentation.ViewModels.Sections.Projects;
 
 public partial class ProjectsFormViewModel(
     INavigationService nav,
-    IProjectRepository projectRepo,
-    IPatternRepository patternRepo,
-    IWoolRepository woolRepo,
-    IDocumentRepository documentRepo,
+    IProjectService projectService,
+    IPatternService patternService,
+    IWoolService woolService,
+    IDocumentService documentService,
     IDocumentFilePicker filePicker,
-    INotificationService notifications)
+    INotificationService notifications,
+    PatternSearchSpec patternSearchSpec,
+    WoolSearchSpec woolSearchSpec)
     : PageViewModelBase
 {
     private bool _isEdit;
@@ -34,6 +38,7 @@ public partial class ProjectsFormViewModel(
     private IReadOnlyList<Wool> _allWools = [];
     private readonly HashSet<int> _selectedWoolIds = [];
     private readonly HashSet<Guid> _deletedImageIds = [];
+
     private static readonly HashSet<string> SupportedImageExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
         ".png",
@@ -45,6 +50,7 @@ public partial class ProjectsFormViewModel(
     };
 
     public IReadOnlyList<Status> Statuses { get; } = Enum.GetValues<Status>().ToList();
+
     public IReadOnlyList<ProjectPatternTypeFilterViewModel> PatternTypeFilters { get; } =
     [
         new("Tous les types", null),
@@ -59,22 +65,39 @@ public partial class ProjectsFormViewModel(
     public bool HasNewImages => NewImages.Count > 0;
     public bool HasImages => HasExistingImages || HasNewImages;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string _name = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial string Name { get; set; } = string.Empty;
 
-    [ObservableProperty] private Status _status = Status.InProgress;
-    [ObservableProperty] private string? _note;
-    [ObservableProperty] private DateTimeOffset? _beginDate;
-    [ObservableProperty] private DateTimeOffset? _endDate;
-    [ObservableProperty] private string _patternSearchQuery = string.Empty;
-    [ObservableProperty] private string _woolSearchQuery = string.Empty;
-    [ObservableProperty] private ProjectPatternTypeFilterViewModel? _selectedPatternTypeFilter;
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private Pattern? _selectedPattern;
-    [ObservableProperty] private string? _errorMessage;
-    [ObservableProperty] private ObservableCollection<ProjectSelectablePatternViewModel> _selectedPatterns = [];
-    [ObservableProperty] private ObservableCollection<ProjectSelectablePatternViewModel> _patternResults = [];
-    [ObservableProperty] private ObservableCollection<ProjectSelectableWoolViewModel> _woolResults = [];
+    [ObservableProperty] public partial Status Status { get; set; } = Status.InProgress;
+
+    [ObservableProperty] public partial string? Note { get; set; }
+
+    [ObservableProperty] public partial DateTimeOffset? BeginDate { get; set; }
+
+    [ObservableProperty] public partial DateTimeOffset? EndDate { get; set; }
+
+    [ObservableProperty] public partial string PatternSearchQuery { get; set; } = string.Empty;
+
+    [ObservableProperty] public partial string WoolSearchQuery { get; set; } = string.Empty;
+
+    [ObservableProperty] public partial ProjectPatternTypeFilterViewModel? SelectedPatternTypeFilter { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial Pattern? SelectedPattern { get; set; }
+
+    [ObservableProperty] public partial string? ErrorMessage { get; set; }
+
+    [ObservableProperty]
+    public partial ObservableCollection<ProjectSelectablePatternViewModel> SelectedPatterns { get; set; } = [];
+
+    [ObservableProperty]
+    public partial ObservableCollection<ProjectSelectablePatternViewModel> PatternResults { get; set; } = [];
+
+    [ObservableProperty]
+    public partial ObservableCollection<ProjectSelectableWoolViewModel> WoolResults { get; set; } = [];
+
     [ObservableProperty] private ObservableCollection<ProjectSelectableWoolViewModel> _selectedWools = [];
     [ObservableProperty] private ObservableCollection<ProjectImageViewModel> _existingImages = [];
     [ObservableProperty] private ObservableCollection<ProjectImageDraftViewModel> _newImages = [];
@@ -135,8 +158,8 @@ public partial class ProjectsFormViewModel(
         IsBusy = true;
         try
         {
-            var patternsResult = await patternRepo.GetAllAsync();
-            var woolsResult = await woolRepo.GetAllAsync();
+            var patternsResult = await patternService.GetAllAsync();
+            var woolsResult = await woolService.GetAllAsync();
 
             if (patternsResult.Failed || patternsResult.Value is null)
             {
@@ -168,6 +191,7 @@ public partial class ProjectsFormViewModel(
 
     partial void OnNameChanged(string value) => SaveCommand.NotifyCanExecuteChanged();
     partial void OnErrorMessageChanged(string? value) => OnPropertyChanged(nameof(HasError));
+
     partial void OnSelectedPatternChanged(Pattern? value)
     {
         OnPropertyChanged(nameof(HasSelectedPattern));
@@ -176,8 +200,10 @@ public partial class ProjectsFormViewModel(
 
     partial void OnSelectedWoolsChanged(ObservableCollection<ProjectSelectableWoolViewModel> value) =>
         OnPropertyChanged(nameof(HasSelectedWools));
+
     partial void OnExistingImagesChanged(ObservableCollection<ProjectImageViewModel> value) =>
         NotifyImagesChanged();
+
     partial void OnNewImagesChanged(ObservableCollection<ProjectImageDraftViewModel> value) =>
         NotifyImagesChanged();
 
@@ -188,7 +214,7 @@ public partial class ProjectsFormViewModel(
     private void ApplyPatternSearch()
     {
         var query = PatternSearchQuery;
-        var patterns = PatternSearchSpec.Apply(_allPatterns, query)
+        var patterns = patternSearchSpec.Apply(_allPatterns, query)
             .Where(p => SelectedPatternTypeFilter?.Type is null || p.Type == SelectedPatternTypeFilter.Type)
             .Where(p => SelectedPattern?.Id != p.Id)
             .OrderBy(p => p.Name)
@@ -216,7 +242,7 @@ public partial class ProjectsFormViewModel(
 
     private void ApplyWoolSearch()
     {
-        var wools = WoolSearchSpec.Apply(_allWools, WoolSearchQuery)
+        var wools = woolSearchSpec.Apply(_allWools, WoolSearchQuery)
             .Where(w => !_selectedWoolIds.Contains(w.Id))
             .OrderBy(w => w.Brand)
             .ThenBy(w => w.Name)
@@ -244,6 +270,13 @@ public partial class ProjectsFormViewModel(
         ApplyPatternSearch();
     }
 
+    [RelayCommand]
+    private void ClearPattern()
+    {
+        SelectedPattern = null;
+        ApplyPatternSearch();
+    }
+
     private void ToggleWool(Wool wool)
     {
         if (!_selectedWoolIds.Add(wool.Id))
@@ -254,39 +287,33 @@ public partial class ProjectsFormViewModel(
     }
 
     private bool CanSave() =>
-        !string.IsNullOrWhiteSpace(Name) && SelectedPattern is not null;
+        !string.IsNullOrWhiteSpace(Name);
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()
     {
-        if (SelectedPattern is null)
-        {
-            ErrorMessage = "Sélectionnez un patron.";
-            return;
-        }
-
         ErrorMessage = null;
         IsBusy = true;
         try
         {
             var woolIds = _selectedWoolIds.ToList();
             var result = _isEdit
-                ? await projectRepo.UpdateAsync(new UpdateProjectRequest(
+                ? await projectService.UpdateAsync(new UpdateProjectRequest(
                     _editingId,
                     Name,
                     Status,
                     Note,
                     BeginDate.ToDateOnly(),
                     EndDate.ToDateOnly(),
-                    SelectedPattern.Id,
+                    SelectedPattern?.Id,
                     woolIds))
-                : await projectRepo.AddAsync(new CreateProjectRequest(
+                : await projectService.AddAsync(new CreateProjectRequest(
                     Name,
                     Status,
                     Note,
                     BeginDate.ToDateOnly(),
                     EndDate.ToDateOnly(),
-                    SelectedPattern.Id,
+                    SelectedPattern?.Id,
                     woolIds));
 
             if (result.Failed || result.Value is null)
@@ -311,14 +338,14 @@ public partial class ProjectsFormViewModel(
     [RelayCommand]
     private async Task BrowseImagesAsync()
     {
-        var paths = await filePicker.PickImagesAsync();
+        var paths = await filePicker.PicksAsync(DocumentPickerMode.Images);
         if (paths.Count == 0)
             return;
 
         var invalid = paths.Where(path => !IsSupportedImagePath(path)).ToList();
         if (invalid.Count > 0)
         {
-            ErrorMessage = "Seuls les fichiers image PNG, JPG, WEBP, BMP ou GIF sont acceptés.";
+            ErrorMessage = "Seuls les image sont acceptés.";
             notifications.Error(ErrorMessage);
             return;
         }
@@ -337,7 +364,7 @@ public partial class ProjectsFormViewModel(
         NotifyImagesChanged();
     }
 
-    private void RemoveNewImage(ProjectImageDraftViewModel image)
+    private void RemoveNewImage(Shared.Projects.ProjectImageDraftViewModel image)
     {
         NewImages.Remove(image);
         NotifyImagesChanged();
@@ -347,7 +374,7 @@ public partial class ProjectsFormViewModel(
     {
         foreach (var imageId in _deletedImageIds.ToList())
         {
-            var deleteResult = await documentRepo.DeleteAsync(imageId);
+            var deleteResult = await documentService.DeleteAsync(imageId);
             if (deleteResult.Failed)
             {
                 ErrorMessage = deleteResult.Error;
@@ -356,6 +383,7 @@ public partial class ProjectsFormViewModel(
             }
         }
 
+        var newImageRequests = new List<CreateDocumentRequest>();
         foreach (var image in NewImages.ToList())
         {
             if (!IsSupportedImagePath(image.SourcePath))
@@ -365,17 +393,21 @@ public partial class ProjectsFormViewModel(
                 return false;
             }
 
-            var documentResult = await documentRepo.AddAsync(new CreateDocumentRequest(
+            newImageRequests.Add(new CreateDocumentRequest(
                 image.SourcePath,
                 string.IsNullOrWhiteSpace(image.Nickname)
                     ? Path.GetFileNameWithoutExtension(image.SourcePath)
                     : image.Nickname,
                 ProjectId: projectId));
+        }
 
+        if (newImageRequests.Count > 0)
+        {
+            var documentResult = await documentService.AddAllAsync(newImageRequests);
             if (documentResult.Failed)
             {
                 ErrorMessage = documentResult.Error;
-                notifications.Error(documentResult.Error ?? "Impossible d'ajouter l'image au projet.");
+                notifications.Error(documentResult.Error ?? "Impossible d'ajouter les images au projet.");
                 return false;
             }
         }

@@ -7,9 +7,9 @@ using Looma.Domain.Extensions;
 
 namespace Looma.Domain.Search;
 
-public static class PatternSearchSpec
+public class PatternSearchSpec : ISearchSpec<Pattern>
 {
-    public static IEnumerable<Pattern> Apply(IEnumerable<Pattern> source, string? query)
+    public IEnumerable<Pattern> Apply(IEnumerable<Pattern> source, string? query)
     {
         if (string.IsNullOrWhiteSpace(query))
             return source;
