@@ -1,3 +1,7 @@
+// Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+// This file is part of Looma, licensed under the AGPL-3.0.
+// See LICENSE in the project root for full license text.
+
 using Looma.Domain.Core;
 using Looma.Domain.Logging;
 using Looma.Domain.Refresh;
@@ -42,12 +46,12 @@ public class WoolStockService(
                 delta = -usage.StockUsed;
             }
 
-            if (request.IsAddition && request.DeductImmediately && delta > usage.Wool.Stock)
+            if (request is { IsAddition: true, DeductImmediately: true } && delta > usage.Wool.Stock)
             {
                 return Result.Failure("Le stock disponible est insuffisant.");
             }
 
-            if (!request.IsAddition && request.DeductImmediately)
+            if (request is { IsAddition: false, DeductImmediately: true })
             {
                 var restore = Math.Min(Math.Abs(delta), usage.StockAlreadyUsed);
                 var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, -restore);
