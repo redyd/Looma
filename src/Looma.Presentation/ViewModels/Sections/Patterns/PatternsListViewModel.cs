@@ -4,8 +4,8 @@
 
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
-using Looma.Domain.Repositories;
 using Looma.Domain.Search;
+using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.ViewModels.Base;
@@ -15,7 +15,7 @@ namespace Looma.Presentation.ViewModels.Sections.Patterns;
 
 public partial class PatternsListViewModel(
     INavigationService nav,
-    IPatternRepository repo,
+    IPatternService patternService,
     INotificationService notifications) : PaginatePageViewModelBase<Pattern, PatternSummaryViewModel, int>(new PatternSearchSpec())
 {
     public override async void OnNavigatedTo() => await LoadAsync();
@@ -29,7 +29,7 @@ public partial class PatternsListViewModel(
         IsBusy = true;
         try
         {
-            var result = await repo.GetAllAsync();
+            var result = await patternService.GetAllAsync();
             if (result.Failed || result.Value is null)
             {
                 notifications.Error(result.Error ?? "Impossible de charger les patrons.");

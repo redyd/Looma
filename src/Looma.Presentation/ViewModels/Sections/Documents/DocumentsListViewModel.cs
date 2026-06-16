@@ -4,8 +4,8 @@
 
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
-using Looma.Domain.Repositories;
 using Looma.Domain.Search;
+using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.ViewModels.Base;
@@ -16,9 +16,9 @@ namespace Looma.Presentation.ViewModels.Sections.Documents;
 
 public partial class DocumentsListViewModel(
     INavigationService nav,
-    IDocumentRepository repo,
-    IPatternRepository patternRepo,
-    IProjectRepository projectRepo,
+    IDocumentService documentService,
+    IPatternService patternService,
+    IProjectService projectService,
     INotificationService notifications)
 : PaginatePageViewModelBase<Document, DocumentSummaryViewModel, Guid>(searcher: new DocumentSearchSpec())
 {
@@ -33,7 +33,7 @@ public partial class DocumentsListViewModel(
         IsBusy = true;
         try
         {
-            var result = await repo.GetAllAsync();
+            var result = await documentService.GetAllAsync();
             if (result.Failed || result.Value is null)
             {
                 notifications.Error(result.Error ?? "Impossible de charger les documents.");
@@ -64,7 +64,7 @@ public partial class DocumentsListViewModel(
 
     private async Task OpenAsync(Guid id)
     {
-        var result = await repo.OpenAsync(id);
+        var result = await documentService.OpenAsync(id);
         if (result.Failed)
             notifications.Error(result.Error ?? "Impossible d'ouvrir le document.");
     }
@@ -73,7 +73,7 @@ public partial class DocumentsListViewModel(
     {
         if (document.PatternId.HasValue)
         {
-            var result = await patternRepo.GetByIdAsync(document.PatternId.Value);
+            var result = await patternService.GetByIdAsync(document.PatternId.Value);
             if (result.Failed || result.Value is null)
             {
                 notifications.Error(result.Error ?? "Impossible d'ouvrir le patron lié.");
@@ -86,7 +86,7 @@ public partial class DocumentsListViewModel(
 
         if (document.ProjectId.HasValue)
         {
-            var result = await projectRepo.GetByIdAsync(document.ProjectId.Value);
+            var result = await projectService.GetByIdAsync(document.ProjectId.Value);
             if (result.Failed || result.Value is null)
             {
                 notifications.Error(result.Error ?? "Impossible d'ouvrir le projet lié.");
@@ -99,7 +99,7 @@ public partial class DocumentsListViewModel(
 
     private async Task DeleteAsync(Guid id)
     {
-        var result = await repo.DeleteAsync(id);
+        var result = await documentService.DeleteAsync(id);
         if (result.Failed)
         {
             notifications.Error(result.Error ?? "Impossible de supprimer le document.");

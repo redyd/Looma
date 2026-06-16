@@ -5,8 +5,8 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
-using Looma.Domain.Repositories;
 using Looma.Domain.Search;
+using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
@@ -17,7 +17,7 @@ public record WoolSummary(Wool Wool, ICommand OpenDetailCommand);
 
 public partial class WoolListViewModel(
     INavigationService nav,
-    IWoolRepository woolRepo,
+    IWoolService woolService,
     INotificationService notifications,
     WoolSearchSpec searchSpec)
     : PaginatePageViewModelBase<Wool, WoolSummary, int>(searchSpec)
@@ -32,7 +32,7 @@ public partial class WoolListViewModel(
         IsBusy = true;
         try
         {
-            var woolsResult = await woolRepo.GetAllAsync();
+            var woolsResult = await woolService.GetAllAsync();
             if (woolsResult.Failed || woolsResult.Value is null)
             {
                 notifications.Error(woolsResult.Error ?? "Impossible de charger les laines.");

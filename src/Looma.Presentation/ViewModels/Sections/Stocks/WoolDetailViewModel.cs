@@ -6,7 +6,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
-using Looma.Domain.Repositories;
 using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
@@ -18,7 +17,7 @@ namespace Looma.Presentation.ViewModels.Sections.Stocks;
 public partial class WoolDetailViewModel : PageViewModelBase
 {
     private readonly INavigationService _nav;
-    private readonly IWoolRepository _woolRepo;
+    private readonly IWoolService _woolService;
     private readonly INotificationService _notifications;
     private readonly WoolStockCalculator _calculator;
     private Wool? _wool;
@@ -89,7 +88,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
         var toSend = _calculator.ComputeStockQuantity(AdjustmentMode, isAddition, (double)AdjustQuantity, factor);
         
-        var result = await _woolRepo.AddStock(WoolId, toSend);
+        var result = await _woolService.AddStockAsync(WoolId, toSend);
         if (result.Failed)
         {
             ErrorMessage = "Impossible de mettre à jour les données";
@@ -98,7 +97,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
         }
 
         _notifications.Success("Stock correctement mis à jour");
-        var updated = await _woolRepo.GetByIdAsync(WoolId);
+        var updated = await _woolService.GetByIdAsync(WoolId);
         if (updated.Value is not null)
         {
             Refresh(updated.Value);
@@ -127,12 +126,12 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
     public WoolDetailViewModel(
         INavigationService nav,
-        IWoolRepository woolRepo,
+        IWoolService woolService,
         INotificationService notifications,
         WoolStockCalculator calculator)
     {
         _nav = nav;
-        _woolRepo = woolRepo;
+        _woolService = woolService;
         _notifications = notifications;
         _calculator = calculator;
         Title = "Détail laine";
@@ -148,7 +147,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
     public override async void OnNavigatedTo()
     {
         if (WoolId == 0) return;
-        var wool = await _woolRepo.GetByIdAsync(WoolId);
+        var wool = await _woolService.GetByIdAsync(WoolId);
         if (wool.Failed || wool.Value is null)
         {
             ErrorMessage = wool.Error ?? $"La laine {WoolId} est introuvable.";
@@ -180,8 +179,6 @@ public partial class WoolDetailViewModel : PageViewModelBase
             .Select(s => $"avares://Looma.App/Assets/WoolTypeImages/{s}.png")
             .ToList();
         
-        Console.WriteLine($"Images are {string.Join(", ", Images)}");
-
         OnPropertyChanged(nameof(NeedleSizeDisplay));
         OnPropertyChanged(nameof(DetailStats));
         OnPropertyChanged(nameof(DetailInfos));
@@ -196,7 +193,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
         IsBusy = true;
         try
         {
-            var result = await _woolRepo.DeleteAsync(WoolId);
+            var result = await _woolService.DeleteAsync(WoolId);
             if (result.Failed)
             {
                 ErrorMessage = result.Error;

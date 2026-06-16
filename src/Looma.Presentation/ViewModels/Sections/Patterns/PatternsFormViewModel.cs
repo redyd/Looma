@@ -4,7 +4,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Looma.Domain.Repositories;
+using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.ViewModels.Base;
@@ -18,8 +18,8 @@ namespace Looma.Presentation.ViewModels.Sections.Patterns;
 
 public partial class PatternsFormViewModel(
     INavigationService nav,
-    IPatternRepository patternRepo,
-    IDocumentRepository documentRepo,
+    IPatternService patternService,
+    IDocumentService documentService,
     INotificationService notifications,
     DocumentsPickerFormViewModel documents)
     : PageViewModelBase
@@ -74,7 +74,7 @@ public partial class PatternsFormViewModel(
             var wasEdit = _isEdit;
 
             var patternResult = _isEdit
-                ? await patternRepo.UpdateAsync(new UpdatePatternRequest(
+                ? await patternService.UpdateAsync(new UpdatePatternRequest(
                     _patternId,
                     Name,
                     Url,
@@ -83,7 +83,7 @@ public partial class PatternsFormViewModel(
                     IsPersonal,
                     BeginDate.ToDateOnly(),
                     EndDate.ToDateOnly()))
-                : await patternRepo.AddAsync(new CreatePatternRequest(
+                : await patternService.AddAsync(new CreatePatternRequest(
                     Name,
                     Url,
                     Note,
@@ -144,7 +144,7 @@ public partial class PatternsFormViewModel(
         ErrorMessage = null;
 
         documents.InitCreate(async (sourcePath, nickname)
-            => await documentRepo.AddAsync(new CreateDocumentRequest(sourcePath, nickname, PatternId: _patternId)));
+            => await documentService.AddAsync(new CreateDocumentRequest(sourcePath, nickname, PatternId: _patternId)));
         DocumentsLoaded = true;
 
         OnPropertyChanged(nameof(IsCreateMode));
@@ -171,7 +171,7 @@ public partial class PatternsFormViewModel(
         DocumentsLoaded = false;
         IsBusy = true;
         var ok = await documents.InitEditAsync(documentIds, async (id, nickname)
-            => await documentRepo.UpdateAsync(new UpdateDocumentRequest(id, nickname)));
+            => await documentService.UpdateAsync(new UpdateDocumentRequest(id, nickname)));
 
         if (!ok)
         {

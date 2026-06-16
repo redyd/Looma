@@ -8,7 +8,6 @@ using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
-using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
@@ -23,10 +22,9 @@ namespace Looma.Presentation.ViewModels.Sections.Projects;
 
 public partial class ProjectsDetailViewModel(
     INavigationService nav,
-    IProjectRepository projectRepo,
+    IProjectService projectService,
     INotificationService notifications,
-    WoolStockService stockService,
-    ProjectService projectService,
+    IWoolStockService stockService,
     IDocumentFilePicker documentFilePicker)
     : PageViewModelBase
 {
@@ -115,7 +113,7 @@ public partial class ProjectsDetailViewModel(
         if (ProjectId == 0)
             return;
 
-        var result = await projectRepo.GetByIdAsync(ProjectId);
+        var result = await projectService.GetByIdAsync(ProjectId);
         if (result.Failed || result.Value is null)
         {
             ErrorMessage = result.Error ?? $"Le projet {ProjectId} est introuvable.";
@@ -200,7 +198,7 @@ public partial class ProjectsDetailViewModel(
             return;
         }
 
-        var projectResult = await projectRepo.GetByIdAsync(ProjectId);
+        var projectResult = await projectService.GetByIdAsync(ProjectId);
         if (projectResult.Failed || projectResult.Value is null)
         {
             notifications.Error(projectResult.Error ?? "Impossible de mettre à jour la laine utilisée.");
@@ -323,7 +321,7 @@ public partial class ProjectsDetailViewModel(
         IsBusy = true;
         try
         {
-            var result = await projectRepo.DeleteAsync(ProjectId);
+            var result = await projectService.DeleteAsync(ProjectId);
             if (result.Failed)
             {
                 ErrorMessage = result.Error;

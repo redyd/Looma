@@ -7,8 +7,8 @@ using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
-using Looma.Domain.Repositories;
 using Looma.Domain.Search;
+using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.ViewModels.Base;
@@ -19,9 +19,10 @@ namespace Looma.Presentation.ViewModels.Sections.Projects;
 
 public partial class ProjectsListViewModel(
     INavigationService nav,
-    IProjectRepository projectRepo,
+    IProjectService projectService,
     INotificationService notifications) : PaginatePageViewModelBase<Project, ProjectSummaryViewModel, int>(new ProjectSearchSpec())
 {
+    private bool _isInitialized;
 
     [ObservableProperty]
     public partial ProjectStatusFilterViewModel? SelectedStatusFilter { get; set; }
@@ -35,7 +36,12 @@ public partial class ProjectsListViewModel(
 
     public override async void OnNavigatedTo()
     {
-        SelectedStatusFilter = StatusFilters.FirstOrDefault();
+        if (!_isInitialized)
+        {
+            SelectedStatusFilter = StatusFilters.FirstOrDefault();
+            _isInitialized = true;
+        }
+
         await LoadAsync();
     }
 
@@ -49,7 +55,7 @@ public partial class ProjectsListViewModel(
 
         try
         {
-            var result = await projectRepo.GetAllAsync();
+            var result = await projectService.GetAllAsync();
             if (result.Failed || result.Value is null)
             {
                 notifications.Error(result.Error ?? "Impossible de charger les projets.");
@@ -74,6 +80,9 @@ public partial class ProjectsListViewModel(
     
     partial void OnSelectedStatusFilterChanged(ProjectStatusFilterViewModel? value)
     {
+        if (!_isInitialized)
+            return;
+
         CurrentPage = 1;
         _ = LoadAsync();
     }

@@ -9,7 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
-using Looma.Domain.Repositories;
+using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.UserControls;
@@ -21,8 +21,8 @@ namespace Looma.Presentation.ViewModels.Sections.Patterns;
 
 public partial class PatternsDetailViewModel(
     INavigationService nav,
-    IPatternRepository patternRepo,
-    IDocumentRepository documentRepo,
+    IPatternService patternService,
+    IDocumentService documentService,
     INotificationService notifications) : PageViewModelBase
 {
     private int _patternId;
@@ -95,7 +95,7 @@ public partial class PatternsDetailViewModel(
     {
         if (_patternId == 0) return;
 
-        var pattern = await patternRepo.GetByIdAsync(_patternId);
+        var pattern = await patternService.GetByIdAsync(_patternId);
         if (pattern.Failed || pattern.Value is null)
         {
             ErrorMessage = pattern.Error ?? $"Le patron {_patternId} est introuvable.";
@@ -136,7 +136,7 @@ public partial class PatternsDetailViewModel(
 
     private async Task OpenDocumentAsync(Guid id)
     {
-        var result = await documentRepo.OpenAsync(id);
+        var result = await documentService.OpenAsync(id);
         if (result.Failed)
             notifications.Error(result.Error ?? "Impossible d'ouvrir le document.");
     }
@@ -172,7 +172,7 @@ public partial class PatternsDetailViewModel(
         IsBusy = true;
         try
         {
-            var result = await patternRepo.DeleteAsync(_patternId);
+            var result = await patternService.DeleteAsync(_patternId);
             if (result.Failed)
             {
                 ErrorMessage = result.Error;

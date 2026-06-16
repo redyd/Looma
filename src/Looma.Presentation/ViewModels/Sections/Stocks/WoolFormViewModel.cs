@@ -6,15 +6,15 @@ using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
-using Looma.Domain.Repositories;
 using Looma.Domain.Request;
+using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
 
 namespace Looma.Presentation.ViewModels.Sections.Stocks;
 
-public partial class WoolFormViewModel(INavigationService nav, IWoolRepository repo, INotificationService notifications)
+public partial class WoolFormViewModel(INavigationService nav, IWoolService woolService, INotificationService notifications)
     : PageViewModelBase
 {
     private bool _isEdit;
@@ -142,7 +142,7 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
             IsBusy = true;
             if (_isEdit)
             {
-                var result = await repo.UpdateAsync(new UpdateWoolRequest(
+                var result = await woolService.UpdateAsync(new UpdateWoolRequest(
                     _editingId,
                     Name,
                     Brand,
@@ -163,7 +163,7 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
             }
             else
             {
-                var result = await repo.AddAsync(new CreateWoolRequest(
+                var result = await woolService.AddAsync(new CreateWoolRequest(
                     Name,
                     Brand,
                     Material,

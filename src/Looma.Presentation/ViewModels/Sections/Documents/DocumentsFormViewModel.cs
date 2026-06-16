@@ -4,8 +4,8 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Looma.Domain.Repositories;
 using Looma.Domain.Request;
+using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.ViewModels.Base;
@@ -14,7 +14,7 @@ namespace Looma.Presentation.ViewModels.Sections.Documents;
 
 public partial class DocumentsFormViewModel(
     INavigationService nav,
-    IDocumentRepository repo,
+    IDocumentService documentService,
     INotificationService notifications)
     : PageViewModelBase
 {
@@ -57,7 +57,7 @@ public partial class DocumentsFormViewModel(
         {
             IsBusy = true;
 
-            var result = await repo.UpdateAsync(new UpdateDocumentRequest(_editingId, Nickname));
+            var result = await documentService.UpdateAsync(new UpdateDocumentRequest(_editingId, Nickname));
             if (result.Failed)
             {
                 notifications.Error(result.Error ?? "Impossible de mettre à jour le document.");

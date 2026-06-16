@@ -7,14 +7,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Extensions;
-using Looma.Domain.Repositories;
+using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 
 namespace Looma.Presentation.ViewModels.Shared.Documents;
 
 public partial class DocumentsPickerFormViewModel(
-    IDocumentRepository documentRepo,
+    IDocumentService documentService,
     IDocumentFilePicker filePicker,
     INotificationService notifications)
     : ObservableObject
@@ -61,7 +61,7 @@ public partial class DocumentsPickerFormViewModel(
         if (documentIds.Count == 0)
             return true;
 
-        var result = await documentRepo.GetAllAsync();
+        var result = await documentService.GetAllAsync();
         if (result.Failed || result.Value is null)
         {
             notifications.Error(result.Error ?? "Impossible de charger les documents.");
@@ -95,7 +95,7 @@ public partial class DocumentsPickerFormViewModel(
         }
         foreach (var deletedId in _deletedDocumentIds.ToList())
         {
-            var result = await documentRepo.DeleteAsync(deletedId);
+            var result = await documentService.DeleteAsync(deletedId);
             if (result.Failed)
             {
                 notifications.Error(result.Error ?? "Impossible de supprimer le document.");

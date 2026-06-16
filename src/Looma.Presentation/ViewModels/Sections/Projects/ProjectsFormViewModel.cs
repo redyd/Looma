@@ -8,7 +8,6 @@ using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
-using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 using Looma.Domain.Search;
 using Looma.Domain.Services;
@@ -23,13 +22,12 @@ namespace Looma.Presentation.ViewModels.Sections.Projects;
 
 public partial class ProjectsFormViewModel(
     INavigationService nav,
-    IProjectRepository projectRepo,
-    IPatternRepository patternRepo,
-    IWoolRepository woolRepo,
-    IDocumentRepository documentRepo,
+    IProjectService projectService,
+    IPatternService patternService,
+    IWoolService woolService,
+    IDocumentService documentService,
     IDocumentFilePicker filePicker,
     INotificationService notifications,
-    ProjectService projectService,
     PatternSearchSpec patternSearchSpec,
     WoolSearchSpec woolSearchSpec)
     : PageViewModelBase
@@ -160,8 +158,8 @@ public partial class ProjectsFormViewModel(
         IsBusy = true;
         try
         {
-            var patternsResult = await patternRepo.GetAllAsync();
-            var woolsResult = await woolRepo.GetAllAsync();
+            var patternsResult = await patternService.GetAllAsync();
+            var woolsResult = await woolService.GetAllAsync();
 
             if (patternsResult.Failed || patternsResult.Value is null)
             {
@@ -309,7 +307,7 @@ public partial class ProjectsFormViewModel(
                     EndDate.ToDateOnly(),
                     SelectedPattern?.Id,
                     woolIds))
-                : await projectRepo.AddAsync(new CreateProjectRequest(
+                : await projectService.AddAsync(new CreateProjectRequest(
                     Name,
                     Status,
                     Note,
@@ -376,7 +374,7 @@ public partial class ProjectsFormViewModel(
     {
         foreach (var imageId in _deletedImageIds.ToList())
         {
-            var deleteResult = await documentRepo.DeleteAsync(imageId);
+            var deleteResult = await documentService.DeleteAsync(imageId);
             if (deleteResult.Failed)
             {
                 ErrorMessage = deleteResult.Error;
@@ -394,7 +392,7 @@ public partial class ProjectsFormViewModel(
                 return false;
             }
 
-            var documentResult = await documentRepo.AddAsync(new CreateDocumentRequest(
+            var documentResult = await documentService.AddAsync(new CreateDocumentRequest(
                 image.SourcePath,
                 string.IsNullOrWhiteSpace(image.Nickname)
                     ? Path.GetFileNameWithoutExtension(image.SourcePath)
