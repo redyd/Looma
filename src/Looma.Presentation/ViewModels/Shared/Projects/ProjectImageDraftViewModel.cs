@@ -5,7 +5,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Looma.Presentation.ViewModels.Sections.Projects;
+namespace Looma.Presentation.ViewModels.Shared.Projects;
 
 public partial class ProjectImageDraftViewModel(
     string sourcePath,

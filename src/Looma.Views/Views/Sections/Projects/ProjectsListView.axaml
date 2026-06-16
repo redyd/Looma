@@ -7,6 +7,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
+             xmlns:projects="clr-namespace:Looma.Presentation.ViewModels.Shared.Projects;assembly=Looma.Presentation"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsListView"
              x:DataType="vm:ProjectsListViewModel">
 
@@ -80,7 +81,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="vm:ProjectSummaryViewModel">
+                    <DataTemplate x:DataType="projects:ProjectSummaryViewModel">
                         <Button Classes="card-button"
                                 Command="{Binding OpenDetailCommand}"
                                 Padding="0"

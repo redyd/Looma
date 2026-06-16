@@ -5,7 +5,7 @@
 using System.Windows.Input;
 using Looma.Domain.Entities;
 
-namespace Looma.Presentation.ViewModels.Sections.Projects;
+namespace Looma.Presentation.ViewModels.Shared.Projects;
 
 public class ProjectSelectableWoolViewModel(Wool wool, bool isSelected, ICommand toggleCommand)
 {

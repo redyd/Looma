@@ -4,6 +4,6 @@
 
 using Looma.Domain.Core;
 
-namespace Looma.Presentation.ViewModels.Sections.Projects;
+namespace Looma.Presentation.ViewModels.Shared.Projects;
 
-public record ProjectPatternTypeFilterViewModel(string Label, PatternType? Type);
+public record ProjectStatusFilterViewModel(string Label, Status? Type);

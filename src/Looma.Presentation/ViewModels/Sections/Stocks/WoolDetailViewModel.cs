@@ -23,26 +23,53 @@ public partial class WoolDetailViewModel : PageViewModelBase
     private readonly WoolStockCalculator _calculator;
     private Wool? _wool;
 
-    [ObservableProperty] private int _woolId;
-    [ObservableProperty] private string _name = string.Empty;
-    [ObservableProperty] private string _brand = string.Empty;
-    [ObservableProperty] private string _material = string.Empty;
-    [ObservableProperty] private string _color = string.Empty;
+    [ObservableProperty]
+    public partial int WoolId { get; set; }
 
-    [ObservableProperty] private double _weight;
-    [ObservableProperty] private double _length;
-    [ObservableProperty] private double _stockWeight;
-    [ObservableProperty] private double _stockLength;
-    [ObservableProperty] private double _batchQuantity;
+    [ObservableProperty]
+    public partial string Name { get; set; } = string.Empty;
 
-    [ObservableProperty] private double _needleMinSize;
-    [ObservableProperty] private double _needleMaxSize;
-    [ObservableProperty] private string? _errorMessage;
-    
-    [ObservableProperty] private List<string> _images = [];
+    [ObservableProperty]
+    public partial string Brand { get; set; } = string.Empty;
 
-    [ObservableProperty] private double? _adjustQuantity;
-    [ObservableProperty] private StockAdjustmentMode _adjustmentMode = StockAdjustmentMode.ByBall;
+    [ObservableProperty]
+    public partial string Material { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string Color { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial double Weight { get; set; }
+
+    [ObservableProperty]
+    public partial double Length { get; set; }
+
+    [ObservableProperty]
+    public partial double StockWeight { get; set; }
+
+    [ObservableProperty]
+    public partial double StockLength { get; set; }
+
+    [ObservableProperty]
+    public partial double BatchQuantity { get; set; }
+
+    [ObservableProperty]
+    public partial double NeedleMinSize { get; set; }
+
+    [ObservableProperty]
+    public partial double NeedleMaxSize { get; set; }
+
+    [ObservableProperty]
+    public partial string? ErrorMessage { get; set; }
+
+    [ObservableProperty]
+    public partial List<string> Images { get; set; } = [];
+
+    [ObservableProperty]
+    public partial double? AdjustQuantity { get; set; }
+
+    [ObservableProperty]
+    public partial StockAdjustmentMode AdjustmentMode { get; set; } = StockAdjustmentMode.ByBall;
 
     public bool CanAdjust => AdjustQuantity > 0;
     partial void OnAdjustQuantityChanged(double? value) => OnPropertyChanged(nameof(CanAdjust));

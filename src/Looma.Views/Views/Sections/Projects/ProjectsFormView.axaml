@@ -7,6 +7,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
+             xmlns:shared="clr-namespace:Looma.Presentation.ViewModels.Shared;assembly=Looma.Presentation"
+             xmlns:projects="clr-namespace:Looma.Presentation.ViewModels.Shared.Projects;assembly=Looma.Presentation"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsFormView"
              x:DataType="vm:ProjectsFormViewModel">
 
@@ -106,7 +108,7 @@
                             <ItemsControl ItemsSource="{Binding ExistingImages}"
                                           IsVisible="{Binding HasExistingImages}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:ProjectImageViewModel">
+                                    <DataTemplate x:DataType="projects:ProjectImageViewModel">
                                         <Border Classes="surface-panel"
                                                 Padding="12"
                                                 Margin="0 0 0 8">
@@ -140,7 +142,7 @@
                             <ItemsControl ItemsSource="{Binding NewImages}"
                                           IsVisible="{Binding HasNewImages}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:ProjectImageDraftViewModel">
+                                    <DataTemplate x:DataType="projects:ProjectImageDraftViewModel">
                                         <Border Classes="surface-panel"
                                                 Padding="12"
                                                 Margin="0 0 0 8">
@@ -191,7 +193,7 @@
                                               Classes="form-select"
                                               HorizontalAlignment="Stretch">
                                         <ComboBox.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:ProjectPatternTypeFilterViewModel">
+                                            <DataTemplate x:DataType="projects:ProjectPatternTypeFilterViewModel">
                                                 <TextBlock Text="{Binding Label}" />
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
@@ -212,7 +214,7 @@
                                 </Grid>
                                 <ItemsControl ItemsSource="{Binding SelectedPatterns}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ProjectSelectablePatternViewModel">
+                                        <DataTemplate x:DataType="projects:ProjectSelectablePatternViewModel">
                                             <Border Padding="12 10"
                                                     Background="{StaticResource BackgroundHoverBrush}"
                                                     BorderBrush="{StaticResource PrimaryDarkBrush}"
@@ -268,7 +270,7 @@
 
                                 <ItemsControl ItemsSource="{Binding PatternResults}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ProjectSelectablePatternViewModel">
+                                        <DataTemplate x:DataType="projects:ProjectSelectablePatternViewModel">
                                             <Button Command="{Binding SelectCommand}"
                                                     Padding="0"
                                                     Background="Transparent"
@@ -334,7 +336,7 @@
                                 <TextBlock Classes="form-label" Text="Laines sélectionnées" />
                                 <ItemsControl ItemsSource="{Binding SelectedWools}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ProjectSelectableWoolViewModel">
+                                        <DataTemplate x:DataType="projects:ProjectSelectableWoolViewModel">
                                             <Button Command="{Binding ToggleCommand}"
                                                     Padding="0"
                                                     Background="Transparent"
@@ -400,7 +402,7 @@
 
                                 <ItemsControl ItemsSource="{Binding WoolResults}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ProjectSelectableWoolViewModel">
+                                        <DataTemplate x:DataType="projects:ProjectSelectableWoolViewModel">
                                             <Button Command="{Binding ToggleCommand}"
                                                     Padding="0"
                                                     Background="Transparent"

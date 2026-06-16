@@ -5,6 +5,7 @@
 using System;
 using Looma.Domain.Repositories;
 using Looma.App.Services;
+using Looma.Domain.Search;
 using Looma.Domain.Services;
 using Looma.Infrastructure.Repositories;
 using Looma.Presentation.Notifications;
@@ -18,6 +19,7 @@ using Looma.Presentation.ViewModels.Sections.Documents;
 using Looma.Presentation.ViewModels.Sections.Patterns;
 using Microsoft.Extensions.DependencyInjection;
 using Looma.Presentation.ViewModels.Shared;
+using Looma.Presentation.ViewModels.Shared.Documents;
 
 namespace Looma.App;
 
@@ -28,6 +30,11 @@ public static class DependencyInjection
         services.AddScoped<WoolStockCalculator>();
         services.AddScoped<WoolStockService>();
         services.AddScoped<ProjectService>();
+
+        services.AddScoped<DocumentSearchSpec>();
+        services.AddScoped<ProjectSearchSpec>();
+        services.AddScoped<PatternSearchSpec>();
+        services.AddScoped<WoolSearchSpec>();
     }
 
     public static void AddPresentation(this IServiceCollection services)
@@ -73,21 +80,24 @@ public static class DependencyInjection
                     new ProjectsListViewModel(nav,
                         sp.GetRequiredService<IProjectRepository>(),
                         sp.GetRequiredService<INotificationService>())),
+                
                 MakeSection<WoolListViewModel>(nav =>
                     new WoolListViewModel(nav, sp.GetRequiredService<IWoolRepository>(),
-                        sp.GetRequiredService<INotificationService>())),
+                        sp.GetRequiredService<INotificationService>(),
+                        sp.GetRequiredService<WoolSearchSpec>())),
+                
                 MakeSection<PatternsListViewModel>(nav =>
                     new PatternsListViewModel(nav,
                         sp.GetRequiredService<IPatternRepository>(),
-                        sp.GetRequiredService<INotificationService>(),
-                        sp.GetRequiredService<IDataRefreshService>())),
+                        sp.GetRequiredService<INotificationService>())),
+                    
                 MakeSection<DocumentsListViewModel>(nav =>
                     new DocumentsListViewModel(nav,
                         sp.GetRequiredService<IDocumentRepository>(),
                         sp.GetRequiredService<IPatternRepository>(),
                         sp.GetRequiredService<IProjectRepository>(),
-                        sp.GetRequiredService<INotificationService>(),
-                        sp.GetRequiredService<IDataRefreshService>())),
+                        sp.GetRequiredService<INotificationService>())),
+                
                 sp.GetRequiredService<INotificationService>()
             );
         });

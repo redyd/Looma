@@ -20,31 +20,40 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolRepository r
     private bool _isEdit;
     private int _editingId;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string _name = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial string Name { get; set; } = string.Empty;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string _brand = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial string Brand { get; set; } = string.Empty;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string _material = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial string Material { get; set; } = string.Empty;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private Color _selectedColor = Colors.Gray;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial Color SelectedColor { get; set; } = Colors.Gray;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string _weight = string.Empty;
-    
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string _length = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial string Weight { get; set; } = string.Empty;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string _needleMinText = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial string Length { get; set; } = string.Empty;
 
-    [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    private string _needleMaxText = string.Empty;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial string NeedleMinText { get; set; } = string.Empty;
 
-    [ObservableProperty] private string? _errorMessage;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial string NeedleMaxText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string? ErrorMessage { get; set; }
 
     public string SelectedColorHex =>
         $"#{SelectedColor.R:X2}{SelectedColor.G:X2}{SelectedColor.B:X2}";

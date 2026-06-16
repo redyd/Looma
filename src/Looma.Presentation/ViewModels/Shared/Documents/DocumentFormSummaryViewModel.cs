@@ -5,7 +5,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Looma.Presentation.ViewModels.Shared;
+namespace Looma.Presentation.ViewModels.Shared.Documents;
 
 public partial class DocumentFormSummaryViewModel(
     Guid documentId,

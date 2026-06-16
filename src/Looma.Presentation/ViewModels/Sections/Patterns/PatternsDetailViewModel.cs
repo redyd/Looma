@@ -15,6 +15,7 @@ using Looma.Presentation.Notifications;
 using Looma.Presentation.UserControls;
 using Looma.Presentation.ViewModels.Base;
 using Looma.Presentation.ViewModels.Sections.Documents;
+using Looma.Presentation.ViewModels.Shared.Patterns;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
 
@@ -54,7 +55,7 @@ public partial class PatternsDetailViewModel(
     public partial ObservableCollection<DocumentSummaryViewModel> Documents { get; set; } = [];
 
     [ObservableProperty]
-    public partial ObservableCollection<PatternProject> Projects { get; set; } = [];
+    public partial ObservableCollection<PatternProjectViewModel> Projects { get; set; } = [];
 
     public bool HasUrl => !string.IsNullOrWhiteSpace(Url);
     public bool HasDocuments => Documents.Count > 0;
@@ -120,7 +121,11 @@ public partial class PatternsDetailViewModel(
                 d,
                 new AsyncRelayCommand(() => OpenDocumentAsync(d.Id)))));
 
-        Projects = new ObservableCollection<PatternProject>(pattern.Projects);
+        Projects = new ObservableCollection<PatternProjectViewModel>(pattern.Projects.Select(p => new PatternProjectViewModel
+        {
+            Name = p.Name,
+            StatusDisplay = p.Status.GetDisplayName()
+        }));
 
         OnPropertyChanged(nameof(HasUrl));
         OnPropertyChanged(nameof(HasDocuments));
@@ -157,8 +162,8 @@ public partial class PatternsDetailViewModel(
 
     [RelayCommand]
     private void Edit() =>
-        nav.NavigateTo<PatternsFormViewModel>(vm =>
-            vm.InitEdit(_patternId, Name, Url, Note, Type, IsPersonal, BeginDate, EndDate,
+        nav.NavigateTo<PatternsFormViewModel>(async void (vm) =>
+            await vm.InitEdit(_patternId, Name, Url, Note, Type, IsPersonal, BeginDate, EndDate,
                 Documents.Select(d => d.Document.Id).ToList()));
 
     [RelayCommand]

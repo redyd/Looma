@@ -13,9 +13,11 @@ using Looma.Domain.Request;
 using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
+using Looma.Presentation.Services;
 using Looma.Presentation.UserControls;
 using Looma.Presentation.ViewModels.Base;
 using Looma.Presentation.ViewModels.Sections.Patterns;
+using Looma.Presentation.ViewModels.Shared.Projects;
 
 namespace Looma.Presentation.ViewModels.Sections.Projects;
 
@@ -24,7 +26,8 @@ public partial class ProjectsDetailViewModel(
     IProjectRepository projectRepo,
     INotificationService notifications,
     WoolStockService stockService,
-    ProjectService projectService)
+    ProjectService projectService,
+    IDocumentFilePicker documentFilePicker)
     : PageViewModelBase
 {
     [ObservableProperty]
@@ -140,7 +143,7 @@ public partial class ProjectsDetailViewModel(
                 new AsyncRelayCommand(() => RemoveWoolUsageAsync(usage)))));
         Images = new ObservableCollection<ProjectImageViewModel>(
             project.Files
-                .Where(IsSupportedImage)
+                .Where(document => documentFilePicker.IsSupportedFile(DocumentPickerMode.Images, document))
                 .Select(image => new ProjectImageViewModel(image)));
         SelectedImageIndex = Images.Count == 0 ? -1 : Math.Clamp(SelectedImageIndex, 0, Images.Count - 1);
 
@@ -339,18 +342,4 @@ public partial class ProjectsDetailViewModel(
 
     [RelayCommand]
     private void GoBack() => nav.GoBack();
-
-    private static bool IsSupportedImage(Document document) =>
-        document.StoragePath is not null && IsSupportedImagePath(document.StoragePath);
-
-    private static bool IsSupportedImagePath(string path)
-    {
-        var extension = Path.GetExtension(path);
-        return extension.Equals(".png", StringComparison.OrdinalIgnoreCase)
-            || extension.Equals(".jpg", StringComparison.OrdinalIgnoreCase)
-            || extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase)
-            || extension.Equals(".webp", StringComparison.OrdinalIgnoreCase)
-            || extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase)
-            || extension.Equals(".gif", StringComparison.OrdinalIgnoreCase);
-    }
 }

@@ -11,31 +11,56 @@ using Avalonia.Platform.Storage;
 using Looma.Presentation.Services;
 using Looma.Domain.Core;
 using System;
+using Looma.Domain.Entities;
 
 namespace Looma.App.Services;
 
 public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
 {
+    private static readonly List<string> ImageExtensions = [".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif"];
     public Task<string?> PickAsync(DocumentPickerMode mode) => mode switch
     {
         DocumentPickerMode.Images => PickFileAsync("Sélectionner une image", false, ImageFileTypes),
-        DocumentPickerMode.Files or DocumentPickerMode.All => PickFileAsync("Sélectionner un document", false, AllFileTypes),
+        DocumentPickerMode.All => PickFileAsync("Sélectionner un document", false, AllFileTypes),
         _ => throw new ArgumentOutOfRangeException(nameof(mode))
     };
 
+    public async Task<List<string>> PicksAsync(DocumentPickerMode mode)
+    {
+        var paths = mode switch
+        {
+            DocumentPickerMode.Images => await PickFilesAsync("Sélectionner des images", true, ImageFileTypes),
+            DocumentPickerMode.All => await PickFilesAsync("Sélectionner des documents", true, AllFileTypes),
+            _ => throw new ArgumentOutOfRangeException(nameof(mode))
+        };
+
+        return [.. paths];
+    }
+
+    public bool IsSupportedFile(DocumentPickerMode mode, Document document)
+    {
+        if (document.StoragePath is null) return false;
+        if (mode == DocumentPickerMode.All) return true;
+        
+        var fileExt = document.StoragePath.Split('.')[^1];
+        var isImage = ImageExtensions.Any(ext => fileExt.Equals(ext, StringComparison.OrdinalIgnoreCase));
+        
+        return isImage;
+    }
+
     private static IReadOnlyList<FilePickerFileType> AllFileTypes =>
     [
-        new FilePickerFileType("Tous les fichiers") { Patterns = ["*"] }
+        new("Tous les fichiers") { Patterns = ["*"] }
     ];
 
     private static IReadOnlyList<FilePickerFileType> ImageFileTypes =>
     [
-        new FilePickerFileType("Images")
+        new("Images")
         {
-            Patterns = ["*.png", "*.jpg", "*.jpeg", "*.webp", "*.bmp", "*.gif"],
-            MimeTypes = ["image/png", "image/jpeg", "image/webp", "image/bmp", "image/gif"]
+            Patterns = ImageExtensions.Select(ext => $"*{ext}").ToArray(),
+            MimeTypes = ImageExtensions.Select(ext => $"image/{ext}").ToArray()
         },
-        new FilePickerFileType("Tous les fichiers")
+        new("Tous les fichiers")
         {
             Patterns = ["*"]
         }

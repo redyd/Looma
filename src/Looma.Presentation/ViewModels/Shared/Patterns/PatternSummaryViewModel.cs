@@ -6,7 +6,7 @@ using System.Windows.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
 
-namespace Looma.Presentation.ViewModels.Sections.Patterns;
+namespace Looma.Presentation.ViewModels.Shared.Patterns;
 
 public record PatternSummaryViewModel(
     Pattern Pattern,

@@ -9,6 +9,7 @@ using Looma.Domain.Search;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.ViewModels.Base;
+using Looma.Presentation.ViewModels.Shared.Patterns;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
 

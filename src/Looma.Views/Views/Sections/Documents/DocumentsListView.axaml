@@ -134,7 +134,7 @@
                     </Grid>
                 </Border>
 
-                <ItemsControl ItemsSource="{Binding CurrentPageDocuments}">
+                <ItemsControl ItemsSource="{Binding CurrentPageEntities}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Spacing="0" />

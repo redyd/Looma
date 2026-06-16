@@ -7,6 +7,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
+             xmlns:patterns="clr-namespace:Looma.Presentation.ViewModels.Shared.Patterns;assembly=Looma.Presentation"
              x:Class="Looma.Views.Views.Sections.Patterns.PatternsListView"
              x:DataType="vm:PatternsListViewModel">
 
@@ -66,14 +67,14 @@
         </Border>
 
         <ScrollViewer>
-            <ItemsControl ItemsSource="{Binding CurrentPagePatterns}">
+            <ItemsControl ItemsSource="{Binding CurrentPageEntities}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="vm:PatternSummaryViewModel">
+                    <DataTemplate x:DataType="patterns:PatternSummaryViewModel">
                         <Button Classes="card-button"
                                 Command="{Binding OpenDetailCommand}"
                                 Padding="0"
@@ -124,17 +125,6 @@
                                                    FontSize="11"
                                                    Opacity="0.65" />
                                     </StackPanel>
-
-                                    <Border Height="1"
-                                            Background="{StaticResource BorderBrush}"
-                                            Opacity="0.5" />
-
-                                    <TextBlock Text="{Binding NotePreview}"
-                                               TextWrapping="Wrap"
-                                               FontSize="13"
-                                               LineHeight="18"
-                                               Opacity="0.85"
-                                               MaxHeight="72" />
                                 </StackPanel>
                             </Border>
                         </Button>

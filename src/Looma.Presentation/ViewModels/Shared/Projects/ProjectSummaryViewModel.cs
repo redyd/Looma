@@ -6,7 +6,7 @@ using System.Windows.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
 
-namespace Looma.Presentation.ViewModels.Sections.Projects;
+namespace Looma.Presentation.ViewModels.Shared.Projects;
 
 public class ProjectSummaryViewModel(Project project, ICommand openDetailCommand)
 {

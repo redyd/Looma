@@ -6,11 +6,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
+using Looma.Domain.Extensions;
 using Looma.Domain.Repositories;
 using Looma.Domain.Search;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.ViewModels.Base;
+using Looma.Presentation.ViewModels.Shared;
+using Looma.Presentation.ViewModels.Shared.Projects;
 
 namespace Looma.Presentation.ViewModels.Sections.Projects;
 
@@ -21,7 +24,14 @@ public partial class ProjectsListViewModel(
 {
 
     [ObservableProperty]
-    public partial Status? SelectedStatusFilter { get; set; }
+    public partial ProjectStatusFilterViewModel? SelectedPatternTypeFilter { get; set; }
+    
+    public IReadOnlyList<ProjectStatusFilterViewModel> PatternTypeFilters { get; } =
+    [
+        new("Tous les status", null),
+        ..Enum.GetValues<Status>()
+            .Select(type => new ProjectStatusFilterViewModel(type.GetDisplayName(), type))
+    ];
 
     public override async void OnNavigatedTo() => await LoadAsync();
 
@@ -43,9 +53,9 @@ public partial class ProjectsListViewModel(
             var allProjects = result.Value;
             var allSummaries = allProjects.Select(BuildSummary);
 
-            if (SelectedStatusFilter is not null)
+            if (SelectedPatternTypeFilter is not null)
             {
-                allSummaries = allSummaries.Where(s => s.Project.Status == SelectedStatusFilter);
+                allSummaries = allSummaries.Where(s => s.Project.Status == SelectedPatternTypeFilter.Type);
             }
 
             ReloadPagesData(allProjects, [.. allSummaries]);

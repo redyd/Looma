@@ -2,18 +2,16 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Looma.Domain.Repositories;
-using Looma.Domain.Request;
-using Looma.Presentation.Services;
-using Looma.Presentation.Notifications;
-using System.Collections.ObjectModel;
-using Looma.Presentation.Shared;
-using Looma.Domain.Extensions;
 using Looma.Domain.Core;
+using Looma.Domain.Extensions;
+using Looma.Domain.Repositories;
+using Looma.Presentation.Notifications;
+using Looma.Presentation.Services;
 
-namespace Looma.Presentation.ViewModels.Shared;
+namespace Looma.Presentation.ViewModels.Shared.Documents;
 
 public partial class DocumentsPickerFormViewModel(
     IDocumentRepository documentRepo,
@@ -24,8 +22,8 @@ public partial class DocumentsPickerFormViewModel(
     private readonly HashSet<Guid> _deletedDocumentIds = [];
     public int MaxDocuments { get; set; } = int.MaxValue;
     public DocumentPickerMode PickerMode { get; set; } = DocumentPickerMode.All;
-    private Func<string, string, Task<ResultBase>> CreateDocumentCallback { get; set; }
-    private Func<Guid, string, Task<ResultBase>> UpdateDocumentCallback { get; set; }
+    private Func<string, string, Task<ResultBase>>? CreateDocumentCallback { get; set; }
+    private Func<Guid, string, Task<ResultBase>>? UpdateDocumentCallback { get; set; }
 
 
     [ObservableProperty]
@@ -91,6 +89,10 @@ public partial class DocumentsPickerFormViewModel(
     /// </summary>
     public async Task<bool> SaveAsync()
     {
+        if (UpdateDocumentCallback is null || CreateDocumentCallback is null)
+        {
+            throw new InvalidOperationException("Callback methods are null");
+        }
         foreach (var deletedId in _deletedDocumentIds.ToList())
         {
             var result = await documentRepo.DeleteAsync(deletedId);

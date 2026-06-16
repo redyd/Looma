@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Presentation.Services;
 
-namespace Looma.Presentation.Shared;
+namespace Looma.Presentation.ViewModels.Shared.Documents;
 
 public partial class DocumentDraftViewModel(IDocumentFilePicker filePicker, DocumentPickerMode mode, Action<DocumentDraftViewModel>? removeRequested = null)
     : ObservableObject
