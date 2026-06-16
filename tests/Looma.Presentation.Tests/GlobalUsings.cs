@@ -3,3 +3,4 @@
 // See LICENSE in the project root for full license text.
 
 global using Xunit;
+global using FluentAssertions;

@@ -164,6 +164,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
 
     private void Refresh(Wool wool)
     {
+        _wool = wool;
         ErrorMessage = null;
         Name = wool.Name;
         Brand = wool.Brand;
