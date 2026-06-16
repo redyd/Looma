@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Extensions;
+using Looma.Domain.Request;
 using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
@@ -22,7 +23,7 @@ public partial class DocumentsPickerFormViewModel(
     private readonly HashSet<Guid> _deletedDocumentIds = [];
     public int MaxDocuments { get; set; } = int.MaxValue;
     public DocumentPickerMode PickerMode { get; set; } = DocumentPickerMode.All;
-    private Func<string, string, Task<ResultBase>>? CreateDocumentCallback { get; set; }
+    private Func<IReadOnlyList<CreateDocumentRequest>, Task<ResultBase>>? CreateDocumentsCallback { get; set; }
     private Func<Guid, string, Task<ResultBase>>? UpdateDocumentCallback { get; set; }
 
 
@@ -43,19 +44,24 @@ public partial class DocumentsPickerFormViewModel(
     [RelayCommand(CanExecute = nameof(CanAddDocument))]
     private void AddDocument() => NewDocuments.Add(CreateDocumentDraft());
 
-    public void InitCreate(Func<string, string, Task<ResultBase>> createDocumentCallback)
+    public void InitCreate(Func<IReadOnlyList<CreateDocumentRequest>, Task<ResultBase>> createDocumentsCallback)
     {
         _deletedDocumentIds.Clear();
         ResetExistingDocuments();
         ResetNewDocuments();
-        CreateDocumentCallback = createDocumentCallback;
+        CreateDocumentsCallback = createDocumentsCallback;
+        UpdateDocumentCallback = null;
     }
 
-    public async Task<bool> InitEditAsync(IReadOnlyCollection<Guid> documentIds, Func<Guid, string, Task<ResultBase>> updateDocumentCallback)
+    public async Task<bool> InitEditAsync(
+        IReadOnlyCollection<Guid> documentIds,
+        Func<IReadOnlyList<CreateDocumentRequest>, Task<ResultBase>> createDocumentsCallback,
+        Func<Guid, string, Task<ResultBase>> updateDocumentCallback)
     {
         _deletedDocumentIds.Clear();
         ResetExistingDocuments();
         ResetNewDocuments();
+        CreateDocumentsCallback = createDocumentsCallback;
         UpdateDocumentCallback = updateDocumentCallback;
 
         if (documentIds.Count == 0)
@@ -89,10 +95,6 @@ public partial class DocumentsPickerFormViewModel(
     /// </summary>
     public async Task<bool> SaveAsync()
     {
-        if (UpdateDocumentCallback is null || CreateDocumentCallback is null)
-        {
-            throw new InvalidOperationException("Callback methods are null");
-        }
         foreach (var deletedId in _deletedDocumentIds.ToList())
         {
             var result = await documentService.DeleteAsync(deletedId);
@@ -108,6 +110,12 @@ public partial class DocumentsPickerFormViewModel(
             if (_deletedDocumentIds.Contains(document.DocumentId) || document.Nickname == document.OriginalNickname)
                 continue;
 
+            if (UpdateDocumentCallback is null)
+            {
+                notifications.Error("Impossible de renommer le document dans ce contexte.");
+                return false;
+            }
+
             var result = await UpdateDocumentCallback(document.DocumentId, document.Nickname);
             if (result.Failed)
             {
@@ -116,19 +124,38 @@ public partial class DocumentsPickerFormViewModel(
             }
         }
 
-        foreach (var draft in NewDocuments.Where(d => !string.IsNullOrWhiteSpace(d.SourcePath)))
+        var newDocumentRequests = new List<CreateDocumentRequest>();
+        var newDocumentDrafts = NewDocuments
+            .Where(d => !string.IsNullOrWhiteSpace(d.SourcePath))
+            .ToList();
+
+        foreach (var draft in newDocumentDrafts)
         {
             if (string.IsNullOrWhiteSpace(draft.Nickname))
                 draft.Nickname = Path.GetFileNameWithoutExtension(draft.SourcePath!);
 
-            var result = await CreateDocumentCallback(draft.SourcePath!, draft.Nickname);
+            newDocumentRequests.Add(new CreateDocumentRequest(draft.SourcePath!, draft.Nickname));
+        }
+
+        if (newDocumentRequests.Count > 0)
+        {
+            if (CreateDocumentsCallback is null)
+            {
+                notifications.Error("Impossible d'ajouter le document dans ce contexte.");
+                return false;
+            }
+
+            var result = await CreateDocumentsCallback(newDocumentRequests);
             if (result.Failed)
             {
                 notifications.Error(result.Error ?? "Impossible d'ajouter le document.");
                 return false;
             }
 
-            draft.Reset();
+            foreach (var draft in newDocumentDrafts)
+            {
+                draft.Reset();
+            }
         }
 
         return true;

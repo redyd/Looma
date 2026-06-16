@@ -27,6 +27,39 @@ public sealed class DocumentService(IDocumentRepository repository, IDomainLogge
         return result;
     }
 
+    public async Task<ResultT<IReadOnlyList<Document>>> AddAllAsync(IReadOnlyList<CreateDocumentRequest> requests)
+    {
+        var result = await ExecuteAsync("Documents.AddAll", async () =>
+        {
+            var documents = new List<Document>(requests.Count);
+
+            foreach (var request in requests)
+            {
+                var documentResult = await repository.AddAsync(request);
+                if (documentResult.Failed || documentResult.Value is null)
+                {
+                    return ResultT<IReadOnlyList<Document>>.Failure(
+                        documentResult.Error ?? "Impossible d'ajouter les documents.");
+                }
+
+                documents.Add(documentResult.Value);
+            }
+
+            return ResultT<IReadOnlyList<Document>>.Ok(documents);
+        });
+
+        if (requests.Count > 0)
+        {
+            var scope = requests
+                .Select(request => GetDocumentRefreshScope(request.PatternId, request.ProjectId))
+                .Aggregate(RefreshScope.None, (current, next) => current | next);
+
+            PublishIfSucceeded(result, scope, $"{requests.Count} documents added.");
+        }
+
+        return result;
+    }
+
     public async Task<ResultT<Document>> UpdateAsync(UpdateDocumentRequest request)
     {
         var result = await ExecuteAsync($"Documents.Update({request.Id})", () => repository.UpdateAsync(request));

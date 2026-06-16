@@ -100,17 +100,18 @@ public partial class PatternsFormViewModel(
             }
 
             var savedPattern = patternResult.Value;
+            _patternId = savedPattern.Id;
+
+            var hasDocumentChanges = documents.HasPendingChanges;
+            if (!await documents.SaveAsync()) return;
+
             if (!wasEdit)
             {
                 _isEdit = true;
-                _patternId = savedPattern.Id;
                 Title = "Modifier le patron";
                 OnPropertyChanged(nameof(IsCreateMode));
                 OnPropertyChanged(nameof(IsEditMode));
             }
-
-            var hasDocumentChanges = documents.HasPendingChanges;
-            if (!await documents.SaveAsync()) return;
 
             notifications.Success(BuildSuccessMessage(wasEdit, hasDocumentChanges));
             nav.GoBack();
@@ -118,6 +119,7 @@ public partial class PatternsFormViewModel(
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
+            notifications.Error("Une erreur est survenue lors de la sauvegarde du patron: " + ex.Message);
         }
         finally
         {
@@ -143,8 +145,10 @@ public partial class PatternsFormViewModel(
         EndDate = null;
         ErrorMessage = null;
 
-        documents.InitCreate(async (sourcePath, nickname)
-            => await documentService.AddAsync(new CreateDocumentRequest(sourcePath, nickname, PatternId: _patternId)));
+        documents.InitCreate(async requests
+            => await documentService.AddAllAsync(requests
+                .Select(request => request with { PatternId = _patternId })
+                .ToList()));
         DocumentsLoaded = true;
 
         OnPropertyChanged(nameof(IsCreateMode));
@@ -170,8 +174,14 @@ public partial class PatternsFormViewModel(
 
         DocumentsLoaded = false;
         IsBusy = true;
-        var ok = await documents.InitEditAsync(documentIds, async (id, nickname)
-            => await documentService.UpdateAsync(new UpdateDocumentRequest(id, nickname)));
+        var ok = await documents.InitEditAsync(
+            documentIds,
+            async requests
+                => await documentService.AddAllAsync(requests
+                    .Select(request => request with { PatternId = _patternId })
+                    .ToList()),
+            async (id, nickname)
+                => await documentService.UpdateAsync(new UpdateDocumentRequest(id, nickname)));
 
         if (!ok)
         {

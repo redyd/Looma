@@ -383,6 +383,7 @@ public partial class ProjectsFormViewModel(
             }
         }
 
+        var newImageRequests = new List<CreateDocumentRequest>();
         foreach (var image in NewImages.ToList())
         {
             if (!IsSupportedImagePath(image.SourcePath))
@@ -392,17 +393,21 @@ public partial class ProjectsFormViewModel(
                 return false;
             }
 
-            var documentResult = await documentService.AddAsync(new CreateDocumentRequest(
+            newImageRequests.Add(new CreateDocumentRequest(
                 image.SourcePath,
                 string.IsNullOrWhiteSpace(image.Nickname)
                     ? Path.GetFileNameWithoutExtension(image.SourcePath)
                     : image.Nickname,
                 ProjectId: projectId));
+        }
 
+        if (newImageRequests.Count > 0)
+        {
+            var documentResult = await documentService.AddAllAsync(newImageRequests);
             if (documentResult.Failed)
             {
                 ErrorMessage = documentResult.Error;
-                notifications.Error(documentResult.Error ?? "Impossible d'ajouter l'image au projet.");
+                notifications.Error(documentResult.Error ?? "Impossible d'ajouter les images au projet.");
                 return false;
             }
         }
