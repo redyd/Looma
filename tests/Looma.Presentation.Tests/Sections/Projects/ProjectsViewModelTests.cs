@@ -181,6 +181,28 @@ public sealed class ProjectsViewModelTests
     }
 
     [Fact]
+    public async Task ProjectsDetail_SaveNote_Updates_Project_Note()
+    {
+        var projectService = new FakeProjectService
+        {
+            UpdateResult = ResultT<Project>.Ok(TestData.Project(id: 5, note: "Nouvelle note"))
+        };
+        var vm = CreateDetailViewModel(projectService: projectService);
+        vm.Load(TestData.Project(id: 5, name: "Pull", note: "Ancienne note"));
+        vm.Note = "Nouvelle note";
+
+        await vm.SaveNoteCommand.ExecuteAsync();
+
+        projectService.UpdateRequests.Should().ContainSingle().Which.Should().BeEquivalentTo(new
+        {
+            Id = 5,
+            Name = "Pull",
+            Note = "Nouvelle note"
+        });
+        vm.Note.Should().Be("Nouvelle note");
+    }
+
+    [Fact]
     public async Task ProjectsDetail_AdjustWool_Without_Positive_Quantity_Notifies_And_Does_Not_Call_Service()
     {
         var notifications = new FakeNotificationService();

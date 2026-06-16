@@ -159,13 +159,28 @@
                 <Grid ColumnDefinitions="*,16,*">
 
                     <Border Grid.Column="0" Classes="form-section">
-                        <StackPanel Spacing="12">
-                            <TextBlock Classes="section-title" Text="Note" />
-                            <TextBlock Text="{Binding NoteDisplay}"
-                                       TextWrapping="Wrap"
-                                       FontSize="14"
-                                       LineHeight="20" />
-                        </StackPanel>
+                        <Grid RowDefinitions="Auto,12,*,12,Auto">
+                            <TextBlock Grid.Row="0"
+                                       Classes="section-title"
+                                       Text="Note" />
+                            <TextBox Classes="form-input"
+                                     Grid.Row="2"
+                                     Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     PlaceholderText="Aucune note."
+                                     AcceptsReturn="True"
+                                     TextWrapping="Wrap"
+                                     Height="NaN"
+                                     MinHeight="150"
+                                     Padding="12 10"
+                                     VerticalAlignment="Stretch"
+                                     VerticalContentAlignment="Top" />
+                            <Button Content="Modifier la note"
+                                    Grid.Row="4"
+                                    Command="{Binding SaveNoteCommand}"
+                                    Classes="form-submit"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center" />
+                        </Grid>
                     </Border>
 
                     <Border Grid.Column="2" Classes="form-section">

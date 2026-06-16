@@ -253,6 +253,38 @@ public partial class ProjectsDetailViewModel(
     }
 
     [RelayCommand]
+    private async Task SaveNoteAsync()
+    {
+        IsBusy = true;
+        try
+        {
+            var result = await projectService.UpdateAsync(new UpdateProjectRequest(
+                ProjectId,
+                Name,
+                Status,
+                Note,
+                BeginDate,
+                EndDate,
+                Pattern?.Id,
+                Wools.Select(w => w.Usage.Wool.Id).ToList()));
+
+            if (result.Failed || result.Value is null)
+            {
+                ErrorMessage = result.Error;
+                notifications.Error(result.Error ?? "Impossible de mettre à jour la note.");
+                return;
+            }
+
+            ApplyProject(result.Value);
+            notifications.Success("La note a été mise à jour.");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand]
     private Task StartProjectAsync() =>
         UpdateStatusAsync(Status.InProgress, DateOnly.FromDateTime(DateTime.Today));
 
