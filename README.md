@@ -19,12 +19,6 @@ Built with [Avalonia UI](https://avaloniaui.net/), it runs on Windows, macOS and
 
 ---
 
-## Screenshots
-
-*(coming soon)*
-
----
-
 ## Tech stack
 
 Avalonia UI · Entity Framework Core · SQLite · Clean Architecture · C#

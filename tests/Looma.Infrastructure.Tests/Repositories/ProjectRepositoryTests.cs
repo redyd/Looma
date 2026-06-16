@@ -121,12 +121,15 @@ public sealed class ProjectRepositoryTests
     }
 
     [Fact]
-    public async Task DeleteAsync_removes_project_and_join_rows()
+    public async Task DeleteAsync_removes_project_join_rows_and_attached_documents()
     {
         using var fixture = new RepositoryTestFixture();
         var pattern = await fixture.AddPatternAsync();
         var wool = await fixture.AddWoolAsync();
         var project = await fixture.AddProjectAsync(pattern.PatternId, [wool.WoolId]);
+        var document = await fixture.AddDocumentEntityAsync(projectId: project.ProjectId);
+        var documentPath = fixture.Paths.GetDocumentStoragePath(document.DocumentId);
+        await File.WriteAllTextAsync(documentPath, "project image");
         await using var context = fixture.CreateContext();
         var repository = new ProjectRepository(context, fixture.Paths);
 
@@ -134,6 +137,8 @@ public sealed class ProjectRepositoryTests
 
         result.Succeeded.Should().BeTrue(result.Error);
         (await context.Projects.FindAsync(project.ProjectId)).Should().BeNull();
+        (await context.Documents.FindAsync(document.DocumentId)).Should().BeNull();
         context.WoolsForProjects.Should().BeEmpty();
+        File.Exists(documentPath).Should().BeFalse();
     }
 }

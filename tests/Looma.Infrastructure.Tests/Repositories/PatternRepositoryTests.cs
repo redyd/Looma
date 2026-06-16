@@ -103,6 +103,9 @@ public sealed class PatternRepositoryTests
         using var fixture = new RepositoryTestFixture();
         var pattern = await fixture.AddPatternAsync();
         await fixture.AddProjectAsync(pattern.PatternId);
+        var document = await fixture.AddDocumentEntityAsync(patternId: pattern.PatternId);
+        var documentPath = fixture.Paths.GetDocumentStoragePath(document.DocumentId);
+        await File.WriteAllTextAsync(documentPath, "pattern document");
         await using var context = fixture.CreateContext();
         var repository = new PatternRepository(context, fixture.Paths);
 
@@ -110,6 +113,8 @@ public sealed class PatternRepositoryTests
 
         result.Succeeded.Should().BeTrue(result.Error);
         (await context.Patterns.FindAsync(pattern.PatternId)).Should().BeNull();
+        (await context.Documents.FindAsync(document.DocumentId)).Should().BeNull();
         context.Projects.Single().PatternId.Should().BeNull();
+        File.Exists(documentPath).Should().BeFalse();
     }
 }

@@ -202,10 +202,18 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
     {
         try
         {
-            var entity = await context.Patterns.FindAsync(id);
+            var entity = await context.Patterns
+                .Include(p => p.Documents)
+                .FirstOrDefaultAsync(p => p.PatternId == id);
             if (entity is null)
                 return Result.NotFound($"Le patron {id} est introuvable.");
 
+            foreach (var document in entity.Documents)
+            {
+                DeleteDocumentFile(document.DocumentId);
+            }
+
+            context.Documents.RemoveRange(entity.Documents);
             context.Patterns.Remove(entity);
             await context.SaveChangesAsync();
             return Result.Ok();
@@ -222,6 +230,15 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
 
     private static string? NormalizeOptional(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private void DeleteDocumentFile(Guid documentId)
+    {
+        var filePath = pathManager.GetDocumentStoragePath(documentId);
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+    }
 
     private Pattern ApplyFileMetadata(Pattern pattern) =>
         new()

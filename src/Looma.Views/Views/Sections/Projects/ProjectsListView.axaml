@@ -98,7 +98,7 @@
         </Border>
 
         <Grid>
-            <Border IsVisible="{Binding IsListEmpty}"
+            <Border IsVisible="{Binding IsSourceListEmpty}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Padding="32 24"
@@ -116,6 +116,33 @@
                                Foreground="{StaticResource PrimaryDarkBrush}" />
 
                     <TextBlock Text="Crée ton premier projet pour commencer à organiser tes patrons et ta laine."
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontSize="13"
+                               Opacity="0.65"
+                               MaxWidth="360"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <Border IsVisible="{Binding IsFilterResultEmpty}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Padding="32 24"
+                    CornerRadius="18"
+                    Background="{StaticResource BackgroundCardBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1">
+                <StackPanel Spacing="8"
+                            HorizontalAlignment="Center">
+                    <TextBlock Text="Aucun projet trouvé"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource PrimaryDarkBrush}" />
+
+                    <TextBlock Text="Essaie de modifier ta recherche ou le filtre de statut."
                                HorizontalAlignment="Center"
                                TextAlignment="Center"
                                FontSize="13"

@@ -143,10 +143,18 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
     {
         try
         {
-            var entity = await context.Projects.FindAsync(id);
+            var entity = await context.Projects
+                .Include(p => p.Files)
+                .FirstOrDefaultAsync(p => p.ProjectId == id);
             if (entity is null)
                 return Result.NotFound($"Le projet {id} est introuvable.");
 
+            foreach (var document in entity.Files)
+            {
+                DeleteDocumentFile(document.DocumentId);
+            }
+
+            context.Documents.RemoveRange(entity.Files);
             context.Projects.Remove(entity);
             await context.SaveChangesAsync();
             return Result.Ok();
@@ -195,6 +203,15 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
 
     private static string? NormalizeOptional(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private void DeleteDocumentFile(Guid documentId)
+    {
+        var filePath = pathManager.GetDocumentStoragePath(documentId);
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+    }
 
     private Project ApplyFileMetadata(Project project) =>
         new()

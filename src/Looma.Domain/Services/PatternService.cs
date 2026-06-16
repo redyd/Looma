@@ -51,7 +51,7 @@ public sealed class PatternService(IPatternRepository repository, IDomainLogger 
     public async Task<Result> DeleteAsync(int id)
     {
         var result = await ExecuteAsync($"Patterns.Delete({id})", () => repository.DeleteAsync(id));
-        PublishIfSucceeded(result, RefreshScope.Patterns | RefreshScope.Projects, $"Pattern {id} deleted.");
+        PublishIfSucceeded(result, RefreshScope.Patterns | RefreshScope.Projects | RefreshScope.Documents, $"Pattern {id} deleted.");
         return result;
     }
 
