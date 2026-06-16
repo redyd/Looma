@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
+using Looma.Domain.Refresh;
 using Looma.Domain.Search;
 using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
@@ -20,7 +21,8 @@ namespace Looma.Presentation.ViewModels.Sections.Projects;
 public partial class ProjectsListViewModel(
     INavigationService nav,
     IProjectService projectService,
-    INotificationService notifications) : PaginatePageViewModelBase<Project, ProjectSummaryViewModel, int>(new ProjectSearchSpec())
+    INotificationService notifications,
+    IDataRefreshService refreshService) : PaginatePageViewModelBase<Project, ProjectSummaryViewModel, int>(new ProjectSearchSpec())
 {
     private bool _isInitialized;
 
@@ -36,6 +38,8 @@ public partial class ProjectsListViewModel(
 
     public override async void OnNavigatedTo()
     {
+        RegisterRefresh(refreshService, RefreshScope.Projects, LoadAsync);
+
         if (!_isInitialized)
         {
             SelectedStatusFilter = StatusFilters.FirstOrDefault();

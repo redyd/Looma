@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
+using Looma.Domain.Refresh;
 using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
@@ -23,7 +24,8 @@ public partial class PatternsDetailViewModel(
     INavigationService nav,
     IPatternService patternService,
     IDocumentService documentService,
-    INotificationService notifications) : PageViewModelBase
+    INotificationService notifications,
+    IDataRefreshService refreshService) : PageViewModelBase
 {
     private int _patternId;
 
@@ -88,6 +90,7 @@ public partial class PatternsDetailViewModel(
 
     public override async void OnNavigatedTo()
     {
+        RegisterRefresh(refreshService, RefreshScope.Patterns | RefreshScope.Documents | RefreshScope.Projects, RefreshAsync);
         await RefreshAsync();
     }
 

@@ -5,6 +5,7 @@
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Logging;
+using Looma.Domain.Refresh;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 
@@ -14,7 +15,8 @@ public class ProjectService(
     IProjectRepository repo,
     IWoolRepository woolRepository,
     IWoolUsageRepository woolUsageRepository,
-    IDomainLogger? logger = null)
+    IDomainLogger? logger = null,
+    IDataRefreshService? refreshService = null)
     : DomainServiceBase(logger), IProjectService
 {
     public Task<ResultT<IReadOnlyList<Project>>> GetAllAsync() =>
@@ -23,14 +25,24 @@ public class ProjectService(
     public Task<ResultT<Project>> GetByIdAsync(int id) =>
         ExecuteAsync($"Projects.GetById({id})", () => repo.GetByIdAsync(id));
 
-    public Task<ResultT<Project>> AddAsync(CreateProjectRequest request) =>
-        ExecuteAsync("Projects.Add", () => repo.AddAsync(request));
+    public async Task<ResultT<Project>> AddAsync(CreateProjectRequest request)
+    {
+        var result = await ExecuteAsync("Projects.Add", () => repo.AddAsync(request));
+        PublishIfSucceeded(result, RefreshScope.Projects | RefreshScope.Patterns, "Project added.");
+        return result;
+    }
 
-    public Task<Result> DeleteAsync(int id) =>
-        ExecuteAsync($"Projects.Delete({id})", () => repo.DeleteAsync(id));
+    public async Task<Result> DeleteAsync(int id)
+    {
+        var result = await ExecuteAsync($"Projects.Delete({id})", () => repo.DeleteAsync(id));
+        PublishIfSucceeded(result, RefreshScope.Projects | RefreshScope.Patterns | RefreshScope.Documents, $"Project {id} deleted.");
+        return result;
+    }
 
-    public Task<ResultT<Project>> UpdateAsync(UpdateProjectRequest request) =>
-        ExecuteAsync($"Projects.Update({request.Id})", async () =>
+    public async Task<ResultT<Project>> UpdateAsync(UpdateProjectRequest request)
+    {
+        var completedProject = false;
+        var result = await ExecuteAsync($"Projects.Update({request.Id})", async () =>
         {
             var existing = await repo.GetByIdAsync(request.Id);
             if (existing.Failed || existing.Value is null)
@@ -45,10 +57,20 @@ public class ProjectService(
                 {
                     return ResultT<Project>.Failure(completeResult.Error ?? "Impossible de terminer le projet.");
                 }
+
+                completedProject = true;
             }
 
             return await repo.UpdateAsync(request);
         });
+
+        var scope = RefreshScope.Projects | RefreshScope.Patterns;
+        if (completedProject)
+            scope |= RefreshScope.Wools;
+
+        PublishIfSucceeded(result, scope, $"Project {request.Id} updated.");
+        return result;
+    }
 
     private async Task<Result> CompleteProjectAsync(int projectId, IEnumerable<Wool> wools)
     {
@@ -91,5 +113,11 @@ public class ProjectService(
 
         Logger.Log(DomainLogLevel.Information, $"Projects.Complete({projectId}) completed.");
         return Result.Ok();
+    }
+
+    private void PublishIfSucceeded(ResultBase result, RefreshScope scope, string reason)
+    {
+        if (result.Succeeded)
+            refreshService?.RequestRefresh(scope, reason);
     }
 }

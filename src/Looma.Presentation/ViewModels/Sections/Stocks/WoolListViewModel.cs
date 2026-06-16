@@ -5,6 +5,7 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
+using Looma.Domain.Refresh;
 using Looma.Domain.Search;
 using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
@@ -19,10 +20,15 @@ public partial class WoolListViewModel(
     INavigationService nav,
     IWoolService woolService,
     INotificationService notifications,
-    WoolSearchSpec searchSpec)
+    WoolSearchSpec searchSpec,
+    IDataRefreshService refreshService)
     : PaginatePageViewModelBase<Wool, WoolSummary, int>(searchSpec)
 {
-    public override async void OnNavigatedTo() => await LoadAsync();
+    public override async void OnNavigatedTo()
+    {
+        RegisterRefresh(refreshService, RefreshScope.Wools, LoadAsync);
+        await LoadAsync();
+    }
 
     private async Task LoadAsync()
     {

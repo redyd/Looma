@@ -1,15 +1,20 @@
 using Looma.Domain.Core;
 using Looma.Domain.Logging;
+using Looma.Domain.Refresh;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 
 namespace Looma.Domain.Services;
 
-public class WoolStockService(IWoolUsageRepository repository, IDomainLogger? logger = null)
+public class WoolStockService(
+    IWoolUsageRepository repository,
+    IDomainLogger? logger = null,
+    IDataRefreshService? refreshService = null)
     : DomainServiceBase(logger), IWoolStockService
 {
-    public Task<Result> AdjustWoolUsageAsync(AdjustProjectWoolUsageRequest request) =>
-        ExecuteAsync($"WoolUsage.Adjust(project:{request.ProjectId}, wool:{request.WoolId})", async () =>
+    public async Task<Result> AdjustWoolUsageAsync(AdjustProjectWoolUsageRequest request)
+    {
+        var result = await ExecuteAsync($"WoolUsage.Adjust(project:{request.ProjectId}, wool:{request.WoolId})", async () =>
         {
             if (request.Quantity <= 0)
             {
@@ -78,6 +83,16 @@ public class WoolStockService(IWoolUsageRepository repository, IDomainLogger? lo
 
             return Result.Ok();
         });
+
+        var scope = RefreshScope.Projects;
+        if (request.DeductImmediately)
+            scope |= RefreshScope.Wools;
+
+        if (result.Succeeded)
+            refreshService?.RequestRefresh(scope, $"Wool usage changed for project {request.ProjectId}.");
+
+        return result;
+    }
 
     private static double ComputeStockQuantity(StockAdjustmentMode mode, bool isAddition, double quantity, double factor)
     {

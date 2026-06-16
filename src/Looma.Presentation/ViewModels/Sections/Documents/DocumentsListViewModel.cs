@@ -4,6 +4,7 @@
 
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
+using Looma.Domain.Refresh;
 using Looma.Domain.Search;
 using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
@@ -19,10 +20,15 @@ public partial class DocumentsListViewModel(
     IDocumentService documentService,
     IPatternService patternService,
     IProjectService projectService,
-    INotificationService notifications)
+    INotificationService notifications,
+    IDataRefreshService refreshService)
 : PaginatePageViewModelBase<Document, DocumentSummaryViewModel, Guid>(searcher: new DocumentSearchSpec())
 {
-    public override async void OnNavigatedTo() => await LoadAsync();
+    public override async void OnNavigatedTo()
+    {
+        RegisterRefresh(refreshService, RefreshScope.Documents, LoadAsync);
+        await LoadAsync();
+    }
 
     private async Task LoadAsync()
     {
@@ -107,6 +113,5 @@ public partial class DocumentsListViewModel(
         }
 
         notifications.Success("Le document a été supprimé.");
-        await LoadAsync();
     }
 }

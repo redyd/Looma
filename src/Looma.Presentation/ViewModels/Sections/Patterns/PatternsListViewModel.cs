@@ -4,6 +4,7 @@
 
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Entities;
+using Looma.Domain.Refresh;
 using Looma.Domain.Search;
 using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
@@ -16,9 +17,14 @@ namespace Looma.Presentation.ViewModels.Sections.Patterns;
 public partial class PatternsListViewModel(
     INavigationService nav,
     IPatternService patternService,
-    INotificationService notifications) : PaginatePageViewModelBase<Pattern, PatternSummaryViewModel, int>(new PatternSearchSpec())
+    INotificationService notifications,
+    IDataRefreshService refreshService) : PaginatePageViewModelBase<Pattern, PatternSummaryViewModel, int>(new PatternSearchSpec())
 {
-    public override async void OnNavigatedTo() => await LoadAsync();
+    public override async void OnNavigatedTo()
+    {
+        RegisterRefresh(refreshService, RefreshScope.Patterns, LoadAsync);
+        await LoadAsync();
+    }
 
     private async Task LoadAsync()
     {

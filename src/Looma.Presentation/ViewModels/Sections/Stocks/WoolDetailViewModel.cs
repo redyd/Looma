@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
+using Looma.Domain.Refresh;
 using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
@@ -20,6 +21,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
     private readonly IWoolService _woolService;
     private readonly INotificationService _notifications;
     private readonly WoolStockCalculator _calculator;
+    private readonly IDataRefreshService _refreshService;
     private Wool? _wool;
 
     [ObservableProperty]
@@ -97,11 +99,6 @@ public partial class WoolDetailViewModel : PageViewModelBase
         }
 
         _notifications.Success("Stock correctement mis à jour");
-        var updated = await _woolService.GetByIdAsync(WoolId);
-        if (updated.Value is not null)
-        {
-            Refresh(updated.Value);
-        }
     }
 
     public IList<StatItem> DetailStats =>
@@ -128,12 +125,14 @@ public partial class WoolDetailViewModel : PageViewModelBase
         INavigationService nav,
         IWoolService woolService,
         INotificationService notifications,
-        WoolStockCalculator calculator)
+        WoolStockCalculator calculator,
+        IDataRefreshService refreshService)
     {
         _nav = nav;
         _woolService = woolService;
         _notifications = notifications;
         _calculator = calculator;
+        _refreshService = refreshService;
         Title = "Détail laine";
     }
 
@@ -145,6 +144,12 @@ public partial class WoolDetailViewModel : PageViewModelBase
     }
 
     public override async void OnNavigatedTo()
+    {
+        RegisterRefresh(_refreshService, RefreshScope.Wools, RefreshAsync);
+        await RefreshAsync();
+    }
+
+    private async Task RefreshAsync()
     {
         if (WoolId == 0) return;
         var wool = await _woolService.GetByIdAsync(WoolId);

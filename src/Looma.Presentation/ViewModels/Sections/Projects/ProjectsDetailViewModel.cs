@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
+using Looma.Domain.Refresh;
 using Looma.Domain.Request;
 using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
@@ -25,7 +26,8 @@ public partial class ProjectsDetailViewModel(
     IProjectService projectService,
     INotificationService notifications,
     IWoolStockService stockService,
-    IDocumentFilePicker documentFilePicker)
+    IDocumentFilePicker documentFilePicker,
+    IDataRefreshService refreshService)
     : PageViewModelBase
 {
     [ObservableProperty]
@@ -106,7 +108,11 @@ public partial class ProjectsDetailViewModel(
         ApplyProject(project);
     }
 
-    public override async void OnNavigatedTo() => await RefreshAsync();
+    public override async void OnNavigatedTo()
+    {
+        RegisterRefresh(refreshService, RefreshScope.Projects | RefreshScope.Patterns | RefreshScope.Documents | RefreshScope.Wools, RefreshAsync);
+        await RefreshAsync();
+    }
 
     private async Task RefreshAsync()
     {
@@ -198,14 +204,6 @@ public partial class ProjectsDetailViewModel(
             return;
         }
 
-        var projectResult = await projectService.GetByIdAsync(ProjectId);
-        if (projectResult.Failed || projectResult.Value is null)
-        {
-            notifications.Error(projectResult.Error ?? "Impossible de mettre à jour la laine utilisée.");
-            return;
-        }
-
-        ApplyProject(projectResult.Value);
     }
 
     private static string FormatDate(DateOnly? value) =>

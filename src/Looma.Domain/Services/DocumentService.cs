@@ -5,12 +5,13 @@
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.Logging;
+using Looma.Domain.Refresh;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 
 namespace Looma.Domain.Services;
 
-public sealed class DocumentService(IDocumentRepository repository, IDomainLogger logger)
+public sealed class DocumentService(IDocumentRepository repository, IDomainLogger logger, IDataRefreshService? refreshService = null)
     : DomainServiceBase(logger), IDocumentService
 {
     public Task<ResultT<IReadOnlyList<Document>>> GetAllAsync() =>
@@ -19,15 +20,43 @@ public sealed class DocumentService(IDocumentRepository repository, IDomainLogge
     public Task<ResultT<Document>> GetByIdAsync(Guid id) =>
         ExecuteAsync($"Documents.GetById({id})", () => repository.GetByIdAsync(id));
 
-    public Task<ResultT<Document>> AddAsync(CreateDocumentRequest request) =>
-        ExecuteAsync("Documents.Add", () => repository.AddAsync(request));
+    public async Task<ResultT<Document>> AddAsync(CreateDocumentRequest request)
+    {
+        var result = await ExecuteAsync("Documents.Add", () => repository.AddAsync(request));
+        PublishIfSucceeded(result, GetDocumentRefreshScope(request.PatternId, request.ProjectId), "Document added.");
+        return result;
+    }
 
-    public Task<ResultT<Document>> UpdateAsync(UpdateDocumentRequest request) =>
-        ExecuteAsync($"Documents.Update({request.Id})", () => repository.UpdateAsync(request));
+    public async Task<ResultT<Document>> UpdateAsync(UpdateDocumentRequest request)
+    {
+        var result = await ExecuteAsync($"Documents.Update({request.Id})", () => repository.UpdateAsync(request));
+        PublishIfSucceeded(result, RefreshScope.Documents | RefreshScope.Patterns | RefreshScope.Projects, $"Document {request.Id} updated.");
+        return result;
+    }
 
-    public Task<Result> DeleteAsync(Guid id) =>
-        ExecuteAsync($"Documents.Delete({id})", () => repository.DeleteAsync(id));
+    public async Task<Result> DeleteAsync(Guid id)
+    {
+        var result = await ExecuteAsync($"Documents.Delete({id})", () => repository.DeleteAsync(id));
+        PublishIfSucceeded(result, RefreshScope.Documents | RefreshScope.Patterns | RefreshScope.Projects, $"Document {id} deleted.");
+        return result;
+    }
 
     public Task<Result> OpenAsync(Guid id) =>
         ExecuteAsync($"Documents.Open({id})", () => repository.OpenAsync(id));
+
+    private static RefreshScope GetDocumentRefreshScope(int? patternId, int? projectId)
+    {
+        var scope = RefreshScope.Documents;
+        if (patternId.HasValue)
+            scope |= RefreshScope.Patterns;
+        if (projectId.HasValue)
+            scope |= RefreshScope.Projects;
+        return scope;
+    }
+
+    private void PublishIfSucceeded(ResultBase result, RefreshScope scope, string reason)
+    {
+        if (result.Succeeded)
+            refreshService?.RequestRefresh(scope, reason);
+    }
 }

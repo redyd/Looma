@@ -22,6 +22,7 @@ public class NavigationService(IServiceProvider services) : INavigationService
     {
         var vm = ActivatorUtilities.CreateInstance<TViewModel>(_services, this);
         configure?.Invoke(vm);
+        CurrentPage?.OnNavigatedFrom();
         _stack.Push(vm);
         vm.OnNavigatedTo();
         Navigated?.Invoke(this, vm);
@@ -29,6 +30,7 @@ public class NavigationService(IServiceProvider services) : INavigationService
 
     public void PushPage(PageViewModelBase page)
     {
+        CurrentPage?.OnNavigatedFrom();
         _stack.Push(page);
         page.OnNavigatedTo();
         Navigated?.Invoke(this, page);
@@ -37,6 +39,7 @@ public class NavigationService(IServiceProvider services) : INavigationService
     public void GoBack()
     {
         if (!CanGoBack) return;
+        CurrentPage?.OnNavigatedFrom();
         var vm = _stack.Pop();
         if (vm is not null)
         {
