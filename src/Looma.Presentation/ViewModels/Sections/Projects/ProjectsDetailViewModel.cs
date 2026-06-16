@@ -30,6 +30,8 @@ public partial class ProjectsDetailViewModel(
     IDataRefreshService refreshService)
     : PageViewModelBase
 {
+    private Project? _project;
+
     [ObservableProperty]
     public partial int ProjectId { get; set; }
     [ObservableProperty]
@@ -135,6 +137,7 @@ public partial class ProjectsDetailViewModel(
 
     private void ApplyProject(Project project)
     {
+        _project = project;
         ErrorMessage = null;
         ProjectId = project.ProjectId;
         Name = project.Name;
@@ -275,18 +278,10 @@ public partial class ProjectsDetailViewModel(
     [RelayCommand]
     private void Edit()
     {
-        nav.NavigateTo<ProjectsFormViewModel>(vm => vm.InitEdit(new Project
-        {
-            ProjectId = ProjectId,
-            Name = Name,
-            Status = Status,
-            Note = Note,
-            BeginDate = BeginDate,
-            EndDate = EndDate,
-            Pattern = Pattern,
-            Wools = Wools.Select(w => w.Usage).ToList(),
-            Files = Images.Select(i => i.Document).ToList()
-        }));
+        if (_project is null)
+            return;
+
+        nav.NavigateTo<ProjectsFormViewModel>(vm => vm.InitEdit(_project));
     }
 
     partial void OnImagesChanged(ObservableCollection<ProjectImageViewModel> value)

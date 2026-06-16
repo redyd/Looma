@@ -5,6 +5,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
@@ -42,7 +43,7 @@ public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
         if (document.StoragePath is null) return false;
         if (mode == DocumentPickerMode.All) return true;
         
-        var fileExt = document.StoragePath.Split('.')[^1];
+        var fileExt = Path.GetExtension(document.StoragePath);
         var isImage = ImageExtensions.Any(ext => fileExt.Equals(ext, StringComparison.OrdinalIgnoreCase));
         
         return isImage;
