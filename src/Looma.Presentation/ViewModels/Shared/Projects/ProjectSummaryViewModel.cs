@@ -13,6 +13,7 @@ public class ProjectSummaryViewModel(Project project, ICommand openDetailCommand
     public Project Project { get; } = project;
     public ICommand OpenDetailCommand { get; } = openDetailCommand;
     public string StatusDisplay => Project.Status.GetDisplayName();
+    public string? PatternTypeDisplay => Project.Pattern?.Type.GetDisplayName();
     public string PatternName => Project.Pattern?.Name ?? "Aucun patron";
     public string BeginDateDisplay => Project.BeginDate.FormatWithDefault("Aucune");
     public string EndDateDisplay => Project.EndDate.FormatWithDefault("Aucune");

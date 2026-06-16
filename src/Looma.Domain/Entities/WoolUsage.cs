@@ -7,5 +7,4 @@ public class WoolUsage
     public required double StockAlreadyUsed { get; init; }
 
     public double RemainingStock => Wool.Stock;
-    public double PendingStockToDeduct => Math.Max(0, StockUsed - StockAlreadyUsed);
 }

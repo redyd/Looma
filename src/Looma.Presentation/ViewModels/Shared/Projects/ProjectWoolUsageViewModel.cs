@@ -3,20 +3,38 @@
 // See LICENSE in the project root for full license text.
 
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Looma.Domain.Core;
 using Looma.Domain.Entities;
 
-namespace Looma.Presentation.ViewModels.Sections.Projects;
+namespace Looma.Presentation.ViewModels.Shared.Projects;
 
-public class ProjectWoolUsageViewModel(WoolUsage usage, ICommand addCommand, ICommand removeCommand)
+public partial class ProjectWoolUsageViewModel(WoolUsage usage, ICommand addCommand) : ObservableObject
 {
     public WoolUsage Usage { get; } = usage;
     public ICommand AddCommand { get; } = addCommand;
-    public ICommand RemoveCommand { get; } = removeCommand;
+    [ObservableProperty]
+    public partial StockAdjustmentMode DisplayMode { get; set; } = StockAdjustmentMode.ByBall;
+
     public string Name => Usage.Wool.Name;
     public string Brand => Usage.Wool.Brand;
     public string Color => Usage.Wool.Color;
-    public string AvailableDisplay => $"{Math.Max(0, Usage.RemainingStock / 1000):N2} pelote(s)";
-    public string UsedDisplay => $"{Usage.StockUsed / 1000:N2} pelote(s)";
-    public string AlreadyDeductedDisplay => $"{Usage.StockAlreadyUsed / 1000:N2} pelote(s)";
-    public string PendingDisplay => $"{Usage.PendingStockToDeduct / 1000:N2} pelote(s)";
+    public string AvailableDisplay => FormatStock(Usage.RemainingStock);
+    public string UsedDisplay => FormatStock(Usage.StockUsed);
+    public string AlreadyDeductedDisplay => FormatStock(Usage.StockAlreadyUsed);
+
+    partial void OnDisplayModeChanged(StockAdjustmentMode value)
+    {
+        OnPropertyChanged(nameof(AvailableDisplay));
+        OnPropertyChanged(nameof(UsedDisplay));
+        OnPropertyChanged(nameof(AlreadyDeductedDisplay));
+    }
+
+    private string FormatStock(double stock) =>
+        DisplayMode switch
+        {
+            StockAdjustmentMode.ByWeight => $"{stock / 1000 * Usage.Wool.Weight:N0} g",
+            StockAdjustmentMode.ByLength => $"{stock / 1000 * Usage.Wool.Length:N0} m",
+            _ => $"{Math.Max(0, stock / 1000):N2} pelote(s)"
+        };
 }

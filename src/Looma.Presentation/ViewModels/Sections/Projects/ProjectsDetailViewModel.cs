@@ -47,7 +47,7 @@ public partial class ProjectsDetailViewModel(
     [ObservableProperty]
     public partial string? ErrorMessage { get; set; }
     [ObservableProperty]
-    public partial ObservableCollection<ProjectWoolUsageViewModel> Wools { get; set; } = [];
+    public partial ObservableCollection<Shared.Projects.ProjectWoolUsageViewModel> Wools { get; set; } = [];
     [ObservableProperty]
     public partial ObservableCollection<ProjectImageViewModel> Images { get; set; } = [];
     [ObservableProperty]
@@ -56,6 +56,8 @@ public partial class ProjectsDetailViewModel(
     public partial double? WoolAdjustmentQuantity { get; set; }
     [ObservableProperty]
     public partial StockAdjustmentMode WoolAdjustmentMode { get; set; } = StockAdjustmentMode.ByBall;
+    [ObservableProperty]
+    public partial StockAdjustmentMode WoolDisplayMode { get; set; } = StockAdjustmentMode.ByBall;
     [ObservableProperty]
     public partial bool DeductWoolImmediately { get; set; }
 
@@ -73,6 +75,7 @@ public partial class ProjectsDetailViewModel(
     public bool HasProjectActions => Status != Status.Finished;
     public bool CanAdjustWool => WoolAdjustmentQuantity > 0;
     public IReadOnlyList<StockAdjustmentMode> WoolAdjustmentModes { get; } = Enum.GetValues<StockAdjustmentMode>().ToList();
+    public IReadOnlyList<StockAdjustmentMode> WoolDisplayModes { get; } = Enum.GetValues<StockAdjustmentMode>().ToList();
     public ProjectImageViewModel? SelectedImage =>
         SelectedImageIndex >= 0 && SelectedImageIndex < Images.Count ? Images[SelectedImageIndex] : null;
     public string ImagePositionDisplay => HasImages ? $"{SelectedImageIndex + 1} / {Images.Count}" : string.Empty;
@@ -140,11 +143,13 @@ public partial class ProjectsDetailViewModel(
         BeginDate = project.BeginDate;
         EndDate = project.EndDate;
         Pattern = project.Pattern;
-        Wools = new ObservableCollection<ProjectWoolUsageViewModel>(
-            project.Wools.Select(usage => new ProjectWoolUsageViewModel(
+        Wools = new ObservableCollection<Shared.Projects.ProjectWoolUsageViewModel>(
+            project.Wools.Select(usage => new Shared.Projects.ProjectWoolUsageViewModel(
                 usage,
-                new AsyncRelayCommand(() => AddWoolUsageAsync(usage)),
-                new AsyncRelayCommand(() => RemoveWoolUsageAsync(usage)))));
+                new AsyncRelayCommand(() => AddWoolUsageAsync(usage)))
+            {
+                DisplayMode = WoolDisplayMode
+            }));
         Images = new ObservableCollection<ProjectImageViewModel>(
             project.Files
                 .Where(document => documentFilePicker.IsSupportedFile(DocumentPickerMode.Images, document))
@@ -173,17 +178,20 @@ public partial class ProjectsDetailViewModel(
     partial void OnWoolAdjustmentQuantityChanged(double? value) =>
         OnPropertyChanged(nameof(CanAdjustWool));
 
+    partial void OnWoolDisplayModeChanged(StockAdjustmentMode value)
+    {
+        foreach (var wool in Wools)
+        {
+            wool.DisplayMode = value;
+        }
+    }
+
     private async Task AddWoolUsageAsync(WoolUsage usage)
     {
-        await AdjustWoolUsageAsync(usage, true);
+        await AdjustWoolUsageAsync(usage);
     }
 
-    private Task RemoveWoolUsageAsync(WoolUsage usage)
-    {
-        return AdjustWoolUsageAsync(usage, false);
-    }
-
-    private async Task AdjustWoolUsageAsync(WoolUsage usage, bool isAddition)
+    private async Task AdjustWoolUsageAsync(WoolUsage usage)
     {
         if (WoolAdjustmentQuantity is null || WoolAdjustmentQuantity <= 0)
         {
@@ -195,7 +203,7 @@ public partial class ProjectsDetailViewModel(
             ProjectId,
             usage.Wool.Id,
             WoolAdjustmentMode,
-            isAddition,
+            true,
             WoolAdjustmentQuantity.Value,
             DeductWoolImmediately));
         if (result.Failed)

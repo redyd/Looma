@@ -11,6 +11,8 @@ public abstract partial class PaginatePageViewModelBase<TEntity, TViewModel, TKe
     private IReadOnlyList<TViewModel> _allSummaries = [];
     private IReadOnlyList<TViewModel> _filteredSummaries = [];
 
+    public bool IsListEmpty => _filteredSummaries.Count == 0;
+    
     [ObservableProperty]
     public partial ObservableCollection<TViewModel> CurrentPageEntities { get; set; } = [];
 
@@ -93,6 +95,8 @@ public abstract partial class PaginatePageViewModelBase<TEntity, TViewModel, TKe
         HasPreviousPage = CurrentPage > 1;
         HasNextPage = CurrentPage < TotalPages;
         PageInfo = $"{CurrentPage} / {TotalPages}";
+        
+        OnPropertyChanged(nameof(IsListEmpty));
     }
 
     partial void OnSearchQueryChanged(string value)

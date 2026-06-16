@@ -9,6 +9,7 @@
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
              xmlns:controls="clr-namespace:Looma.Views.UserControls"
              xmlns:pcontrols="clr-namespace:Looma.Presentation.UserControls;assembly=Looma.Presentation"
+             xmlns:projects="clr-namespace:Looma.Presentation.ViewModels.Shared.Projects;assembly=Looma.Presentation"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsDetailView"
              x:DataType="vm:ProjectsDetailViewModel">
 
@@ -197,6 +198,19 @@
                             <TextBlock Text="Aucune laine sélectionnée"
                                        Classes="form-hint"
                                        IsVisible="{Binding !HasWools}" />
+                            <StackPanel Spacing="6" IsVisible="{Binding HasWools}">
+                                <TextBlock Classes="form-label" Text="Affichage" />
+                                <ComboBox ItemsSource="{Binding WoolDisplayModes}"
+                                          SelectedItem="{Binding WoolDisplayMode}"
+                                          Classes="form-select"
+                                          HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource EnumDisplayName}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
                             <ItemsControl ItemsSource="{Binding Wools}"
                                           IsVisible="{Binding HasWools}">
                                 <ItemsControl.ItemsPanel>
@@ -205,7 +219,7 @@
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:ProjectWoolUsageViewModel">
+                                    <DataTemplate x:DataType="projects:ProjectWoolUsageViewModel">
                                         <Border Classes="surface-panel" Padding="12">
                                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                                                 <Ellipse Grid.Column="0"
@@ -221,37 +235,20 @@
                                                     <TextBlock Text="{Binding Brand}"
                                                                Classes="form-hint"
                                                                TextTrimming="CharacterEllipsis" />
-                                                    <Grid ColumnDefinitions="*,*">
-                                                        <TextBlock Grid.Column="0"
-                                                                   Text="{Binding AvailableDisplay, StringFormat='Disponible: {0}'}"
-                                                                   FontSize="12"
-                                                                   Opacity="0.75" />
-                                                        <TextBlock Grid.Column="1"
-                                                                   Text="{Binding UsedDisplay, StringFormat='Utilisé: {0}'}"
-                                                                   FontSize="12"
-                                                                   Opacity="0.75" />
-                                                    </Grid>
-                                                    <Grid ColumnDefinitions="*,*">
-                                                        <TextBlock Grid.Column="0"
-                                                                   Text="{Binding AlreadyDeductedDisplay, StringFormat='Déduit: {0}'}"
-                                                                   FontSize="12"
-                                                                   Opacity="0.75" />
-                                                        <TextBlock Grid.Column="1"
-                                                                   Text="{Binding PendingDisplay, StringFormat='Restant: {0}'}"
-                                                                   FontSize="12"
-                                                                   Opacity="0.75" />
-                                                    </Grid>
+                                                    <TextBlock Text="{Binding AvailableDisplay, StringFormat='Laine en stock: {0}'}"
+                                                               FontSize="12"
+                                                               Opacity="0.75" />
+                                                    <TextBlock Text="{Binding UsedDisplay, StringFormat='Laine utilisée: {0}'}"
+                                                               FontSize="12"
+                                                               Opacity="0.75" />
+                                                    <TextBlock Text="{Binding AlreadyDeductedDisplay, StringFormat='Laine déjà retirée du stock: {0}'}"
+                                                               FontSize="12"
+                                                               Opacity="0.75" />
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="2"
                                                             Orientation="Horizontal"
                                                             Spacing="6"
                                                             VerticalAlignment="Center">
-                                                    <Button Content="Remettre en stock"
-                                                            Command="{Binding RemoveCommand}"
-                                                            Classes="form-cancel"
-                                                            MinWidth="130"
-                                                            Height="36"
-                                                            Padding="10 0" />
                                                     <Button Content="Utiliser"
                                                             Command="{Binding AddCommand}"
                                                             Classes="form-submit"

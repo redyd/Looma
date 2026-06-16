@@ -11,6 +11,29 @@
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsListView"
              x:DataType="vm:ProjectsListViewModel">
 
+    <UserControl.Styles>
+        <Style Selector="Border.project-status-ribbon">
+            <Setter Property="Height" Value="30" />
+            <Setter Property="CornerRadius" Value="12 12 0 0" />
+        </Style>
+
+        <Style Selector="Border.project-status-ribbon.status-wishlist">
+            <Setter Property="Background" Value="#F9A8D4" />
+        </Style>
+
+        <Style Selector="Border.project-status-ribbon.status-in-progress">
+            <Setter Property="Background" Value="#FDBA74" />
+        </Style>
+
+        <Style Selector="Border.project-status-ribbon.status-finished">
+            <Setter Property="Background" Value="#86EFAC" />
+        </Style>
+
+        <Style Selector="Border.project-status-ribbon.status-paused">
+            <Setter Property="Background" Value="#FCA5A5" />
+        </Style>
+    </UserControl.Styles>
+
     <DockPanel Margin="32">
 
         <Grid DockPanel.Dock="Top" Margin="0 0 0 24" ColumnDefinitions="2*,16,*">
@@ -46,6 +69,7 @@
         </DockPanel>
 
         <Border DockPanel.Dock="Bottom"
+                IsVisible="{Binding !IsListEmpty}"
                 Margin="0 16 0 0"
                 Padding="16 10"
                 CornerRadius="8"
@@ -73,68 +97,121 @@
             </StackPanel>
         </Border>
 
-        <ScrollViewer>
-            <ItemsControl ItemsSource="{Binding CurrentPageEntities}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="projects:ProjectSummaryViewModel">
-                        <Button Classes="card-button"
-                                Command="{Binding OpenDetailCommand}"
-                                Padding="0"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                HorizontalAlignment="Left">
-                            <Border Width="260"
-                                    Margin="8"
-                                    Padding="16"
-                                    Classes="surface-card">
-                                <Border.Styles>
-                                    <Style Selector="Border:pointerover">
-                                        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
-                                        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
-                                    </Style>
-                                </Border.Styles>
+        <Grid>
+            <Border IsVisible="{Binding IsListEmpty}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Padding="32 24"
+                    CornerRadius="18"
+                    Background="{StaticResource BackgroundCardBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1">
+                <StackPanel Spacing="8"
+                            HorizontalAlignment="Center">
+                    <TextBlock Text="Aucun projet pour l'instant"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource PrimaryDarkBrush}" />
 
-                                <StackPanel Spacing="10">
-                                    <StackPanel Spacing="4">
-                                        <TextBlock Text="{Binding Project.Name}"
-                                                   FontSize="15"
-                                                   FontWeight="SemiBold"
-                                                   TextTrimming="CharacterEllipsis" />
-                                        <TextBlock Text="{Binding PatternName}"
-                                                   FontSize="12"
-                                                   Opacity="0.65"
-                                                   TextTrimming="CharacterEllipsis" />
-                                    </StackPanel>
+                    <TextBlock Text="Crée ton premier projet pour commencer à organiser tes patrons et ta laine."
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontSize="13"
+                               Opacity="0.65"
+                               MaxWidth="360"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
 
-                                    <StackPanel Orientation="Horizontal" Spacing="6">
-                                        <Border Classes="surface-chip" Padding="8 3">
-                                            <TextBlock Text="{Binding StatusDisplay}" FontSize="11" />
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding CurrentPageEntities}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="projects:ProjectSummaryViewModel">
+                            <Button Classes="card-button"
+                                    Command="{Binding OpenDetailCommand}"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Left">
+                                <Border Width="260"
+                                        Height="176"
+                                        Margin="8"
+                                        Padding="0"
+                                        Classes="surface-card">
+                                    <Border.Styles>
+                                        <Style Selector="Border.surface-card:pointerover">
+                                            <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+                                            <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+                                        </Style>
+                                    </Border.Styles>
+
+                                    <Grid RowDefinitions="Auto,*">
+                                        <Border Grid.Row="0"
+                                                Classes="project-status-ribbon"
+                                                Classes.status-wishlist="{Binding Project.Status, Converter={StaticResource EnumToBool}, ConverterParameter=Wishlist}"
+                                                Classes.status-in-progress="{Binding Project.Status, Converter={StaticResource EnumToBool}, ConverterParameter=InProgress}"
+                                                Classes.status-finished="{Binding Project.Status, Converter={StaticResource EnumToBool}, ConverterParameter=Finished}"
+                                                Classes.status-paused="{Binding Project.Status, Converter={StaticResource EnumToBool}, ConverterParameter=Paused}">
+                                            <TextBlock Text="{Binding StatusDisplay}"
+                                                       HorizontalAlignment="Left"
+                                                       VerticalAlignment="Center"
+                                                       Margin="16 0"
+                                                       FontSize="12"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{StaticResource TextPrimaryBrush}" />
                                         </Border>
-                                        <Border Classes="surface-chip" Padding="8 3">
-                                            <TextBlock Text="{Binding WoolCountDisplay}" FontSize="11" />
-                                        </Border>
-                                    </StackPanel>
 
-                                    <StackPanel Spacing="2">
-                                        <TextBlock Text="{Binding BeginDateDisplay, StringFormat='Début: {0}'}"
-                                                   FontSize="11"
-                                                   Opacity="0.65" />
-                                        <TextBlock Text="{Binding EndDateDisplay, StringFormat='Fin: {0}'}"
-                                                   FontSize="11"
-                                                   Opacity="0.65" />
-                                    </StackPanel>
-                                </StackPanel>
-                            </Border>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+                                        <Grid Grid.Row="1"
+                                              Margin="16"
+                                              RowDefinitions="Auto,*,Auto">
+                                            <StackPanel Grid.Row="0" Spacing="4">
+                                                <TextBlock Text="{Binding Project.Name}"
+                                                           FontSize="15"
+                                                           FontWeight="SemiBold"
+                                                           TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="{Binding PatternName}"
+                                                           FontSize="12"
+                                                           Opacity="0.65"
+                                                           TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="1"
+                                                        Orientation="Horizontal"
+                                                        Spacing="6"
+                                                        VerticalAlignment="Center">
+                                                <Border Classes="surface-chip" Padding="8 3">
+                                                    <TextBlock Text="{Binding PatternTypeDisplay, TargetNullValue='Aucun type'}"
+                                                               FontSize="11" />
+                                                </Border>
+                                                <Border Classes="surface-chip" Padding="8 3">
+                                                    <TextBlock Text="{Binding WoolCountDisplay}" FontSize="11" />
+                                                </Border>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Row="2" Spacing="2">
+                                                <TextBlock Text="{Binding BeginDateDisplay, StringFormat='Début: {0}'}"
+                                                           FontSize="11"
+                                                           Opacity="0.65" />
+                                                <TextBlock Text="{Binding EndDateDisplay, StringFormat='Fin: {0}'}"
+                                                           FontSize="11"
+                                                           Opacity="0.65" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
 
     </DockPanel>
 </UserControl>
