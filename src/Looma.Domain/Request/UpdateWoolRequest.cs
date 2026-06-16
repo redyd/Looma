@@ -9,7 +9,7 @@ public sealed record UpdateWoolRequest(
     string Name,
     string Brand,
     string Material,
-    string Color,
+    List<string> Colors,
     double Weight,
     double Length,
     double NeedleMinSize,

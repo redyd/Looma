@@ -37,7 +37,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
     public partial string Material { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string Color { get; set; } = string.Empty;
+    public partial List<string> Colors { get; set; }
 
     [ObservableProperty]
     public partial double Weight { get; set; }
@@ -112,7 +112,6 @@ public partial class WoolDetailViewModel : PageViewModelBase
     [
         new() { Label = "Marque", Value = Brand },
         new() { Label = "Matière", Value = Material },
-        new() { Label = "Couleur", Value = Color, ColorHex = Color },
         new() { Label = "Aiguilles", Value = NeedleSizeDisplay },
         new() { Label = "Poids", Value = $"{Weight:N0}g" },
         new() { Label = "Longueur", Value = $"{Length:N0}m" },
@@ -169,7 +168,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
         Name = wool.Name;
         Brand = wool.Brand;
         Material = wool.Material;
-        Color = wool.Color;
+        Colors = wool.Colors;
 
         Weight = wool.Weight;
         Length = wool.Length;

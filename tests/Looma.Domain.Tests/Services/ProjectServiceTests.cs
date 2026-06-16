@@ -24,7 +24,7 @@ public class ProjectServiceTests
         Name = name,
         Brand = "Brand",
         Material = "Wool",
-        Color = "Red",
+        Colors = ["Red"],
         Weight = 100,
         Length = 200,
         Stock = stock,

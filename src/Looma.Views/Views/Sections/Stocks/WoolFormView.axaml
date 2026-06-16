@@ -8,6 +8,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
              xmlns:cp="using:Avalonia.Controls"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolFormView"
              x:DataType="vm:WoolFormViewModel">
 
@@ -123,18 +124,50 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Section couleur -->
                     <Border Classes="form-section">
                         <StackPanel Spacing="0">
 
                             <TextBlock Classes="section-title"
-                                       Text="Couleur"
+                                       Text="Couleurs"
                                        Margin="0 0 0 16" />
 
+                            <!-- Chips des couleurs sélectionnées -->
+                            <ItemsControl ItemsSource="{Binding AllColors}"
+                                          Margin="0 0 0 12"
+                                          IsVisible="{Binding HasColors}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="system:String">
+                                        <Button
+                                            Command="{Binding $parent[UserControl].((vm:WoolFormViewModel)DataContext).RemoveColorCommand}"
+                                            CommandParameter="{Binding}"
+                                            Classes="color-chip"
+                                            Margin="0 0 8 8">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <Ellipse Width="16" Height="16" VerticalAlignment="Center"
+                                                         Fill="{Binding Converter={StaticResource HexToColor}}" />
+                                                <TextBlock Text="{Binding}"
+                                                           FontSize="11"
+                                                           FontFamily="Consolas"
+                                                           VerticalAlignment="Center" />
+                                                <TextBlock Text="×"
+                                                           FontSize="13"
+                                                           VerticalAlignment="Center"
+                                                           Opacity="0.6" />
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- Picker + bouton ajouter -->
                             <StackPanel Classes="form-field">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock Classes="form-label" Text="Couleur de la laine" />
-                                    <TextBlock Classes="field-required" Text="*" />
                                 </StackPanel>
 
                                 <Border Classes="color-picker-container">
@@ -143,7 +176,7 @@
                                         <cp:ColorPicker Color="{Binding SelectedColor, Mode=TwoWay}"
                                                         HorizontalAlignment="Stretch" />
 
-                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                                             <TextBlock Grid.Column="0"
                                                        Classes="form-hint"
                                                        Text="Aperçu :"
@@ -163,7 +196,12 @@
                                                        FontSize="11"
                                                        FontFamily="Consolas"
                                                        Classes="form-hint"
-                                                       Margin="0" />
+                                                       Margin="0 0 12 0" />
+                                            <Button Grid.Column="3"
+                                                    Content="Ajouter"
+                                                    Command="{Binding AddColorCommand}"
+                                                    Classes="form-submit"
+                                                    VerticalAlignment="Center" />
                                         </Grid>
 
                                     </StackPanel>

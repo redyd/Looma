@@ -222,12 +222,13 @@
                                     <DataTemplate x:DataType="projects:ProjectWoolUsageViewModel">
                                         <Border Classes="surface-panel" Padding="12">
                                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                                                <Ellipse Grid.Column="0"
-                                                         Width="14"
-                                                         Height="14"
-                                                         Fill="{Binding Color, Converter={StaticResource HexToColor}}"
-                                                         VerticalAlignment="Top"
-                                                         Margin="0 4 0 0" />
+                                                
+                                                <controls:ColorPieControl
+                                                    Grid.Column="0"
+                                                    Colors="{Binding Colors}"
+                                                    Width="16" Height="16"
+                                                    VerticalAlignment="Top"
+                                                    Margin="0 4 0 0"/>
                                                 <StackPanel Grid.Column="1" Spacing="5">
                                                     <TextBlock Text="{Binding Name}"
                                                                FontWeight="SemiBold"

@@ -8,7 +8,7 @@ public class InfoItem
 {
     public string Label { get; set; } = "";
     public string Value { get; set; } = "";
-    public string? ColorHex { get; set; }
+    public List<string>? Colors { get; set; }
     public bool IsLink { get; set; }
-    public bool IsSimple => ColorHex is null && !IsLink;
+    public bool IsSimple => Colors is null && !IsLink;
 }

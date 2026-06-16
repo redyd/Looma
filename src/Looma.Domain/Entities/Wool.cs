@@ -24,7 +24,7 @@ public class Wool
     public required string Name { get; init; }
     public required string Brand { get; init; }
     public required string Material { get; init; }
-    public required string Color { get; init; }
+    public required List<string> Colors { get; init; }
     public required double Weight { get; init; }
     public required double Length { get; init; }
     public required double Stock { get; init; }

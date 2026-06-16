@@ -26,7 +26,7 @@ internal static class TestData
             Name = name,
             Brand = brand,
             Material = material,
-            Color = color,
+            Colors = [color],
             Weight = weight,
             Length = length,
             Stock = stock,

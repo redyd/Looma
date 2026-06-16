@@ -85,7 +85,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             var name = request.Name.Trim();
             var brand = request.Brand.Trim();
             var material = request.Material.Trim();
-            var color = request.Color.Trim();
+            var color = request.Colors.Select(e => e.Trim()).ToList();
             var weight = request.Weight;
             var length = request.Length;
             var needleMinSize = request.NeedleMinSize;
@@ -99,7 +99,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             entity.Name = name;
             entity.Brand = brand;
             entity.Material = material;
-            entity.Color = color;
+            entity.Color = string.Join("|", color);
             entity.Weight = weight;
             entity.Length = length;
             entity.NeedleMinSize = needleMinSize;
@@ -169,7 +169,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
 
     private static Wool? BuildCreate(CreateWoolRequest request)
     {
-        if (!IsValid(request.Name, request.Brand, request.Material, request.Color,
+        if (!IsValid(request.Name, request.Brand, request.Material, request.Colors,
                 request.Weight, request.Length, request.Stock, request.NeedleMinSize, request.NeedleMaxSize))
         {
             return null;
@@ -181,7 +181,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             Name = request.Name.Trim(),
             Brand = request.Brand.Trim(),
             Material = request.Material.Trim(),
-            Color = request.Color.Trim(),
+            Colors = request.Colors,
             Weight = request.Weight,
             Length = request.Length,
             Stock = request.Stock,
@@ -190,13 +190,13 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         };
     }
 
-    private static bool IsValid(string name, string brand, string material, string color,
+    private static bool IsValid(string name, string brand, string material, List<string> colors,
         double weight, double length, double? stock, double needleMinSize, double needleMaxSize)
     {
         return !string.IsNullOrWhiteSpace(name)
                && !string.IsNullOrWhiteSpace(brand)
                && !string.IsNullOrWhiteSpace(material)
-               && !string.IsNullOrWhiteSpace(color)
+               && colors.All(c => !string.IsNullOrWhiteSpace(c))
                && weight > 0
                && length > 0
                && stock is null or >= 0

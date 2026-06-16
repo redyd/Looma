@@ -21,8 +21,9 @@
 
             <controls:DetailHeader.TitleContent>
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Ellipse Width="16" Height="16" VerticalAlignment="Center"
-                             Fill="{Binding Color, Converter={StaticResource HexToColor}}" />
+                    <controls:ColorPieControl Colors="{Binding Colors}"
+                                                  Width="20" Height="20"
+                                                  VerticalAlignment="Center" />
                     <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="SemiBold"
                                VerticalAlignment="Center" />
                     <TextBlock Text="{Binding Brand}" FontSize="14" Opacity="0.5"
