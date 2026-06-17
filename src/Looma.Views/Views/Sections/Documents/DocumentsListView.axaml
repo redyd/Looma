@@ -206,6 +206,21 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <Border
+                    Padding="12 18"
+                    Background="{StaticResource BackgroundCardBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1 0 1 1"
+                    IsVisible="{Binding IsListEmpty}"
+                >
+                    <TextBlock
+                        Text="Aucun document à afficher."
+                        Classes="form-hint"
+                        HorizontalAlignment="Center"
+                        TextAlignment="Center"
+                    />
+                </Border>
             </StackPanel>
         </ScrollViewer>
 </DockPanel>
