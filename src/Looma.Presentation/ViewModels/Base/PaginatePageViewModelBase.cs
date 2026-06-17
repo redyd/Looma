@@ -32,9 +32,11 @@ public abstract partial class PaginatePageViewModelBase<TEntity, TViewModel, TKe
     public partial int TotalPages { get; set; } = 1;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(PreviousPageCommand))]
     public partial bool HasPreviousPage { get; set; }
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(NextPageCommand))]
     public partial bool HasNextPage { get; set; }
 
     [ObservableProperty]

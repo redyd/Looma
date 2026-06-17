@@ -104,6 +104,35 @@ public sealed class DocumentsViewModelTests
     }
 
     [Fact]
+    public void DocumentsList_Clearing_Search_Restores_Pagination_Command_State()
+    {
+        var documents = Enumerable.Range(1, 13)
+            .Select(i => TestData.Document(nickname: i == 13 ? "Gauge" : $"Document {i}", type: "pdf"))
+            .ToList();
+        var vm = new DocumentsListViewModel(
+            new FakeNavigationService(),
+            new FakeDocumentService { GetAllResult = ResultT<IReadOnlyList<Document>>.Ok(documents) },
+            new FakePatternService(),
+            new FakeProjectService(),
+            new FakeNotificationService(),
+            new FakeRefreshService());
+        var nextCanExecuteChangedCount = 0;
+
+        vm.OnNavigatedTo();
+        vm.NextPageCommand.CanExecuteChanged += (_, _) => nextCanExecuteChangedCount++;
+
+        vm.SearchQuery = "gauge";
+        vm.HasNextPage.Should().BeFalse();
+        vm.NextPageCommand.CanExecute(null).Should().BeFalse();
+
+        vm.SearchQuery = string.Empty;
+
+        vm.HasNextPage.Should().BeTrue();
+        vm.NextPageCommand.CanExecute(null).Should().BeTrue();
+        nextCanExecuteChangedCount.Should().BeGreaterThan(0);
+    }
+
+    [Fact]
     public async Task DocumentsList_OpenOrigin_Navigates_To_Pattern_When_Document_Has_Pattern()
     {
         var nav = new FakeNavigationService();
