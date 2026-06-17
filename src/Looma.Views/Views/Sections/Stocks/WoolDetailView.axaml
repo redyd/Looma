@@ -1,7 +1,7 @@
 <!--
-    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
-    This file is part of Looma, licensed under the AGPL-3.0.
-    See LICENSE in the project root for full license text.
+Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+This file is part of Looma, licensed under the AGPL-3.0.
+See LICENSE in the project root for full license text.
 -->
 
 <UserControl xmlns="https://github.com/avaloniaui"
@@ -22,8 +22,8 @@
             <controls:DetailHeader.TitleContent>
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <controls:ColorPieControl Colors="{Binding Colors}"
-                                                  Width="20" Height="20"
-                                                  VerticalAlignment="Center" />
+                                              Width="20" Height="20"
+                                              VerticalAlignment="Center" />
                     <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="SemiBold"
                                VerticalAlignment="Center" />
                     <TextBlock Text="{Binding Brand}" FontSize="14" Opacity="0.5"
@@ -37,7 +37,8 @@
             <StackPanel Spacing="16" Margin="32">
 
                 <controls:DetailInformations
-                    InfoTitle="🧶 Informations"
+                    InfoTitle="Informations"
+                    InfoIconKind="BadgeInfo"
                     Stats="{Binding DetailStats}"
                     Infos="{Binding DetailInfos}"
                     Images="{Binding Images}"/>
@@ -47,7 +48,17 @@
                     <StackPanel Spacing="20">
 
                         <StackPanel Classes="form-header" Margin="0">
-                            <TextBlock Text="🔄 Ajustement du stock" Classes="section-title" FontSize="16" />
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <LucideIcon
+                                    Kind="FilePenLine"
+                                    Size="18"
+                                    Foreground="{StaticResource PrimaryDarkBrush}"
+                                    VerticalAlignment="Center" />
+                                <TextBlock Text="Ajustement du stock"
+                                           Classes="section-title"
+                                           FontSize="16"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
                             <TextBlock Text="Modifiez la quantité de laine disponible en stock" Classes="form-subtitle" />
                         </StackPanel>
 
@@ -90,20 +101,28 @@
                         <!-- Étape 3 : Actions (Boutons Ajouter / Retirer) -->
                         <StackPanel Classes="form-actions" Margin="0 8 0 0">
 
-                            <Button Content="➖ Retirer du stock"
-                                    Classes="btn-danger-solid"
+                            <Button Classes="btn-danger-solid"
                                     IsEnabled="{Binding CanAdjust}"
                                     Command="{Binding AdjustStockCommand}"
                                     CommandParameter="{x:False}"
-                                    MinWidth="140" />
+                                    MinWidth="140">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <LucideIcon Kind="CircleMinus" Size="16" VerticalAlignment="Center" />
+                                    <TextBlock Text="Retirer du stock" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
 
                             <!-- Bouton Ajouter (Principal/Violet) -->
-                            <Button Content="➕ Ajouter au stock"
-                                    Classes="form-submit"
+                            <Button Classes="form-submit"
                                     IsEnabled="{Binding CanAdjust}"
                                     Command="{Binding AdjustStockCommand}"
                                     CommandParameter="{x:True}"
-                                    MinWidth="140" />
+                                    MinWidth="140">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <LucideIcon Kind="CircleFadingPlus" Size="16" VerticalAlignment="Center" />
+                                    <TextBlock Text="Ajouter au stock" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
 
                         </StackPanel>
 

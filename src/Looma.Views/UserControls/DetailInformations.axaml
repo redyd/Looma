@@ -48,9 +48,18 @@
 
         <Border Grid.Column="2" Classes="form-section" MinWidth="280">
             <StackPanel Spacing="0">
-                <TextBlock Classes="section-title"
-                           Text="{Binding InfoTitle, ElementName=This}"
-                           Margin="0 0 0 14" />
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8"
+                            Margin="0 0 0 14">
+                    <LucideIcon Kind="{Binding InfoIconKind, ElementName=This}"
+                                Size="18"
+                                Foreground="{StaticResource PrimaryDarkBrush}"
+                                VerticalAlignment="Center"
+                                IsVisible="{Binding InfoIconKind, ElementName=This, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    <TextBlock Classes="section-title"
+                               Text="{Binding InfoTitle, ElementName=This}"
+                               VerticalAlignment="Center" />
+                </StackPanel>
                 <ItemsControl ItemsSource="{Binding Infos, ElementName=This}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="controls:InfoItem">

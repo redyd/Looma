@@ -16,7 +16,7 @@ public partial class NotificationItemViewModel : ObservableObject
     public NotificationSeverity Severity { get; }
     public string Title { get; }
     public string Message { get; }
-    public string IconGlyph { get; }
+    public string IconKind { get; }
     public IBrush AccentBrush { get; }
     public IBrush BackgroundBrush { get; }
     public IBrush BorderBrush { get; }
@@ -34,12 +34,12 @@ public partial class NotificationItemViewModel : ObservableObject
         Message = message;
         _dismiss = dismiss;
 
-        (IconGlyph, AccentBrush, BackgroundBrush, BorderBrush) = severity switch
+        (IconKind, AccentBrush, BackgroundBrush, BorderBrush) = severity switch
         {
-            NotificationSeverity.Success => ("✓", Brush("#16A34A"), Brush("#ECFDF5"), Brush("#BBF7D0")),
-            NotificationSeverity.Warning => ("!", Brush("#D97706"), Brush("#FFFBEB"), Brush("#FDE68A")),
-            NotificationSeverity.Error => ("×", Brush("#DC2626"), Brush("#FEF2F2"), Brush("#FECACA")),
-            _ => ("i", Brush("#2563EB"), Brush("#EFF6FF"), Brush("#BFDBFE"))
+            NotificationSeverity.Success => ("CircleCheckBig", Brush("#16A34A"), Brush("#ECFDF5"), Brush("#BBF7D0")),
+            NotificationSeverity.Warning => ("TriangleAlert", Brush("#D97706"), Brush("#FFFBEB"), Brush("#FDE68A")),
+            NotificationSeverity.Error => ("OctagonX", Brush("#DC2626"), Brush("#FEF2F2"), Brush("#FECACA")),
+            _ => ("BadgeInfo", Brush("#2563EB"), Brush("#EFF6FF"), Brush("#BFDBFE"))
         };
     }
 

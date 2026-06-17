@@ -22,9 +22,35 @@ public sealed class AppDataSeeder(
 {
     public async Task SeedAsync()
     {
+        await EnsureDatabaseIsEmptyAsync();
+
         var wools = await SeedWoolsAsync();
         var patterns = await SeedPatternsAsync();
         await SeedProjectsAsync(wools, patterns);
+    }
+
+    private async Task EnsureDatabaseIsEmptyAsync()
+    {
+        var wools = await woolService.GetAllAsync();
+        EnsureSucceeded(wools, "verifier les laines existantes");
+
+        var patterns = await patternService.GetAllAsync();
+        EnsureSucceeded(patterns, "verifier les patrons existants");
+
+        var projects = await projectService.GetAllAsync();
+        EnsureSucceeded(projects, "verifier les projets existants");
+
+        var documents = await documentService.GetAllAsync();
+        EnsureSucceeded(documents, "verifier les documents existants");
+
+        if ((wools.Value?.Count ?? 0) > 0
+            || (patterns.Value?.Count ?? 0) > 0
+            || (projects.Value?.Count ?? 0) > 0
+            || (documents.Value?.Count ?? 0) > 0)
+        {
+            throw new InvalidOperationException(
+                "Le seed ne peut s'executer que sur une base vide. Lancez l'application avec --clear --seed pour regenerer les donnees de demonstration.");
+        }
     }
 
     private async Task<IReadOnlyList<Wool>> SeedWoolsAsync()

@@ -154,10 +154,10 @@
                                                            FontSize="11"
                                                            FontFamily="Consolas"
                                                            VerticalAlignment="Center" />
-                                                <TextBlock Text="×"
-                                                           FontSize="13"
-                                                           VerticalAlignment="Center"
-                                                           Opacity="0.6" />
+                                                <LucideIcon Kind="X"
+                                                            Size="13"
+                                                            VerticalAlignment="Center"
+                                                            Opacity="0.6" />
                                             </StackPanel>
                                         </Button>
                                     </DataTemplate>

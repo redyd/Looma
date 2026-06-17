@@ -55,26 +55,32 @@
                 Spacing="12"
             >
                 <Button
-                    Content="←"
                     Command="{Binding PreviousPageCommand}"
                     Classes="form-cancel"
                     Width="36"
                     Height="36"
                     Padding="0"
-                />
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                >
+                    <LucideIcon Kind="CircleArrowLeft" Size="18" />
+                </Button>
                 <TextBlock
                     Text="{Binding PageInfo}"
                     VerticalAlignment="Center"
                     FontSize="14"
                 />
                 <Button
-                    Content="→"
                     Command="{Binding NextPageCommand}"
                     Classes="form-cancel"
                     Width="36"
                     Height="36"
                     Padding="0"
-                />
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                >
+                    <LucideIcon Kind="CircleArrowRight" Size="18" />
+                </Button>
             </StackPanel>
         </Border>
 

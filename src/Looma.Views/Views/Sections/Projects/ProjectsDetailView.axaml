@@ -1,7 +1,7 @@
 <!--
-    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
-    This file is part of Looma, licensed under the AGPL-3.0.
-    See LICENSE in the project root for full license text.
+Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+This file is part of Looma, licensed under the AGPL-3.0.
+See LICENSE in the project root for full license text.
 -->
 
 <UserControl xmlns="https://github.com/avaloniaui"
@@ -38,7 +38,7 @@
 
         <ScrollViewer>
             <StackPanel Margin="32" Spacing="16">
-                
+
                 <Button Classes="card-button"
                         Command="{Binding OpenPatternCommand}"
                         Padding="0"
@@ -132,7 +132,17 @@
 
                     <Border Grid.Column="2" Classes="form-section">
                         <StackPanel Spacing="12">
-                            <TextBlock Classes="section-title" Text="Informations" />
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="8"
+                                        Margin="0 0 0 14">
+                                <LucideIcon Kind="BadgeInfo"
+                                            Size="18"
+                                            Foreground="{StaticResource PrimaryDarkBrush}"
+                                            VerticalAlignment="Center" />
+                                <TextBlock Classes="section-title"
+                                           Text="Informations"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
                             <ItemsControl ItemsSource="{Binding ProjectInfos}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="pcontrols:InfoItem">
@@ -237,7 +247,7 @@
                                     <DataTemplate x:DataType="projects:ProjectWoolUsageViewModel">
                                         <Border Classes="surface-panel" Padding="12">
                                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                                                
+
                                                 <controls:ColorPieControl
                                                     Grid.Column="0"
                                                     Colors="{Binding Colors}"
