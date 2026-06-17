@@ -45,39 +45,14 @@
             </Button>
         </DockPanel>
 
-        <!-- Pagination bas de page -->
-        <Border DockPanel.Dock="Bottom"
-                IsVisible="{Binding !IsListEmpty}"
-                Margin="0 16 0 0"
-                Padding="16 10"
-                CornerRadius="8"
-                Background="{StaticResource BackgroundCardBrush}"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="1">
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Spacing="12">
-                <Button Command="{Binding PreviousPageCommand}"
-                        Classes="form-cancel"
-                        Width="36" Height="36"
-                        Padding="0"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center">
-                    <LucideIcon Kind="CircleArrowLeft" Size="18" />
-                </Button>
-                <TextBlock Text="{Binding PageInfo}"
-                           VerticalAlignment="Center"
-                           FontSize="14" />
-                <Button Command="{Binding NextPageCommand}"
-                        Classes="form-cancel"
-                        Width="36" Height="36"
-                        Padding="0"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center">
-                    <LucideIcon Kind="CircleArrowRight" Size="18" />
-                </Button>
-            </StackPanel>
-        </Border>
+        <userControls:PaginationControl
+            DockPanel.Dock="Bottom"
+            IsVisible="{Binding !IsListEmpty}"
+            PreviousPageCommand="{Binding PreviousPageCommand}"
+            NextPageCommand="{Binding NextPageCommand}"
+            HasPreviousPage="{Binding HasPreviousPage}"
+            HasNextPage="{Binding HasNextPage}"
+            PageInfo="{Binding PageInfo}" />
 
         <!-- Grille de cartes -->
         <Grid>

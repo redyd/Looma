@@ -8,5 +8,5 @@ namespace Looma.App.Services;
 
 public interface IAppDataSeeder
 {
-    Task SeedAsync();
+    Task SeedAsync(int? itemCount = null);
 }

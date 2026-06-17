@@ -20,13 +20,13 @@ public sealed class AppDataSeeder(
     IProjectService projectService,
     IDocumentService documentService) : IAppDataSeeder
 {
-    public async Task SeedAsync()
+    public async Task SeedAsync(int? itemCount = null)
     {
         await EnsureDatabaseIsEmptyAsync();
 
-        var wools = await SeedWoolsAsync();
-        var patterns = await SeedPatternsAsync();
-        await SeedProjectsAsync(wools, patterns);
+        var wools = await SeedWoolsAsync(itemCount);
+        var patterns = await SeedPatternsAsync(itemCount);
+        await SeedProjectsAsync(wools, patterns, itemCount);
     }
 
     private async Task EnsureDatabaseIsEmptyAsync()
@@ -53,13 +53,13 @@ public sealed class AppDataSeeder(
         }
     }
 
-    private async Task<IReadOnlyList<Wool>> SeedWoolsAsync()
+    private async Task<IReadOnlyList<Wool>> SeedWoolsAsync(int? itemCount)
     {
         var existing = await woolService.GetAllAsync();
         EnsureSucceeded(existing, "charger les laines existantes");
 
         var wools = existing.Value?.ToList() ?? [];
-        foreach (var request in WoolRequests())
+        foreach (var request in WoolRequests(itemCount))
         {
             var existingWool = wools.FirstOrDefault(w =>
                 string.Equals(w.Name, request.Name, StringComparison.OrdinalIgnoreCase)
@@ -76,13 +76,13 @@ public sealed class AppDataSeeder(
         return wools;
     }
 
-    private async Task<IReadOnlyList<Pattern>> SeedPatternsAsync()
+    private async Task<IReadOnlyList<Pattern>> SeedPatternsAsync(int? itemCount)
     {
         var existing = await patternService.GetAllAsync();
         EnsureSucceeded(existing, "charger les patrons existants");
 
         var patterns = existing.Value?.ToList() ?? [];
-        foreach (var request in PatternRequests())
+        foreach (var request in PatternRequests(itemCount))
         {
             var pattern = patterns.FirstOrDefault(p =>
                 string.Equals(p.Name, request.Name, StringComparison.OrdinalIgnoreCase));
@@ -97,14 +97,14 @@ public sealed class AppDataSeeder(
 
             if (pattern.Documents.Count == 0)
             {
-                await AddPatternDocumentsAsync(pattern);
+                await AddPatternDocumentsAsync(pattern, itemCount.HasValue ? 1 : 2);
             }
         }
 
         return patterns;
     }
 
-    private async Task SeedProjectsAsync(IReadOnlyList<Wool> wools, IReadOnlyList<Pattern> patterns)
+    private async Task SeedProjectsAsync(IReadOnlyList<Wool> wools, IReadOnlyList<Pattern> patterns, int? itemCount)
     {
         var existing = await projectService.GetAllAsync();
         EnsureSucceeded(existing, "charger les projets existants");
@@ -114,10 +114,13 @@ public sealed class AppDataSeeder(
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         var statuses = Enum.GetValues<Status>();
-        for (var i = 0; i < statuses.Length; i++)
+        var projectCount = itemCount ?? statuses.Length;
+        for (var i = 0; i < projectCount; i++)
         {
-            var status = statuses[i];
-            var name = $"Seed - Projet {GetStatusLabel(status)}";
+            var status = statuses[i % statuses.Length];
+            var name = itemCount.HasValue
+                ? $"Seed - Projet {i + 1:000} - {GetStatusLabel(status)}"
+                : $"Seed - Projet {GetStatusLabel(status)}";
             if (existingNames.Contains(name))
                 continue;
 
@@ -144,9 +147,9 @@ public sealed class AppDataSeeder(
         }
     }
 
-    private async Task AddPatternDocumentsAsync(Pattern pattern)
+    private async Task AddPatternDocumentsAsync(Pattern pattern, int documentCount)
     {
-        var sourcePaths = CreateSeedDocumentSources(pattern);
+        var sourcePaths = CreateSeedDocumentSources(pattern, documentCount);
 
         try
         {
@@ -154,7 +157,7 @@ public sealed class AppDataSeeder(
                 sourcePaths
                     .Select((path, index) => new CreateDocumentRequest(
                         path,
-                        index == 0 ? $"{pattern.Name} - Instructions" : $"{pattern.Name} - Notes",
+                        index == 0 ? $"{pattern.Name} - Instructions" : $"{pattern.Name} - Notes {index + 1}",
                         PatternId: pattern.Id))
                     .ToList());
 
@@ -174,59 +177,98 @@ public sealed class AppDataSeeder(
         }
     }
 
-    private static IReadOnlyList<string> CreateSeedDocumentSources(Pattern pattern)
+    private static IReadOnlyList<string> CreateSeedDocumentSources(Pattern pattern, int documentCount = 2)
     {
         var directory = Path.Combine(Path.GetTempPath(), "looma-seed", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
 
-        var pdf = Path.Combine(directory, $"{SanitizeFileName(pattern.Name)}-instructions.pdf");
-        var txt = Path.Combine(directory, $"{SanitizeFileName(pattern.Name)}-notes.txt");
+        var paths = new List<string>(documentCount);
+        for (var i = 0; i < documentCount; i++)
+        {
+            var suffix = i == 0 ? "instructions" : $"notes-{i + 1}";
+            var extension = i == 0 ? "pdf" : "txt";
+            var path = Path.Combine(directory, $"{SanitizeFileName(pattern.Name)}-{suffix}.{extension}");
+            File.WriteAllText(path, $"Document de demonstration {i + 1} pour {pattern.Name}.");
+            paths.Add(path);
+        }
 
-        File.WriteAllText(pdf, $"Instructions de demonstration pour {pattern.Name}.");
-        File.WriteAllText(txt, $"Notes de demonstration pour {pattern.Name}.");
-
-        return [pdf, txt];
+        return paths;
     }
 
-    private static IEnumerable<CreatePatternRequest> PatternRequests()
+    private static IEnumerable<CreatePatternRequest> PatternRequests(int? itemCount)
     {
-        yield return new CreatePatternRequest(
+        var templates = new[]
+        {
+            new CreatePatternRequest(
             "Seed - Chale crochet",
             "https://example.com/chale-crochet",
             "Patron de demonstration crochet avec documents.",
             PatternType.Crochet,
             false,
-            new DateOnly(2026, 1, 10));
+            new DateOnly(2026, 1, 10)),
 
-        yield return new CreatePatternRequest(
+            new CreatePatternRequest(
             "Seed - Echarpe tunisienne",
             null,
             "Patron personnel de demonstration en crochet tunisien.",
             PatternType.TunisianCrochet,
             true,
-            new DateOnly(2026, 2, 1));
+            new DateOnly(2026, 2, 1)),
 
-        yield return new CreatePatternRequest(
+            new CreatePatternRequest(
             "Seed - Pull tricot",
             "https://example.com/pull-tricot",
             "Patron de demonstration tricot avec documents.",
             PatternType.Tricot,
             false,
-            new DateOnly(2026, 3, 5));
+            new DateOnly(2026, 3, 5))
+        };
+
+        if (!itemCount.HasValue)
+            return templates;
+
+        return Enumerable.Range(0, itemCount.Value)
+            .Select(i =>
+            {
+                var template = templates[i % templates.Length];
+                return template with
+                {
+                    Name = $"{template.Name} {i + 1:000}",
+                    Url = template.Url is null ? null : $"{template.Url}-{i + 1:000}",
+                    BeginDate = template.BeginDate?.AddDays(i)
+                };
+            });
     }
 
-    private static IEnumerable<CreateWoolRequest> WoolRequests()
+    private static IEnumerable<CreateWoolRequest> WoolRequests(int? itemCount)
     {
-        yield return new CreateWoolRequest("Lace Cloud", "Seed Yarn Co", "Alpaga", ["#F7E7CE"], 50, 420, 4000, 1.5, 2.0);
-        yield return new CreateWoolRequest("Sock Twist", "Seed Yarn Co", "Merinos nylon", ["#2E86AB", "#F6F5AE"], 50, 210, 6000, 2.25, 3.0);
-        yield return new CreateWoolRequest("Fine Merino", "Atelier Demo", "Merinos", ["#D7263D"], 50, 175, 5000, 3.0, 3.5);
-        yield return new CreateWoolRequest("Light Cotton", "Atelier Demo", "Coton", ["#1B998B"], 100, 250, 3000, 3.75, 4.5);
-        yield return new CreateWoolRequest("Everyday DK", "Maille Test", "Laine", ["#F46036"], 100, 220, 4500, 4.0, 5.0);
-        yield return new CreateWoolRequest("Medium Wool", "Maille Test", "Laine vierge", ["#2D3047"], 100, 180, 3500, 4.75, 5.5);
-        yield return new CreateWoolRequest("Bulky Tweed", "Pelote Seed", "Laine tweed", ["#8D99AE", "#EDF2F4"], 100, 120, 2500, 6.0, 8.0);
-        yield return new CreateWoolRequest("Super Bulky", "Pelote Seed", "Acrylique laine", ["#FFB703"], 150, 90, 2000, 9.0, 12.0);
-        yield return new CreateWoolRequest("Jumbo Roving", "Chunky Demo", "Laine mèche", ["#6A4C93"], 200, 60, 1500, 14.0, 18.0);
-        yield return new CreateWoolRequest("Gradient Cotton", "Chunky Demo", "Coton recycle", ["#06D6A0", "#118AB2", "#073B4C"], 100, 300, 3200, 3.5, 4.5);
+        var templates = new[]
+        {
+            new CreateWoolRequest("Lace Cloud", "Seed Yarn Co", "Alpaga", ["#F7E7CE"], 50, 420, 4000, 1.5, 2.0),
+            new CreateWoolRequest("Sock Twist", "Seed Yarn Co", "Merinos nylon", ["#2E86AB", "#F6F5AE"], 50, 210, 6000, 2.25, 3.0),
+            new CreateWoolRequest("Fine Merino", "Atelier Demo", "Merinos", ["#D7263D"], 50, 175, 5000, 3.0, 3.5),
+            new CreateWoolRequest("Light Cotton", "Atelier Demo", "Coton", ["#1B998B"], 100, 250, 3000, 3.75, 4.5),
+            new CreateWoolRequest("Everyday DK", "Maille Test", "Laine", ["#F46036"], 100, 220, 4500, 4.0, 5.0),
+            new CreateWoolRequest("Medium Wool", "Maille Test", "Laine vierge", ["#2D3047"], 100, 180, 3500, 4.75, 5.5),
+            new CreateWoolRequest("Bulky Tweed", "Pelote Seed", "Laine tweed", ["#8D99AE", "#EDF2F4"], 100, 120, 2500, 6.0, 8.0),
+            new CreateWoolRequest("Super Bulky", "Pelote Seed", "Acrylique laine", ["#FFB703"], 150, 90, 2000, 9.0, 12.0),
+            new CreateWoolRequest("Jumbo Roving", "Chunky Demo", "Laine meche", ["#6A4C93"], 200, 60, 1500, 14.0, 18.0),
+            new CreateWoolRequest("Gradient Cotton", "Chunky Demo", "Coton recycle", ["#06D6A0", "#118AB2", "#073B4C"], 100, 300, 3200, 3.5, 4.5)
+        };
+
+        if (!itemCount.HasValue)
+            return templates;
+
+        return Enumerable.Range(0, itemCount.Value)
+            .Select(i =>
+            {
+                var template = templates[i % templates.Length];
+                return template with
+                {
+                    Name = $"{template.Name} {i + 1:000}",
+                    Stock = template.Stock + (i % 12) * template.Weight
+                };
+            });
     }
 
     private static string GetStatusLabel(Status status) => status switch

@@ -3,7 +3,9 @@
 // See LICENSE in the project root for full license text.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -78,10 +80,11 @@ public partial class App : Application
 
         pathManager.EnsureDatabaseCreated(db);
 
-        if (args.Contains("--seed"))
+        var seedCount = GetSeedCount(args);
+        if (seedCount.HasValue || args.Contains("--seed"))
         {
             scope.ServiceProvider.GetRequiredService<IAppDataSeeder>()
-                .SeedAsync()
+                .SeedAsync(seedCount)
                 .GetAwaiter()
                 .GetResult();
         }
@@ -120,5 +123,19 @@ public partial class App : Application
         catch
         {
         }
+    }
+
+    private static int? GetSeedCount(IEnumerable<string> args)
+    {
+        const string seedPrefix = "--seed-";
+        var seedArgument = args.FirstOrDefault(arg => arg.StartsWith(seedPrefix, StringComparison.Ordinal));
+        if (seedArgument is null)
+            return null;
+
+        var value = seedArgument[seedPrefix.Length..];
+        if (int.TryParse(value, out var count) && count >= 0)
+            return count;
+
+        throw new ArgumentException($"Argument de seed invalide: {seedArgument}. Utilisez --seed-N avec N >= 0.");
     }
 }

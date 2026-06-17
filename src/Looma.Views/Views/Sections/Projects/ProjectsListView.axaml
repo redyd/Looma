@@ -7,6 +7,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
+             xmlns:userControls="clr-namespace:Looma.Views.UserControls"
              xmlns:projects="clr-namespace:Looma.Presentation.ViewModels.Shared.Projects;assembly=Looma.Presentation"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsListView"
              x:DataType="vm:ProjectsListViewModel">
@@ -72,40 +73,14 @@
             </Button>
         </DockPanel>
 
-        <Border DockPanel.Dock="Bottom"
-                IsVisible="{Binding !IsListEmpty}"
-                Margin="0 16 0 0"
-                Padding="16 10"
-                CornerRadius="8"
-                Background="{StaticResource BackgroundCardBrush}"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="1">
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Spacing="12">
-                <Button Command="{Binding PreviousPageCommand}"
-                        Classes="form-cancel"
-                        Width="36"
-                        Height="36"
-                        Padding="0"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center">
-                    <LucideIcon Kind="CircleArrowLeft" Size="18" />
-                </Button>
-                <TextBlock Text="{Binding PageInfo}"
-                           VerticalAlignment="Center"
-                           FontSize="14" />
-                <Button Command="{Binding NextPageCommand}"
-                        Classes="form-cancel"
-                        Width="36"
-                        Height="36"
-                        Padding="0"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center">
-                    <LucideIcon Kind="CircleArrowRight" Size="18" />
-                </Button>
-            </StackPanel>
-        </Border>
+        <userControls:PaginationControl
+            DockPanel.Dock="Bottom"
+            IsVisible="{Binding !IsListEmpty}"
+            PreviousPageCommand="{Binding PreviousPageCommand}"
+            NextPageCommand="{Binding NextPageCommand}"
+            HasPreviousPage="{Binding HasPreviousPage}"
+            HasNextPage="{Binding HasNextPage}"
+            PageInfo="{Binding PageInfo}" />
 
         <Grid>
             <Border IsVisible="{Binding IsSourceListEmpty}"
