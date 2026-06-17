@@ -107,7 +107,7 @@ See LICENSE in the project root for full license text.
                                     CommandParameter="{x:False}"
                                     MinWidth="140">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <LucideIcon Kind="CircleMinus" Size="16" VerticalAlignment="Center" />
+                                    <LucideIcon Kind="Trash2" Size="16" VerticalAlignment="Center" />
                                     <TextBlock Text="Retirer du stock" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
@@ -119,7 +119,7 @@ See LICENSE in the project root for full license text.
                                     CommandParameter="{x:True}"
                                     MinWidth="140">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <LucideIcon Kind="CircleFadingPlus" Size="16" VerticalAlignment="Center" />
+                                    <LucideIcon Kind="PackagePlus" Size="16" VerticalAlignment="Center" />
                                     <TextBlock Text="Ajouter au stock" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
