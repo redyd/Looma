@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<WoolStockCalculator>();
         services.AddSingleton<IDomainLogger, ConsoleDomainLogger>();
         services.AddSingleton<IDataRefreshService, DataRefreshService>();
+        services.AddScoped<IAppDataSeeder, AppDataSeeder>();
         services.AddScoped<IWoolService, WoolService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IPatternService, PatternService>();

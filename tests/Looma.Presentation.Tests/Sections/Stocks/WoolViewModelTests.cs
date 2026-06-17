@@ -42,11 +42,12 @@ public sealed class WoolViewModelTests
         vm.InitCreate();
         FillValidWoolForm(vm);
         vm.SelectedColor = Color.FromRgb(0x12, 0x34, 0x56);
+        vm.AddColorCommand.Execute(null);
 
         await vm.SaveCommand.ExecuteAsync();
 
         woolService.AddRequests.Should().ContainSingle().Which.Should().BeEquivalentTo(
-            new { Name = "Sock", Brand = "Drops", Material = "Wool", Color = "#123456", Weight = 50d, Length = 170d, Stock = 1000d, NeedleMinSize = 3d, NeedleMaxSize = 4d });
+            new { Name = "Sock", Brand = "Drops", Material = "Wool", Colors = new[] { "#123456" }, Weight = 50d, Length = 170d, Stock = 1000d, NeedleMinSize = 3d, NeedleMaxSize = 4d });
         notifications.Calls.Should().Contain(c => c.Severity == NotificationSeverity.Success && c.Message == "La laine a été créée.");
         nav.GoBackCount.Should().Be(1);
         vm.IsBusy.Should().BeFalse();

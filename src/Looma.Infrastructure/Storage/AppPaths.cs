@@ -22,6 +22,16 @@ public class AppPaths(string baseRoot)
         context.Database.Migrate();
     }
 
+    public void ClearDocuments()
+    {
+        if (Directory.Exists(DocumentsFolder))
+        {
+            Directory.Delete(DocumentsFolder, recursive: true);
+        }
+
+        Directory.CreateDirectory(DocumentsFolder);
+    }
+
     public string GetDocumentStoragePath(Guid id)
     {
         var exact = Path.Combine(DocumentsFolder, id.ToString());

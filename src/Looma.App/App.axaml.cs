@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Looma.App.Services;
 using Looma.Infrastructure;
 using Looma.Infrastructure.Storage;
 using Looma.Presentation.ViewModels.Main;
@@ -36,8 +37,8 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desk)
         {
-            var args = desk.Args;
-            if (args.Contains("--local"))
+            var startupArgs = desk.Args;
+            if (startupArgs?.Contains("--local") == true)
             {
                 rootPath = Path.GetFullPath(Path.Combine(
                     Directory.GetCurrentDirectory(),
@@ -66,8 +67,24 @@ public partial class App : Application
         pathManager.EnsureDirectoriesExist();
 
         using var scope = Services.CreateScope();
+        var args = (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Args ?? [];
         var db = scope.ServiceProvider.GetRequiredService<LoomaDbContext>();
+
+        if (args.Contains("--clear"))
+        {
+            db.Database.EnsureDeleted();
+            pathManager.ClearDocuments();
+        }
+
         pathManager.EnsureDatabaseCreated(db);
+
+        if (args.Contains("--seed"))
+        {
+            scope.ServiceProvider.GetRequiredService<IAppDataSeeder>()
+                .SeedAsync()
+                .GetAwaiter()
+                .GetResult();
+        }
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
