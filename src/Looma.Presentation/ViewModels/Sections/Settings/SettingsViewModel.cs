@@ -3,6 +3,7 @@
 // See LICENSE in the project root for full license text.
 
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Services;
@@ -34,6 +35,9 @@ public partial class SettingsViewModel(
 
     partial void OnSelectedThemeChanged(ThemeOptionViewModel? value)
     {
+        OpenSelectedThemeCommand.NotifyCanExecuteChanged();
+        DeleteSelectedThemeCommand.NotifyCanExecuteChanged();
+
         if (_isLoadingThemes || value is null)
             return;
 
@@ -57,9 +61,12 @@ public partial class SettingsViewModel(
         }
     }
 
+    private bool CanManageSelectedTheme() => SelectedTheme?.IsDefault == false;
+
     [RelayCommand]
     private void RefreshThemes()
     {
+        var shouldReloadSelectedTheme = !_isLoadingThemes;
         _isLoadingThemes = true;
         try
         {
@@ -77,6 +84,20 @@ public partial class SettingsViewModel(
 
             SelectedTheme = Themes.FirstOrDefault(theme => theme.Path == selectedPath)
                             ?? Themes.FirstOrDefault();
+
+            if (!shouldReloadSelectedTheme || SelectedTheme is null)
+                return;
+
+            if (SelectedTheme.IsDefault)
+            {
+                themeService.ResetToDefault();
+                themeStorage.SaveSelectedTheme(null);
+            }
+            else
+            {
+                themeService.ApplyOverride(SelectedTheme.Path!);
+                themeStorage.SaveSelectedTheme(SelectedTheme.Path);
+            }
         }
         catch (Exception ex)
         {
@@ -133,6 +154,51 @@ public partial class SettingsViewModel(
         catch (Exception ex)
         {
             notifications.Error($"Impossible d'exporter le thème : {ex.Message}");
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanManageSelectedTheme))]
+    private void OpenSelectedTheme()
+    {
+        try
+        {
+            var path = SelectedTheme?.Path;
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            {
+                notifications.Error("Le fichier de thème est introuvable.");
+                RefreshThemes();
+                return;
+            }
+
+            Process.Start(new ProcessStartInfo(path)
+            {
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            notifications.Error($"Impossible d'ouvrir le thème : {ex.Message}");
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanManageSelectedTheme))]
+    private void DeleteSelectedTheme()
+    {
+        try
+        {
+            var path = SelectedTheme?.Path;
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+
+            var deletedName = SelectedTheme?.Name ?? System.IO.Path.GetFileNameWithoutExtension(path);
+            themeStorage.DeleteTheme(path);
+            themeService.ResetToDefault();
+            RefreshThemes();
+            notifications.Success($"Le thème {deletedName} a été supprimé.");
+        }
+        catch (Exception ex)
+        {
+            notifications.Error($"Impossible de supprimer le thème : {ex.Message}");
         }
     }
 }

@@ -8,7 +8,9 @@ public interface IThemeStorage
 {
     IReadOnlyList<string> GetThemeFiles();
     string? GetSelectedThemePath();
+    int SeedThemeFiles(string sourceFolder);
     void SaveSelectedTheme(string? themePath);
+    void DeleteTheme(string themePath);
     string ImportTheme(string sourcePath);
     string CreateExportPath();
 }

@@ -76,6 +76,7 @@ public partial class App : Application
         }
 
         pathManager.EnsureDirectoriesExist();
+        SeedInternalThemes();
 
         using var scope = Services.CreateScope();
         var args = (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Args ?? [];
@@ -151,6 +152,12 @@ public partial class App : Application
         {
             themeStorage.SaveSelectedTheme(null);
         }
+    }
+
+    private static void SeedInternalThemes()
+    {
+        var sourceFolder = Path.Combine(AppContext.BaseDirectory, "Seed", "Themes");
+        Services.GetRequiredService<IThemeStorage>().SeedThemeFiles(sourceFolder);
     }
 
     private static int? GetSeedCount(IEnumerable<string> args)

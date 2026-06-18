@@ -127,13 +127,13 @@
     <SolidColorBrush x:Key="TabSelectedHoverIconForegroundBrush">#831843</SolidColorBrush>
 
     <!-- Rubans -->
-    <SolidColorBrush x:Key="StatusRibbonOption1BackgroundBrush">#F9A8D4</SolidColorBrush>
-    <SolidColorBrush x:Key="StatusRibbonOption2BackgroundBrush">#FDBA74</SolidColorBrush>
-    <SolidColorBrush x:Key="StatusRibbonOption3BackgroundBrush">#86EFAC</SolidColorBrush>
-    <SolidColorBrush x:Key="StatusRibbonOption4BackgroundBrush">#FCA5A5</SolidColorBrush>
-    <SolidColorBrush x:Key="TypeRibbonOption1BackgroundBrush">#F9A8D4</SolidColorBrush>
-    <SolidColorBrush x:Key="TypeRibbonOption2BackgroundBrush">#93C5FD</SolidColorBrush>
-    <SolidColorBrush x:Key="TypeRibbonOption3BackgroundBrush">#C4A484</SolidColorBrush>
+    <SolidColorBrush x:Key="StatusWishlistRibbonBackgroundBrush">#F9A8D4</SolidColorBrush>
+    <SolidColorBrush x:Key="StatusInProgressRibbonBackgroundBrush">#FDBA74</SolidColorBrush>
+    <SolidColorBrush x:Key="StatusFinishedRibbonBackgroundBrush">#86EFAC</SolidColorBrush>
+    <SolidColorBrush x:Key="StatusPausedRibbonBackgroundBrush">#FCA5A5</SolidColorBrush>
+    <SolidColorBrush x:Key="PatternCrochetRibbonBackgroundBrush">#F9A8D4</SolidColorBrush>
+    <SolidColorBrush x:Key="PatternTunisianCrochetRibbonBackgroundBrush">#93C5FD</SolidColorBrush>
+    <SolidColorBrush x:Key="PatternTricotRibbonBackgroundBrush">#C4A484</SolidColorBrush>
     <SolidColorBrush x:Key="WarningTextForegroundBrush">#991B1B</SolidColorBrush>
 
     <!-- Elements -->

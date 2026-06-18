@@ -41,6 +41,29 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
             : null;
     }
 
+    public int SeedThemeFiles(string sourceFolder)
+    {
+        if (string.IsNullOrWhiteSpace(sourceFolder) || !Directory.Exists(sourceFolder))
+            return 0;
+
+        Directory.CreateDirectory(paths.ThemesFolder);
+
+        var copied = 0;
+        foreach (var sourcePath in Directory.EnumerateFiles(sourceFolder, "*.json", SearchOption.TopDirectoryOnly))
+        {
+            var fileName = Path.GetFileName(sourcePath);
+            var destinationPath = Path.Combine(paths.ThemesFolder, fileName);
+
+            if (File.Exists(destinationPath))
+                continue;
+
+            File.Copy(sourcePath, destinationPath, overwrite: false);
+            copied++;
+        }
+
+        return copied;
+    }
+
     public void SaveSelectedTheme(string? themePath)
     {
         var selectedTheme = string.IsNullOrWhiteSpace(themePath)
@@ -58,6 +81,26 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
 
         var json = JsonSerializer.Serialize(config, JsonOptions);
         File.WriteAllText(paths.ConfigPath, json);
+    }
+
+    public void DeleteTheme(string themePath)
+    {
+        if (string.IsNullOrWhiteSpace(themePath))
+            throw new ArgumentException("Le chemin du thème est requis.", nameof(themePath));
+
+        var fileName = Path.GetFileName(themePath);
+        var destinationPath = Path.Combine(paths.ThemesFolder, fileName);
+
+        if (!File.Exists(destinationPath))
+            throw new FileNotFoundException("Le fichier de thème est introuvable.", destinationPath);
+
+        File.Delete(destinationPath);
+
+        var config = ReadConfig();
+        if (string.Equals(config.SelectedTheme, fileName, StringComparison.OrdinalIgnoreCase))
+        {
+            SaveSelectedTheme(null);
+        }
     }
 
     public string ImportTheme(string sourcePath)
