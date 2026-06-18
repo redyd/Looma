@@ -209,7 +209,7 @@
                         <TextBlock Classes="form-error"
                                    Text="{Binding ErrorMessage}"
                                    IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                        <Button Classes="form-cancel"
+                        <Button Classes="cancel-btn"
                                 Content="Annuler"
                                 Command="{Binding CancelCommand}" />
                         <Button Classes="form-submit"

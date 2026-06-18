@@ -1,0 +1,53 @@
+<!--
+    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+    This file is part of Looma, licensed under the AGPL-3.0.
+    See LICENSE in the project root for full license text.
+-->
+
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="Border.interactive-card:pointerover">
+        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+    </Style>
+
+    <Style Selector="Border.project-status-ribbon">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="CornerRadius" Value="12 12 0 0" />
+    </Style>
+
+    <Style Selector="Border.project-status-ribbon.status-wishlist">
+        <Setter Property="Background" Value="#F9A8D4" />
+    </Style>
+
+    <Style Selector="Border.project-status-ribbon.status-in-progress">
+        <Setter Property="Background" Value="#FDBA74" />
+    </Style>
+
+    <Style Selector="Border.project-status-ribbon.status-finished">
+        <Setter Property="Background" Value="#86EFAC" />
+    </Style>
+
+    <Style Selector="Border.project-status-ribbon.status-paused">
+        <Setter Property="Background" Value="#FCA5A5" />
+    </Style>
+
+    <Style Selector="Border.pattern-type-ribbon">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="CornerRadius" Value="12 12 0 0" />
+    </Style>
+
+    <Style Selector="Border.pattern-type-ribbon.type-crochet">
+        <Setter Property="Background" Value="#F9A8D4" />
+    </Style>
+
+    <Style Selector="Border.pattern-type-ribbon.type-tunisian-crochet">
+        <Setter Property="Background" Value="#93C5FD" />
+    </Style>
+
+    <Style Selector="Border.pattern-type-ribbon.type-tricot">
+        <Setter Property="Background" Value="#C4A484" />
+    </Style>
+
+</Styles>

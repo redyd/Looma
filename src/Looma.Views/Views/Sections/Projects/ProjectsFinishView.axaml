@@ -140,7 +140,7 @@
                                 Spacing="12">
                         <Button Content="Annuler"
                                 Command="{Binding CancelCommand}"
-                                Classes="form-cancel" />
+                                Classes="cancel-btn" />
                         <Button Content="Confirmer"
                                 Command="{Binding ConfirmCommand}"
                                 Classes="form-submit" />

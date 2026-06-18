@@ -141,7 +141,7 @@
                                                     <Button Grid.Column="1"
                                                             Content="Supprimer"
                                                             Command="{Binding RemoveCommand}"
-                                                            Classes="form-cancel"
+                                                            Classes="cancel-btn"
                                                             VerticalAlignment="Center" />
                                                 </Grid>
                                             </StackPanel>
@@ -196,7 +196,7 @@
                                                                 Classes="form-submit" />
                                                         <Button Content="Supprimer"
                                                                 Command="{Binding RemoveCommand}"
-                                                                Classes="form-cancel" />
+                                                                Classes="cancel-btn" />
                                                     </StackPanel>
                                                 </Grid>
                                             </StackPanel>
@@ -214,7 +214,7 @@
                     </Border>
 
                     <StackPanel Classes="form-actions">
-                        <Button Classes="form-cancel"
+                        <Button Classes="cancel-btn"
                                 Content="Annuler"
                                 Command="{Binding CancelCommand}" />
                         <Button Classes="form-submit"

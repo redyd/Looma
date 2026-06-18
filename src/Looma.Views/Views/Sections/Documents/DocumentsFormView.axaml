@@ -45,7 +45,7 @@
                     </Border>
 
                     <StackPanel Classes="form-actions">
-                        <Button Classes="form-cancel"
+                        <Button Classes="cancel-btn"
                                 Content="Annuler"
                                 Command="{Binding CancelCommand}" />
                         <Button Classes="form-submit"

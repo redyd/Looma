@@ -12,29 +12,6 @@
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsListView"
              x:DataType="vm:ProjectsListViewModel">
 
-    <UserControl.Styles>
-        <Style Selector="Border.project-status-ribbon">
-            <Setter Property="Height" Value="30" />
-            <Setter Property="CornerRadius" Value="12 12 0 0" />
-        </Style>
-
-        <Style Selector="Border.project-status-ribbon.status-wishlist">
-            <Setter Property="Background" Value="#F9A8D4" />
-        </Style>
-
-        <Style Selector="Border.project-status-ribbon.status-in-progress">
-            <Setter Property="Background" Value="#FDBA74" />
-        </Style>
-
-        <Style Selector="Border.project-status-ribbon.status-finished">
-            <Setter Property="Background" Value="#86EFAC" />
-        </Style>
-
-        <Style Selector="Border.project-status-ribbon.status-paused">
-            <Setter Property="Background" Value="#FCA5A5" />
-        </Style>
-    </UserControl.Styles>
-
     <DockPanel Margin="32">
 
         <Grid DockPanel.Dock="Top" Margin="0 0 0 24" ColumnDefinitions="2*,16,*">
@@ -84,56 +61,26 @@
 
         <Grid>
             <Border IsVisible="{Binding IsSourceListEmpty}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Padding="32 24"
-                    CornerRadius="18"
-                    Background="{StaticResource BackgroundCardBrush}"
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1">
+                    Classes="empty-state">
                 <StackPanel Spacing="8"
                             HorizontalAlignment="Center">
                     <TextBlock Text="Aucun projet pour l'instant"
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"
-                               FontSize="20"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource PrimaryDarkBrush}" />
+                               Classes="empty-state-title" />
 
                     <TextBlock Text="Crée ton premier projet pour commencer à organiser tes patrons et ta laine."
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"
-                               FontSize="13"
-                               Opacity="0.65"
-                               MaxWidth="360"
-                               TextWrapping="Wrap" />
+                               Classes="empty-state-message" />
                 </StackPanel>
             </Border>
 
             <Border IsVisible="{Binding IsFilterResultEmpty}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Padding="32 24"
-                    CornerRadius="18"
-                    Background="{StaticResource BackgroundCardBrush}"
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1">
+                    Classes="empty-state">
                 <StackPanel Spacing="8"
                             HorizontalAlignment="Center">
                     <TextBlock Text="Aucun projet trouvé"
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"
-                               FontSize="20"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource PrimaryDarkBrush}" />
+                               Classes="empty-state-title" />
 
                     <TextBlock Text="Essaie de modifier ta recherche ou le filtre de statut."
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"
-                               FontSize="13"
-                               Opacity="0.65"
-                               MaxWidth="360"
-                               TextWrapping="Wrap" />
+                               Classes="empty-state-message" />
                 </StackPanel>
             </Border>
 
@@ -148,22 +95,12 @@
                         <DataTemplate x:DataType="projects:ProjectSummaryViewModel">
                             <Button Classes="card-button"
                                     Command="{Binding OpenDetailCommand}"
-                                    Padding="0"
-                                    Background="Transparent"
-                                    BorderThickness="0"
                                     HorizontalAlignment="Left">
                                 <Border Width="260"
                                         Height="176"
                                         Margin="8"
                                         Padding="0"
-                                        Classes="surface-card">
-                                    <Border.Styles>
-                                        <Style Selector="Border.surface-card:pointerover">
-                                            <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
-                                            <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
-                                        </Style>
-                                    </Border.Styles>
-
+                                        Classes="surface-card interactive-card">
                                     <Grid RowDefinitions="Auto,*">
                                         <Border Grid.Row="0"
                                                 Classes="project-status-ribbon"

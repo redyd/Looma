@@ -99,6 +99,33 @@
         <Setter Property="CornerRadius" Value="8" />
     </Style>
 
+    <Style Selector="Border.empty-state">
+        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="18" />
+        <Setter Property="Padding" Value="32 24" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.empty-state-title">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.empty-state-message">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Opacity" Value="0.65" />
+        <Setter Property="MaxWidth" Value="360" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
     <Style Selector="TextBlock.page-title">
         <Setter Property="FontSize" Value="22" />
         <Setter Property="FontWeight" Value="SemiBold" />

@@ -1,0 +1,68 @@
+<!--
+    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+    This file is part of Looma, licensed under the AGPL-3.0.
+    See LICENSE in the project root for full license text.
+-->
+
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="Border.selection-row">
+        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1 0 1 1" />
+    </Style>
+
+    <Style Selector="Border.selection-row:pointerover">
+        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+    </Style>
+
+    <Style Selector="Border.selection-row.selected">
+        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
+    <Style Selector="Border.table-header">
+        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8 8 0 0" />
+        <Setter Property="Padding" Value="12 10" />
+    </Style>
+
+    <Style Selector="Border.table-row">
+        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1 0 1 1" />
+        <Setter Property="Padding" Value="12 10" />
+    </Style>
+
+    <Style Selector="Border.table-empty-row">
+        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1 0 1 1" />
+        <Setter Property="Padding" Value="12 18" />
+    </Style>
+
+    <Style Selector="TextBlock.table-heading">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Opacity" Value="0.55" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.linked-row">
+        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
+    <Style Selector="Border.linked-row:pointerover">
+        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+    </Style>
+
+</Styles>

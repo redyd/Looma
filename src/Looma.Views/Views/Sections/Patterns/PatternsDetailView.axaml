@@ -149,7 +149,7 @@
                                                         Grid.Column="3"
                                                         Content="Ouvrir"
                                                         Command="{Binding OpenCommand}"
-                                                        Classes="form-cancel"
+                                                        Classes="cancel-btn"
                                                         MinWidth="80"
                                                         VerticalAlignment="Center"
                                                     />
@@ -194,25 +194,13 @@
                                             <Button
                                                 Classes="card-button"
                                                 Command="{Binding OpenCommand}"
-                                                Padding="0"
-                                                Background="Transparent"
-                                                BorderThickness="0"
                                                 HorizontalAlignment="Stretch"
                                                 HorizontalContentAlignment="Stretch"
                                             >
                                                 <Border
                                                     Padding="12 10"
-                                                    Background="{StaticResource BackgroundCardBrush}"
-                                                    BorderBrush="{StaticResource BorderBrush}"
-                                                    BorderThickness="1"
-                                                    CornerRadius="8"
+                                                    Classes="linked-row"
                                                 >
-                                                    <Border.Styles>
-                                                        <Style Selector="Border:pointerover">
-                                                            <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
-                                                            <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
-                                                        </Style>
-                                                    </Border.Styles>
                                                     <Grid
                                                         ColumnDefinitions="*,Auto"
                                                         ColumnSpacing="16"

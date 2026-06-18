@@ -105,7 +105,7 @@ See LICENSE in the project root for full license text.
                                 <Button Grid.Column="0"
                                         Content="Précédent"
                                         Command="{Binding PreviousImageCommand}"
-                                        Classes="form-cancel" />
+                                        Classes="cancel-btn" />
                                 <TextBlock Grid.Column="1"
                                            Text="{Binding ImagePositionDisplay}"
                                            HorizontalAlignment="Center"
@@ -305,7 +305,7 @@ See LICENSE in the project root for full license text.
                     <Button Grid.Column="0"
                             Content="Mettre en pause"
                             Command="{Binding PauseProjectCommand}"
-                            Classes="form-cancel"
+                            Classes="cancel-btn"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
                             IsVisible="{Binding IsInProgress}" />

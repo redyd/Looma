@@ -57,56 +57,26 @@
         <!-- Grille de cartes -->
         <Grid>
             <Border IsVisible="{Binding IsSourceListEmpty}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Padding="32 24"
-                    CornerRadius="18"
-                    Background="{StaticResource BackgroundCardBrush}"
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1">
+                    Classes="empty-state">
                 <StackPanel Spacing="8"
                             HorizontalAlignment="Center">
                     <TextBlock Text="Aucune laine pour l'instant"
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"
-                               FontSize="20"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource PrimaryDarkBrush}" />
+                               Classes="empty-state-title" />
 
                     <TextBlock Text="Ajoute ta première laine pour suivre ton stock par couleur, matière et quantité."
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"
-                               FontSize="13"
-                               Opacity="0.65"
-                               MaxWidth="360"
-                               TextWrapping="Wrap" />
+                               Classes="empty-state-message" />
                 </StackPanel>
             </Border>
 
             <Border IsVisible="{Binding IsFilterResultEmpty}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Padding="32 24"
-                    CornerRadius="18"
-                    Background="{StaticResource BackgroundCardBrush}"
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1">
+                    Classes="empty-state">
                 <StackPanel Spacing="8"
                             HorizontalAlignment="Center">
                     <TextBlock Text="Aucune laine trouvée"
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"
-                               FontSize="20"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource PrimaryDarkBrush}" />
+                               Classes="empty-state-title" />
 
                     <TextBlock Text="Essaie de modifier ta recherche."
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"
-                               FontSize="13"
-                               Opacity="0.65"
-                               MaxWidth="360"
-                               TextWrapping="Wrap" />
+                               Classes="empty-state-message" />
                 </StackPanel>
             </Border>
 
@@ -122,29 +92,11 @@
                             <Button Classes="card-button"
                                     Command="{ReflectionBinding OpenDetailCommand}"
                                     CommandParameter="{Binding}"
-                                    Padding="0"
-                                    Background="Transparent"
-                                    BorderThickness="0"
                                     Cursor="Hand">
                                 <Border Width="220"
                                         Margin="8"
                                         Padding="16"
-                                        Classes="surface-card">
-                                    <Border.Styles>
-                                        <Style Selector="Button.card-button:pointerover">
-                                            <Setter Property="Background" Value="Transparent" />
-                                            <Setter Property="BorderBrush" Value="Transparent" />
-                                        </Style>
-                                        <Style Selector="Button.card-button:pressed">
-                                            <Setter Property="Background" Value="Transparent" />
-                                            <Setter Property="BorderBrush" Value="Transparent" />
-                                        </Style>
-                                        <Style Selector="Border:pointerover">
-                                            <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
-                                            <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
-                                        </Style>
-                                    </Border.Styles>
-
+                                        Classes="surface-card interactive-card">
                                     <StackPanel Spacing="8">
 
                                         <!-- Pastille couleur + nom -->
