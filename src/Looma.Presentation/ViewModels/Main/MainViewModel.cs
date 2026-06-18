@@ -14,6 +14,7 @@ public partial class MainViewModel : ViewModelBase
     public SectionNavigationViewModel StocksSection { get; }
     public SectionNavigationViewModel PatternsSection { get; }
     public SectionNavigationViewModel DocumentsSection { get; }
+    public SectionNavigationViewModel SettingsSection { get; }
     public INotificationService Notifications { get; }
 
     [ObservableProperty] private int _selectedTabIndex;
@@ -23,12 +24,14 @@ public partial class MainViewModel : ViewModelBase
         SectionNavigationViewModel stocksSection,
         SectionNavigationViewModel patternsSection,
         SectionNavigationViewModel documentsSection,
+        SectionNavigationViewModel settingsSection,
         INotificationService notifications)
     {
         PatternsSection = patternsSection;
         StocksSection = stocksSection;
         ProjectsSection = projectsSection;
         DocumentsSection = documentsSection;
+        SettingsSection = settingsSection;
         Notifications = notifications;
 
         _selectedTabIndex = 0;

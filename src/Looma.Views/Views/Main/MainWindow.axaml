@@ -46,6 +46,10 @@
                 <ContentControl Content="{Binding DocumentsSection.CurrentPage}" />
             </TabItem>
 
+            <TabItem Header="Paramètres">
+                <ContentControl Content="{Binding SettingsSection.CurrentPage}" />
+            </TabItem>
+
         </TabControl>
 
         <Border HorizontalAlignment="Right"

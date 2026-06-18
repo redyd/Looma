@@ -12,8 +12,16 @@ public class ThemeService
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        WriteIndented = true
     };
+
+    private readonly Dictionary<string, object?> _defaultResources = [];
+
+    public ThemeService()
+    {
+        CaptureDefaultResources();
+    }
 
     public void ApplyOverride(string jsonPath)
     {
@@ -35,6 +43,34 @@ public class ThemeService
         ApplyGroup(resources, dto.Navigation);
         ApplyGroup(resources, dto.EntityBadges);
         ApplyGroup(resources, dto.Details);
+    }
+
+    public void ResetToDefault()
+    {
+        if (_defaultResources.Count == 0)
+        {
+            CaptureDefaultResources();
+        }
+
+        var resources = Application.Current!.Resources;
+
+        foreach (var (key, value) in _defaultResources)
+        {
+            resources[key] = value;
+        }
+    }
+
+    public void ExportCurrentOverride(string destinationPath)
+    {
+        var directory = Path.GetDirectoryName(destinationPath);
+        if (!string.IsNullOrWhiteSpace(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        var dto = BuildCurrentOverride();
+        var json = JsonSerializer.Serialize(dto, JsonOptions);
+        File.WriteAllText(destinationPath, json);
     }
 
     private static void ApplyGroup(IResourceDictionary resources, object? group)
@@ -60,5 +96,99 @@ public class ThemeService
                 resources[prop.Name] = new SolidColorBrush(color);
             }
         }
+    }
+
+    private void CaptureDefaultResources()
+    {
+        if (Application.Current is null) return;
+
+        var resources = Application.Current.Resources;
+        foreach (var key in EnumerateThemeKeys())
+        {
+            if (TryGetResourceValue(key, out var value))
+            {
+                _defaultResources[key] = value;
+            }
+        }
+    }
+
+    private static ThemeOverrideDto BuildCurrentOverride()
+    {
+        var resources = Application.Current!.Resources;
+
+        return new ThemeOverrideDto
+        {
+            Name = "Export Looma",
+            Accent = BuildGroup<AccentColors>(resources),
+            Primary = BuildGroup<PrimaryColors>(resources),
+            Text = BuildGroup<TextColors>(resources),
+            Background = BuildGroup<BackgroundColors>(resources),
+            State = BuildGroup<StateColors>(resources),
+            Borders = BuildGroup<BorderColors>(resources),
+            Buttons = BuildGroup<ButtonColors>(resources),
+            Forms = BuildGroup<FormColors>(resources),
+            Surfaces = BuildGroup<SurfaceColors>(resources),
+            Navigation = BuildGroup<NavigationColors>(resources),
+            EntityBadges = BuildGroup<EntityBadgeColors>(resources),
+            Details = BuildGroup<DetailColors>(resources)
+        };
+    }
+
+    private static T BuildGroup<T>(IResourceDictionary resources)
+        where T : new()
+    {
+        var group = new T();
+
+        foreach (var prop in typeof(T).GetProperties())
+        {
+            var key = prop.Name;
+            var value = TryGetResourceValue(key, out var resourceValue)
+                ? resourceValue
+                : null;
+            var color = value switch
+            {
+                Color c => c,
+                ISolidColorBrush brush => brush.Color,
+                _ => (Color?)null
+            };
+
+            if (color.HasValue)
+            {
+                prop.SetValue(group, color.Value.ToString());
+            }
+        }
+
+        return group;
+    }
+
+    private static bool TryGetResourceValue(string key, out object? value)
+    {
+        value = null;
+
+        if (Application.Current is null)
+            return false;
+
+        return Application.Current.TryGetResource(key, null, out value);
+    }
+
+    private static IEnumerable<string> EnumerateThemeKeys()
+    {
+        var groupTypes = new[]
+        {
+            typeof(AccentColors),
+            typeof(PrimaryColors),
+            typeof(TextColors),
+            typeof(BackgroundColors),
+            typeof(StateColors),
+            typeof(BorderColors),
+            typeof(ButtonColors),
+            typeof(FormColors),
+            typeof(SurfaceColors),
+            typeof(NavigationColors),
+            typeof(EntityBadgeColors),
+            typeof(DetailColors)
+        };
+
+        return groupTypes.SelectMany(type => type.GetProperties().Select(prop => prop.Name));
     }
 }

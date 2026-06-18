@@ -10,6 +10,7 @@ using Looma.Domain.Refresh;
 using Looma.Domain.Search;
 using Looma.Domain.Services;
 using Looma.Infrastructure.Repositories;
+using Looma.Infrastructure.Storage;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Services;
@@ -19,6 +20,7 @@ using Looma.Presentation.ViewModels.Sections.Stocks;
 using Looma.Presentation.ViewModels.Sections.Projects;
 using Looma.Presentation.ViewModels.Sections.Documents;
 using Looma.Presentation.ViewModels.Sections.Patterns;
+using Looma.Presentation.ViewModels.Sections.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Looma.Presentation.ViewModels.Shared;
 using Looma.Presentation.ViewModels.Shared.Documents;
@@ -50,6 +52,7 @@ public static class DependencyInjection
         // Un NavigationService PAR section (scope isolé)
         services.AddTransient<INavigationService, NavigationService>();
         services.AddSingleton<INotificationService, NotificationService>();
+        services.AddSingleton<ThemeService>();
 
         // PROJECTS
         services.AddTransient<ProjectsListViewModel>();
@@ -70,6 +73,9 @@ public static class DependencyInjection
         // DOCUMENTS
         services.AddTransient<DocumentsFormViewModel>();
         services.AddTransient<DocumentsListViewModel>();
+
+        // SETTINGS
+        services.AddTransient<SettingsViewModel>();
 
         services.AddTransient<DocumentsPickerFormViewModel>();
 
@@ -110,6 +116,13 @@ public static class DependencyInjection
                         sp.GetRequiredService<IProjectService>(),
                         sp.GetRequiredService<INotificationService>(),
                         sp.GetRequiredService<IDataRefreshService>())),
+
+                MakeSection<SettingsViewModel>(_ =>
+                    new SettingsViewModel(
+                        sp.GetRequiredService<ThemeService>(),
+                        sp.GetRequiredService<IThemeStorage>(),
+                        sp.GetRequiredService<IThemeFilePicker>(),
+                        sp.GetRequiredService<INotificationService>())),
                 
                 sp.GetRequiredService<INotificationService>()
             );
@@ -119,6 +132,8 @@ public static class DependencyInjection
     public static void AddInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<IDocumentFilePicker, AvaloniaDocumentFilePicker>();
+        services.AddSingleton<IThemeFilePicker, AvaloniaThemeFilePicker>();
+        services.AddSingleton<IThemeStorage, ThemeStorage>();
         services.AddScoped<IDocumentRepository, DocumentRepository>();
         services.AddScoped<IPatternRepository, PatternRepository>();
         services.AddScoped<IWoolRepository, WoolRepository>();
