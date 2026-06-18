@@ -1,54 +1,60 @@
+<!--
+Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+This file is part of Looma, licensed under the AGPL-3.0.
+See LICENSE in the project root for full license text.
+-->
+
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-        <!-- TITLE -->
-        
-        <Style Selector="TextBlock.form-title">
-                <Setter Property="FontSize" Value="24" />
-                <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="Foreground" Value="{DynamicResource FormTitleForegroundBrush}" />
-        </Style>
-        
-        <!-- SUBTITLE -->
-        
-        <Style Selector="TextBlock.form-subtitle">
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="Foreground" Value="{DynamicResource FormSubtitleForegroundBrush}" />
-        </Style>
+    <!-- TITLE -->
 
-        <Style Selector="TextBlock.section-title">
-                <Setter Property="FontSize" Value="15" />
-                <Setter Property="FontWeight" Value="SemiBold" />
-                <Setter Property="Foreground" Value="{DynamicResource SectionTitleForegroundBrush}" />
-        </Style>
+    <Style Selector="TextBlock.form-title">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource FormTitleForegroundBrush}" />
+    </Style>
 
-        <Style Selector="TextBlock.form-label">
-                <Setter Property="FontSize" Value="13" />
-                <Setter Property="FontWeight" Value="Medium" />
-                <Setter Property="Foreground" Value="{DynamicResource FormLabelForegroundBrush}" />
-        </Style>
+    <!-- SUBTITLE -->
 
-        <Style Selector="TextBlock.field-required">
-                <Setter Property="Foreground" Value="{DynamicResource FieldRequiredForegroundBrush}" />
-                <Setter Property="FontWeight" Value="Bold" />
-        </Style>
+    <Style Selector="TextBlock.form-subtitle">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource FormSubtitleForegroundBrush}" />
+    </Style>
 
-        <Style Selector="TextBlock.form-hint">
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="Foreground" Value="{DynamicResource FormHintForegroundBrush}" />
-                <Setter Property="Opacity" Value="0.75" />
-        </Style>
+    <Style Selector="TextBlock.section-title">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SectionTitleForegroundBrush}" />
+    </Style>
 
-        <Style Selector="TextBlock.card-title">
-                <Setter Property="Foreground" Value="{DynamicResource CardTitleForegroundBrush}" />
-        </Style>
+    <Style Selector="TextBlock.form-label">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="{DynamicResource FormLabelForegroundBrush}" />
+    </Style>
 
-        <Style Selector="TextBlock.card-subtitle">
-                <Setter Property="Foreground" Value="{DynamicResource CardSubtitleForegroundBrush}" />
-        </Style>
+    <Style Selector="TextBlock.field-required">
+        <Setter Property="Foreground" Value="{DynamicResource FieldRequiredForegroundBrush}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
 
-        <Style Selector="TextBlock.card-meta">
-                <Setter Property="Foreground" Value="{DynamicResource CardMetadataForegroundBrush}" />
-        </Style>
+    <Style Selector="TextBlock.form-hint">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource FormHintForegroundBrush}" />
+        <Setter Property="Opacity" Value="0.75" />
+    </Style>
+
+    <Style Selector="TextBlock.card-title">
+        <Setter Property="Foreground" Value="{DynamicResource CardTitleForegroundBrush}" />
+    </Style>
+
+    <Style Selector="TextBlock.card-subtitle">
+        <Setter Property="Foreground" Value="{DynamicResource CardSubtitleForegroundBrush}" />
+    </Style>
+
+    <Style Selector="TextBlock.card-meta">
+        <Setter Property="Foreground" Value="{DynamicResource CardMetadataForegroundBrush}" />
+    </Style>
 
 </Styles>
