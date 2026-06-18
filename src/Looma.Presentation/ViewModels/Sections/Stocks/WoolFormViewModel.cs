@@ -43,11 +43,9 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    public partial string NeedleMinText { get; set; } = string.Empty;
+    public partial WoolNeedleRangeSummary? SelectedNeedleRange { get; set; }
 
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
-    public partial string NeedleMaxText { get; set; } = string.Empty;
+    public IReadOnlyList<WoolNeedleRangeSummary> NeedleRanges { get; } = [.. Wool.NeedleRanges.Select(n => new WoolNeedleRangeSummary(n))];
 
     [ObservableProperty]
     public partial string? ErrorMessage { get; set; }
@@ -92,7 +90,8 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
     {
         _isEdit = false;
         Title = "Nouvelle laine";
-        Name = Brand = Material = Weight = Length = NeedleMinText = NeedleMaxText = string.Empty;
+        Name = Brand = Material = Weight = Length = string.Empty;
+        SelectedNeedleRange = NeedleRanges[0];
         SelectedColor = Colors.Gray;
         AllColors.Clear();
         ErrorMessage = null;
@@ -117,8 +116,11 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
         AllColors.Clear();
         foreach (var color in wool.Colors)
             AllColors.Add(color);
-        NeedleMinText = wool.NeedleMinSize.ToString("G");
-        NeedleMaxText = wool.NeedleMaxSize.ToString("G");
+
+        var range = Wool.FindContainingNeedleRange(wool.NeedleMinSize, wool.NeedleMaxSize);
+        SelectedNeedleRange = range is not null
+            ? FindNeedleRangeSummary(range) ?? NeedleRanges[0]
+            : NeedleRanges[0];
         ErrorMessage = null;
         
         try
@@ -137,8 +139,7 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
         !string.IsNullOrWhiteSpace(Material) &&
         double.TryParse(Weight, out var w) && w > 0 &&
         double.TryParse(Length, out var l) && l > 0 &&
-        double.TryParse(NeedleMinText, out var nmin) && nmin > 0 &&
-        double.TryParse(NeedleMaxText, out var nmax) && nmax >= nmin;
+        SelectedNeedleRange is not null;
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()
@@ -157,15 +158,9 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
             return;
         }
 
-        if (!double.TryParse(NeedleMinText, out var needleMin) || needleMin <= 0)
+        if (SelectedNeedleRange is not { } needleRange)
         {
-            ErrorMessage = "La taille min d'aiguille doit être un nombre positif.";
-            return;
-        }
-
-        if (!double.TryParse(NeedleMaxText, out var needleMax) || needleMax < needleMin)
-        {
-            ErrorMessage = "La taille max doit être supérieure ou égale à la taille min.";
+            ErrorMessage = "Veuillez sélectionner une taille d'aiguilles.";
             return;
         }
 
@@ -179,11 +174,11 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
                     Name,
                     Brand,
                     Material,
-                    AllColors.ToList(),
+                    [.. AllColors],
                     weight,
                     length,
-                    needleMin,
-                    needleMax));
+                    needleRange.NeedleRange.Min,
+                    needleRange.NeedleRange.Max));
                 if (result.Failed)
                 {
                     ErrorMessage = result.Error;
@@ -199,12 +194,12 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
                     Name,
                     Brand,
                     Material,
-                    AllColors.ToList(),
+                    [.. AllColors],
                     weight,
                     length,
                     1000,
-                    needleMin,
-                    needleMax));
+                    needleRange.NeedleRange.Min,
+                    needleRange.NeedleRange.Max));
                 if (result.Failed)
                 {
                     ErrorMessage = result.Error;
@@ -229,4 +224,7 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
 
     [RelayCommand]
     private void Cancel() => nav.GoBack();
+
+    private WoolNeedleRangeSummary? FindNeedleRangeSummary(WoolNeedleRange range) =>
+        NeedleRanges.FirstOrDefault(r => r.NeedleRange.Matches(range.Min, range.Max));
 }

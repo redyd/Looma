@@ -175,7 +175,7 @@
                                                     Background="{StaticResource BackgroundBrush}"
                                                     BorderBrush="{StaticResource BorderBrush}"
                                                     BorderThickness="1">
-                                                <TextBlock Text="{Binding Wool.BatchQuantityDisplay}"
+                                                <TextBlock Text="{Binding BatchQuantityDisplay}"
                                                            FontSize="11" />
                                             </Border>
                                         </StackPanel>

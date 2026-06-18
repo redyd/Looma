@@ -106,21 +106,12 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <ItemsControl ItemsSource="{Binding Images, ElementName=This}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="3" HorizontalAlignment="Center" Margin="0 12 0 0" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding Converter={StaticResource StringToUri}}"
-                                   Width="75" Height="75"
-                                   Margin="4"
-                                   Stretch="Uniform" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <Image Source="{Binding Image, ElementName=This, Converter={StaticResource StringToUri}}"
+                       Width="75" Height="75"
+                       Margin="0 12 0 0"
+                       HorizontalAlignment="Center"
+                       Stretch="Uniform"
+                       IsVisible="{Binding Image, ElementName=This, Converter={x:Static ObjectConverters.IsNotNull}}" />
             </StackPanel>
         </Border>
 

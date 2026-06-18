@@ -41,7 +41,7 @@ See LICENSE in the project root for full license text.
                     InfoIconKind="BadgeInfo"
                     Stats="{Binding DetailStats}"
                     Infos="{Binding DetailInfos}"
-                    Images="{Binding Images}"/>
+                    Image="{Binding Image}"/>
 
                 <!-- Ligne 2 : formulaire d'ajout/retrait -->
                 <Border Classes="form-section">
