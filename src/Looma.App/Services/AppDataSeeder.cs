@@ -244,16 +244,16 @@ public sealed class AppDataSeeder(
     {
         var templates = new[]
         {
-            new CreateWoolRequest("Lace Cloud", "Seed Yarn Co", "Alpaga", ["#F7E7CE"], 50, 420, 4000, 1.5, 2.0),
+            new CreateWoolRequest("Lace Cloud", "Seed Yarn Co", "Alpaga", ["#F7E7CE"], 50, 420, 4000, 1.0, 2.0),
             new CreateWoolRequest("Sock Twist", "Seed Yarn Co", "Merinos nylon", ["#2E86AB", "#F6F5AE"], 50, 210, 6000, 2.25, 3.0),
-            new CreateWoolRequest("Fine Merino", "Atelier Demo", "Merinos", ["#D7263D"], 50, 175, 5000, 3.0, 3.5),
-            new CreateWoolRequest("Light Cotton", "Atelier Demo", "Coton", ["#1B998B"], 100, 250, 3000, 3.75, 4.5),
-            new CreateWoolRequest("Everyday DK", "Maille Test", "Laine", ["#F46036"], 100, 220, 4500, 4.0, 5.0),
-            new CreateWoolRequest("Medium Wool", "Maille Test", "Laine vierge", ["#2D3047"], 100, 180, 3500, 4.75, 5.5),
-            new CreateWoolRequest("Bulky Tweed", "Pelote Seed", "Laine tweed", ["#8D99AE", "#EDF2F4"], 100, 120, 2500, 6.0, 8.0),
-            new CreateWoolRequest("Super Bulky", "Pelote Seed", "Acrylique laine", ["#FFB703"], 150, 90, 2000, 9.0, 12.0),
-            new CreateWoolRequest("Jumbo Roving", "Chunky Demo", "Laine meche", ["#6A4C93"], 200, 60, 1500, 14.0, 18.0),
-            new CreateWoolRequest("Gradient Cotton", "Chunky Demo", "Coton recycle", ["#06D6A0", "#118AB2", "#073B4C"], 100, 300, 3200, 3.5, 4.5)
+            new CreateWoolRequest("Fine Merino", "Atelier Demo", "Merinos", ["#D7263D"], 50, 175, 5000, 3.25, 3.75),
+            new CreateWoolRequest("Light Cotton", "Atelier Demo", "Coton", ["#1B998B"], 100, 250, 3000, 4.0, 4.75),
+            new CreateWoolRequest("Everyday DK", "Maille Test", "Laine", ["#F46036"], 100, 220, 4500, 5.0, 5.75),
+            new CreateWoolRequest("Medium Wool", "Maille Test", "Laine vierge", ["#2D3047"], 100, 180, 3500, 5.0, 5.75),
+            new CreateWoolRequest("Bulky Tweed", "Pelote Seed", "Laine tweed", ["#8D99AE", "#EDF2F4"], 100, 120, 2500, 6.0, 8.25),
+            new CreateWoolRequest("Super Bulky", "Pelote Seed", "Acrylique laine", ["#FFB703"], 150, 90, 2000, 8.5, 13.75),
+            new CreateWoolRequest("Jumbo Roving", "Chunky Demo", "Laine meche", ["#6A4C93"], 200, 60, 1500, 14.0, double.MaxValue),
+            new CreateWoolRequest("Gradient Cotton", "Chunky Demo", "Coton recycle", ["#06D6A0", "#118AB2", "#073B4C"], 100, 300, 3200, 4.0, 4.75)
         };
 
         if (!itemCount.HasValue)

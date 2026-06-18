@@ -107,8 +107,8 @@
                 </ItemsControl>
 
                 <Image Source="{Binding Image, ElementName=This, Converter={StaticResource StringToUri}}"
-                       Width="75" Height="75"
-                       Margin="0 12 0 0"
+                       Width="300" Height="65.3"
+                       Margin="0"
                        HorizontalAlignment="Center"
                        Stretch="Uniform"
                        IsVisible="{Binding Image, ElementName=This, Converter={x:Static ObjectConverters.IsNotNull}}" />
