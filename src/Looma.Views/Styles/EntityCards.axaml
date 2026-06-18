@@ -18,19 +18,19 @@
     </Style>
 
     <Style Selector="Border.project-status-ribbon.status-wishlist">
-        <Setter Property="Background" Value="{DynamicResource ProjectStatusWishlistBrush}" />
+        <Setter Property="Background" Value="{DynamicResource StatusWishlistRibbonBackgroundBrush}" />
     </Style>
 
     <Style Selector="Border.project-status-ribbon.status-in-progress">
-        <Setter Property="Background" Value="{DynamicResource ProjectStatusInProgressBrush}" />
+        <Setter Property="Background" Value="{DynamicResource StatusInProgressRibbonBackgroundBrush}" />
     </Style>
 
     <Style Selector="Border.project-status-ribbon.status-finished">
-        <Setter Property="Background" Value="{DynamicResource ProjectStatusFinishedBrush}" />
+        <Setter Property="Background" Value="{DynamicResource StatusFinishedRibbonBackgroundBrush}" />
     </Style>
 
     <Style Selector="Border.project-status-ribbon.status-paused">
-        <Setter Property="Background" Value="{DynamicResource ProjectStatusPausedBrush}" />
+        <Setter Property="Background" Value="{DynamicResource StatusPausedRibbonBackgroundBrush}" />
     </Style>
 
     <Style Selector="Border.pattern-type-ribbon">
@@ -39,15 +39,15 @@
     </Style>
 
     <Style Selector="Border.pattern-type-ribbon.type-crochet">
-        <Setter Property="Background" Value="{DynamicResource PatternTypeCrochetBrush}" />
+        <Setter Property="Background" Value="{DynamicResource PatternCrochetRibbonBackgroundBrush}" />
     </Style>
 
     <Style Selector="Border.pattern-type-ribbon.type-tunisian-crochet">
-        <Setter Property="Background" Value="{DynamicResource PatternTypeTunisianCrochetBrush}" />
+        <Setter Property="Background" Value="{DynamicResource PatternTunisianCrochetRibbonBackgroundBrush}" />
     </Style>
 
     <Style Selector="Border.pattern-type-ribbon.type-tricot">
-        <Setter Property="Background" Value="{DynamicResource PatternTypeTricotBrush}" />
+        <Setter Property="Background" Value="{DynamicResource PatternTricotRibbonBackgroundBrush}" />
     </Style>
 
 </Styles>

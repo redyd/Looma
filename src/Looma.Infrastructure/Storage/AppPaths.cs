@@ -9,12 +9,15 @@ namespace Looma.Infrastructure.Storage;
 public class AppPaths(string baseRoot)
 {
     public string DatabasePath => Path.Combine(baseRoot, "looma.db");
+    public string ConfigPath => Path.Combine(baseRoot, "config.json");
     public string DocumentsFolder => Path.Combine(baseRoot, "documents");
+    public string ThemesFolder => Path.Combine(baseRoot, "themes");
 
     public void EnsureDirectoriesExist()
     {
         Directory.CreateDirectory(baseRoot);
         Directory.CreateDirectory(DocumentsFolder);
+        Directory.CreateDirectory(ThemesFolder);
     }
 
     public void EnsureDatabaseCreated(LoomaDbContext context)

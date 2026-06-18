@@ -11,9 +11,10 @@
         xmlns:vm="using:Looma.Presentation.ViewModels.Main"
         x:Class="Looma.Views.Views.Main.MainWindow"
         x:DataType="vm:MainViewModel"
-        Title="Looma" Width="1024" Height="768">
+        Title="Looma" Width="1024" Height="768"
+        Background="{DynamicResource BackgroundBrush}">
 
-    <Grid>
+    <Grid Background="{DynamicResource BackgroundBrush}">
 
         <TabControl
             SelectedIndex="{Binding SelectedTabIndex}"
@@ -46,6 +47,10 @@
                 <ContentControl Content="{Binding DocumentsSection.CurrentPage}" />
             </TabItem>
 
+            <TabItem Header="Paramètres">
+                <ContentControl Content="{Binding SettingsSection.CurrentPage}" />
+            </TabItem>
+
         </TabControl>
 
         <Border HorizontalAlignment="Right"
@@ -76,7 +81,7 @@
                                                 Size="18"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Foreground="White" />
+                                                Foreground="{DynamicResource NotificationIconForegroundBrush}" />
                                 </Border>
 
                                 <StackPanel Grid.Column="1" Spacing="4">
@@ -90,7 +95,9 @@
                                         Classes="notification-dismiss"
                                         Command="{Binding DismissCommand}"
                                         VerticalAlignment="Top">
-                                    <LucideIcon Kind="X" Size="14" />
+                                    <LucideIcon Kind="X"
+                                                Size="14"
+                                                Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
                                 </Button>
                             </Grid>
                         </Border>

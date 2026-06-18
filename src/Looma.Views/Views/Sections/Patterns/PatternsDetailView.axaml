@@ -29,12 +29,14 @@
                         Text="{Binding Name}"
                         FontSize="20"
                         FontWeight="SemiBold"
+                        Foreground="{DynamicResource DetailTitleForegroundBrush}"
                         HorizontalAlignment="Center"
                     />
                     <TextBlock
                         Text="{Binding Url}"
                         FontSize="14"
                         Opacity="0.5"
+                        Foreground="{DynamicResource DetailSubtitleForegroundBrush}"
                         HorizontalAlignment="Center"
                     />
                 </StackPanel>
@@ -126,6 +128,7 @@
                                                         Text="{Binding Document.Nickname}"
                                                         FontSize="14"
                                                         FontWeight="SemiBold"
+                                                        Foreground="{DynamicResource ListItemPrimaryForegroundBrush}"
                                                         VerticalAlignment="Center"
                                                         TextTrimming="CharacterEllipsis"
                                                     />
@@ -134,6 +137,7 @@
                                                         Text="{Binding TypeDisplay}"
                                                         FontSize="13"
                                                         Opacity="0.7"
+                                                        Foreground="{DynamicResource ListItemSecondaryForegroundBrush}"
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                     />
@@ -142,6 +146,7 @@
                                                         Text="{Binding SizeDisplay}"
                                                         FontSize="13"
                                                         Opacity="0.7"
+                                                        Foreground="{DynamicResource ListItemSecondaryForegroundBrush}"
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                     />
@@ -156,7 +161,7 @@
                                                 </Grid>
                                                 <Border
                                                     Height="1"
-                                                    Background="{DynamicResource DocumentListDividerBrush}"
+                                                    Background="{DynamicResource ListItemDividerBrush}"
                                                     Opacity="0.2"
                                                     Margin="0 2 0 2"
                                                 />
@@ -208,11 +213,13 @@
                                                         <TextBlock
                                                             Text="{Binding Name}"
                                                             FontWeight="SemiBold"
+                                                            Foreground="{DynamicResource ListItemPrimaryForegroundBrush}"
                                                             VerticalAlignment="Center"
                                                         />
                                                         <TextBlock
                                                             Grid.Column="1"
                                                             Text="{Binding StatusDisplay}"
+                                                            Foreground="{DynamicResource ListItemSecondaryForegroundBrush}"
                                                             VerticalAlignment="Center"
                                                             Opacity="0.75"
                                                         />

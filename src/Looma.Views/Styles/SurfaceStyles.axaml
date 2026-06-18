@@ -48,6 +48,7 @@
 
     <Style Selector="Button.notification-dismiss">
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource NotificationDismissForegroundBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Width" Value="24" />
@@ -72,6 +73,7 @@
 
     <Style Selector="Button.notification-dismiss:pointerover">
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource NotificationDismissHoverForegroundBrush}" />
     </Style>
 
     <Style Selector="Button.notification-dismiss:pressed">
@@ -119,6 +121,7 @@
 
     <Style Selector="TextBlock.empty-state-message">
         <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource EmptyStateMessageForegroundBrush}" />
         <Setter Property="Opacity" Value="0.65" />
         <Setter Property="MaxWidth" Value="360" />
         <Setter Property="TextWrapping" Value="Wrap" />
@@ -129,10 +132,12 @@
     <Style Selector="TextBlock.page-title">
         <Setter Property="FontSize" Value="22" />
         <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource PageTitleForegroundBrush}" />
     </Style>
 
     <Style Selector="TextBlock.page-subtitle">
         <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource PageSubtitleForegroundBrush}" />
         <Setter Property="Opacity" Value="0.6" />
     </Style>
 

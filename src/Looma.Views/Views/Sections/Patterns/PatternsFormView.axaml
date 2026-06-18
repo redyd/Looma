@@ -119,7 +119,7 @@
                                         <Border Classes="surface-panel"
                                                 Margin="0 0 0 12"
                                                 Padding="16"
-                                                Background="{DynamicResource DocumentFormItemBackgroundBrush}">
+                                                Background="{DynamicResource EmbeddedPanelBackgroundBrush}">
                                             <StackPanel Spacing="12">
                                                 <StackPanel Classes="form-field">
                                                     <TextBlock Classes="form-label" Text="Nommer le document" />
@@ -132,6 +132,7 @@
                                                     <StackPanel Grid.Column="0" Spacing="4">
                                                         <TextBlock Text="{Binding DetailText}"
                                                                    FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ListItemPrimaryForegroundBrush}"
                                                                    TextTrimming="CharacterEllipsis" />
                                                         <TextBlock Text="{Binding TypeDisplay}"
                                                                    Classes="form-hint"
@@ -168,7 +169,7 @@
                                         <Border Classes="surface-panel"
                                                 Margin="0 0 0 12"
                                                 Padding="16"
-                                                Background="{DynamicResource DocumentFormItemBackgroundBrush}">
+                                                Background="{DynamicResource EmbeddedPanelBackgroundBrush}">
                                             <StackPanel Spacing="12">
                                                 <StackPanel Classes="form-field">
                                                     <TextBlock Classes="form-label" Text="Nommer le document" />
@@ -181,6 +182,7 @@
                                                     <StackPanel Grid.Column="0" Spacing="4">
                                                         <TextBlock Text="{Binding SelectedFileName}"
                                                                    FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ListItemPrimaryForegroundBrush}"
                                                                    TextTrimming="CharacterEllipsis" />
                                                         <TextBlock Text="{Binding SelectedFileDirectory}"
                                                                    Classes="form-hint"

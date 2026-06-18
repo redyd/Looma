@@ -19,10 +19,12 @@
     <Style Selector="TextBlock.notification-title">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource NotificationTitleForegroundBrush}" />
     </Style>
 
     <Style Selector="TextBlock.notification-message">
         <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource NotificationMessageForegroundBrush}" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="Opacity" Value="0.88" />
     </Style>

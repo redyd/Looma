@@ -41,6 +41,7 @@
     <Style Selector="Button.cancel-btn:pointerover">
         <Setter Property="Background" Value="{DynamicResource CancelButtonHoverBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource CancelButtonHoverBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CancelButtonHoverForegroundBrush}" />
     </Style>
     
     <!-- DANGER -->
@@ -67,6 +68,7 @@
 
     <Style Selector="Button.danger-btn:pointerover">
         <Setter Property="Background" Value="{DynamicResource DangerButtonHoverBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DangerButtonHoverForegroundBrush}" />
     </Style>
     
     <!-- PAGINATION -->

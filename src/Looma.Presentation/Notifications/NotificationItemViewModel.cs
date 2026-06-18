@@ -3,6 +3,7 @@
 // See LICENSE in the project root for full license text.
 
 using Avalonia.Media;
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -36,15 +37,46 @@ public partial class NotificationItemViewModel : ObservableObject
 
         (IconKind, AccentBrush, BackgroundBrush, BorderBrush) = severity switch
         {
-            NotificationSeverity.Success => ("CircleCheckBig", Brush("#16A34A"), Brush("#ECFDF5"), Brush("#BBF7D0")),
-            NotificationSeverity.Warning => ("TriangleAlert", Brush("#D97706"), Brush("#FFFBEB"), Brush("#FDE68A")),
-            NotificationSeverity.Error => ("OctagonX", Brush("#DC2626"), Brush("#FEF2F2"), Brush("#FECACA")),
-            _ => ("BadgeInfo", Brush("#2563EB"), Brush("#EFF6FF"), Brush("#BFDBFE"))
+            NotificationSeverity.Success => (
+                "CircleCheckBig",
+                ResourceBrush("NotificationSuccessAccentBrush", "#16A34A"),
+                ResourceBrush("NotificationSuccessBackgroundBrush", "#ECFDF5"),
+                ResourceBrush("NotificationSuccessBorderBrush", "#BBF7D0")),
+            NotificationSeverity.Warning => (
+                "TriangleAlert",
+                ResourceBrush("NotificationWarningAccentBrush", "#D97706"),
+                ResourceBrush("NotificationWarningBackgroundBrush", "#FFFBEB"),
+                ResourceBrush("NotificationWarningBorderBrush", "#FDE68A")),
+            NotificationSeverity.Error => (
+                "OctagonX",
+                ResourceBrush("NotificationErrorAccentBrush", "#DC2626"),
+                ResourceBrush("NotificationErrorBackgroundBrush", "#FEF2F2"),
+                ResourceBrush("NotificationErrorBorderBrush", "#FECACA")),
+            _ => (
+                "BadgeInfo",
+                ResourceBrush("NotificationInfoAccentBrush", "#2563EB"),
+                ResourceBrush("NotificationInfoBackgroundBrush", "#EFF6FF"),
+                ResourceBrush("NotificationInfoBorderBrush", "#BFDBFE"))
         };
     }
 
     [RelayCommand]
     private void Dismiss() => _dismiss(this);
+
+    private static IBrush ResourceBrush(string key, string fallback)
+    {
+        if (Application.Current?.TryGetResource(key, null, out var value) == true)
+        {
+            return value switch
+            {
+                IBrush brush => brush,
+                Color color => new SolidColorBrush(color),
+                _ => Brush(fallback)
+            };
+        }
+
+        return Brush(fallback);
+    }
 
     private static SolidColorBrush Brush(string hex) => new(Color.Parse(hex));
 }

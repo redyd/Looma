@@ -52,7 +52,7 @@
 
                             <Border Classes="surface-panel"
                                     Padding="14"
-                                    Background="{DynamicResource ProjectFinishSummaryBackgroundBrush}">
+                                    Background="{DynamicResource SummaryPanelBackgroundBrush}">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock Grid.Column="0"
                                                Text="Stock total qui va être retiré du stock"

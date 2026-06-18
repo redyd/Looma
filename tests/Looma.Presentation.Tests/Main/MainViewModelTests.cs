@@ -36,13 +36,15 @@ public sealed class MainViewModelTests
         var stocks = CreateSection();
         var patterns = CreateSection();
         var documents = CreateSection();
+        var settings = CreateSection();
 
-        var vm = new MainViewModel(projects, stocks, patterns, documents, notifications);
+        var vm = new MainViewModel(projects, stocks, patterns, documents, settings, notifications);
 
         vm.ProjectsSection.Should().Be(projects);
         vm.StocksSection.Should().Be(stocks);
         vm.PatternsSection.Should().Be(patterns);
         vm.DocumentsSection.Should().Be(documents);
+        vm.SettingsSection.Should().Be(settings);
         vm.Notifications.Should().Be(notifications);
         vm.SelectedTabIndex.Should().Be(0);
     }

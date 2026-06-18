@@ -49,17 +49,26 @@
     <SolidColorBrush x:Key="CancelButtonBorderBrush">#F3E8FF</SolidColorBrush>
     <SolidColorBrush x:Key="CancelButtonHoverBackgroundBrush">#FDF2F8</SolidColorBrush>
     <SolidColorBrush x:Key="CancelButtonHoverBorderBrush">#F472B6</SolidColorBrush>
+    <SolidColorBrush x:Key="CancelButtonHoverForegroundBrush">#DB2777</SolidColorBrush>
     <SolidColorBrush x:Key="DangerButtonBackgroundBrush">#FEF2F2</SolidColorBrush>
     <SolidColorBrush x:Key="DangerButtonForegroundBrush">#EF4444</SolidColorBrush>
     <SolidColorBrush x:Key="DangerButtonBorderBrush">#FECACA</SolidColorBrush>
     <SolidColorBrush x:Key="DangerButtonHoverBackgroundBrush">#FEE2E2</SolidColorBrush>
+    <SolidColorBrush x:Key="DangerButtonHoverForegroundBrush">#DC2626</SolidColorBrush>
     <SolidColorBrush x:Key="DangerSolidButtonBackgroundBrush">#EF4444</SolidColorBrush>
+    <SolidColorBrush x:Key="DangerSolidButtonForegroundBrush">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="DangerSolidButtonIconForegroundBrush">#FFF7F7</SolidColorBrush>
     <SolidColorBrush x:Key="DangerSolidButtonHoverBackgroundBrush">#DC2626</SolidColorBrush>
+    <SolidColorBrush x:Key="DangerSolidButtonHoverForegroundBrush">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="DangerSolidButtonHoverIconForegroundBrush">#FFECEC</SolidColorBrush>
     <SolidColorBrush x:Key="PaginationButtonForegroundBrush">#9CA3AF</SolidColorBrush>
     <SolidColorBrush x:Key="PaginationButtonHoverForegroundBrush">#F472B6</SolidColorBrush>
     <SolidColorBrush x:Key="SubmitButtonBackgroundBrush">#7C3AED</SolidColorBrush>
     <SolidColorBrush x:Key="SubmitButtonForegroundBrush">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="SubmitButtonIconForegroundBrush">#FFF7FD</SolidColorBrush>
     <SolidColorBrush x:Key="SubmitButtonHoverBackgroundBrush">#6D28D9</SolidColorBrush>
+    <SolidColorBrush x:Key="SubmitButtonHoverForegroundBrush">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="SubmitButtonHoverIconForegroundBrush">#FCE7F3</SolidColorBrush>
     <SolidColorBrush x:Key="SubmitButtonDisabledBackgroundBrush">#F3E8FF</SolidColorBrush>
 
     <!-- Formulaires -->
@@ -67,11 +76,14 @@
     <SolidColorBrush x:Key="FormControlBackgroundBrush">#FFF5F7</SolidColorBrush>
     <SolidColorBrush x:Key="FormControlBorderBrush">#F3E8FF</SolidColorBrush>
     <SolidColorBrush x:Key="FormControlForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="FormControlPlaceholderForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="FormControlFocusBackgroundBrush">#FFF5F7</SolidColorBrush>
     <SolidColorBrush x:Key="FormControlHoverBorderBrush">#F472B6</SolidColorBrush>
     <SolidColorBrush x:Key="FormControlFocusBorderBrush">#7C3AED</SolidColorBrush>
+    <SolidColorBrush x:Key="FormOptionForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="FormOptionHoverForegroundBrush">#DB2777</SolidColorBrush>
     <SolidColorBrush x:Key="ColorPickerContainerBackgroundBrush">#FFF5F7</SolidColorBrush>
     <SolidColorBrush x:Key="ColorPickerContainerBorderBrush">#F3E8FF</SolidColorBrush>
-    <SolidColorBrush x:Key="RequiredFieldForegroundBrush">#EF4444</SolidColorBrush>
 
     <!-- Surfaces et listes -->
     <SolidColorBrush x:Key="InteractiveCardHoverBackgroundBrush">#FDF2F8</SolidColorBrush>
@@ -103,34 +115,86 @@
 
     <!-- Navigation -->
     <SolidColorBrush x:Key="TabForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="TabIconForegroundBrush">#9CA3AF</SolidColorBrush>
     <SolidColorBrush x:Key="TabHoverBackgroundBrush">#FDF2F8</SolidColorBrush>
+    <SolidColorBrush x:Key="TabHoverForegroundBrush">#DB2777</SolidColorBrush>
+    <SolidColorBrush x:Key="TabHoverIconForegroundBrush">#DB2777</SolidColorBrush>
     <SolidColorBrush x:Key="TabSelectedBackgroundBrush">#F9A8D4</SolidColorBrush>
     <SolidColorBrush x:Key="TabSelectedForegroundBrush">#831843</SolidColorBrush>
+    <SolidColorBrush x:Key="TabSelectedIconForegroundBrush">#831843</SolidColorBrush>
     <SolidColorBrush x:Key="TabSelectedHoverBackgroundBrush">#FCE7F3</SolidColorBrush>
+    <SolidColorBrush x:Key="TabSelectedHoverForegroundBrush">#831843</SolidColorBrush>
+    <SolidColorBrush x:Key="TabSelectedHoverIconForegroundBrush">#831843</SolidColorBrush>
 
-    <!-- Badges d'entites -->
-    <SolidColorBrush x:Key="ProjectStatusWishlistBrush">#F9A8D4</SolidColorBrush>
-    <SolidColorBrush x:Key="ProjectStatusInProgressBrush">#FDBA74</SolidColorBrush>
-    <SolidColorBrush x:Key="ProjectStatusFinishedBrush">#86EFAC</SolidColorBrush>
-    <SolidColorBrush x:Key="ProjectStatusPausedBrush">#FCA5A5</SolidColorBrush>
-    <SolidColorBrush x:Key="PatternTypeCrochetBrush">#F9A8D4</SolidColorBrush>
-    <SolidColorBrush x:Key="PatternTypeTunisianCrochetBrush">#93C5FD</SolidColorBrush>
-    <SolidColorBrush x:Key="PatternTypeTricotBrush">#C4A484</SolidColorBrush>
-    <SolidColorBrush x:Key="ProjectFormWarningForegroundBrush">#991B1B</SolidColorBrush>
+    <!-- Rubans -->
+    <SolidColorBrush x:Key="StatusWishlistRibbonBackgroundBrush">#F9A8D4</SolidColorBrush>
+    <SolidColorBrush x:Key="StatusInProgressRibbonBackgroundBrush">#FDBA74</SolidColorBrush>
+    <SolidColorBrush x:Key="StatusFinishedRibbonBackgroundBrush">#86EFAC</SolidColorBrush>
+    <SolidColorBrush x:Key="StatusPausedRibbonBackgroundBrush">#FCA5A5</SolidColorBrush>
+    <SolidColorBrush x:Key="PatternCrochetRibbonBackgroundBrush">#F9A8D4</SolidColorBrush>
+    <SolidColorBrush x:Key="PatternTunisianCrochetRibbonBackgroundBrush">#93C5FD</SolidColorBrush>
+    <SolidColorBrush x:Key="PatternTricotRibbonBackgroundBrush">#C4A484</SolidColorBrush>
+    <SolidColorBrush x:Key="WarningTextForegroundBrush">#991B1B</SolidColorBrush>
 
-    <!-- Vues detaillees -->
+    <!-- Elements -->
+    <SolidColorBrush x:Key="PageTitleForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="PageSubtitleForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="FormTitleForegroundBrush">#F472B6</SolidColorBrush>
+    <SolidColorBrush x:Key="FormSubtitleForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="SectionTitleForegroundBrush">#F472B6</SolidColorBrush>
+    <SolidColorBrush x:Key="FormLabelForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="FormHintForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="FieldRequiredForegroundBrush">#EF4444</SolidColorBrush>
+    <SolidColorBrush x:Key="TableHeadingForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="EmptyStateMessageForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="CardTitleForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="CardSubtitleForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="CardMetadataForegroundBrush">#9CA3AF</SolidColorBrush>
     <SolidColorBrush x:Key="DetailHeaderBackgroundBrush">#FFFFFF</SolidColorBrush>
     <SolidColorBrush x:Key="DetailHeaderBorderBrush">#F3E8FF</SolidColorBrush>
-    <SolidColorBrush x:Key="DetailStatsDividerBrush">#F3E8FF</SolidColorBrush>
-    <SolidColorBrush x:Key="DetailInformationAccentBrush">#F472B6</SolidColorBrush>
-    <SolidColorBrush x:Key="PaginationInfoForegroundBrush">#9CA3AF</SolidColorBrush>
-    <SolidColorBrush x:Key="EntityListTitleForegroundBrush">#4A4A4A</SolidColorBrush>
-    <SolidColorBrush x:Key="WoolListTagBackgroundBrush">#FFF5F7</SolidColorBrush>
-    <SolidColorBrush x:Key="WoolListTagBorderBrush">#F3E8FF</SolidColorBrush>
-    <SolidColorBrush x:Key="WoolListDividerBrush">#F3E8FF</SolidColorBrush>
-    <SolidColorBrush x:Key="DocumentFormItemBackgroundBrush">#FFF5F7</SolidColorBrush>
-    <SolidColorBrush x:Key="ProjectFinishSummaryBackgroundBrush">#FFF5F7</SolidColorBrush>
-    <SolidColorBrush x:Key="DocumentListDividerBrush">#F3E8FF</SolidColorBrush>
+    <SolidColorBrush x:Key="DetailStatisticDividerBrush">#F3E8FF</SolidColorBrush>
+    <SolidColorBrush x:Key="DetailTitleForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="DetailSubtitleForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="DetailStatisticLabelForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="DetailStatisticValueForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="DetailStatisticUnitForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="DetailFieldLabelForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="DetailFieldValueForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="DetailLinkForegroundBrush">#F472B6</SolidColorBrush>
+    <SolidColorBrush x:Key="PaginationTextForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="RibbonForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="MetadataTagBackgroundBrush">#FFF5F7</SolidColorBrush>
+    <SolidColorBrush x:Key="MetadataTagBorderBrush">#F3E8FF</SolidColorBrush>
+    <SolidColorBrush x:Key="MetadataDividerBrush">#F3E8FF</SolidColorBrush>
+    <SolidColorBrush x:Key="EmbeddedPanelBackgroundBrush">#FFF5F7</SolidColorBrush>
+    <SolidColorBrush x:Key="SummaryPanelBackgroundBrush">#FFF5F7</SolidColorBrush>
+    <SolidColorBrush x:Key="ListItemDividerBrush">#F3E8FF</SolidColorBrush>
+    <SolidColorBrush x:Key="ListItemPrimaryForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="ListItemSecondaryForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="PatternPreviewPrimaryForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="PatternPreviewSecondaryForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="PatternPreviewMetadataForegroundBrush">#6B7280</SolidColorBrush>
+    <SolidColorBrush x:Key="ProjectWoolPrimaryForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="ProjectWoolMetadataForegroundBrush">#6B7280</SolidColorBrush>
+
+    <!-- Notifications -->
+    <SolidColorBrush x:Key="NotificationTitleForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationMessageForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationIconForegroundBrush">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationDismissForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationDismissHoverForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationSuccessAccentBrush">#16A34A</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationSuccessBackgroundBrush">#ECFDF5</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationSuccessBorderBrush">#BBF7D0</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationWarningAccentBrush">#D97706</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationWarningBackgroundBrush">#FFFBEB</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationWarningBorderBrush">#FDE68A</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationErrorAccentBrush">#DC2626</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationErrorBackgroundBrush">#FEF2F2</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationErrorBorderBrush">#FECACA</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationInfoAccentBrush">#2563EB</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationInfoBackgroundBrush">#EFF6FF</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationInfoBorderBrush">#BFDBFE</SolidColorBrush>
 
     <!-- Valeurs numériques -->
     <CornerRadius x:Key="DefaultCornerRadius">12</CornerRadius>

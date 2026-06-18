@@ -22,6 +22,7 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets/**"/>
+        <Content Include="Seed\Themes\*.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
     <ItemGroup>
