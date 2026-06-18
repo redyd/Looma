@@ -22,7 +22,7 @@
         <TextBlock Text="{Binding PageInfo, ElementName=This}"
                    VerticalAlignment="Center"
                    FontSize="14"
-                   Foreground="{StaticResource TextSecondaryBrush}" />
+                   Foreground="{DynamicResource PaginationInfoForegroundBrush}" />
 
         <Button Command="{Binding NextPageCommand, ElementName=This}"
                 IsEnabled="{Binding HasNextPage, ElementName=This}"

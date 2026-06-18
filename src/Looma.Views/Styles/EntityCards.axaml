@@ -8,8 +8,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style Selector="Border.interactive-card:pointerover">
-        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+        <Setter Property="Background" Value="{DynamicResource InteractiveCardHoverBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource InteractiveCardHoverBorderBrush}" />
     </Style>
 
     <Style Selector="Border.project-status-ribbon">
@@ -18,19 +18,19 @@
     </Style>
 
     <Style Selector="Border.project-status-ribbon.status-wishlist">
-        <Setter Property="Background" Value="#F9A8D4" />
+        <Setter Property="Background" Value="{DynamicResource ProjectStatusWishlistBrush}" />
     </Style>
 
     <Style Selector="Border.project-status-ribbon.status-in-progress">
-        <Setter Property="Background" Value="#FDBA74" />
+        <Setter Property="Background" Value="{DynamicResource ProjectStatusInProgressBrush}" />
     </Style>
 
     <Style Selector="Border.project-status-ribbon.status-finished">
-        <Setter Property="Background" Value="#86EFAC" />
+        <Setter Property="Background" Value="{DynamicResource ProjectStatusFinishedBrush}" />
     </Style>
 
     <Style Selector="Border.project-status-ribbon.status-paused">
-        <Setter Property="Background" Value="#FCA5A5" />
+        <Setter Property="Background" Value="{DynamicResource ProjectStatusPausedBrush}" />
     </Style>
 
     <Style Selector="Border.pattern-type-ribbon">
@@ -39,15 +39,15 @@
     </Style>
 
     <Style Selector="Border.pattern-type-ribbon.type-crochet">
-        <Setter Property="Background" Value="#F9A8D4" />
+        <Setter Property="Background" Value="{DynamicResource PatternTypeCrochetBrush}" />
     </Style>
 
     <Style Selector="Border.pattern-type-ribbon.type-tunisian-crochet">
-        <Setter Property="Background" Value="#93C5FD" />
+        <Setter Property="Background" Value="{DynamicResource PatternTypeTunisianCrochetBrush}" />
     </Style>
 
     <Style Selector="Border.pattern-type-ribbon.type-tricot">
-        <Setter Property="Background" Value="#C4A484" />
+        <Setter Property="Background" Value="{DynamicResource PatternTypeTricotBrush}" />
     </Style>
 
 </Styles>

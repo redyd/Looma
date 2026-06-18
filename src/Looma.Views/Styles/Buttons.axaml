@@ -19,8 +19,8 @@
     
     <Style Selector="Button.cancel-btn">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CancelButtonForegroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CancelButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="20 0" />
@@ -39,16 +39,16 @@
     </Style>
 
     <Style Selector="Button.cancel-btn:pointerover">
-        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+        <Setter Property="Background" Value="{DynamicResource CancelButtonHoverBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CancelButtonHoverBorderBrush}" />
     </Style>
     
     <!-- DANGER -->
     
     <Style Selector="Button.danger-btn">
-        <Setter Property="Background" Value="#FEF2F2" />
-        <Setter Property="Foreground" Value="#EF4444" />
-        <Setter Property="BorderBrush" Value="#FECACA" />
+        <Setter Property="Background" Value="{DynamicResource DangerButtonBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DangerButtonForegroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DangerButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="20 0" />
@@ -66,14 +66,14 @@
     </Style>
 
     <Style Selector="Button.danger-btn:pointerover">
-        <Setter Property="Background" Value="#FEE2E2" />
+        <Setter Property="Background" Value="{DynamicResource DangerButtonHoverBackgroundBrush}" />
     </Style>
     
     <!-- PAGINATION -->
     
     <Style Selector="Button.pagination-btn">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource PaginationButtonForegroundBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="0" />
@@ -91,7 +91,7 @@
 
     <Style Selector="Button.pagination-btn:pointerover">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource PaginationButtonHoverForegroundBrush}" />
     </Style>
 
     <Style Selector="Button.pagination-btn:disabled">

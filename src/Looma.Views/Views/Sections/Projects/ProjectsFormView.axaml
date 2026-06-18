@@ -454,7 +454,7 @@
                             IsVisible="{Binding HasError}">
                         <TextBlock Text="{Binding ErrorMessage}"
                                    TextWrapping="Wrap"
-                                   Foreground="#991B1B" />
+                                   Foreground="{DynamicResource ProjectFormWarningForegroundBrush}" />
                     </Border>
 
                     <StackPanel Classes="form-actions">

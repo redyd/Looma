@@ -156,7 +156,7 @@
                                                 </Grid>
                                                 <Border
                                                     Height="1"
-                                                    Background="{StaticResource BorderBrush}"
+                                                    Background="{DynamicResource DocumentListDividerBrush}"
                                                     Opacity="0.2"
                                                     Margin="0 2 0 2"
                                                 />

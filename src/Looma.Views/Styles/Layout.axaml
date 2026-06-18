@@ -10,19 +10,19 @@
         <!-- FORM -->
         
         <Style Selector="Border.form-container">
-                <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
+                <Setter Property="Background" Value="{DynamicResource SurfaceCardBackgroundBrush}" />
                 <Setter Property="CornerRadius" Value="12" />
-                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource SurfaceCardBorderBrush}" />
                 <Setter Property="BorderThickness" Value="1" />
                 <Setter Property="Padding" Value="24" />
                 <Setter Property="BoxShadow" Value="0 2 12 0 #15000000" />
         </Style>
 
         <Style Selector="Border.form-section">
-                <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+                <Setter Property="Background" Value="{DynamicResource SurfacePanelBackgroundBrush}" />
                 <Setter Property="CornerRadius" Value="8" />
                 <Setter Property="Padding" Value="20" />
-                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource SurfacePanelBorderBrush}" />
                 <Setter Property="BorderThickness" Value="1" />
         </Style>
         

@@ -137,7 +137,7 @@ See LICENSE in the project root for full license text.
                                         Margin="0 0 0 14">
                                 <LucideIcon Kind="BadgeInfo"
                                             Size="18"
-                                            Foreground="{StaticResource PrimaryDarkBrush}"
+                                            Foreground="{DynamicResource DetailInformationAccentBrush}"
                                             VerticalAlignment="Center" />
                                 <TextBlock Classes="section-title"
                                            Text="Informations"

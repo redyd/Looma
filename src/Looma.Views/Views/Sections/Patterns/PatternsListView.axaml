@@ -107,7 +107,7 @@
                                                        Margin="16 0"
                                                        FontSize="12"
                                                        FontWeight="SemiBold"
-                                                       Foreground="{StaticResource TextPrimaryBrush}" />
+                                                       Foreground="{DynamicResource EntityListTitleForegroundBrush}" />
                                         </Border>
 
                                         <Grid Grid.Row="1"

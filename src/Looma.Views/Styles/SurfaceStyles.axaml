@@ -8,8 +8,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style Selector="Border.surface-card">
-        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SurfaceCardBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SurfaceCardBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="12" />
         <Setter Property="BoxShadow" Value="0 2 12 0 #10000000" />
@@ -79,29 +79,29 @@
     </Style>
 
     <Style Selector="Border.surface-panel">
-        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SurfacePanelBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SurfacePanelBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
     </Style>
 
     <Style Selector="Border.surface-chip">
-        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SurfaceChipBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SurfaceChipBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="6" />
     </Style>
 
     <Style Selector="Border.alert-error">
-        <Setter Property="Background" Value="#FEF2F2" />
-        <Setter Property="BorderBrush" Value="#FECACA" />
+        <Setter Property="Background" Value="{DynamicResource AlertErrorBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AlertErrorBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
     </Style>
 
     <Style Selector="Border.empty-state">
-        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource EmptyStateBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource EmptyStateBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="18" />
         <Setter Property="Padding" Value="32 24" />
@@ -112,7 +112,7 @@
     <Style Selector="TextBlock.empty-state-title">
         <Setter Property="FontSize" Value="20" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource EmptyStateTitleForegroundBrush}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="TextAlignment" Value="Center" />
     </Style>

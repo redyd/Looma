@@ -6,36 +6,36 @@
         <Style Selector="TextBlock.form-title">
                 <Setter Property="FontSize" Value="24" />
                 <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryDarkBrush}" />
         </Style>
         
         <!-- SUBTITLE -->
         
         <Style Selector="TextBlock.form-subtitle">
                 <Setter Property="FontSize" Value="14" />
-                <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
         </Style>
 
         <Style Selector="TextBlock.section-title">
                 <Setter Property="FontSize" Value="15" />
                 <Setter Property="FontWeight" Value="SemiBold" />
-                <Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryDarkBrush}" />
         </Style>
 
         <Style Selector="TextBlock.form-label">
                 <Setter Property="FontSize" Value="13" />
                 <Setter Property="FontWeight" Value="Medium" />
-                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
         </Style>
 
         <Style Selector="TextBlock.field-required">
-                <Setter Property="Foreground" Value="#EF4444" />
+                <Setter Property="Foreground" Value="{DynamicResource RequiredFieldForegroundBrush}" />
                 <Setter Property="FontWeight" Value="Bold" />
         </Style>
 
         <Style Selector="TextBlock.form-hint">
                 <Setter Property="FontSize" Value="12" />
-                <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
                 <Setter Property="Opacity" Value="0.75" />
         </Style>
 

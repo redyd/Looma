@@ -13,9 +13,9 @@
              x:Name="This">
 
     <Border Padding="24 16"
-            BorderBrush="{StaticResource BorderBrush}"
+            BorderBrush="{DynamicResource DetailHeaderBorderBrush}"
             BorderThickness="0 0 0 1"
-            Background="{StaticResource BackgroundCardBrush}">
+            Background="{DynamicResource DetailHeaderBackgroundBrush}">
         <Grid ColumnDefinitions="Auto,*,Auto">
 
             <Button Grid.Column="0"

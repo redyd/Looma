@@ -19,11 +19,11 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TabForegroundBrush}" />
         <Setter Property="Padding" Value="0 10" />
         <Setter Property="Margin" Value="4 0" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="CornerRadius" Value="{StaticResource DefaultCornerRadius}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DefaultCornerRadius}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Transitions">
             <Transitions>
@@ -45,17 +45,17 @@
     </Style>
 
     <Style Selector="TabItem:pointerover">
-        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+        <Setter Property="Background" Value="{DynamicResource TabHoverBackgroundBrush}" />
     </Style>
 
     <Style Selector="TabItem:selected">
-        <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource TextOnPrimaryBrush}" />
+        <Setter Property="Background" Value="{DynamicResource TabSelectedBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TabSelectedForegroundBrush}" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
     <Style Selector="TabItem:selected:pointerover">
-        <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}" />
+        <Setter Property="Background" Value="{DynamicResource TabSelectedHoverBackgroundBrush}" />
     </Style>
 
 </Styles>

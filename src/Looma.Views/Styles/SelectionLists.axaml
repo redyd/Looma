@@ -8,40 +8,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style Selector="Border.selection-row">
-        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SelectionRowBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SelectionRowBorderBrush}" />
         <Setter Property="BorderThickness" Value="1 0 1 1" />
     </Style>
 
     <Style Selector="Border.selection-row:pointerover">
-        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SelectionRowHoverBackgroundBrush}" />
     </Style>
 
     <Style Selector="Border.selection-row.selected">
-        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SelectionRowSelectedBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SelectionRowSelectedBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
     </Style>
 
     <Style Selector="Border.table-header">
-        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource TableHeaderBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource TableHeaderBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8 8 0 0" />
         <Setter Property="Padding" Value="12 10" />
     </Style>
 
     <Style Selector="Border.table-row">
-        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource TableRowBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource TableRowBorderBrush}" />
         <Setter Property="BorderThickness" Value="1 0 1 1" />
         <Setter Property="Padding" Value="12 10" />
     </Style>
 
     <Style Selector="Border.table-empty-row">
-        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource TableRowBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource TableRowBorderBrush}" />
         <Setter Property="BorderThickness" Value="1 0 1 1" />
         <Setter Property="Padding" Value="12 18" />
     </Style>
@@ -54,15 +54,15 @@
     </Style>
 
     <Style Selector="Border.linked-row">
-        <Setter Property="Background" Value="{StaticResource BackgroundCardBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource LinkedRowBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LinkedRowBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
     </Style>
 
     <Style Selector="Border.linked-row:pointerover">
-        <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBrush}" />
+        <Setter Property="Background" Value="{DynamicResource LinkedRowHoverBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource LinkedRowHoverBorderBrush}" />
     </Style>
 
 </Styles>

@@ -52,7 +52,7 @@ See LICENSE in the project root for full license text.
                                 <LucideIcon
                                     Kind="FilePenLine"
                                     Size="18"
-                                    Foreground="{StaticResource PrimaryDarkBrush}"
+                                    Foreground="{DynamicResource DetailInformationAccentBrush}"
                                     VerticalAlignment="Center" />
                                 <TextBlock Text="Ajustement du stock"
                                            Classes="section-title"

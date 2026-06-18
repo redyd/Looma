@@ -118,14 +118,14 @@
                                         <!-- Matière -->
                                         <StackPanel Orientation="Horizontal" Spacing="6">
                                             <Border Padding="6 2" CornerRadius="4"
-                                                    Background="{StaticResource BackgroundBrush}"
-                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    Background="{DynamicResource WoolListTagBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource WoolListTagBorderBrush}"
                                                     BorderThickness="1">
                                                 <TextBlock Text="{Binding Wool.Material}" FontSize="11" />
                                             </Border>
                                             <Border Padding="6 2" CornerRadius="4"
-                                                    Background="{StaticResource BackgroundBrush}"
-                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    Background="{DynamicResource WoolListTagBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource WoolListTagBorderBrush}"
                                                     BorderThickness="1">
                                                 <TextBlock Text="{Binding BatchQuantityDisplay}"
                                                            FontSize="11" />
@@ -134,7 +134,7 @@
 
                                         <!-- Séparateur -->
                                         <Border Height="1"
-                                                Background="{StaticResource BorderBrush}"
+                                                Background="{DynamicResource WoolListDividerBrush}"
                                                 Opacity="0.5"
                                                 Margin="0 2 0 2" />
 
