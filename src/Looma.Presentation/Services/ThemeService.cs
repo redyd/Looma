@@ -41,8 +41,17 @@ public class ThemeService
         ApplyGroup(resources, dto.Forms);
         ApplyGroup(resources, dto.Surfaces);
         ApplyGroup(resources, dto.Navigation);
-        ApplyGroup(resources, dto.EntityBadges);
-        ApplyGroup(resources, dto.Details);
+        ApplyGroup(resources, dto.Ribbons);
+        ApplyGroup(resources, dto.Elements);
+    }
+
+    public string? GetThemeName(string jsonPath)
+    {
+        var json = File.ReadAllText(jsonPath);
+        var dto = JsonSerializer.Deserialize<ThemeOverrideDto>(json, JsonOptions);
+        return string.IsNullOrWhiteSpace(dto?.Name)
+            ? null
+            : dto.Name;
     }
 
     public void ResetToDefault()
@@ -129,8 +138,8 @@ public class ThemeService
             Forms = BuildGroup<FormColors>(resources),
             Surfaces = BuildGroup<SurfaceColors>(resources),
             Navigation = BuildGroup<NavigationColors>(resources),
-            EntityBadges = BuildGroup<EntityBadgeColors>(resources),
-            Details = BuildGroup<DetailColors>(resources)
+            Ribbons = BuildGroup<RibbonColors>(resources),
+            Elements = BuildGroup<ElementColors>(resources)
         };
     }
 
@@ -185,8 +194,8 @@ public class ThemeService
             typeof(FormColors),
             typeof(SurfaceColors),
             typeof(NavigationColors),
-            typeof(EntityBadgeColors),
-            typeof(DetailColors)
+            typeof(RibbonColors),
+            typeof(ElementColors)
         };
 
         return groupTypes.SelectMany(type => type.GetProperties().Select(prop => prop.Name));

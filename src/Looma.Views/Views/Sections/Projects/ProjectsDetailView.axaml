@@ -26,10 +26,12 @@ See LICENSE in the project root for full license text.
                     <TextBlock Text="{Binding Name}"
                                FontSize="20"
                                FontWeight="SemiBold"
+                               Foreground="{DynamicResource DetailTitleForegroundBrush}"
                                HorizontalAlignment="Center" />
                     <TextBlock Text="{Binding StatusDisplay}"
                                FontSize="14"
                                Opacity="0.5"
+                               Foreground="{DynamicResource DetailSubtitleForegroundBrush}"
                                HorizontalAlignment="Center" />
                 </StackPanel>
             </controls:DetailHeader.TitleContent>
@@ -51,10 +53,12 @@ See LICENSE in the project root for full license text.
                                 <TextBlock Text="{Binding PatternName}"
                                            FontSize="18"
                                            FontWeight="SemiBold"
+                                           Foreground="{DynamicResource PatternPreviewPrimaryForegroundBrush}"
                                            TextTrimming="CharacterEllipsis" />
                                 <TextBlock Text="{Binding PatternNoteDisplay}"
                                            FontSize="12"
                                            Opacity="0.65"
+                                           Foreground="{DynamicResource PatternPreviewSecondaryForegroundBrush}"
                                            TextTrimming="CharacterEllipsis"
                                            MaxLines="1" />
                             </StackPanel>
@@ -62,16 +66,19 @@ See LICENSE in the project root for full license text.
                                        Text="{Binding PatternTypeDisplay}"
                                        FontSize="13"
                                        Opacity="0.8"
+                                       Foreground="{DynamicResource PatternPreviewMetadataForegroundBrush}"
                                        VerticalAlignment="Center" />
                             <TextBlock Grid.Column="2"
                                        Text="{Binding Pattern.Documents.Count, StringFormat='Documents: {0}'}"
                                        FontSize="13"
                                        Opacity="0.7"
+                                       Foreground="{DynamicResource PatternPreviewMetadataForegroundBrush}"
                                        VerticalAlignment="Center" />
                             <TextBlock Grid.Column="3"
                                        Text="{Binding Pattern.Url}"
                                        FontSize="13"
                                        Opacity="0.65"
+                                       Foreground="{DynamicResource PatternPreviewMetadataForegroundBrush}"
                                        VerticalAlignment="Center"
                                        TextTrimming="CharacterEllipsis" />
                             <TextBlock Grid.Column="4"
@@ -79,6 +86,7 @@ See LICENSE in the project root for full license text.
                                        FontSize="13"
                                        FontWeight="SemiBold"
                                        Opacity="0.7"
+                                       Foreground="{DynamicResource PatternPreviewPrimaryForegroundBrush}"
                                        HorizontalAlignment="Right"
                                        VerticalAlignment="Center" />
                         </Grid>
@@ -137,7 +145,7 @@ See LICENSE in the project root for full license text.
                                         Margin="0 0 0 14">
                                 <LucideIcon Kind="BadgeInfo"
                                             Size="18"
-                                            Foreground="{DynamicResource DetailInformationAccentBrush}"
+                                            Foreground="{DynamicResource DetailLinkForegroundBrush}"
                                             VerticalAlignment="Center" />
                                 <TextBlock Classes="section-title"
                                            Text="Informations"
@@ -151,11 +159,13 @@ See LICENSE in the project root for full license text.
                                                        Text="{Binding Label}"
                                                        FontSize="13"
                                                        Opacity="0.5"
+                                                       Foreground="{DynamicResource DetailFieldLabelForegroundBrush}"
                                                        Margin="0 0 0 10" />
                                             <TextBlock Grid.Column="1"
                                                        Text="{Binding Value}"
                                                        FontSize="14"
                                                        FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource DetailFieldValueForegroundBrush}"
                                                        Margin="0 0 0 10"
                                                        TextTrimming="CharacterEllipsis" />
                                         </Grid>
@@ -257,18 +267,22 @@ See LICENSE in the project root for full license text.
                                                 <StackPanel Grid.Column="1" Spacing="5">
                                                     <TextBlock Text="{Binding Name}"
                                                                FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource ProjectWoolPrimaryForegroundBrush}"
                                                                TextTrimming="CharacterEllipsis" />
                                                     <TextBlock Text="{Binding Brand}"
                                                                Classes="form-hint"
                                                                TextTrimming="CharacterEllipsis" />
                                                     <TextBlock Text="{Binding AvailableDisplay, StringFormat='Laine en stock: {0}'}"
                                                                FontSize="12"
+                                                               Foreground="{DynamicResource ProjectWoolMetadataForegroundBrush}"
                                                                Opacity="0.75" />
                                                     <TextBlock Text="{Binding UsedDisplay, StringFormat='Laine utilisée: {0}'}"
                                                                FontSize="12"
+                                                               Foreground="{DynamicResource ProjectWoolMetadataForegroundBrush}"
                                                                Opacity="0.75" />
                                                     <TextBlock Text="{Binding AlreadyDeductedDisplay, StringFormat='Laine déjà retirée du stock: {0}'}"
                                                                FontSize="12"
+                                                               Foreground="{DynamicResource ProjectWoolMetadataForegroundBrush}"
                                                                Opacity="0.75" />
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="2"

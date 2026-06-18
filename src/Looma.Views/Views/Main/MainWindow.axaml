@@ -11,9 +11,10 @@
         xmlns:vm="using:Looma.Presentation.ViewModels.Main"
         x:Class="Looma.Views.Views.Main.MainWindow"
         x:DataType="vm:MainViewModel"
-        Title="Looma" Width="1024" Height="768">
+        Title="Looma" Width="1024" Height="768"
+        Background="{DynamicResource BackgroundBrush}">
 
-    <Grid>
+    <Grid Background="{DynamicResource BackgroundBrush}">
 
         <TabControl
             SelectedIndex="{Binding SelectedTabIndex}"

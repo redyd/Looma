@@ -50,6 +50,7 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{DynamicResource FormControlForegroundBrush}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource FormControlPlaceholderForegroundBrush}" />
         <Setter Property="Height" Value="40" />
         <Setter Property="Padding" Value="12 0" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -71,6 +72,7 @@
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Foreground" Value="{DynamicResource FormControlForegroundBrush}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource FormControlPlaceholderForegroundBrush}" />
         <Setter Property="Height" Value="34" />
         <Setter Property="Padding" Value="10 0" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -93,6 +95,7 @@
         <Setter Property="Padding" Value="12 0" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{DynamicResource FormControlForegroundBrush}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource FormControlPlaceholderForegroundBrush}" />
         <Setter Property="Height" Value="40" />
         <Setter Property="VerticalContentAlignment" Value="Center" /> 
     </Style>
@@ -114,6 +117,7 @@
         <Setter Property="Padding" Value="12 0" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{DynamicResource FormControlForegroundBrush}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource FormControlPlaceholderForegroundBrush}" />
         <Setter Property="Height" Value="40" />
     </Style>
 
@@ -124,6 +128,26 @@
     <Style Selector="ComboBox.form-select:focus /template/ Border#Background">
         <Setter Property="BorderBrush" Value="{DynamicResource FormControlFocusBorderBrush}" />
         <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="CheckBox">
+        <Setter Property="Foreground" Value="{DynamicResource FormOptionForegroundBrush}" />
+    </Style>
+
+    <Style Selector="CheckBox:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource FormOptionHoverForegroundBrush}" />
+    </Style>
+
+    <Style Selector="CheckBox:checked">
+        <Setter Property="Foreground" Value="{DynamicResource FormOptionForegroundBrush}" />
+    </Style>
+
+    <Style Selector="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource FormOptionForegroundBrush}" />
+    </Style>
+
+    <Style Selector="RadioButton:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource FormOptionHoverForegroundBrush}" />
     </Style>
 
     <!-- ============================================ -->
@@ -151,6 +175,15 @@
 
     <Style Selector="Button.form-submit:pointerover">
         <Setter Property="Background" Value="{DynamicResource SubmitButtonHoverBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SubmitButtonHoverForegroundBrush}" />
+    </Style>
+
+    <Style Selector="Button.form-submit LucideIcon">
+        <Setter Property="Foreground" Value="{DynamicResource SubmitButtonIconForegroundBrush}" />
+    </Style>
+
+    <Style Selector="Button.form-submit:pointerover LucideIcon">
+        <Setter Property="Foreground" Value="{DynamicResource SubmitButtonHoverIconForegroundBrush}" />
     </Style>
 
     <Style Selector="Button.form-submit:disabled">
@@ -160,7 +193,7 @@
     
     <Style Selector="Button.danger-btn-solid">
         <Setter Property="Background" Value="{DynamicResource DangerSolidButtonBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource SubmitButtonForegroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DangerSolidButtonForegroundBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="20 0" />
@@ -179,6 +212,15 @@
 
     <Style Selector="Button.danger-btn-solid:pointerover">
         <Setter Property="Background" Value="{DynamicResource DangerSolidButtonHoverBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DangerSolidButtonHoverForegroundBrush}" />
+    </Style>
+
+    <Style Selector="Button.danger-btn-solid LucideIcon">
+        <Setter Property="Foreground" Value="{DynamicResource DangerSolidButtonIconForegroundBrush}" />
+    </Style>
+
+    <Style Selector="Button.danger-btn-solid:pointerover LucideIcon">
+        <Setter Property="Foreground" Value="{DynamicResource DangerSolidButtonHoverIconForegroundBrush}" />
     </Style>
 
 </Styles>

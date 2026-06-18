@@ -44,7 +44,10 @@
                     Command="{Binding OpenAddFormCommand}"
                     Classes="form-submit">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <LucideIcon Kind="Grid2x2Plus" Size="16" VerticalAlignment="Center" />
+                    <LucideIcon Kind="Grid2x2Plus"
+                                Size="16"
+                                Foreground="{DynamicResource SubmitButtonIconForegroundBrush}"
+                                VerticalAlignment="Center" />
                     <TextBlock Text="Ajouter un projet" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -114,7 +117,7 @@
                                                        Margin="16 0"
                                                        FontSize="12"
                                                        FontWeight="SemiBold"
-                                                       Foreground="{DynamicResource EntityListTitleForegroundBrush}" />
+                                                       Foreground="{DynamicResource RibbonForegroundBrush}" />
                                         </Border>
 
                                         <Grid Grid.Row="1"
@@ -122,10 +125,12 @@
                                               RowDefinitions="Auto,*,Auto">
                                             <StackPanel Grid.Row="0" Spacing="4">
                                                 <TextBlock Text="{Binding Project.Name}"
+                                                           Classes="card-title"
                                                            FontSize="15"
                                                            FontWeight="SemiBold"
                                                            TextTrimming="CharacterEllipsis" />
                                                 <TextBlock Text="{Binding PatternName}"
+                                                           Classes="card-subtitle"
                                                            FontSize="12"
                                                            Opacity="0.65"
                                                            TextTrimming="CharacterEllipsis" />
@@ -139,19 +144,24 @@
                                                         Padding="8 3"
                                                         IsVisible="{Binding HasPatternType}">
                                                     <TextBlock Text="{Binding PatternTypeDisplay}"
+                                                               Classes="card-meta"
                                                                FontSize="11" />
                                                 </Border>
                                                 <Border Classes="surface-chip" Padding="8 3">
-                                                    <TextBlock Text="{Binding WoolCountDisplay}" FontSize="11" />
+                                                    <TextBlock Text="{Binding WoolCountDisplay}"
+                                                               Classes="card-meta"
+                                                               FontSize="11" />
                                                 </Border>
                                             </StackPanel>
 
                                             <StackPanel Grid.Row="2" Spacing="2">
                                                 <TextBlock Text="{Binding BeginDateDisplay, StringFormat='Début: {0}'}"
+                                                           Classes="card-meta"
                                                            IsVisible="{Binding HasBeginDate}"
                                                            FontSize="11"
                                                            Opacity="0.65" />
                                                 <TextBlock Text="{Binding EndDateDisplay, StringFormat='Fin: {0}'}"
+                                                           Classes="card-meta"
                                                            IsVisible="{Binding HasEndDate}"
                                                            FontSize="11"
                                                            Opacity="0.65" />

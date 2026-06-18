@@ -13,6 +13,6 @@ public class ThemeOverrideDto
     public FormColors? Forms { get; set; }
     public SurfaceColors? Surfaces { get; set; }
     public NavigationColors? Navigation { get; set; }
-    public EntityBadgeColors? EntityBadges { get; set; }
-    public DetailColors? Details { get; set; }
+    public RibbonColors? Ribbons { get; set; }
+    public ElementColors? Elements { get; set; }
 }

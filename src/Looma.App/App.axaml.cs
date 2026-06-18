@@ -14,6 +14,8 @@ using Avalonia.Markup.Xaml;
 using Looma.App.Services;
 using Looma.Infrastructure;
 using Looma.Infrastructure.Storage;
+using Looma.Domain.Services;
+using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Main;
 using Looma.Views.Views.Main;
 using Microsoft.EntityFrameworkCore;
@@ -87,6 +89,8 @@ public partial class App : Application
 
         pathManager.EnsureDatabaseCreated(db);
 
+        ApplyStoredTheme();
+
         var seedCount = GetSeedCount(args);
         if (seedCount.HasValue || args.Contains("--seed"))
         {
@@ -129,6 +133,23 @@ public partial class App : Application
         }
         catch
         {
+        }
+    }
+
+    private void ApplyStoredTheme()
+    {
+        var themeStorage = Services.GetRequiredService<IThemeStorage>();
+        var selectedThemePath = themeStorage.GetSelectedThemePath();
+        if (selectedThemePath is null)
+            return;
+
+        try
+        {
+            Services.GetRequiredService<ThemeService>().ApplyOverride(selectedThemePath);
+        }
+        catch
+        {
+            themeStorage.SaveSelectedTheme(null);
         }
     }
 

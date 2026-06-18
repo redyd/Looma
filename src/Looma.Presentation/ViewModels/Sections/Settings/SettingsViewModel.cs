@@ -42,11 +42,13 @@ public partial class SettingsViewModel(
             if (value.IsDefault)
             {
                 themeService.ResetToDefault();
+                themeStorage.SaveSelectedTheme(null);
                 notifications.Success("Le thème par défaut a été appliqué.");
                 return;
             }
 
             themeService.ApplyOverride(value.Path!);
+            themeStorage.SaveSelectedTheme(value.Path);
             notifications.Success($"Le thème {value.Name} a été appliqué.");
         }
         catch (Exception ex)
@@ -62,13 +64,15 @@ public partial class SettingsViewModel(
         try
         {
             var selectedPath = SelectedTheme?.Path;
+            selectedPath ??= themeStorage.GetSelectedThemePath();
 
             Themes.Clear();
             Themes.Add(new ThemeOptionViewModel("Défaut", null));
 
             foreach (var file in themeStorage.GetThemeFiles())
             {
-                Themes.Add(new ThemeOptionViewModel(System.IO.Path.GetFileName(file), file));
+                var themeName = GetThemeDisplayName(file);
+                Themes.Add(new ThemeOptionViewModel(themeName, file));
             }
 
             SelectedTheme = Themes.FirstOrDefault(theme => theme.Path == selectedPath)
@@ -81,6 +85,19 @@ public partial class SettingsViewModel(
         finally
         {
             _isLoadingThemes = false;
+        }
+    }
+
+    private string GetThemeDisplayName(string file)
+    {
+        try
+        {
+            return themeService.GetThemeName(file)
+                   ?? System.IO.Path.GetFileNameWithoutExtension(file);
+        }
+        catch
+        {
+            return System.IO.Path.GetFileNameWithoutExtension(file);
         }
     }
 

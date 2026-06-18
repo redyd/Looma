@@ -26,17 +26,20 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:StatItem">
                         <Border BorderThickness="{Binding IsFirst, Converter={StaticResource FirstItemBorder}}"
-                                BorderBrush="{DynamicResource DetailStatsDividerBrush}">
+                                BorderBrush="{DynamicResource DetailStatisticDividerBrush}">
                             <StackPanel HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Spacing="4">
                                 <TextBlock Text="{Binding Label}" FontSize="12" Opacity="0.5"
+                                           Foreground="{DynamicResource DetailStatisticLabelForegroundBrush}"
                                            HorizontalAlignment="Center" />
                                 <StackPanel Orientation="Horizontal" Spacing="4"
                                             HorizontalAlignment="Center">
                                     <TextBlock Text="{Binding Value}"
+                                               Foreground="{DynamicResource DetailStatisticValueForegroundBrush}"
                                                FontSize="32" FontWeight="SemiBold" />
                                     <TextBlock Text="{Binding Unit}" FontSize="18" Opacity="0.45"
+                                               Foreground="{DynamicResource DetailStatisticUnitForegroundBrush}"
                                                VerticalAlignment="Bottom" Margin="0 0 0 5" />
                                 </StackPanel>
                             </StackPanel>
@@ -53,7 +56,7 @@
                             Margin="0 0 0 14">
                     <LucideIcon Kind="{Binding InfoIconKind, ElementName=This}"
                                 Size="18"
-                                Foreground="{DynamicResource DetailInformationAccentBrush}"
+                                Foreground="{DynamicResource DetailLinkForegroundBrush}"
                                 VerticalAlignment="Center"
                                 IsVisible="{Binding InfoIconKind, ElementName=This, Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <TextBlock Classes="section-title"
@@ -66,6 +69,7 @@
                             <Grid ColumnDefinitions="100,*">
                                 <TextBlock Grid.Column="0" Text="{Binding Label}"
                                            FontSize="13" Opacity="0.5" Margin="0 0 0 10"
+                                           Foreground="{DynamicResource DetailFieldLabelForegroundBrush}"
                                            VerticalAlignment="Center" />
 
                                 <!-- Valeur simple -->
@@ -73,6 +77,7 @@
                                            IsVisible="{Binding IsSimple}"
                                            Text="{Binding Value}"
                                            FontSize="14" Margin="0 0 0 10"
+                                           Foreground="{DynamicResource DetailFieldValueForegroundBrush}"
                                            VerticalAlignment="Center" />
 
                                 <!-- Valeur lien -->
@@ -85,7 +90,7 @@
                                         Margin="0 0 0 10">
                                     <TextBlock Text="{Binding Value}"
                                                FontSize="14"
-                                               Foreground="{DynamicResource DetailInformationAccentBrush}"
+                                               Foreground="{DynamicResource DetailLinkForegroundBrush}"
                                                TextDecorations="Underline"
                                                VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis" />
@@ -99,7 +104,10 @@
                                         Colors="{Binding Colors}"
                                         Width="20" Height="20"
                                         VerticalAlignment="Center" />
-                                    <TextBlock Text="{Binding Value}" FontSize="14" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding Value}"
+                                               FontSize="14"
+                                               Foreground="{DynamicResource DetailFieldValueForegroundBrush}"
+                                               VerticalAlignment="Center" />
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>

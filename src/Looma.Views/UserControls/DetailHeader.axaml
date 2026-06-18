@@ -22,7 +22,10 @@
                     Command="{Binding GoBackCommand, ElementName=This}"
                     Classes="cancel-btn">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <LucideIcon Kind="ChevronLeft" Size="16" VerticalAlignment="Center" />
+                    <LucideIcon Kind="ChevronLeft"
+                                Size="16"
+                                Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                VerticalAlignment="Center" />
                     <TextBlock Text="Retour" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -49,7 +52,9 @@
                            HorizontalOffset="-220">
                         <Border Classes="form-container" Padding="16" Width="280">
                             <StackPanel Spacing="12">
-                                <TextBlock Text="Supprimer ?" FontWeight="SemiBold" />
+                                <TextBlock Text="Supprimer ?"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource FormLabelForegroundBrush}" />
                                 <TextBlock Text="Cette action est définitive." Classes="form-hint" />
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
                                     <Button Content="Annuler"

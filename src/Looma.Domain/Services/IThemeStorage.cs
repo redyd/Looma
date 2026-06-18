@@ -7,6 +7,8 @@ namespace Looma.Domain.Services;
 public interface IThemeStorage
 {
     IReadOnlyList<string> GetThemeFiles();
+    string? GetSelectedThemePath();
+    void SaveSelectedTheme(string? themePath);
     string ImportTheme(string sourcePath);
     string CreateExportPath();
 }

@@ -46,6 +46,7 @@
 
     <Style Selector="TabItem:pointerover">
         <Setter Property="Background" Value="{DynamicResource TabHoverBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TabHoverForegroundBrush}" />
     </Style>
 
     <Style Selector="TabItem:selected">
@@ -56,6 +57,23 @@
 
     <Style Selector="TabItem:selected:pointerover">
         <Setter Property="Background" Value="{DynamicResource TabSelectedHoverBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TabSelectedHoverForegroundBrush}" />
+    </Style>
+
+    <Style Selector="TabItem LucideIcon">
+        <Setter Property="Foreground" Value="{DynamicResource TabIconForegroundBrush}" />
+    </Style>
+
+    <Style Selector="TabItem:pointerover LucideIcon">
+        <Setter Property="Foreground" Value="{DynamicResource TabHoverIconForegroundBrush}" />
+    </Style>
+
+    <Style Selector="TabItem:selected LucideIcon">
+        <Setter Property="Foreground" Value="{DynamicResource TabSelectedIconForegroundBrush}" />
+    </Style>
+
+    <Style Selector="TabItem:selected:pointerover LucideIcon">
+        <Setter Property="Foreground" Value="{DynamicResource TabSelectedHoverIconForegroundBrush}" />
     </Style>
 
 </Styles>

@@ -39,7 +39,10 @@
                     Command="{Binding OpenAddFormCommand}"
                     Classes="form-submit">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <LucideIcon Kind="PackagePlus" Size="16" VerticalAlignment="Center" />
+                    <LucideIcon Kind="PackagePlus"
+                                Size="16"
+                                Foreground="{DynamicResource SubmitButtonIconForegroundBrush}"
+                                VerticalAlignment="Center" />
                     <TextBlock Text="Ajouter une laine" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
@@ -105,6 +108,7 @@
                                                                       Width="16" Height="16"
                                                                       VerticalAlignment="Center" />
                                             <TextBlock Text="{Binding Wool.Name}"
+                                                       Classes="card-title"
                                                        FontWeight="SemiBold"
                                                        FontSize="14"
                                                        TextTrimming="CharacterEllipsis" />
@@ -112,50 +116,56 @@
 
                                         <!-- Marque -->
                                         <TextBlock Text="{Binding Wool.Brand}"
+                                                   Classes="card-subtitle"
                                                    FontSize="12"
                                                    Opacity="0.6" />
 
                                         <!-- Matière -->
                                         <StackPanel Orientation="Horizontal" Spacing="6">
                                             <Border Padding="6 2" CornerRadius="4"
-                                                    Background="{DynamicResource WoolListTagBackgroundBrush}"
-                                                    BorderBrush="{DynamicResource WoolListTagBorderBrush}"
+                                                    Background="{DynamicResource MetadataTagBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource MetadataTagBorderBrush}"
                                                     BorderThickness="1">
-                                                <TextBlock Text="{Binding Wool.Material}" FontSize="11" />
+                                                <TextBlock Text="{Binding Wool.Material}"
+                                                           Classes="card-meta"
+                                                           FontSize="11" />
                                             </Border>
                                             <Border Padding="6 2" CornerRadius="4"
-                                                    Background="{DynamicResource WoolListTagBackgroundBrush}"
-                                                    BorderBrush="{DynamicResource WoolListTagBorderBrush}"
+                                                    Background="{DynamicResource MetadataTagBackgroundBrush}"
+                                                    BorderBrush="{DynamicResource MetadataTagBorderBrush}"
                                                     BorderThickness="1">
                                                 <TextBlock Text="{Binding BatchQuantityDisplay}"
+                                                           Classes="card-meta"
                                                            FontSize="11" />
                                             </Border>
                                         </StackPanel>
 
                                         <!-- Séparateur -->
                                         <Border Height="1"
-                                                Background="{DynamicResource WoolListDividerBrush}"
+                                                Background="{DynamicResource MetadataDividerBrush}"
                                                 Opacity="0.5"
                                                 Margin="0 2 0 2" />
 
                                         <!-- Poids et longeur -->
                                         <Grid ColumnDefinitions="*,*">
                                             <StackPanel Grid.Column="0" Spacing="2">
-                                                <TextBlock Text="Poids" FontSize="10" Opacity="0.5" />
+                                                <TextBlock Text="Poids" Classes="card-meta" FontSize="10" Opacity="0.5" />
                                                 <StackPanel Orientation="Horizontal" Spacing="3">
                                                     <TextBlock Text="{Binding Wool.StockWeight, StringFormat='{}{0:N0}'}"
+                                                               Classes="card-title"
                                                                FontSize="13" FontWeight="SemiBold" />
-                                                    <TextBlock Text="g" FontSize="11" Opacity="0.5"
+                                                    <TextBlock Text="g" Classes="card-meta" FontSize="11" Opacity="0.5"
                                                                VerticalAlignment="Bottom" Margin="0 0 0 1" />
                                                 </StackPanel>
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="1" Spacing="2">
-                                                <TextBlock Text="Longueur" FontSize="10" Opacity="0.5" />
+                                                <TextBlock Text="Longueur" Classes="card-meta" FontSize="10" Opacity="0.5" />
                                                 <StackPanel Orientation="Horizontal" Spacing="3">
                                                     <TextBlock Text="{Binding Wool.StockLength, StringFormat='{}{0:N0}'}"
+                                                               Classes="card-title"
                                                                FontSize="13" FontWeight="SemiBold" />
-                                                    <TextBlock Text="m" FontSize="11" Opacity="0.5"
+                                                    <TextBlock Text="m" Classes="card-meta" FontSize="11" Opacity="0.5"
                                                                VerticalAlignment="Bottom" Margin="0 0 0 1" />
                                                 </StackPanel>
                                             </StackPanel>

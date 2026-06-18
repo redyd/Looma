@@ -16,18 +16,22 @@
         <Button Command="{Binding PreviousPageCommand, ElementName=This}"
                 IsEnabled="{Binding HasPreviousPage, ElementName=This}"
                 Classes="pagination-btn">
-            <LucideIcon Kind="StepBack" Size="28" />
+            <LucideIcon Kind="StepBack"
+                        Size="28"
+                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
         </Button>
 
         <TextBlock Text="{Binding PageInfo, ElementName=This}"
                    VerticalAlignment="Center"
                    FontSize="14"
-                   Foreground="{DynamicResource PaginationInfoForegroundBrush}" />
+                   Foreground="{DynamicResource PaginationTextForegroundBrush}" />
 
         <Button Command="{Binding NextPageCommand, ElementName=This}"
                 IsEnabled="{Binding HasNextPage, ElementName=This}"
                 Classes="pagination-btn">
-            <LucideIcon Kind="StepForward" Size="28" />
+            <LucideIcon Kind="StepForward"
+                        Size="28"
+                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
         </Button>
     </StackPanel>
 </UserControl>

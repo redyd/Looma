@@ -108,6 +108,7 @@
                                     >
                                         <TextBlock
                                             Text="{Binding Document.Nickname}"
+                                            Classes="card-title"
                                             FontSize="15"
                                             FontWeight="SemiBold"
                                             TextTrimming="CharacterEllipsis"
@@ -116,6 +117,7 @@
                                     <TextBlock
                                         Grid.Column="1"
                                         Text="{Binding TypeDisplay}"
+                                        Foreground="{DynamicResource CardMetadataForegroundBrush}"
                                         VerticalAlignment="Center"
                                         FontSize="13"
                                         Opacity="0.8"
@@ -124,6 +126,7 @@
                                     <TextBlock
                                         Grid.Column="2"
                                         Text="{Binding SizeDisplay}"
+                                        Foreground="{DynamicResource CardMetadataForegroundBrush}"
                                         VerticalAlignment="Center"
                                         FontSize="13"
                                         Opacity="0.7"
@@ -136,6 +139,7 @@
                                     >
                                         <TextBlock
                                             Text="{Binding OriginTypeDisplay}"
+                                            Foreground="{DynamicResource CardMetadataForegroundBrush}"
                                             FontSize="12"
                                             Opacity="0.55"
                                             IsVisible="{Binding HasOrigin}"
