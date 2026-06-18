@@ -15,18 +15,18 @@
                 Margin="0 16 0 0">
         <Button Command="{Binding PreviousPageCommand, ElementName=This}"
                 IsEnabled="{Binding HasPreviousPage, ElementName=This}"
-                Classes="pagination-nav">
+                Classes="pagination-btn">
             <LucideIcon Kind="StepBack" Size="28" />
         </Button>
 
         <TextBlock Text="{Binding PageInfo, ElementName=This}"
                    VerticalAlignment="Center"
                    FontSize="14"
-                   Foreground="{StaticResource TextSecondaryBrush}" />
+                   Foreground="{DynamicResource PaginationInfoForegroundBrush}" />
 
         <Button Command="{Binding NextPageCommand, ElementName=This}"
                 IsEnabled="{Binding HasNextPage, ElementName=This}"
-                Classes="pagination-nav">
+                Classes="pagination-btn">
             <LucideIcon Kind="StepForward" Size="28" />
         </Button>
     </StackPanel>

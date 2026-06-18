@@ -7,7 +7,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
-             xmlns:entities="using:Looma.Domain.Entities"
              xmlns:cp="using:Avalonia.Controls"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolFormView"
@@ -210,7 +209,7 @@
                         <TextBlock Classes="form-error"
                                    Text="{Binding ErrorMessage}"
                                    IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-                        <Button Classes="form-cancel"
+                        <Button Classes="cancel-btn"
                                 Content="Annuler"
                                 Command="{Binding CancelCommand}" />
                         <Button Classes="form-submit"

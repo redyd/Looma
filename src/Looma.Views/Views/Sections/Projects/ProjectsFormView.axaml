@@ -132,7 +132,7 @@
                                                 <Button Grid.Column="3"
                                                         Content="Retirer"
                                                         Command="{Binding RemoveCommand}"
-                                                        Classes="form-cancel"
+                                                        Classes="cancel-btn"
                                                         VerticalAlignment="Center" />
                                             </Grid>
                                         </Border>
@@ -166,7 +166,7 @@
                                                 <Button Grid.Column="3"
                                                         Content="Retirer"
                                                         Command="{Binding RemoveCommand}"
-                                                        Classes="form-cancel"
+                                                        Classes="cancel-btn"
                                                         VerticalAlignment="Center" />
                                             </Grid>
                                         </Border>
@@ -210,17 +210,14 @@
                                     <Button Grid.Column="1"
                                             Content="Retirer"
                                             Command="{Binding ClearPatternCommand}"
-                                            Classes="form-cancel"
+                                            Classes="cancel-btn"
                                             Padding="10 4" />
                                 </Grid>
                                 <ItemsControl ItemsSource="{Binding SelectedPatterns}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="projects:ProjectSelectablePatternViewModel">
                                             <Border Padding="12 10"
-                                                    Background="{StaticResource BackgroundHoverBrush}"
-                                                    BorderBrush="{StaticResource PrimaryDarkBrush}"
-                                                    BorderThickness="1"
-                                                    CornerRadius="8">
+                                                    Classes="selection-row selected">
                                                 <Grid ColumnDefinitions="*,130,130,110,110" ColumnSpacing="14">
                                                     <TextBlock Text="{Binding Pattern.Name}"
                                                                FontSize="14"
@@ -256,20 +253,13 @@
 
                             <StackPanel Spacing="0">
                                 <Border Padding="12 10"
-                                        Background="{StaticResource BackgroundCardBrush}"
-                                        BorderBrush="{StaticResource BorderBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="8 8 0 0">
+                                        Classes="table-header">
                                     <Grid ColumnDefinitions="*,130,130,110,110" ColumnSpacing="14">
-                                        <TextBlock Text="Nom" FontSize="12" FontWeight="SemiBold" Opacity="0.55" />
-                                        <TextBlock Grid.Column="1" Text="Type" FontSize="12" FontWeight="SemiBold"
-                                                   Opacity="0.55" />
-                                        <TextBlock Grid.Column="2" Text="Origine" FontSize="12" FontWeight="SemiBold"
-                                                   Opacity="0.55" />
-                                        <TextBlock Grid.Column="3" Text="Début" FontSize="12" FontWeight="SemiBold"
-                                                   Opacity="0.55" />
-                                        <TextBlock Grid.Column="4" Text="Fin" FontSize="12" FontWeight="SemiBold"
-                                                   Opacity="0.55" />
+                                        <TextBlock Text="Nom" Classes="table-heading" />
+                                        <TextBlock Grid.Column="1" Text="Type" Classes="table-heading" />
+                                        <TextBlock Grid.Column="2" Text="Origine" Classes="table-heading" />
+                                        <TextBlock Grid.Column="3" Text="Début" Classes="table-heading" />
+                                        <TextBlock Grid.Column="4" Text="Fin" Classes="table-heading" />
                                     </Grid>
                                 </Border>
 
@@ -277,21 +267,11 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="projects:ProjectSelectablePatternViewModel">
                                             <Button Command="{Binding SelectCommand}"
-                                                    Padding="0"
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
+                                                    Classes="card-button"
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Stretch">
                                                 <Border Padding="12 10"
-                                                        Background="{StaticResource BackgroundCardBrush}"
-                                                        BorderBrush="{StaticResource BorderBrush}"
-                                                        BorderThickness="1 0 1 1">
-                                                    <Border.Styles>
-                                                        <Style Selector="Border:pointerover">
-                                                            <Setter Property="Background"
-                                                                    Value="{StaticResource BackgroundHoverBrush}" />
-                                                        </Style>
-                                                    </Border.Styles>
+                                                        Classes="selection-row">
                                                     <Grid ColumnDefinitions="*,130,130,110,110" ColumnSpacing="14">
                                                         <TextBlock Text="{Binding Pattern.Name}"
                                                                    FontSize="14"
@@ -326,9 +306,7 @@
                                 </ItemsControl>
 
                                 <Border Padding="12 18"
-                                        Background="{StaticResource BackgroundCardBrush}"
-                                        BorderBrush="{StaticResource BorderBrush}"
-                                        BorderThickness="1 0 1 1"
+                                        Classes="table-empty-row"
                                         IsVisible="{Binding !PatternResults.Count}">
                                     <TextBlock Text="Aucun patron à afficher."
                                                Classes="form-hint"
@@ -360,16 +338,11 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="projects:ProjectSelectableWoolViewModel">
                                             <Button Command="{Binding ToggleCommand}"
-                                                    Padding="0"
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
+                                                    Classes="card-button"
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Stretch">
                                                 <Border Padding="12 10"
-                                                        Background="{StaticResource BackgroundHoverBrush}"
-                                                        BorderBrush="{StaticResource PrimaryDarkBrush}"
-                                                        BorderThickness="1"
-                                                        CornerRadius="8">
+                                                        Classes="selection-row selected">
                                                     <Grid ColumnDefinitions="28,*,130,130,110" ColumnSpacing="14">
                                                         <userControls:ColorPieControl
                                                             Grid.Column="0"
@@ -409,20 +382,13 @@
 
                             <StackPanel Spacing="0">
                                 <Border Padding="12 10"
-                                        Background="{StaticResource BackgroundCardBrush}"
-                                        BorderBrush="{StaticResource BorderBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="8 8 0 0">
+                                        Classes="table-header">
                                     <Grid ColumnDefinitions="28,*,130,130,110" ColumnSpacing="14">
                                         <TextBlock Text="" />
-                                        <TextBlock Grid.Column="1" Text="Nom" FontSize="12" FontWeight="SemiBold"
-                                                   Opacity="0.55" />
-                                        <TextBlock Grid.Column="2" Text="Marque" FontSize="12" FontWeight="SemiBold"
-                                                   Opacity="0.55" />
-                                        <TextBlock Grid.Column="3" Text="Matière" FontSize="12" FontWeight="SemiBold"
-                                                   Opacity="0.55" />
-                                        <TextBlock Grid.Column="4" Text="Stock" FontSize="12" FontWeight="SemiBold"
-                                                   Opacity="0.55" />
+                                        <TextBlock Grid.Column="1" Text="Nom" Classes="table-heading" />
+                                        <TextBlock Grid.Column="2" Text="Marque" Classes="table-heading" />
+                                        <TextBlock Grid.Column="3" Text="Matière" Classes="table-heading" />
+                                        <TextBlock Grid.Column="4" Text="Stock" Classes="table-heading" />
                                     </Grid>
                                 </Border>
 
@@ -430,21 +396,11 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="projects:ProjectSelectableWoolViewModel">
                                             <Button Command="{Binding ToggleCommand}"
-                                                    Padding="0"
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
+                                                    Classes="card-button"
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Stretch">
                                                 <Border Padding="12 10"
-                                                        Background="{StaticResource BackgroundCardBrush}"
-                                                        BorderBrush="{StaticResource BorderBrush}"
-                                                        BorderThickness="1 0 1 1">
-                                                    <Border.Styles>
-                                                        <Style Selector="Border:pointerover">
-                                                            <Setter Property="Background"
-                                                                    Value="{StaticResource BackgroundHoverBrush}" />
-                                                        </Style>
-                                                    </Border.Styles>
+                                                        Classes="selection-row">
                                                     <Grid ColumnDefinitions="28,*,130,130,110" ColumnSpacing="14">
                                                         <userControls:ColorPieControl
                                                             Grid.Column="0"
@@ -482,9 +438,7 @@
                                 </ItemsControl>
 
                                 <Border Padding="12 18"
-                                        Background="{StaticResource BackgroundCardBrush}"
-                                        BorderBrush="{StaticResource BorderBrush}"
-                                        BorderThickness="1 0 1 1"
+                                        Classes="table-empty-row"
                                         IsVisible="{Binding !WoolResults.Count}">
                                     <TextBlock Text="Aucune laine à afficher."
                                                Classes="form-hint"
@@ -500,11 +454,11 @@
                             IsVisible="{Binding HasError}">
                         <TextBlock Text="{Binding ErrorMessage}"
                                    TextWrapping="Wrap"
-                                   Foreground="#991B1B" />
+                                   Foreground="{DynamicResource ProjectFormWarningForegroundBrush}" />
                     </Border>
 
                     <StackPanel Classes="form-actions">
-                        <Button Classes="form-cancel"
+                        <Button Classes="cancel-btn"
                                 Content="Annuler"
                                 Command="{Binding CancelCommand}" />
                         <Button Classes="form-submit"

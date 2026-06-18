@@ -53,11 +53,7 @@
         <ScrollViewer>
             <StackPanel Spacing="0">
                 <Border
-                    Padding="12 10"
-                    Background="{StaticResource BackgroundCardBrush}"
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="8 8 0 0"
+                    Classes="table-header"
                 >
                     <Grid
                         ColumnDefinitions="1.4*,110,100,190,400"
@@ -65,43 +61,28 @@
                     >
                         <TextBlock
                             Text="Nom"
-                            FontSize="12"
-                            FontWeight="SemiBold"
-                            Opacity="0.55"
-                            VerticalAlignment="Center"
+                            Classes="table-heading"
                         />
                         <TextBlock
                             Grid.Column="1"
                             Text="Type"
-                            FontSize="12"
-                            FontWeight="SemiBold"
-                            Opacity="0.55"
-                            VerticalAlignment="Center"
+                            Classes="table-heading"
                         />
                         <TextBlock
                             Grid.Column="2"
                             Text="Taille"
-                            FontSize="12"
-                            FontWeight="SemiBold"
-                            Opacity="0.55"
-                            VerticalAlignment="Center"
+                            Classes="table-heading"
                         />
                         <TextBlock
                             Grid.Column="3"
                             Text="Origine"
-                            FontSize="12"
-                            FontWeight="SemiBold"
-                            Opacity="0.55"
-                            VerticalAlignment="Center"
+                            Classes="table-heading"
                         />
                         <TextBlock
                             Grid.Column="4"
                             Text="Actions"
-                            FontSize="12"
-                            FontWeight="SemiBold"
-                            Opacity="0.55"
+                            Classes="table-heading"
                             HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
                         />
                     </Grid>
                 </Border>
@@ -115,10 +96,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:DocumentSummaryViewModel">
                             <Border
-                                Padding="12 10"
-                                Background="{StaticResource BackgroundCardBrush}"
-                                BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="1 0 1 1"
+                                Classes="table-row"
                             >
                                 <Grid
                                     ColumnDefinitions="1.4*,110,100,190,400"
@@ -178,26 +156,26 @@
                                         <Button
                                             Content="Ouvrir"
                                             Command="{Binding OpenCommand}"
-                                            Classes="form-cancel"
+                                            Classes="cancel-btn"
                                             MinWidth="80"
                                         />
                                         <Button
                                             Content="Voir"
                                             Command="{Binding OpenOriginCommand}"
-                                            Classes="form-cancel"
+                                            Classes="cancel-btn"
                                             MinWidth="80"
                                             IsVisible="{Binding HasOrigin}"
                                         />
                                         <Button
                                             Content="Modifier"
                                             Command="{Binding EditCommand}"
-                                            Classes="form-cancel"
+                                            Classes="cancel-btn"
                                             MinWidth="80"
                                         />
                                         <Button
                                             Content="Supprimer"
                                             Command="{Binding DeleteCommand}"
-                                            Classes="btn-danger"
+                                            Classes="danger-btn"
                                             MinWidth="96"
                                         />
                                     </StackPanel>
@@ -208,10 +186,7 @@
                 </ItemsControl>
 
                 <Border
-                    Padding="12 18"
-                    Background="{StaticResource BackgroundCardBrush}"
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="1 0 1 1"
+                    Classes="table-empty-row"
                     IsVisible="{Binding IsListEmpty}"
                 >
                     <TextBlock

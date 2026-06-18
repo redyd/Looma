@@ -52,7 +52,7 @@
 
                             <Border Classes="surface-panel"
                                     Padding="14"
-                                    Background="{StaticResource BackgroundBrush}">
+                                    Background="{DynamicResource ProjectFinishSummaryBackgroundBrush}">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock Grid.Column="0"
                                                Text="Stock total qui va être retiré du stock"
@@ -140,7 +140,7 @@
                                 Spacing="12">
                         <Button Content="Annuler"
                                 Command="{Binding CancelCommand}"
-                                Classes="form-cancel" />
+                                Classes="cancel-btn" />
                         <Button Content="Confirmer"
                                 Command="{Binding ConfirmCommand}"
                                 Classes="form-submit" />

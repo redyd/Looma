@@ -52,7 +52,7 @@ See LICENSE in the project root for full license text.
                                 <LucideIcon
                                     Kind="FilePenLine"
                                     Size="18"
-                                    Foreground="{StaticResource PrimaryDarkBrush}"
+                                    Foreground="{DynamicResource DetailInformationAccentBrush}"
                                     VerticalAlignment="Center" />
                                 <TextBlock Text="Ajustement du stock"
                                            Classes="section-title"
@@ -101,7 +101,7 @@ See LICENSE in the project root for full license text.
                         <!-- Étape 3 : Actions (Boutons Ajouter / Retirer) -->
                         <StackPanel Classes="form-actions" Margin="0 8 0 0">
 
-                            <Button Classes="btn-danger-solid"
+                            <Button Classes="danger-btn-solid"
                                     IsEnabled="{Binding CanAdjust}"
                                     Command="{Binding AdjustStockCommand}"
                                     CommandParameter="{x:False}"

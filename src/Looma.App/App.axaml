@@ -27,9 +27,15 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
+        <StyleInclude Source="avares://Looma.Views/Styles/Layout.axaml" />
+        <StyleInclude Source="avares://Looma.Views/Styles/Buttons.axaml" />
+        <StyleInclude Source="avares://Looma.Views/Styles/Typography.axaml" />
+        <StyleInclude Source="avares://Looma.Views/Styles/Forms.axaml" />
         <StyleInclude Source="avares://Looma.Views/Styles/SurfaceStyles.axaml" />
-        <StyleInclude Source="avares://Looma.Views/Styles/FormStyles.axaml" />
         <StyleInclude Source="avares://Looma.Views/Styles/NotificationStyles.axaml" />
+        <StyleInclude Source="avares://Looma.Views/Styles/Navigation.axaml" />
+        <StyleInclude Source="avares://Looma.Views/Styles/EntityCards.axaml" />
+        <StyleInclude Source="avares://Looma.Views/Styles/SelectionLists.axaml" />
     </Application.Styles>
 
     <Application.DataTemplates>

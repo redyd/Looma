@@ -1,0 +1,184 @@
+<!--
+    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+    This file is part of Looma, licensed under the AGPL-3.0.
+    See LICENSE in the project root for full license text.
+-->
+
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="Border.form-divider">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource FormDividerBrush}" />
+        <Setter Property="Margin" Value="0 20 0 20" />
+        <Setter Property="Opacity" Value="0.5" />
+    </Style>
+
+    <Style Selector="Border.color-picker-container">
+        <Setter Property="Background" Value="{DynamicResource ColorPickerContainerBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ColorPickerContainerBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="12" />
+    </Style>
+
+    <Style Selector="StackPanel.form-header">
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="Margin" Value="0 0 0 24" />
+    </Style>
+
+    <Style Selector="StackPanel.form-field">
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="Margin" Value="0 0 0 16" />
+    </Style>
+
+    <Style Selector="StackPanel.form-actions">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Spacing" Value="12" />
+        <Setter Property="Margin" Value="0 24 0 0" />
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- INPUTS -->
+    <!-- ============================================ -->
+
+    <Style Selector="TextBox.form-input">
+        <Setter Property="Background" Value="{DynamicResource FormControlBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource FormControlForegroundBrush}" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Padding" Value="12 0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBox.form-input:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlHoverBorderBrush}" />
+    </Style>
+
+    <Style Selector="TextBox.form-input:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlFocusBorderBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="TextBox.form-input-sm">
+        <Setter Property="Background" Value="{DynamicResource FormControlBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource FormControlForegroundBrush}" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="Padding" Value="10 0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBox.form-input-sm:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlHoverBorderBrush}" />
+    </Style>
+
+    <Style Selector="TextBox.form-input-sm:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlFocusBorderBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="NumericUpDown.form-numeric">
+        <Setter Property="Background" Value="{DynamicResource FormControlBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="12 0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource FormControlForegroundBrush}" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="VerticalContentAlignment" Value="Center" /> 
+    </Style>
+
+    <Style Selector="NumericUpDown.form-numeric:pointerover /template/ Border#PART_Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlHoverBorderBrush}" />
+    </Style>
+
+    <Style Selector="NumericUpDown.form-numeric:focus-within /template/ Border#PART_Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlFocusBorderBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="ComboBox.form-select">
+        <Setter Property="Background" Value="{DynamicResource FormControlBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="12 0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource FormControlForegroundBrush}" />
+        <Setter Property="Height" Value="40" />
+    </Style>
+
+    <Style Selector="ComboBox.form-select:pointerover /template/ Border#Background">
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlHoverBorderBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox.form-select:focus /template/ Border#Background">
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlFocusBorderBrush}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- BOUTONS -->
+    <!-- ============================================ -->
+
+    <Style Selector="Button.form-submit">
+        <Setter Property="Background" Value="{DynamicResource SubmitButtonBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SubmitButtonForegroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="20 0" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="MinWidth" Value="100" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.form-submit:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SubmitButtonHoverBackgroundBrush}" />
+    </Style>
+
+    <Style Selector="Button.form-submit:disabled">
+        <Setter Property="Background" Value="{DynamicResource SubmitButtonDisabledBackgroundBrush}" />
+        <Setter Property="Opacity" Value="0.5" />
+    </Style>
+    
+    <Style Selector="Button.danger-btn-solid">
+        <Setter Property="Background" Value="{DynamicResource DangerSolidButtonBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SubmitButtonForegroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="20 0" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="MinWidth" Value="100" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.danger-btn-solid:pointerover">
+        <Setter Property="Background" Value="{DynamicResource DangerSolidButtonHoverBackgroundBrush}" />
+    </Style>
+
+</Styles>

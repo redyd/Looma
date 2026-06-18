@@ -26,7 +26,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="controls:StatItem">
                         <Border BorderThickness="{Binding IsFirst, Converter={StaticResource FirstItemBorder}}"
-                                BorderBrush="{StaticResource BorderBrush}">
+                                BorderBrush="{DynamicResource DetailStatsDividerBrush}">
                             <StackPanel HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Spacing="4">
@@ -53,7 +53,7 @@
                             Margin="0 0 0 14">
                     <LucideIcon Kind="{Binding InfoIconKind, ElementName=This}"
                                 Size="18"
-                                Foreground="{StaticResource PrimaryDarkBrush}"
+                                Foreground="{DynamicResource DetailInformationAccentBrush}"
                                 VerticalAlignment="Center"
                                 IsVisible="{Binding InfoIconKind, ElementName=This, Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <TextBlock Classes="section-title"
@@ -85,7 +85,7 @@
                                         Margin="0 0 0 10">
                                     <TextBlock Text="{Binding Value}"
                                                FontSize="14"
-                                               Foreground="{StaticResource PrimaryDarkBrush}"
+                                               Foreground="{DynamicResource DetailInformationAccentBrush}"
                                                TextDecorations="Underline"
                                                VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis" />
