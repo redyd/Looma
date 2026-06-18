@@ -8,6 +8,7 @@ releases/
 # Rider / JetBrains
 .idea/
 *.sln.iml
+Data/
 
 # VS / VSCode
 .vs/

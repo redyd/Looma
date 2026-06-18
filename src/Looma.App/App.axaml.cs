@@ -3,11 +3,14 @@
 // See LICENSE in the project root for full license text.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Looma.App.Services;
 using Looma.Infrastructure;
 using Looma.Infrastructure.Storage;
 using Looma.Presentation.ViewModels.Main;
@@ -36,8 +39,8 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desk)
         {
-            var args = desk.Args;
-            if (args.Contains("--local"))
+            var startupArgs = desk.Args;
+            if (startupArgs?.Contains("--local") == true)
             {
                 rootPath = Path.GetFullPath(Path.Combine(
                     Directory.GetCurrentDirectory(),
@@ -66,8 +69,25 @@ public partial class App : Application
         pathManager.EnsureDirectoriesExist();
 
         using var scope = Services.CreateScope();
+        var args = (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Args ?? [];
         var db = scope.ServiceProvider.GetRequiredService<LoomaDbContext>();
+
+        if (args.Contains("--clear"))
+        {
+            db.Database.EnsureDeleted();
+            pathManager.ClearDocuments();
+        }
+
         pathManager.EnsureDatabaseCreated(db);
+
+        var seedCount = GetSeedCount(args);
+        if (seedCount.HasValue || args.Contains("--seed"))
+        {
+            scope.ServiceProvider.GetRequiredService<IAppDataSeeder>()
+                .SeedAsync(seedCount)
+                .GetAwaiter()
+                .GetResult();
+        }
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -103,5 +123,19 @@ public partial class App : Application
         catch
         {
         }
+    }
+
+    private static int? GetSeedCount(IEnumerable<string> args)
+    {
+        const string seedPrefix = "--seed-";
+        var seedArgument = args.FirstOrDefault(arg => arg.StartsWith(seedPrefix, StringComparison.Ordinal));
+        if (seedArgument is null)
+            return null;
+
+        var value = seedArgument[seedPrefix.Length..];
+        if (int.TryParse(value, out var count) && count >= 0)
+            return count;
+
+        throw new ArgumentException($"Argument de seed invalide: {seedArgument}. Utilisez --seed-N avec N >= 0.");
     }
 }

@@ -324,6 +324,17 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
+
+                                <Border Padding="12 18"
+                                        Background="{StaticResource BackgroundCardBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}"
+                                        BorderThickness="1 0 1 1"
+                                        IsVisible="{Binding !PatternResults.Count}">
+                                    <TextBlock Text="Aucun patron à afficher."
+                                               Classes="form-hint"
+                                               HorizontalAlignment="Center"
+                                               TextAlignment="Center" />
+                                </Border>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -469,6 +480,17 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
+
+                                <Border Padding="12 18"
+                                        Background="{StaticResource BackgroundCardBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}"
+                                        BorderThickness="1 0 1 1"
+                                        IsVisible="{Binding !WoolResults.Count}">
+                                    <TextBlock Text="Aucune laine à afficher."
+                                               Classes="form-hint"
+                                               HorizontalAlignment="Center"
+                                               TextAlignment="Center" />
+                                </Border>
                             </StackPanel>
                         </StackPanel>
                     </Border>

@@ -127,11 +127,11 @@
                                         CornerRadius="17"
                                         VerticalAlignment="Top"
                                         Background="{Binding AccentBrush}">
-                                    <TextBlock Text="{Binding IconGlyph}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontWeight="Bold"
-                                               Foreground="White" />
+                                    <LucideIcon Kind="{Binding IconKind}"
+                                                Size="18"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Foreground="White" />
                                 </Border>
 
                                 <StackPanel Grid.Column="1" Spacing="4">
@@ -144,8 +144,9 @@
                                 <Button Grid.Column="2"
                                         Classes="notification-dismiss"
                                         Command="{Binding DismissCommand}"
-                                        Content="×"
-                                        VerticalAlignment="Top" />
+                                        VerticalAlignment="Top">
+                                    <LucideIcon Kind="X" Size="14" />
+                                </Button>
                             </Grid>
                         </Border>
                     </DataTemplate>

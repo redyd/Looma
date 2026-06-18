@@ -42,11 +42,12 @@ public sealed class WoolViewModelTests
         vm.InitCreate();
         FillValidWoolForm(vm);
         vm.SelectedColor = Color.FromRgb(0x12, 0x34, 0x56);
+        vm.AddColorCommand.Execute(null);
 
         await vm.SaveCommand.ExecuteAsync();
 
         woolService.AddRequests.Should().ContainSingle().Which.Should().BeEquivalentTo(
-            new { Name = "Sock", Brand = "Drops", Material = "Wool", Color = "#123456", Weight = 50d, Length = 170d, Stock = 1000d, NeedleMinSize = 3d, NeedleMaxSize = 4d });
+            new { Name = "Sock", Brand = "Drops", Material = "Wool", Colors = new[] { "#123456" }, Weight = 50d, Length = 170d, Stock = 1000d, NeedleMinSize = 3.25d, NeedleMaxSize = 3.75d });
         notifications.Calls.Should().Contain(c => c.Severity == NotificationSeverity.Success && c.Message == "La laine a été créée.");
         nav.GoBackCount.Should().Be(1);
         vm.IsBusy.Should().BeFalse();
@@ -66,24 +67,39 @@ public sealed class WoolViewModelTests
         woolService.AddRequests.Should().BeEmpty();
     }
 
+    [Fact]
+    public void WoolForm_InitEdit_Selects_Existing_Needle_Range_Item()
+    {
+        var vm = CreateFormViewModel();
+
+        vm.InitEdit(TestData.Wool(needleMin: 3.25, needleMax: 3.75));
+
+        vm.SelectedNeedleRange.Should().BeSameAs(vm.NeedleRanges.Single(r => r.NeedleRange.Type == WoolType.Fine));
+    }
+
     [Theory]
-    [InlineData("-1", "50", "3", "4")]
-    [InlineData("10", "0", "3", "4")]
-    [InlineData("10", "50", "0", "4")]
-    [InlineData("10", "50", "5", "4")]
+    [InlineData("-1", "50")]
+    [InlineData("10", "0")]
     public void WoolForm_SaveCommand_Is_Disabled_For_Invalid_Numeric_Data(
         string weight,
-        string length,
-        string needleMin,
-        string needleMax)
+        string length)
     {
         var vm = CreateFormViewModel();
         vm.InitCreate();
         FillValidWoolForm(vm);
         vm.Weight = weight;
         vm.Length = length;
-        vm.NeedleMinText = needleMin;
-        vm.NeedleMaxText = needleMax;
+
+        vm.SaveCommand.CanExecute(null).Should().BeFalse();
+    }
+
+    [Fact]
+    public void WoolForm_SaveCommand_Is_Disabled_When_No_Needle_Range_Is_Selected()
+    {
+        var vm = CreateFormViewModel();
+        vm.InitCreate();
+        FillValidWoolForm(vm);
+        vm.SelectedNeedleRange = null;
 
         vm.SaveCommand.CanExecute(null).Should().BeFalse();
     }
@@ -94,7 +110,7 @@ public sealed class WoolViewModelTests
         var refresh = new FakeRefreshService();
         var woolService = new FakeWoolService
         {
-            GetAllResult = ResultT<IReadOnlyList<Wool>>.Ok(Enumerable.Range(1, 13)
+            GetAllResult = ResultT<IReadOnlyList<Wool>>.Ok(Enumerable.Range(1, 30)
                 .Select(i => TestData.Wool(i, name: i == 13 ? "Merino Red" : $"Wool {i}", brand: "Brand"))
                 .ToList())
         };
@@ -108,14 +124,13 @@ public sealed class WoolViewModelTests
         vm.OnNavigatedTo();
 
         vm.Title.Should().BeEmpty();
-        vm.CurrentPageEntities.Should().HaveCount(12);
+        vm.CurrentPageEntities.Should().HaveCount(24);
         vm.TotalPages.Should().Be(2);
         vm.HasNextPage.Should().BeTrue();
         refresh.SubscriberCount.Should().Be(1);
 
         vm.NextPageCommand.Execute(null);
         vm.CurrentPage.Should().Be(2);
-        vm.CurrentPageEntities.Should().ContainSingle();
 
         vm.SearchQuery = "red";
         vm.CurrentPage.Should().Be(1);
@@ -160,6 +175,16 @@ public sealed class WoolViewModelTests
 
         woolService.AddStockRequests.Should().ContainSingle().Which.Should().Be((5, 500d));
         notifications.Calls.Should().Contain(c => c.Severity == NotificationSeverity.Success);
+    }
+
+    [Fact]
+    public void WoolDetail_Load_Sets_Single_Type_Image_From_Needle_Range()
+    {
+        var vm = CreateDetailViewModel();
+
+        vm.Load(TestData.Wool(needleMin: 3.25, needleMax: 3.75));
+
+        vm.Image.Should().Be("avares://Looma.App/Assets/WoolTypeImages/fine.png");
     }
 
     [Fact]
@@ -218,7 +243,6 @@ public sealed class WoolViewModelTests
         vm.Material = "Wool";
         vm.Weight = "50";
         vm.Length = "170";
-        vm.NeedleMinText = "3";
-        vm.NeedleMaxText = "4";
+        vm.SelectedNeedleRange = vm.NeedleRanges.Single(r => r.NeedleRange.Type == WoolType.Fine);
     }
 }

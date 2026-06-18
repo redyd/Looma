@@ -1,0 +1,33 @@
+<!--
+    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+    This file is part of Looma, licensed under the AGPL-3.0.
+    See LICENSE in the project root for full license text.
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Looma.Views.UserControls.PaginationControl"
+             x:Name="This">
+
+    <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Spacing="14"
+                Margin="0 16 0 0">
+        <Button Command="{Binding PreviousPageCommand, ElementName=This}"
+                IsEnabled="{Binding HasPreviousPage, ElementName=This}"
+                Classes="pagination-nav">
+            <LucideIcon Kind="StepBack" Size="28" />
+        </Button>
+
+        <TextBlock Text="{Binding PageInfo, ElementName=This}"
+                   VerticalAlignment="Center"
+                   FontSize="14"
+                   Foreground="{StaticResource TextSecondaryBrush}" />
+
+        <Button Command="{Binding NextPageCommand, ElementName=This}"
+                IsEnabled="{Binding HasNextPage, ElementName=This}"
+                Classes="pagination-nav">
+            <LucideIcon Kind="StepForward" Size="28" />
+        </Button>
+    </StackPanel>
+</UserControl>

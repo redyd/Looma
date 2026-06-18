@@ -48,7 +48,8 @@
             <StackPanel Margin="32" Spacing="16">
 
                 <controls:DetailInformations
-                    InfoTitle="📦 Informations"
+                    InfoTitle="Informations"
+                    InfoIconKind="BadgeInfo"
                     Stats="{Binding DetailStats}"
                     Infos="{Binding DetailInfos}"
                 />

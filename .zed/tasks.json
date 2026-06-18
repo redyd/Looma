@@ -1,8 +1,0 @@
-[
-  {
-    "label": "Run Looma (local)",
-    "command": "/home/redy_d/dev_personnal/looma/src/Looma.App/bin/Debug/net10.0/Looma.App",
-    "args": ["--local"],
-    "cwd": "/home/redy_d/dev_personnal/looma/src/Looma.App/bin/Debug/net10.0",
-  },
-]

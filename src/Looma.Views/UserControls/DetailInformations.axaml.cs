@@ -22,15 +22,17 @@ public partial class DetailInformations : UserControl
 
     public static readonly StyledProperty<string> InfoTitleProperty =
         AvaloniaProperty.Register<DetailInformations, string>(nameof(InfoTitle), defaultValue: "Informations");
-    
-    public static readonly StyledProperty<IList<string>> ImagesProperty =
-        AvaloniaProperty.Register<DetailInformations, IList<string>>(
-            nameof(Images), defaultValue: []);
 
-    public IList<string> Images
+    public static readonly StyledProperty<string?> InfoIconKindProperty =
+        AvaloniaProperty.Register<DetailInformations, string?>(nameof(InfoIconKind));
+    
+    public static readonly StyledProperty<string?> ImageProperty =
+        AvaloniaProperty.Register<DetailInformations, string?>(nameof(Image));
+
+    public string? Image
     {
-        get => GetValue(ImagesProperty);
-        set => SetValue(ImagesProperty, value);
+        get => GetValue(ImageProperty);
+        set => SetValue(ImageProperty, value);
     }
 
     public IList<StatItem> Stats
@@ -49,6 +51,12 @@ public partial class DetailInformations : UserControl
     {
         get => GetValue(InfoTitleProperty);
         set => SetValue(InfoTitleProperty, value);
+    }
+
+    public string? InfoIconKind
+    {
+        get => GetValue(InfoIconKindProperty);
+        set => SetValue(InfoIconKindProperty, value);
     }
 
     public DetailInformations()

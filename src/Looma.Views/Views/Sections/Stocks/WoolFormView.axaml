@@ -7,6 +7,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
+             xmlns:entities="using:Looma.Domain.Entities"
              xmlns:cp="using:Avalonia.Controls"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolFormView"
@@ -96,30 +97,23 @@
                                 </StackPanel>
                             </Grid>
 
-                            <!-- Aiguille min + max -->
-                            <Grid ColumnDefinitions="*,16,*">
-                                <StackPanel Grid.Column="0" Classes="form-field">
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Aiguille min" />
-                                        <TextBlock Classes="field-required" Text="*" />
-                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(mm)" />
-                                    </StackPanel>
-                                    <TextBox Classes="form-input"
-                                             Text="{Binding NeedleMinText}"
-                                             PlaceholderText="Ex : 3.5" />
+                            <!-- Taille d'aiguilles -->
+                            <StackPanel Classes="form-field">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Classes="form-label" Text="Taille d'aiguilles" />
+                                    <TextBlock Classes="field-required" Text="*" />
+                                    <TextBlock Classes="form-label" Opacity="0.5" Text="(mm)" />
                                 </StackPanel>
-
-                                <StackPanel Grid.Column="2" Classes="form-field">
-                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Aiguille max" />
-                                        <TextBlock Classes="field-required" Text="*" />
-                                        <TextBlock Classes="form-label" Opacity="0.5" Text="(mm)" />
-                                    </StackPanel>
-                                    <TextBox Classes="form-input"
-                                             Text="{Binding NeedleMaxText}"
-                                             PlaceholderText="Ex : 4.5" />
-                                </StackPanel>
-                            </Grid>
+                                <ComboBox Classes="form-select"
+                                          ItemsSource="{Binding NeedleRanges}"
+                                          SelectedItem="{Binding SelectedNeedleRange}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:WoolNeedleRangeSummary">
+                                            <TextBlock Text="{Binding Label}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
 
                         </StackPanel>
                     </Border>
@@ -154,10 +148,10 @@
                                                            FontSize="11"
                                                            FontFamily="Consolas"
                                                            VerticalAlignment="Center" />
-                                                <TextBlock Text="×"
-                                                           FontSize="13"
-                                                           VerticalAlignment="Center"
-                                                           Opacity="0.6" />
+                                                <LucideIcon Kind="X"
+                                                            Size="13"
+                                                            VerticalAlignment="Center"
+                                                            Opacity="0.6" />
                                             </StackPanel>
                                         </Button>
                                     </DataTemplate>

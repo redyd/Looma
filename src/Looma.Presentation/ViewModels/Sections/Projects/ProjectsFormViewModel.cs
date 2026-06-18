@@ -98,9 +98,14 @@ public partial class ProjectsFormViewModel(
     [ObservableProperty]
     public partial ObservableCollection<ProjectSelectableWoolViewModel> WoolResults { get; set; } = [];
 
-    [ObservableProperty] private ObservableCollection<ProjectSelectableWoolViewModel> _selectedWools = [];
-    [ObservableProperty] private ObservableCollection<ProjectImageViewModel> _existingImages = [];
-    [ObservableProperty] private ObservableCollection<ProjectImageDraftViewModel> _newImages = [];
+    [ObservableProperty]
+    public partial ObservableCollection<ProjectSelectableWoolViewModel> SelectedWools { get; set; } = [];
+
+    [ObservableProperty]
+    public partial ObservableCollection<ProjectImageViewModel> ExistingImages { get; set; } = [];
+
+    [ObservableProperty]
+    public partial ObservableCollection<ProjectImageDraftViewModel> NewImages { get; set; } = [];
 
     public void InitCreate()
     {

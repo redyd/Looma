@@ -64,7 +64,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
     public partial string? ErrorMessage { get; set; }
 
     [ObservableProperty]
-    public partial List<string> Images { get; set; } = [];
+    public partial string? Image { get; set; }
 
     [ObservableProperty]
     public partial double? AdjustQuantity { get; set; }
@@ -179,10 +179,10 @@ public partial class WoolDetailViewModel : PageViewModelBase
         NeedleMinSize = wool.NeedleMinSize;
         NeedleMaxSize = wool.NeedleMaxSize;
         
-        Images = wool.Types
-            .Select(t => t.ToString().ToLower())
-            .Select(s => $"avares://Looma.App/Assets/WoolTypeImages/{s}.png")
-            .ToList();
+        var range = Wool.FindContainingNeedleRange(wool.NeedleMinSize, wool.NeedleMaxSize);
+        Image = range is null
+            ? null
+            : $"avares://Looma.App/Assets/WoolTypeImages/{range.Type.ToString().ToLower()}.png";
         
         OnPropertyChanged(nameof(NeedleSizeDisplay));
         OnPropertyChanged(nameof(DetailStats));
