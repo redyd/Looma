@@ -29,6 +29,8 @@ public class ThemeService
         var dto = JsonSerializer.Deserialize<ThemeOverrideDto>(json, JsonOptions);
         if (dto is null) return;
 
+        ResetToDefault();
+
         var resources = Application.Current!.Resources;
 
         ApplyGroup(resources, dto.Accent);
