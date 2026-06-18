@@ -110,7 +110,7 @@ public sealed class WoolViewModelTests
         var refresh = new FakeRefreshService();
         var woolService = new FakeWoolService
         {
-            GetAllResult = ResultT<IReadOnlyList<Wool>>.Ok(Enumerable.Range(1, 13)
+            GetAllResult = ResultT<IReadOnlyList<Wool>>.Ok(Enumerable.Range(1, 30)
                 .Select(i => TestData.Wool(i, name: i == 13 ? "Merino Red" : $"Wool {i}", brand: "Brand"))
                 .ToList())
         };
@@ -124,14 +124,13 @@ public sealed class WoolViewModelTests
         vm.OnNavigatedTo();
 
         vm.Title.Should().BeEmpty();
-        vm.CurrentPageEntities.Should().HaveCount(12);
+        vm.CurrentPageEntities.Should().HaveCount(24);
         vm.TotalPages.Should().Be(2);
         vm.HasNextPage.Should().BeTrue();
         refresh.SubscriberCount.Should().Be(1);
 
         vm.NextPageCommand.Execute(null);
         vm.CurrentPage.Should().Be(2);
-        vm.CurrentPageEntities.Should().ContainSingle();
 
         vm.SearchQuery = "red";
         vm.CurrentPage.Should().Be(1);

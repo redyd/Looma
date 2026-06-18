@@ -106,8 +106,8 @@ public sealed class DocumentsViewModelTests
     [Fact]
     public void DocumentsList_Clearing_Search_Restores_Pagination_Command_State()
     {
-        var documents = Enumerable.Range(1, 13)
-            .Select(i => TestData.Document(nickname: i == 13 ? "Gauge" : $"Document {i}", type: "pdf"))
+        var documents = Enumerable.Range(1, 25)
+            .Select(i => TestData.Document(nickname: i == 25 ? "Gauge" : $"Document {i}", type: "pdf"))
             .ToList();
         var vm = new DocumentsListViewModel(
             new FakeNavigationService(),
