@@ -7,7 +7,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
-             xmlns:entities="using:Looma.Domain.Entities"
              xmlns:cp="using:Avalonia.Controls"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolFormView"
