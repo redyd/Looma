@@ -77,6 +77,7 @@
     <SolidColorBrush x:Key="FormControlBorderBrush">#F3E8FF</SolidColorBrush>
     <SolidColorBrush x:Key="FormControlForegroundBrush">#4A4A4A</SolidColorBrush>
     <SolidColorBrush x:Key="FormControlPlaceholderForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="FormControlFocusBackgroundBrush">#FFF5F7</SolidColorBrush>
     <SolidColorBrush x:Key="FormControlHoverBorderBrush">#F472B6</SolidColorBrush>
     <SolidColorBrush x:Key="FormControlFocusBorderBrush">#7C3AED</SolidColorBrush>
     <SolidColorBrush x:Key="FormOptionForegroundBrush">#4A4A4A</SolidColorBrush>
@@ -146,8 +147,6 @@
     <SolidColorBrush x:Key="FieldRequiredForegroundBrush">#EF4444</SolidColorBrush>
     <SolidColorBrush x:Key="TableHeadingForegroundBrush">#4A4A4A</SolidColorBrush>
     <SolidColorBrush x:Key="EmptyStateMessageForegroundBrush">#9CA3AF</SolidColorBrush>
-    <SolidColorBrush x:Key="NotificationTitleForegroundBrush">#4A4A4A</SolidColorBrush>
-    <SolidColorBrush x:Key="NotificationMessageForegroundBrush">#4A4A4A</SolidColorBrush>
     <SolidColorBrush x:Key="CardTitleForegroundBrush">#4A4A4A</SolidColorBrush>
     <SolidColorBrush x:Key="CardSubtitleForegroundBrush">#9CA3AF</SolidColorBrush>
     <SolidColorBrush x:Key="CardMetadataForegroundBrush">#9CA3AF</SolidColorBrush>
@@ -177,6 +176,25 @@
     <SolidColorBrush x:Key="PatternPreviewMetadataForegroundBrush">#6B7280</SolidColorBrush>
     <SolidColorBrush x:Key="ProjectWoolPrimaryForegroundBrush">#4A4A4A</SolidColorBrush>
     <SolidColorBrush x:Key="ProjectWoolMetadataForegroundBrush">#6B7280</SolidColorBrush>
+
+    <!-- Notifications -->
+    <SolidColorBrush x:Key="NotificationTitleForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationMessageForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationIconForegroundBrush">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationDismissForegroundBrush">#9CA3AF</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationDismissHoverForegroundBrush">#4A4A4A</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationSuccessAccentBrush">#16A34A</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationSuccessBackgroundBrush">#ECFDF5</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationSuccessBorderBrush">#BBF7D0</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationWarningAccentBrush">#D97706</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationWarningBackgroundBrush">#FFFBEB</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationWarningBorderBrush">#FDE68A</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationErrorAccentBrush">#DC2626</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationErrorBackgroundBrush">#FEF2F2</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationErrorBorderBrush">#FECACA</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationInfoAccentBrush">#2563EB</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationInfoBackgroundBrush">#EFF6FF</SolidColorBrush>
+    <SolidColorBrush x:Key="NotificationInfoBorderBrush">#BFDBFE</SolidColorBrush>
 
     <!-- Valeurs numériques -->
     <CornerRadius x:Key="DefaultCornerRadius">12</CornerRadius>

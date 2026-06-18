@@ -13,8 +13,6 @@ public class ElementColors
     public string? TableHeadingForegroundBrush { get; set; }
     public string? EmptyStateTitleForegroundBrush { get; set; }
     public string? EmptyStateMessageForegroundBrush { get; set; }
-    public string? NotificationTitleForegroundBrush { get; set; }
-    public string? NotificationMessageForegroundBrush { get; set; }
     public string? CardTitleForegroundBrush { get; set; }
     public string? CardSubtitleForegroundBrush { get; set; }
     public string? CardMetadataForegroundBrush { get; set; }

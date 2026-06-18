@@ -7,6 +7,7 @@ public class FormColors
     public string? FormControlBorderBrush { get; set; }
     public string? FormControlForegroundBrush { get; set; }
     public string? FormControlPlaceholderForegroundBrush { get; set; }
+    public string? FormControlFocusBackgroundBrush { get; set; }
     public string? FormControlHoverBorderBrush { get; set; }
     public string? FormControlFocusBorderBrush { get; set; }
     public string? FormOptionForegroundBrush { get; set; }

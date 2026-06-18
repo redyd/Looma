@@ -61,8 +61,13 @@
     </Style>
 
     <Style Selector="TextBox.form-input:focus /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource FormControlFocusBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FormControlFocusBorderBrush}" />
         <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="TextBox.form-input:focus">
+        <Setter Property="Background" Value="{DynamicResource FormControlFocusBackgroundBrush}" />
     </Style>
 
     <Style Selector="TextBox.form-input-sm">
@@ -83,8 +88,13 @@
     </Style>
 
     <Style Selector="TextBox.form-input-sm:focus /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource FormControlFocusBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FormControlFocusBorderBrush}" />
         <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="TextBox.form-input-sm:focus">
+        <Setter Property="Background" Value="{DynamicResource FormControlFocusBackgroundBrush}" />
     </Style>
 
     <Style Selector="NumericUpDown.form-numeric">
@@ -105,8 +115,13 @@
     </Style>
 
     <Style Selector="NumericUpDown.form-numeric:focus-within /template/ Border#PART_Border">
+        <Setter Property="Background" Value="{DynamicResource FormControlFocusBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FormControlFocusBorderBrush}" />
         <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="NumericUpDown.form-numeric:focus-within">
+        <Setter Property="Background" Value="{DynamicResource FormControlFocusBackgroundBrush}" />
     </Style>
 
     <Style Selector="ComboBox.form-select">
@@ -126,8 +141,13 @@
     </Style>
 
     <Style Selector="ComboBox.form-select:focus /template/ Border#Background">
+        <Setter Property="Background" Value="{DynamicResource FormControlFocusBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FormControlFocusBorderBrush}" />
         <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="ComboBox.form-select:focus">
+        <Setter Property="Background" Value="{DynamicResource FormControlFocusBackgroundBrush}" />
     </Style>
 
     <Style Selector="CheckBox">

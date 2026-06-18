@@ -43,6 +43,7 @@ public class ThemeService
         ApplyGroup(resources, dto.Navigation);
         ApplyGroup(resources, dto.Ribbons);
         ApplyGroup(resources, dto.Elements);
+        ApplyGroup(resources, dto.Notifications);
     }
 
     public string? GetThemeName(string jsonPath)
@@ -139,7 +140,8 @@ public class ThemeService
             Surfaces = BuildGroup<SurfaceColors>(resources),
             Navigation = BuildGroup<NavigationColors>(resources),
             Ribbons = BuildGroup<RibbonColors>(resources),
-            Elements = BuildGroup<ElementColors>(resources)
+            Elements = BuildGroup<ElementColors>(resources),
+            Notifications = BuildGroup<NotificationColors>(resources)
         };
     }
 
@@ -195,7 +197,8 @@ public class ThemeService
             typeof(SurfaceColors),
             typeof(NavigationColors),
             typeof(RibbonColors),
-            typeof(ElementColors)
+            typeof(ElementColors),
+            typeof(NotificationColors)
         };
 
         return groupTypes.SelectMany(type => type.GetProperties().Select(prop => prop.Name));

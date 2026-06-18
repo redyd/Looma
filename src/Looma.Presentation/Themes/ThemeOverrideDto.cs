@@ -15,4 +15,5 @@ public class ThemeOverrideDto
     public NavigationColors? Navigation { get; set; }
     public RibbonColors? Ribbons { get; set; }
     public ElementColors? Elements { get; set; }
+    public NotificationColors? Notifications { get; set; }
 }

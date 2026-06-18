@@ -81,7 +81,7 @@
                                                 Size="18"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Foreground="White" />
+                                                Foreground="{DynamicResource NotificationIconForegroundBrush}" />
                                 </Border>
 
                                 <StackPanel Grid.Column="1" Spacing="4">
@@ -95,7 +95,9 @@
                                         Classes="notification-dismiss"
                                         Command="{Binding DismissCommand}"
                                         VerticalAlignment="Top">
-                                    <LucideIcon Kind="X" Size="14" />
+                                    <LucideIcon Kind="X"
+                                                Size="14"
+                                                Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
                                 </Button>
                             </Grid>
                         </Border>
