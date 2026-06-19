@@ -1,8 +1,12 @@
+// Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+// This file is part of Looma, licensed under the AGPL-3.0.
+
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Looma.Domain.Core;
 using Looma.Domain.IServices;
 
