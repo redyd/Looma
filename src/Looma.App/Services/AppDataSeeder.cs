@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
+using Looma.Domain.IServices;
 using Looma.Domain.Request;
 using Looma.Domain.Services;
 

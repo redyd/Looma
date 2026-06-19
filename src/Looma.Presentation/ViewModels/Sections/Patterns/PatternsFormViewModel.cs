@@ -13,6 +13,7 @@ using Looma.Domain.Extensions;
 using Looma.Domain.Request;
 using Looma.Presentation.ViewModels.Shared;
 using DocumentsPickerFormViewModel = Looma.Presentation.ViewModels.Shared.Documents.DocumentsPickerFormViewModel;
+using Looma.Domain.IServices;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
 

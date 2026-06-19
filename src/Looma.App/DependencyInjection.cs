@@ -22,8 +22,8 @@ using Looma.Presentation.ViewModels.Sections.Documents;
 using Looma.Presentation.ViewModels.Sections.Patterns;
 using Looma.Presentation.ViewModels.Sections.Settings;
 using Microsoft.Extensions.DependencyInjection;
-using Looma.Presentation.ViewModels.Shared;
 using Looma.Presentation.ViewModels.Shared.Documents;
+using Looma.Domain.IServices;
 
 namespace Looma.App;
 
@@ -31,10 +31,12 @@ public static class DependencyInjection
 {
     public static void AddDomain(this IServiceCollection services)
     {
-        services.AddScoped<WoolStockCalculator>();
         services.AddSingleton<IDomainLogger, ConsoleDomainLogger>();
         services.AddSingleton<IDataRefreshService, DataRefreshService>();
         services.AddScoped<IAppDataSeeder, AppDataSeeder>();
+        services.AddSingleton<IUpdaterService, GithubUpdater>();
+
+        services.AddScoped<WoolStockCalculator>();
         services.AddScoped<IWoolService, WoolService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IPatternService, PatternService>();
@@ -53,6 +55,7 @@ public static class DependencyInjection
         services.AddTransient<INavigationService, NavigationService>();
         services.AddSingleton<INotificationService, NotificationService>();
         services.AddSingleton<ThemeService>();
+        services.AddSingleton<IUpdateInteractionService, UpdateInteractionService>();
 
         // PROJECTS
         services.AddTransient<ProjectsListViewModel>();
@@ -122,9 +125,13 @@ public static class DependencyInjection
                         sp.GetRequiredService<ThemeService>(),
                         sp.GetRequiredService<IThemeStorage>(),
                         sp.GetRequiredService<IThemeFilePicker>(),
-                        sp.GetRequiredService<INotificationService>())),
+                        sp.GetRequiredService<INotificationService>(),
+                        sp.GetRequiredService<IUpdaterService>(),
+                        sp.GetRequiredService<IUpdateInteractionService>())),
                 
-                sp.GetRequiredService<INotificationService>()
+                sp.GetRequiredService<INotificationService>(),
+                sp.GetRequiredService<IUpdaterService>(),
+                sp.GetRequiredService<IUpdateInteractionService>()
             );
         });
     }
@@ -134,6 +141,7 @@ public static class DependencyInjection
         services.AddSingleton<IDocumentFilePicker, AvaloniaDocumentFilePicker>();
         services.AddSingleton<IThemeFilePicker, AvaloniaThemeFilePicker>();
         services.AddSingleton<IThemeStorage, ThemeStorage>();
+        services.AddSingleton<ISettingsRepository, SettingsRepository>();
         services.AddScoped<IDocumentRepository, DocumentRepository>();
         services.AddScoped<IPatternRepository, PatternRepository>();
         services.AddScoped<IWoolRepository, WoolRepository>();

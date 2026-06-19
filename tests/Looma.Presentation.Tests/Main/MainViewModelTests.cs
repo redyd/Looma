@@ -38,7 +38,10 @@ public sealed class MainViewModelTests
         var documents = CreateSection();
         var settings = CreateSection();
 
-        var vm = new MainViewModel(projects, stocks, patterns, documents, settings, notifications);
+        var updater = new FakeUpdaterService();
+        var updateInteraction = new FakeUpdateInteractionService();
+
+        var vm = new MainViewModel(projects, stocks, patterns, documents, settings, notifications, updater, updateInteraction);
 
         vm.ProjectsSection.Should().Be(projects);
         vm.StocksSection.Should().Be(stocks);

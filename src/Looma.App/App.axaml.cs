@@ -15,13 +15,14 @@ using Looma.App.Services;
 using Looma.Infrastructure;
 using Looma.Infrastructure.Storage;
 using Looma.Domain.Services;
+using Looma.Domain.Core;
+using Looma.Domain.IServices;
 using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Main;
 using Looma.Views.Views.Main;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Velopack;
-using Velopack.Sources;
+using Avalonia.Threading;
 
 namespace Looma.App;
 
@@ -110,30 +111,23 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
-        _ = CheckForUpdatesAsync();
+        _ = HandleStartupUpdatesAsync();
     }
 
-    private async Task CheckForUpdatesAsync()
+    private async Task HandleStartupUpdatesAsync()
     {
-        try
+        var updater = Services.GetRequiredService<IUpdaterService>();
+        var updateInteraction = Services.GetRequiredService<IUpdateInteractionService>();
+
+        if (await updater.ShouldShowCurrentReleaseNotesAsync())
         {
-            var channel = OperatingSystem.IsWindows() ? "win" : "linux";
-
-            var mgr = new UpdateManager(
-                new GithubSource("https://github.com/redyd/Looma", null, false),
-                new UpdateOptions { ExplicitChannel = channel }
-            );
-
-            if (!mgr.IsInstalled) return;
-
-            var newVersion = await mgr.CheckForUpdatesAsync();
-            if (newVersion is null) return;
-
-            await mgr.DownloadUpdatesAsync(newVersion);
-            mgr.ApplyUpdatesAndRestart(newVersion);
+            Dispatcher.UIThread.Post(updateInteraction.RequestCurrentReleaseNotes);
         }
-        catch
+
+        await updater.CheckForUpdatesAsync(silent: true);
+        if (updater.Status == UpdateStatus.Available)
         {
+            Dispatcher.UIThread.Post(updateInteraction.RequestUpdatePrompt);
         }
     }
 
