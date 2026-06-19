@@ -5,6 +5,7 @@
 using Looma.Presentation.ViewModels.Base;
 using Looma.Presentation.ViewModels.Main;
 using Looma.Presentation.Tests.TestSupport;
+using Looma.Domain.Core;
 
 namespace Looma.Presentation.Tests.Main;
 
@@ -52,8 +53,86 @@ public sealed class MainViewModelTests
         vm.SelectedTabIndex.Should().Be(0);
     }
 
+    [Fact]
+    public void UpdatePromptRequest_WhenUpdateExists_ShowsReusablePrompt()
+    {
+        var updater = new FakeUpdaterService
+        {
+            UpdateInformations = new UpdateInformations
+            {
+                Version = "2.0.0",
+                ReleaseNotes = "## Notes"
+            }
+        };
+        var interaction = new FakeUpdateInteractionService();
+        var vm = CreateMainViewModel(updater, interaction);
+
+        interaction.RequestUpdatePrompt();
+
+        vm.IsUpdatePromptVisible.Should().BeTrue();
+        vm.UpdateVersion.Should().Be("2.0.0");
+        vm.UpdateReleaseNotes.Should().Be("## Notes");
+    }
+
+    [Fact]
+    public async Task ConfirmUpdate_CallsUpdaterAndLocksPromptWhileRunning()
+    {
+        var updater = new FakeUpdaterService
+        {
+            UpdateInformations = new UpdateInformations
+            {
+                Version = "2.0.0",
+                ReleaseNotes = "notes"
+            },
+            OnUpdate = service =>
+            {
+                service.Status = UpdateStatus.Installing;
+                service.DownloadProgress = 100;
+            }
+        };
+        var interaction = new FakeUpdateInteractionService();
+        var vm = CreateMainViewModel(updater, interaction);
+        interaction.RequestUpdatePrompt();
+
+        await vm.ConfirmUpdateCommand.ExecuteAsync(null);
+
+        updater.UpdateCalls.Should().Be(1);
+        vm.CanConfirmUpdate.Should().BeFalse();
+        vm.CanCloseUpdatePrompt.Should().BeFalse();
+        vm.DownloadProgress.Should().Be(100);
+    }
+
+    [Fact]
+    public async Task CloseReleaseNotes_MarksCurrentVersionAsShown()
+    {
+        var updater = new FakeUpdaterService { CurrentReleaseNotes = "notes" };
+        var interaction = new FakeUpdateInteractionService();
+        var vm = CreateMainViewModel(updater, interaction);
+
+        interaction.RequestCurrentReleaseNotes();
+        vm.IsReleaseNotesVisible.Should().BeTrue();
+
+        await vm.CloseReleaseNotesCommand.ExecuteAsync(null);
+
+        vm.IsReleaseNotesVisible.Should().BeFalse();
+        updater.MarkShownCalls.Should().Be(1);
+    }
+
     private static SectionNavigationViewModel CreateSection() =>
         new(new FakeNavigationService(), new DummyPageViewModel());
+
+    private static MainViewModel CreateMainViewModel(
+        FakeUpdaterService updater,
+        FakeUpdateInteractionService interaction) =>
+        new(
+            CreateSection(),
+            CreateSection(),
+            CreateSection(),
+            CreateSection(),
+            CreateSection(),
+            new FakeNotificationService(),
+            updater,
+            interaction);
 
     private sealed class DummyPageViewModel : PageViewModelBase;
 }

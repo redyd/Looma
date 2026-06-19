@@ -131,10 +131,13 @@ internal sealed class FakeUpdaterService : IUpdaterService
     public int UpdateCalls { get; private set; }
     public int MarkShownCalls { get; private set; }
     public bool ShouldShowReleaseNotes { get; set; }
+    public Action<FakeUpdaterService, bool>? OnCheck { get; set; }
+    public Action<FakeUpdaterService>? OnUpdate { get; set; }
 
     public Task CheckForUpdatesAsync(bool silent = false)
     {
         CheckCalls++;
+        OnCheck?.Invoke(this, silent);
         StateChanged?.Invoke(this, EventArgs.Empty);
         return Task.CompletedTask;
     }
@@ -142,6 +145,7 @@ internal sealed class FakeUpdaterService : IUpdaterService
     public Task UpdateAsync(IProgress<int>? progress = null)
     {
         UpdateCalls++;
+        OnUpdate?.Invoke(this);
         StateChanged?.Invoke(this, EventArgs.Empty);
         return Task.CompletedTask;
     }
@@ -153,6 +157,27 @@ internal sealed class FakeUpdaterService : IUpdaterService
         MarkShownCalls++;
         return Task.CompletedTask;
     }
+}
+
+internal sealed class FakeThemeStorage : IThemeStorage
+{
+    public IReadOnlyList<string> ThemeFiles { get; set; } = [];
+    public string? SelectedThemePath { get; set; }
+
+    public IReadOnlyList<string> GetThemeFiles() => ThemeFiles;
+    public string? GetSelectedThemePath() => SelectedThemePath;
+    public int SeedThemeFiles(string sourceFolder) => 0;
+    public void SaveSelectedTheme(string? themePath) => SelectedThemePath = themePath;
+    public void DeleteTheme(string themePath) { }
+    public string ImportTheme(string sourcePath) => sourcePath;
+    public string CreateExportPath() => Path.Combine(Path.GetTempPath(), "theme.json");
+}
+
+internal sealed class FakeThemeFilePicker : IThemeFilePicker
+{
+    public string? NextPick { get; set; }
+
+    public Task<string?> PickThemeJsonAsync() => Task.FromResult(NextPick);
 }
 
 internal sealed class FakeDocumentFilePicker : IDocumentFilePicker

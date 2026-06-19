@@ -42,6 +42,7 @@ public static class DependencyInjection
         services.AddScoped<IPatternService, PatternService>();
         services.AddScoped<IDocumentService, DocumentService>();
         services.AddScoped<IWoolStockService, WoolStockService>();
+        services.AddSingleton<ISettingsService, SettingsService>();
 
         services.AddScoped<DocumentSearchSpec>();
         services.AddScoped<ProjectSearchSpec>();
