@@ -128,6 +128,49 @@ public sealed class GithubUpdaterTests
     }
 
     [Fact]
+    public async Task UpdateAsync_WhenCalledTwiceConcurrently_RunsSingleDownload()
+    {
+        var adapter = new FakeUpdateManagerAdapter
+        {
+            NextUpdate = new AvailableUpdate(new object(), "2.1.0", "## Notes"),
+            ProgressValues = [100],
+            DownloadDelay = TimeSpan.FromMilliseconds(50)
+        };
+        var sut = CreateUpdater(adapter);
+
+        await sut.CheckForUpdatesAsync();
+        await Task.WhenAll(sut.UpdateAsync(), sut.UpdateAsync());
+
+        adapter.DownloadCalls.Should().Be(1);
+        adapter.ApplyCalls.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task MockUpdater_PublishesInstallsAndRestartsIntoTargetVersion()
+    {
+        var settings = new FakeSettingsService();
+        var sut = new MockUpdater(settings)
+        {
+            MockCurrentVersion = "v0.2.1",
+            MockUpdateVersion = "v0.2.2",
+            MockReleaseNotes = "## Notes mock"
+        };
+
+        sut.CurrentVersion.Should().Be("0.2.1");
+
+        await sut.PublishMockUpdateAsync();
+        await sut.UpdateAsync();
+        await sut.SimulateRestartAsync();
+
+        sut.CurrentVersion.Should().Be("0.2.2");
+        sut.CurrentReleaseNotes.Should().Be("## Notes mock");
+        sut.Status.Should().Be(UpdateStatus.Idle);
+        sut.UpdateInformations.Should().BeNull();
+        settings.ReleaseNotes["0.2.2"].Should().Be("## Notes mock");
+        settings.ReleaseNotesShown["0.2.2"].Should().BeFalse();
+    }
+
+    [Fact]
     public async Task CurrentReleaseNotes_AreShownOncePerVersion()
     {
         var settings = new FakeSettingsService();

@@ -59,9 +59,11 @@ public partial class App : Application
             }
         }
 
+        var args = (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Args ?? [];
+
         services.AddPresentation();
         services.AddInfrastructure();
-        services.AddDomain();
+        services.AddDomain(args);
         services.AddSingleton<AppPaths>(_ => new AppPaths(rootPath));
 
         services.AddDbContext<LoomaDbContext>((sp, options) =>
@@ -80,7 +82,6 @@ public partial class App : Application
         SeedInternalThemes();
 
         using var scope = Services.CreateScope();
-        var args = (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Args ?? [];
         var db = scope.ServiceProvider.GetRequiredService<LoomaDbContext>();
 
         if (args.Contains("--clear"))

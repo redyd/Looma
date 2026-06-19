@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Looma.Domain.Core;
 using Looma.Domain.IServices;
@@ -12,6 +13,7 @@ public class GithubUpdater : IUpdaterService
     private readonly ISettingsService _settingsService;
     private readonly IUpdateManagerAdapter _updater;
     private readonly string _channelName;
+    private readonly SemaphoreSlim _operationLock = new(1, 1);
 
     private AvailableUpdate? _availableUpdate;
 
@@ -48,78 +50,99 @@ public class GithubUpdater : IUpdaterService
         if (Status is UpdateStatus.Checking or UpdateStatus.Downloading or UpdateStatus.Installing)
             return;
 
-        SetStatus(UpdateStatus.Checking);
-        ErrorMessage = null;
-
+        await _operationLock.WaitAsync();
         try
         {
-            if (!_updater.IsInstalled)
-            {
-                SetStatus(UpdateStatus.Idle);
+            if (Status is UpdateStatus.Checking or UpdateStatus.Downloading or UpdateStatus.Installing)
                 return;
-            }
 
-            var newVersion = await _updater.CheckForUpdatesAsync();
-            if (newVersion is null)
+            SetStatus(UpdateStatus.Checking);
+            ErrorMessage = null;
+
+            try
             {
-                UpdateInformations = null;
-                _availableUpdate = null;
-                SetStatus(UpdateStatus.Idle);
-                return;
+                if (!_updater.IsInstalled)
+                {
+                    SetStatus(UpdateStatus.Idle);
+                    return;
+                }
+
+                var newVersion = await _updater.CheckForUpdatesAsync();
+                if (newVersion is null)
+                {
+                    UpdateInformations = null;
+                    _availableUpdate = null;
+                    SetStatus(UpdateStatus.Idle);
+                    return;
+                }
+
+                UpdateInformations = new UpdateInformations
+                {
+                    Version = newVersion.Version,
+                    ReleaseNotes = newVersion.ReleaseNotes,
+                    Channel = _channelName
+                };
+
+                _availableUpdate = newVersion;
+                SetStatus(UpdateStatus.Available);
             }
-
-            UpdateInformations = new UpdateInformations
+            catch (Exception ex)
             {
-                Version = newVersion.Version,
-                ReleaseNotes = newVersion.ReleaseNotes,
-                Channel = _channelName
-            };
-
-            _availableUpdate = newVersion;
-            SetStatus(UpdateStatus.Available);
+                ErrorMessage = silent ? null : ex.Message;
+                SetStatus(silent ? UpdateStatus.Idle : UpdateStatus.Error);
+            }
         }
-        catch (Exception ex)
+        finally
         {
-            ErrorMessage = silent ? null : ex.Message;
-            SetStatus(silent ? UpdateStatus.Idle : UpdateStatus.Error);
+            _operationLock.Release();
         }
     }
 
     public async Task UpdateAsync(IProgress<int>? progress = null)
     {
-        if (_availableUpdate is null || UpdateInformations is null)
+        if (Status is UpdateStatus.Downloading or UpdateStatus.Installing)
+            return;
+
+        await _operationLock.WaitAsync();
+        try
         {
-            await CheckForUpdatesAsync();
+            if (Status is UpdateStatus.Downloading or UpdateStatus.Installing)
+                return;
+
             if (_availableUpdate is null || UpdateInformations is null)
             {
                 return;
             }
-        }
 
-        try
-        {
-            ErrorMessage = null;
-            DownloadProgress = 0;
-            SetStatus(UpdateStatus.Downloading);
-
-            await _updater.DownloadUpdatesAsync(_availableUpdate, value =>
+            try
             {
-                DownloadProgress = value;
-                progress?.Report(value);
-                OnStateChanged();
-            });
+                ErrorMessage = null;
+                DownloadProgress = 0;
+                SetStatus(UpdateStatus.Downloading);
 
-            await _settingsService.SetVersionAsync(UpdateInformations.Version);
-            await _settingsService.SetReleaseNotesAsync(UpdateInformations.Version, UpdateInformations.ReleaseNotes);
-            await _settingsService.SetReleaseNotesShownAsync(UpdateInformations.Version, false);
+                await _updater.DownloadUpdatesAsync(_availableUpdate, value =>
+                {
+                    DownloadProgress = value;
+                    progress?.Report(value);
+                    OnStateChanged();
+                });
 
-            SetStatus(UpdateStatus.Installing);
-            _updater.ApplyUpdatesAndRestart(_availableUpdate);
+                await _settingsService.SetVersionAsync(UpdateInformations.Version);
+                await _settingsService.SetReleaseNotesAsync(UpdateInformations.Version, UpdateInformations.ReleaseNotes);
+                await _settingsService.SetReleaseNotesShownAsync(UpdateInformations.Version, false);
+
+                SetStatus(UpdateStatus.Installing);
+                _updater.ApplyUpdatesAndRestart(_availableUpdate);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                SetStatus(UpdateStatus.Error);
+            }
         }
-        catch (Exception ex)
+        finally
         {
-            ErrorMessage = ex.Message;
-            SetStatus(UpdateStatus.Error);
+            _operationLock.Release();
         }
     }
 
@@ -157,7 +180,19 @@ public class GithubUpdater : IUpdaterService
     private static string GetCurrentVersion()
     {
         var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-        return assembly.GetName().Version?.ToString(3) ?? "0.0.0";
+        var informationalVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        return NormalizeVersion(informationalVersion)
+               ?? assembly.GetName().Version?.ToString(3)
+               ?? "0.0.0";
+    }
+
+    private static string? NormalizeVersion(string? version)
+    {
+        if (string.IsNullOrWhiteSpace(version))
+            return null;
+
+        var normalized = version.Split('+', 2)[0].Trim();
+        return normalized.StartsWith('v') ? normalized[1..] : normalized;
     }
 
     private static string GetVelopackChannel(UpdateChannel channel)

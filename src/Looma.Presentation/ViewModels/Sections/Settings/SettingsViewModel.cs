@@ -21,7 +21,8 @@ public partial class SettingsViewModel(
     IThemeFilePicker themeFilePicker,
     INotificationService notifications,
     IUpdaterService updaterService,
-    IUpdateInteractionService updateInteraction)
+    IUpdateInteractionService updateInteraction,
+    IUpdateMockService? updateMockService = null)
     : PageViewModelBase
 {
     private bool _isLoadingThemes;
@@ -39,6 +40,45 @@ public partial class SettingsViewModel(
     public string UpdateToolTip => IsUpdateAvailable
         ? $"Installer la version {updaterService.UpdateInformations?.Version}"
         : "Rechercher des mises à jour";
+    public bool IsUpdateMockEnabled => updateMockService?.IsUpdateMockEnabled == true;
+    public string MockCurrentVersion
+    {
+        get => updateMockService?.MockCurrentVersion ?? string.Empty;
+        set
+        {
+            if (updateMockService is null)
+                return;
+
+            updateMockService.MockCurrentVersion = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(InstalledVersion));
+        }
+    }
+    public string MockUpdateVersion
+    {
+        get => updateMockService?.MockUpdateVersion ?? string.Empty;
+        set
+        {
+            if (updateMockService is null)
+                return;
+
+            updateMockService.MockUpdateVersion = value;
+            OnPropertyChanged();
+        }
+    }
+    public string MockReleaseNotes
+    {
+        get => updateMockService?.MockReleaseNotes ?? string.Empty;
+        set
+        {
+            if (updateMockService is null)
+                return;
+
+            updateMockService.MockReleaseNotes = value;
+            OnPropertyChanged();
+        }
+    }
+    public bool CanSimulateMockRestart => updateMockService?.CanSimulateRestart == true;
 
     public override void OnNavigatedTo()
     {
@@ -267,6 +307,27 @@ public partial class SettingsViewModel(
         notifications.Info("Looma est à jour.");
     }
 
+    [RelayCommand]
+    private async Task PublishMockUpdateAsync()
+    {
+        if (updateMockService is null)
+            return;
+
+        await updateMockService.PublishMockUpdateAsync();
+        updateInteraction.RequestUpdatePrompt();
+        notifications.Info($"Mise à jour mock {MockUpdateVersion} publiée.");
+    }
+
+    [RelayCommand]
+    private async Task SimulateMockRestartAsync()
+    {
+        if (updateMockService is null)
+            return;
+
+        await updateMockService.SimulateRestartAsync();
+        notifications.Success($"Redémarrage mock terminé. Version installée : {InstalledVersion}.");
+    }
+
     private void OnUpdaterStateChanged(object? sender, EventArgs e) => RaiseUpdatePropertiesChanged();
 
     private void RaiseUpdatePropertiesChanged()
@@ -276,5 +337,7 @@ public partial class SettingsViewModel(
         OnPropertyChanged(nameof(IsUpdateAvailable));
         OnPropertyChanged(nameof(UpdateIconKind));
         OnPropertyChanged(nameof(UpdateToolTip));
+        OnPropertyChanged(nameof(CanSimulateMockRestart));
+        OnPropertyChanged(nameof(MockCurrentVersion));
     }
 }

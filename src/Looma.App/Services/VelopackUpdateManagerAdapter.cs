@@ -7,16 +7,13 @@ namespace Looma.App.Services;
 
 public sealed class VelopackUpdateManagerAdapter(string channel) : IUpdateManagerAdapter
 {
-    private readonly UpdateManager _updater = new(
-        new GithubSource("https://github.com/redyd/Looma", null, false),
-        new UpdateOptions { ExplicitChannel = channel }
-    );
+    private const string RepoUrl = "https://github.com/redyd/Looma";
 
-    public bool IsInstalled => _updater.IsInstalled;
+    public bool IsInstalled => CreateUpdateManager().IsInstalled;
 
     public async Task<AvailableUpdate?> CheckForUpdatesAsync()
     {
-        var update = await _updater.CheckForUpdatesAsync();
+        var update = await CreateUpdateManager().CheckForUpdatesAsync();
         return update is null
             ? null
             : new AvailableUpdate(
@@ -26,8 +23,11 @@ public sealed class VelopackUpdateManagerAdapter(string channel) : IUpdateManage
     }
 
     public Task DownloadUpdatesAsync(AvailableUpdate update, Action<int> progress) =>
-        _updater.DownloadUpdatesAsync((UpdateInfo)update.NativeUpdate, progress);
+        CreateUpdateManager().DownloadUpdatesAsync((UpdateInfo)update.NativeUpdate, progress);
 
     public void ApplyUpdatesAndRestart(AvailableUpdate update) =>
-        _updater.ApplyUpdatesAndRestart((UpdateInfo)update.NativeUpdate);
+        CreateUpdateManager().ApplyUpdatesAndRestart((UpdateInfo)update.NativeUpdate);
+
+    private UpdateManager CreateUpdateManager() =>
+        new(new GithubSource(RepoUrl, null, false), new UpdateOptions { ExplicitChannel = channel });
 }

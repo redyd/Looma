@@ -10,6 +10,7 @@ internal sealed class FakeUpdateManagerAdapter : IUpdateManagerAdapter
     public AvailableUpdate? NextUpdate { get; set; }
     public Exception? CheckException { get; set; }
     public Exception? DownloadException { get; set; }
+    public TimeSpan DownloadDelay { get; set; }
     public List<int> ProgressValues { get; set; } = [];
 
     public int CheckCalls { get; private set; }
@@ -25,18 +26,19 @@ internal sealed class FakeUpdateManagerAdapter : IUpdateManagerAdapter
         return Task.FromResult(NextUpdate);
     }
 
-    public Task DownloadUpdatesAsync(AvailableUpdate update, Action<int> progress)
+    public async Task DownloadUpdatesAsync(AvailableUpdate update, Action<int> progress)
     {
         DownloadCalls++;
         if (DownloadException is not null)
             throw DownloadException;
 
+        if (DownloadDelay > TimeSpan.Zero)
+            await Task.Delay(DownloadDelay);
+
         foreach (var value in ProgressValues)
         {
             progress(value);
         }
-
-        return Task.CompletedTask;
     }
 
     public void ApplyUpdatesAndRestart(AvailableUpdate update) => ApplyCalls++;
