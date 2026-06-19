@@ -4,6 +4,7 @@
 
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
+using Looma.Domain.IServices;
 using Looma.Domain.Refresh;
 using Looma.Domain.Request;
 using Looma.Domain.Services;
@@ -91,6 +92,92 @@ internal sealed class FakeRefreshService : IDataRefreshService
     public int SubscriberCount => RefreshRequested?.GetInvocationList().Length ?? 0;
     public void RequestRefresh(RefreshScope scope, string reason) =>
         RefreshRequested?.Invoke(this, new DataRefreshRequestedEventArgs(scope, reason));
+}
+
+internal sealed class FakeUpdateInteractionService : IUpdateInteractionService
+{
+    public event EventHandler? UpdatePromptRequested;
+    public event EventHandler? CurrentReleaseNotesRequested;
+
+    public int UpdatePromptRequestCount { get; private set; }
+    public int CurrentReleaseNotesRequestCount { get; private set; }
+
+    public void RequestUpdatePrompt()
+    {
+        UpdatePromptRequestCount++;
+        UpdatePromptRequested?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void RequestCurrentReleaseNotes()
+    {
+        CurrentReleaseNotesRequestCount++;
+        CurrentReleaseNotesRequested?.Invoke(this, EventArgs.Empty);
+    }
+}
+
+internal sealed class FakeUpdaterService : IUpdaterService
+{
+    public event EventHandler? StateChanged;
+
+    public UpdateStatus Status { get; set; } = UpdateStatus.Idle;
+    public UpdateChannel Channel { get; set; } = UpdateChannel.Stable;
+    public string CurrentVersion { get; set; } = "1.0.0";
+    public string CurrentReleaseNotes { get; set; } = string.Empty;
+    public int DownloadProgress { get; set; }
+    public string? ErrorMessage { get; set; }
+    public UpdateInformations? UpdateInformations { get; set; }
+
+    public int CheckCalls { get; private set; }
+    public int UpdateCalls { get; private set; }
+    public int MarkShownCalls { get; private set; }
+    public bool ShouldShowReleaseNotes { get; set; }
+    public Action<FakeUpdaterService, bool>? OnCheck { get; set; }
+    public Action<FakeUpdaterService>? OnUpdate { get; set; }
+
+    public Task CheckForUpdatesAsync(bool silent = false)
+    {
+        CheckCalls++;
+        OnCheck?.Invoke(this, silent);
+        StateChanged?.Invoke(this, EventArgs.Empty);
+        return Task.CompletedTask;
+    }
+
+    public Task UpdateAsync(IProgress<int>? progress = null)
+    {
+        UpdateCalls++;
+        OnUpdate?.Invoke(this);
+        StateChanged?.Invoke(this, EventArgs.Empty);
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> ShouldShowCurrentReleaseNotesAsync() => Task.FromResult(ShouldShowReleaseNotes);
+
+    public Task MarkCurrentReleaseNotesAsShownAsync()
+    {
+        MarkShownCalls++;
+        return Task.CompletedTask;
+    }
+}
+
+internal sealed class FakeThemeStorage : IThemeStorage
+{
+    public IReadOnlyList<string> ThemeFiles { get; set; } = [];
+    public string? SelectedThemePath { get; set; }
+
+    public IReadOnlyList<string> GetThemeFiles() => ThemeFiles;
+    public string? GetSelectedThemePath() => SelectedThemePath;
+    public int SeedThemeFiles(string sourceFolder) => 0;
+    public void SaveSelectedTheme(string? themePath) => SelectedThemePath = themePath;
+    public void DeleteTheme(string themePath) { }
+    public string ImportTheme(string sourcePath) => sourcePath;
+    public string CreateExportPath() => Path.Combine(Path.GetTempPath(), "theme.json");
+}
+
+internal sealed class FakeThemeFilePicker : IThemeFilePicker
+{
+    public string? NextPick { get; set; }
+
+    public Task<string?> PickThemeJsonAsync() => Task.FromResult(NextPick);
 }
 
 internal sealed class FakeDocumentFilePicker : IDocumentFilePicker

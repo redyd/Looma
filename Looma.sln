@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Looma.Infrastructure.Tests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Looma.Presentation.Tests", "tests\Looma.Presentation.Tests\Looma.Presentation.Tests.csproj", "{195653C4-7D9A-45CE-A58B-39FB4DFB045F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Looma.App.Tests", "tests\Looma.App.Tests\Looma.App.Tests.csproj", "{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,18 @@ Global
 		{195653C4-7D9A-45CE-A58B-39FB4DFB045F}.Release|x64.Build.0 = Release|Any CPU
 		{195653C4-7D9A-45CE-A58B-39FB4DFB045F}.Release|x86.ActiveCfg = Release|Any CPU
 		{195653C4-7D9A-45CE-A58B-39FB4DFB045F}.Release|x86.Build.0 = Release|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Debug|x64.Build.0 = Debug|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Debug|x86.Build.0 = Debug|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Release|x64.ActiveCfg = Release|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Release|x64.Build.0 = Release|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Release|x86.ActiveCfg = Release|Any CPU
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,5 +156,6 @@ Global
 		{A62A10F6-46FA-4829-8D8F-FB82A95DC712} = {5EF74BB3-C10F-447D-AFF2-F545A60D48BE}
 		{DBD2A903-9F75-47DA-83EE-85A2740615B5} = {5EF74BB3-C10F-447D-AFF2-F545A60D48BE}
 		{195653C4-7D9A-45CE-A58B-39FB4DFB045F} = {5EF74BB3-C10F-447D-AFF2-F545A60D48BE}
+		{568608F4-B0E0-4CBD-A2CC-18E885C5F8CB} = {5EF74BB3-C10F-447D-AFF2-F545A60D48BE}
 	EndGlobalSection
 EndGlobal

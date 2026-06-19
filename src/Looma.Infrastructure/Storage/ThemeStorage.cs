@@ -176,5 +176,13 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
     private sealed class AppConfig
     {
         public string? SelectedTheme { get; set; }
+        public string? Version { get; set; }
+        public Dictionary<string, ReleaseNoteConfig> ReleaseNotes { get; set; } = [];
+    }
+
+    private sealed class ReleaseNoteConfig
+    {
+        public string Markdown { get; set; } = string.Empty;
+        public bool Shown { get; set; }
     }
 }

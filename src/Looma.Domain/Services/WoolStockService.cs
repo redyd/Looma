@@ -3,6 +3,7 @@
 // See LICENSE in the project root for full license text.
 
 using Looma.Domain.Core;
+using Looma.Domain.IServices;
 using Looma.Domain.Logging;
 using Looma.Domain.Refresh;
 using Looma.Domain.Repositories;

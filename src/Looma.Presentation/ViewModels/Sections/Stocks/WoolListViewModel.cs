@@ -10,6 +10,7 @@ using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.ViewModels.Base;
+using Looma.Domain.IServices;
 
 namespace Looma.Presentation.ViewModels.Sections.Stocks;
 
