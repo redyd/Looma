@@ -23,7 +23,7 @@ public sealed class SettingsViewModelTests
         var interaction = new FakeUpdateInteractionService();
         var vm = CreateViewModel(notifications, updater, interaction);
 
-        await vm.CheckForUpdatesCommand.ExecuteAsync(null);
+        await vm.Updater.CheckForUpdatesCommand.ExecuteAsync(null);
 
         updater.CheckCalls.Should().Be(1);
         interaction.UpdatePromptRequestCount.Should().Be(0);
@@ -44,7 +44,7 @@ public sealed class SettingsViewModelTests
         var interaction = new FakeUpdateInteractionService();
         var vm = CreateViewModel(notifications, updater, interaction);
 
-        await vm.CheckForUpdatesCommand.ExecuteAsync(null);
+        await vm.Updater.CheckForUpdatesCommand.ExecuteAsync(null);
 
         updater.CheckCalls.Should().Be(0);
         interaction.UpdatePromptRequestCount.Should().Be(1);
@@ -66,7 +66,7 @@ public sealed class SettingsViewModelTests
         var interaction = new FakeUpdateInteractionService();
         var vm = CreateViewModel(notifications, updater, interaction);
 
-        await vm.CheckForUpdatesCommand.ExecuteAsync(null);
+        await vm.Updater.CheckForUpdatesCommand.ExecuteAsync(null);
 
         updater.CheckCalls.Should().Be(1);
         interaction.UpdatePromptRequestCount.Should().Be(1);
@@ -88,7 +88,7 @@ public sealed class SettingsViewModelTests
         var interaction = new FakeUpdateInteractionService();
         var vm = CreateViewModel(notifications, updater, interaction);
 
-        await vm.CheckForUpdatesCommand.ExecuteAsync(null);
+        await vm.Updater.CheckForUpdatesCommand.ExecuteAsync(null);
 
         interaction.UpdatePromptRequestCount.Should().Be(0);
         notifications.Calls.Should().ContainSingle(call =>
@@ -104,7 +104,7 @@ public sealed class SettingsViewModelTests
         var interaction = new FakeUpdateInteractionService();
         var vm = CreateViewModel(notifications, updater, interaction);
 
-        await vm.CheckForUpdatesCommand.ExecuteAsync(null);
+        await vm.Updater.CheckForUpdatesCommand.ExecuteAsync(null);
 
         updater.CheckCalls.Should().Be(0);
         interaction.UpdatePromptRequestCount.Should().Be(0);
@@ -119,7 +119,7 @@ public sealed class SettingsViewModelTests
         var interaction = new FakeUpdateInteractionService();
         var vm = CreateViewModel(notifications, updater, interaction);
 
-        vm.ShowCurrentReleaseNotesCommand.Execute(null);
+        vm.Updater.ShowCurrentReleaseNotesCommand.Execute(null);
 
         interaction.CurrentReleaseNotesRequestCount.Should().Be(1);
     }
@@ -167,6 +167,5 @@ public sealed class SettingsViewModelTests
             themeStorage ?? new FakeThemeStorage(),
             new FakeThemeFilePicker(),
             notifications,
-            updater,
-            interaction);
+            new SettingsUpdaterViewModel(notifications, updater, interaction));
 }

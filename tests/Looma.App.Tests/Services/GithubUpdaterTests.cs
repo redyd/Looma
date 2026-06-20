@@ -149,6 +149,40 @@ public sealed class GithubUpdaterTests
     }
 
     [Fact]
+    public async Task MockUpdater_UsesEditableVersionsReleaseNotesAndDelays()
+    {
+        var settings = new FakeSettingsService();
+        var sut = new MockUpdater(settings)
+        {
+            MockCurrentVersion = "v1.0.0",
+            MockPublishedVersion = "v1.1.0",
+            MockReleaseNotes = "## Mock notes",
+            MockCheckDelayMilliseconds = 1,
+            MockDownloadDelayMilliseconds = 1
+        };
+
+        await sut.CheckForUpdatesAsync();
+
+        sut.Status.Should().Be(UpdateStatus.Available);
+        sut.UpdateInformations.Should().BeEquivalentTo(new
+        {
+            Version = "1.1.0",
+            ReleaseNotes = "## Mock notes",
+            Channel = "mock"
+        });
+
+        await sut.UpdateAsync();
+
+        sut.Status.Should().Be(UpdateStatus.Idle);
+        sut.CurrentVersion.Should().Be("1.1.0");
+        sut.CurrentReleaseNotes.Should().Be("## Mock notes");
+        sut.UpdateInformations.Should().BeNull();
+        settings.Version.Should().Be("1.1.0");
+        settings.ReleaseNotes["1.1.0"].Should().Be("## Mock notes");
+        settings.ReleaseNotesShown["1.1.0"].Should().BeFalse();
+    }
+
+    [Fact]
     public async Task CurrentReleaseNotes_AreShownOncePerVersion()
     {
         var settings = new FakeSettingsService();

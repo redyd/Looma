@@ -1,22 +1,22 @@
 <!--
-    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
-    This file is part of Looma, licensed under the AGPL-3.0.
-    See LICENSE in the project root for full license text.
+Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+This file is part of Looma, licensed under the AGPL-3.0.
+See LICENSE in the project root for full license text.
 -->
 
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
+
     <!-- BASE -->
-    
+
     <Style Selector="Button">
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="Cursor" Value="Hand" />
     </Style>
-        
+
     <!-- CANCEL -->
-    
+
     <Style Selector="Button.cancel-btn">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource CancelButtonForegroundBrush}" />
@@ -43,9 +43,9 @@
         <Setter Property="BorderBrush" Value="{DynamicResource CancelButtonHoverBorderBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource CancelButtonHoverForegroundBrush}" />
     </Style>
-    
+
     <!-- DANGER -->
-    
+
     <Style Selector="Button.danger-btn">
         <Setter Property="Background" Value="{DynamicResource DangerButtonBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource DangerButtonForegroundBrush}" />
@@ -70,9 +70,9 @@
         <Setter Property="Background" Value="{DynamicResource DangerButtonHoverBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource DangerButtonHoverForegroundBrush}" />
     </Style>
-    
+
     <!-- PAGINATION -->
-    
+
     <Style Selector="Button.pagination-btn">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource PaginationButtonForegroundBrush}" />
@@ -98,7 +98,11 @@
 
     <Style Selector="Button.pagination-btn:disabled">
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Opacity" Value="0.5" />
+    </Style>
+
+    <Style Selector="Button.pagination-btn:not(.no-disable-style):disabled">
         <Setter Property="Opacity" Value="0" />
     </Style>
-    
+
 </Styles>

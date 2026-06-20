@@ -35,7 +35,12 @@ public static class DependencyInjection
         services.AddSingleton<IDomainLogger, ConsoleDomainLogger>();
         services.AddSingleton<IDataRefreshService, DataRefreshService>();
         services.AddScoped<IAppDataSeeder, AppDataSeeder>();
+#if DEBUG
+        services.AddSingleton<MockUpdater>();
+        services.AddSingleton<IUpdaterService>(sp => sp.GetRequiredService<MockUpdater>());
+#else
         services.AddSingleton<IUpdaterService, GithubUpdater>();
+#endif
 
         services.AddScoped<WoolStockCalculator>();
         services.AddScoped<IWoolService, WoolService>();
@@ -128,8 +133,10 @@ public static class DependencyInjection
                         sp.GetRequiredService<IThemeStorage>(),
                         sp.GetRequiredService<IThemeFilePicker>(),
                         sp.GetRequiredService<INotificationService>(),
-                        sp.GetRequiredService<IUpdaterService>(),
-                        sp.GetRequiredService<IUpdateInteractionService>())),
+                        new SettingsUpdaterViewModel(
+                            sp.GetRequiredService<INotificationService>(),
+                            sp.GetRequiredService<IUpdaterService>(),
+                            sp.GetRequiredService<IUpdateInteractionService>()))),
                 
                 sp.GetRequiredService<INotificationService>(),
                 sp.GetRequiredService<IUpdaterService>(),

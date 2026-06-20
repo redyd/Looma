@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Looma.Domain.Core;
 using Looma.Domain.IServices;
 using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
@@ -20,47 +19,28 @@ public partial class SettingsViewModel(
     IThemeStorage themeStorage,
     IThemeFilePicker themeFilePicker,
     INotificationService notifications,
-    IUpdaterService updaterService,
-    IUpdateInteractionService updateInteraction)
+    SettingsUpdaterViewModel updater)
     : PageViewModelBase
 {
     private bool _isLoadingThemes;
-    private bool _isListeningUpdater;
 
     public ObservableCollection<ThemeOptionViewModel> Themes { get; } = [];
+    public SettingsUpdaterViewModel Updater { get; } = updater;
 
     [ObservableProperty]
     public partial ThemeOptionViewModel? SelectedTheme { get; set; }
 
-    public string InstalledVersion => updaterService.CurrentVersion;
-    public bool IsCheckingForUpdates => updaterService.Status == UpdateStatus.Checking;
-    public bool IsUpdateAvailable => updaterService.Status == UpdateStatus.Available;
-    public string UpdateIconKind => IsUpdateAvailable ? "Download" : "LoaderCircle";
-    public string UpdateToolTip => IsUpdateAvailable
-        ? $"Installer la version {updaterService.UpdateInformations?.Version}"
-        : "Rechercher des mises à jour";
-
     public override void OnNavigatedTo()
     {
         Title = "Paramètres";
-        if (!_isListeningUpdater)
-        {
-            updaterService.StateChanged += OnUpdaterStateChanged;
-            _isListeningUpdater = true;
-        }
-
+        Updater.OnNavigatedTo();
         RefreshThemes();
-        RaiseUpdatePropertiesChanged();
     }
 
     public override void OnNavigatedFrom()
     {
         base.OnNavigatedFrom();
-        if (!_isListeningUpdater)
-            return;
-
-        updaterService.StateChanged -= OnUpdaterStateChanged;
-        _isListeningUpdater = false;
+        Updater.OnNavigatedFrom();
     }
 
     partial void OnSelectedThemeChanged(ThemeOptionViewModel? value)
@@ -232,49 +212,4 @@ public partial class SettingsViewModel(
         }
     }
 
-    [RelayCommand]
-    private void ShowCurrentReleaseNotes()
-    {
-        updateInteraction.RequestCurrentReleaseNotes();
-    }
-
-    [RelayCommand]
-    private async Task CheckForUpdatesAsync()
-    {
-        if (updaterService.Status == UpdateStatus.Checking)
-            return;
-
-        if (updaterService.Status == UpdateStatus.Available)
-        {
-            updateInteraction.RequestUpdatePrompt();
-            return;
-        }
-
-        await updaterService.CheckForUpdatesAsync();
-
-        if (updaterService.Status == UpdateStatus.Available)
-        {
-            updateInteraction.RequestUpdatePrompt();
-            return;
-        }
-
-        if (updaterService.Status == UpdateStatus.Error)
-        {
-            notifications.Error(updaterService.ErrorMessage ?? "Impossible de vérifier les mises à jour.");
-            return;
-        }
-
-        notifications.Info("Looma est à jour.");
-    }
-
-    private void OnUpdaterStateChanged(object? sender, EventArgs e) => RaiseUpdatePropertiesChanged();
-
-    private void RaiseUpdatePropertiesChanged()
-    {
-        OnPropertyChanged(nameof(InstalledVersion));
-        OnPropertyChanged(nameof(IsCheckingForUpdates));
-        OnPropertyChanged(nameof(IsUpdateAvailable));
-        OnPropertyChanged(nameof(UpdateIconKind));
-        OnPropertyChanged(nameof(UpdateToolTip));
-    }
 }

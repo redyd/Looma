@@ -125,6 +125,14 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private void OnUpdaterStateChanged(object? sender, EventArgs e)
     {
+        if (IsInstallingUpdate && _updaterService.Status == UpdateStatus.Idle)
+        {
+            IsInstallingUpdate = false;
+            IsUpdatePromptVisible = false;
+            OnPropertyChanged(nameof(CanCloseUpdatePrompt));
+            OnPropertyChanged(nameof(CanConfirmUpdate));
+        }
+
         OnPropertyChanged(nameof(CurrentVersion));
         OnPropertyChanged(nameof(UpdateVersion));
         OnPropertyChanged(nameof(UpdateReleaseNotes));

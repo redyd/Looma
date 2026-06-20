@@ -1,7 +1,7 @@
 <!--
-    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
-    This file is part of Looma, licensed under the AGPL-3.0.
-    See LICENSE in the project root for full license text.
+Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+This file is part of Looma, licensed under the AGPL-3.0.
+See LICENSE in the project root for full license text.
 -->
 
 <UserControl xmlns="https://github.com/avaloniaui"
@@ -111,25 +111,43 @@
                 Classes="surface-chip"
                 Padding="10 6">
             <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                <TextBlock Text="{Binding InstalledVersion}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" Foreground="{DynamicResource TextForegroundBrush}"/>
+                <TextBlock Text="{Binding Updater.InstalledVersion}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" Foreground="{DynamicResource TextForegroundBrush}"/>
                 <Button Classes="pagination-btn"
                         Width="28"
                         Height="28"
                         MinWidth="28"
-                        Command="{Binding ShowCurrentReleaseNotesCommand}"
+                        Command="{Binding Updater.ShowCurrentReleaseNotesCommand}"
                         ToolTip.Tip="Notes de version">
                     <LucideIcon Kind="FileText" Size="15" />
                 </Button>
-                <Button Classes="pagination-btn"
-                        Width="28"
-                        Height="28"
-                        MinWidth="28"
-                        Command="{Binding CheckForUpdatesCommand}"
-                        ToolTip.Tip="{Binding UpdateToolTip}">
-                    <LucideIcon x:Name="UpdateSearchIcon"
-                                Kind="{Binding UpdateIconKind}"
-                                Size="15"
-                                RenderTransformOrigin="0.5,0.5" />
+                <Button Classes="pagination-btn no-disable-style"
+                        Width="28" Height="28" MinWidth="28"
+                        Command="{Binding Updater.CheckForUpdatesCommand}"
+                        ToolTip.Tip="{Binding Updater.UpdateToolTip}">
+                    <Panel Width="15" Height="15"
+                           RenderTransformOrigin="50%,50%"
+                           Classes.spinning="{Binding Updater.IsCheckingForUpdates}">
+                        <Panel.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Panel.RenderTransform>
+                        <Panel.Styles>
+                            <Style Selector="Panel.spinning">
+                                <Style.Animations>
+                                    <Animation Duration="0:0:1"
+                                               IterationCount="INFINITE"
+                                               Easing="LinearEasing">
+                                        <KeyFrame Cue="0%">
+                                            <Setter Property="RotateTransform.Angle" Value="0" />
+                                        </KeyFrame>
+                                        <KeyFrame Cue="100%">
+                                            <Setter Property="RotateTransform.Angle" Value="360" />
+                                        </KeyFrame>
+                                    </Animation>
+                                </Style.Animations>
+                            </Style>
+                        </Panel.Styles>
+                        <LucideIcon Kind="{Binding Updater.UpdateIconKind}" Size="15" />
+                    </Panel>
                 </Button>
             </StackPanel>
         </Border>
