@@ -6,6 +6,7 @@ See LICENSE in the project root for full license text.
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:settings="using:Looma.Presentation.ViewModels.Shared.Settings"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Settings"
              x:Class="Looma.Views.Views.Sections.Settings.SettingsView"
              x:DataType="vm:SettingsViewModel">
@@ -45,7 +46,7 @@ See LICENSE in the project root for full license text.
                                           SelectedItem="{Binding SelectedTheme}"
                                           HorizontalAlignment="Stretch">
                                     <ComboBox.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:ThemeOptionViewModel">
+                                        <DataTemplate x:DataType="settings:ThemeOptionViewModel">
                                             <TextBlock Text="{Binding Name}" />
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
