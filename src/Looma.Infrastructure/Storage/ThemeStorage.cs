@@ -167,10 +167,21 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
             var json = File.ReadAllText(paths.ConfigPath);
             return JsonSerializer.Deserialize<AppConfig>(json, JsonOptions) ?? new AppConfig();
         }
-        catch
+        catch (JsonException ex)
         {
-            return new AppConfig();
+            throw new InvalidOperationException(
+                BuildConfigJsonErrorMessage(ex),
+                ex);
         }
+    }
+
+    private string BuildConfigJsonErrorMessage(JsonException ex)
+    {
+        var location = ex.LineNumber is null || ex.BytePositionInLine is null
+            ? string.Empty
+            : $" Ligne {ex.LineNumber + 1}, colonne {ex.BytePositionInLine + 1}.";
+
+        return $"Le fichier de configuration \"{Path.GetFileName(paths.ConfigPath)}\" contient un JSON invalide.{location} Vérifiez la syntaxe du fichier.";
     }
 
     private sealed class AppConfig

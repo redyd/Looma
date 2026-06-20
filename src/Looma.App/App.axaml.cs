@@ -134,18 +134,18 @@ public partial class App : Application
 
     private void ApplyStoredTheme()
     {
-        var themeStorage = Services.GetRequiredService<IThemeStorage>();
-        var selectedThemePath = themeStorage.GetSelectedThemePath();
-        if (selectedThemePath is null)
-            return;
-
         try
         {
+            var themeStorage = Services.GetRequiredService<IThemeStorage>();
+            var selectedThemePath = themeStorage.GetSelectedThemePath();
+            if (selectedThemePath is null)
+                return;
+
             Services.GetRequiredService<ThemeService>().ApplyOverride(selectedThemePath);
         }
         catch
         {
-            themeStorage.SaveSelectedTheme(null);
+            // The settings screen surfaces the detailed configuration or theme parsing error.
         }
     }
 

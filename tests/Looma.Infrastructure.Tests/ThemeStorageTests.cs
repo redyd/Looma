@@ -86,6 +86,20 @@ public sealed class ThemeStorageTests : IDisposable
         Assert.Null(storage.GetSelectedThemePath());
     }
 
+    [Fact]
+    public void GetSelectedThemePath_WhenConfigJsonIsInvalid_ThrowsClearError()
+    {
+        var paths = new AppPaths(_rootPath);
+        paths.EnsureDirectoriesExist();
+        File.WriteAllText(paths.ConfigPath, """{"SelectedTheme":""");
+        var storage = new ThemeStorage(paths);
+
+        var exception = Assert.Throws<InvalidOperationException>(() => storage.GetSelectedThemePath());
+
+        Assert.Contains("Le fichier de configuration \"config.json\" contient un JSON invalide.", exception.Message);
+        Assert.Contains("Vérifiez la syntaxe du fichier.", exception.Message);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Looma.Domain.Logging;
 using Looma.Domain.Repositories;
 using Looma.App.Services;
@@ -36,16 +35,7 @@ public static class DependencyInjection
         services.AddSingleton<IDomainLogger, ConsoleDomainLogger>();
         services.AddSingleton<IDataRefreshService, DataRefreshService>();
         services.AddScoped<IAppDataSeeder, AppDataSeeder>();
-        if (ShouldUseMockUpdater(args))
-        {
-            services.AddSingleton<MockUpdater>();
-            services.AddSingleton<IUpdaterService>(sp => sp.GetRequiredService<MockUpdater>());
-            services.AddSingleton<IUpdateMockService>(sp => sp.GetRequiredService<MockUpdater>());
-        }
-        else
-        {
-            services.AddSingleton<IUpdaterService, GithubUpdater>();
-        }
+        services.AddSingleton<IUpdaterService, GithubUpdater>();
 
         services.AddScoped<WoolStockCalculator>();
         services.AddScoped<IWoolService, WoolService>();
@@ -60,11 +50,6 @@ public static class DependencyInjection
         services.AddScoped<PatternSearchSpec>();
         services.AddScoped<WoolSearchSpec>();
     }
-
-    private static bool ShouldUseMockUpdater(IReadOnlyCollection<string>? args) =>
-        args?.Contains("--mock-updates") == true
-        || string.Equals(Environment.GetEnvironmentVariable("LOOMA_MOCK_UPDATES"), "1", StringComparison.OrdinalIgnoreCase)
-        || string.Equals(Environment.GetEnvironmentVariable("LOOMA_MOCK_UPDATES"), "true", StringComparison.OrdinalIgnoreCase);
 
     public static void AddPresentation(this IServiceCollection services)
     {
@@ -144,8 +129,7 @@ public static class DependencyInjection
                         sp.GetRequiredService<IThemeFilePicker>(),
                         sp.GetRequiredService<INotificationService>(),
                         sp.GetRequiredService<IUpdaterService>(),
-                        sp.GetRequiredService<IUpdateInteractionService>(),
-                        sp.GetService<IUpdateMockService>())),
+                        sp.GetRequiredService<IUpdateInteractionService>())),
                 
                 sp.GetRequiredService<INotificationService>(),
                 sp.GetRequiredService<IUpdaterService>(),

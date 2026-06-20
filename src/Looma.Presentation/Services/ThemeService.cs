@@ -29,8 +29,7 @@ public class ThemeService
 
     public void ApplyOverride(string jsonPath)
     {
-        var json = File.ReadAllText(jsonPath);
-        var dto = JsonSerializer.Deserialize<ThemeOverrideDto>(json, JsonOptions);
+        var dto = ReadTheme(jsonPath);
         if (dto is null) return;
 
         ResetToDefault();
@@ -54,8 +53,7 @@ public class ThemeService
 
     public string? GetThemeName(string jsonPath)
     {
-        var json = File.ReadAllText(jsonPath);
-        var dto = JsonSerializer.Deserialize<ThemeOverrideDto>(json, JsonOptions);
+        var dto = ReadTheme(jsonPath);
         return string.IsNullOrWhiteSpace(dto?.Name)
             ? null
             : dto.Name;
@@ -112,6 +110,31 @@ public class ThemeService
                 resources[prop.Name] = new SolidColorBrush(color);
             }
         }
+    }
+
+    private static ThemeOverrideDto? ReadTheme(string jsonPath)
+    {
+        try
+        {
+            var json = File.ReadAllText(jsonPath);
+            return JsonSerializer.Deserialize<ThemeOverrideDto>(json, JsonOptions);
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidOperationException(
+                BuildJsonErrorMessage("Le fichier de thème", jsonPath, ex),
+                ex);
+        }
+    }
+
+    private static string BuildJsonErrorMessage(string label, string path, JsonException ex)
+    {
+        var fileName = Path.GetFileName(path);
+        var location = ex.LineNumber is null || ex.BytePositionInLine is null
+            ? string.Empty
+            : $" Ligne {ex.LineNumber + 1}, colonne {ex.BytePositionInLine + 1}.";
+
+        return $"{label} \"{fileName}\" contient un JSON invalide.{location} Vérifiez la syntaxe du fichier.";
     }
 
     private void CaptureDefaultResources()

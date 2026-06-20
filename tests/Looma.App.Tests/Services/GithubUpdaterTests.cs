@@ -149,31 +149,6 @@ public sealed class GithubUpdaterTests
     }
 
     [Fact]
-    public async Task MockUpdater_PublishesInstallsAndRestartsIntoTargetVersion()
-    {
-        var settings = new FakeSettingsService();
-        var sut = new MockUpdater(settings)
-        {
-            MockCurrentVersion = "v0.2.1",
-            MockUpdateVersion = "v0.2.2",
-            MockReleaseNotes = "## Notes mock"
-        };
-
-        sut.CurrentVersion.Should().Be("0.2.1");
-
-        await sut.PublishMockUpdateAsync();
-        await sut.UpdateAsync();
-        await sut.SimulateRestartAsync();
-
-        sut.CurrentVersion.Should().Be("0.2.2");
-        sut.CurrentReleaseNotes.Should().Be("## Notes mock");
-        sut.Status.Should().Be(UpdateStatus.Idle);
-        sut.UpdateInformations.Should().BeNull();
-        settings.ReleaseNotes["0.2.2"].Should().Be("## Notes mock");
-        settings.ReleaseNotesShown["0.2.2"].Should().BeFalse();
-    }
-
-    [Fact]
     public async Task CurrentReleaseNotes_AreShownOncePerVersion()
     {
         var settings = new FakeSettingsService();

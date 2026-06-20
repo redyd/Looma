@@ -124,13 +124,47 @@ public sealed class SettingsViewModelTests
         interaction.CurrentReleaseNotesRequestCount.Should().Be(1);
     }
 
+    [Fact]
+    public void OnNavigatedTo_WhenSelectedThemeJsonIsInvalid_ShowsClearNotification()
+    {
+        var tempFolder = Path.Combine(Path.GetTempPath(), "looma-settings-tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempFolder);
+        var themePath = Path.Combine(tempFolder, "bad-theme.json");
+        File.WriteAllText(themePath, """{"Name":""");
+
+        try
+        {
+            var notifications = new FakeNotificationService();
+            var updater = new FakeUpdaterService();
+            var interaction = new FakeUpdateInteractionService();
+            var storage = new FakeThemeStorage
+            {
+                ThemeFiles = [themePath],
+                SelectedThemePath = themePath
+            };
+            var vm = CreateViewModel(notifications, updater, interaction, storage);
+
+            vm.OnNavigatedTo();
+
+            notifications.Calls.Should().ContainSingle(call =>
+                call.Severity == NotificationSeverity.Error
+                && call.Message.Contains("Impossible de charger les thèmes : Le fichier de thème \"bad-theme.json\" contient un JSON invalide.")
+                && call.Message.Contains("Vérifiez la syntaxe du fichier."));
+        }
+        finally
+        {
+            Directory.Delete(tempFolder, recursive: true);
+        }
+    }
+
     private static SettingsViewModel CreateViewModel(
         FakeNotificationService notifications,
         FakeUpdaterService updater,
-        FakeUpdateInteractionService interaction) =>
+        FakeUpdateInteractionService interaction,
+        FakeThemeStorage? themeStorage = null) =>
         new(
             new ThemeService(),
-            new FakeThemeStorage(),
+            themeStorage ?? new FakeThemeStorage(),
             new FakeThemeFilePicker(),
             notifications,
             updater,
