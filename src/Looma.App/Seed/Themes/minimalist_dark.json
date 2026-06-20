@@ -1,0 +1,227 @@
+{
+  "Name": "Minimalist Dark",
+  "Accent": {
+    "SystemAccentColor": "#ff6b7280",
+    "SystemAccentColorLight1": "#ff9ca3af",
+    "SystemAccentColorLight2": "#ffd1d5db",
+    "SystemAccentColorDark1": "#ff374151",
+    "SystemAccentColorDark2": "#ff1f2937"
+  },
+  "Primary": {
+    "PrimaryBrush": "#ff1f2937",
+    "PrimaryDarkBrush": "#ff111827",
+    "PrimaryLightBrush": "#ff374151",
+    "SecondaryBrush": "#ff374151",
+    "AccentBrush": "#ff4b5563"
+  },
+  "Text": {
+    "TextPrimaryBrush": "#fff9fafb",
+    "TextSecondaryBrush": "#ff9ca3af",
+    "TextWhiteBrush": "#fff9fafb",
+    "TextOnPrimaryBrush": "#ffd1d5db"
+  },
+  "Background": {
+    "BackgroundBrush": "#ff0d1117",
+    "BackgroundHoverBrush": "#ff161b22",
+    "BackgroundCardBrush": "#ff161b22"
+  },
+  "State": {
+    "SuccessBrush": "#ff1f2937",
+    "WarningBrush": "#ff1f2937",
+    "ErrorBrush": "#ff1f2937",
+    "InfoBrush": "#ff1f2937"
+  },
+  "Borders": {
+    "BorderBrush": "#ff374151",
+    "DividerBrush": "#ff1f2937"
+  },
+  "Buttons": {
+    "CancelButtonForegroundBrush": "#ff9ca3af",
+    "CancelButtonBorderBrush": "#ff374151",
+    "CancelButtonHoverBackgroundBrush": "#ff1f2937",
+    "CancelButtonHoverBorderBrush": "#ff6b7280",
+    "CancelButtonHoverForegroundBrush": "#ffd1d5db",
+
+    "DangerButtonBackgroundBrush": "#ff1f2937",
+    "DangerButtonForegroundBrush": "#ff9ca3af",
+    "DangerButtonBorderBrush": "#ff374151",
+    "DangerButtonHoverBackgroundBrush": "#ff374151",
+    "DangerButtonHoverForegroundBrush": "#fff9fafb",
+
+    "DangerSolidButtonBackgroundBrush": "#ff374151",
+    "DangerSolidButtonForegroundBrush": "#fff9fafb",
+    "DangerSolidButtonIconForegroundBrush": "#fff9fafb",
+    "DangerSolidButtonHoverBackgroundBrush": "#ff4b5563",
+    "DangerSolidButtonHoverForegroundBrush": "#fff9fafb",
+    "DangerSolidButtonHoverIconForegroundBrush": "#fff9fafb",
+
+    "PaginationButtonForegroundBrush": "#ff9ca3af",
+    "PaginationButtonHoverForegroundBrush": "#fff9fafb",
+
+    "SubmitButtonBackgroundBrush": "#ff374151",
+    "SubmitButtonForegroundBrush": "#fff9fafb",
+    "SubmitButtonIconForegroundBrush": "#fff9fafb",
+    "SubmitButtonHoverBackgroundBrush": "#ff4b5563",
+    "SubmitButtonHoverForegroundBrush": "#fff9fafb",
+    "SubmitButtonHoverIconForegroundBrush": "#fff9fafb",
+    "SubmitButtonDisabledBackgroundBrush": "#ff1f2937"
+  },
+  "Forms": {
+    "FormDividerBrush": "#ff374151",
+    "FormControlBackgroundBrush": "#ff161b22",
+    "FormControlBorderBrush": "#ff374151",
+    "FormControlForegroundBrush": "#fff9fafb",
+    "FormControlPlaceholderForegroundBrush": "#ff6b7280",
+    "FormControlFocusBackgroundBrush": "#ff161b22",
+    "FormControlHoverBorderBrush": "#ff6b7280",
+    "FormControlFocusBorderBrush": "#ff9ca3af",
+    "FormOptionForegroundBrush": "#fff9fafb",
+    "FormOptionHoverForegroundBrush": "#ffd1d5db",
+    "ColorPickerContainerBackgroundBrush": "#ff161b22",
+    "ColorPickerContainerBorderBrush": "#ff374151"
+  },
+  "Surfaces": {
+    "InteractiveCardHoverBackgroundBrush": "#ff1f2937",
+    "InteractiveCardHoverBorderBrush": "#ff6b7280",
+
+    "SelectionRowBackgroundBrush": "#ff161b22",
+    "SelectionRowBorderBrush": "#ff374151",
+    "SelectionRowHoverBackgroundBrush": "#ff1f2937",
+    "SelectionRowSelectedBackgroundBrush": "#ff1f2937",
+    "SelectionRowSelectedBorderBrush": "#ff6b7280",
+
+    "TableHeaderBackgroundBrush": "#ff161b22",
+    "TableHeaderBorderBrush": "#ff374151",
+    "TableRowBackgroundBrush": "#ff161b22",
+    "TableRowBorderBrush": "#ff374151",
+
+    "LinkedRowBackgroundBrush": "#ff161b22",
+    "LinkedRowBorderBrush": "#ff374151",
+    "LinkedRowHoverBackgroundBrush": "#ff1f2937",
+    "LinkedRowHoverBorderBrush": "#ff6b7280",
+
+    "SurfaceCardBackgroundBrush": "#ff161b22",
+    "SurfaceCardBorderBrush": "#ff374151",
+    "SurfacePanelBackgroundBrush": "#ff161b22",
+    "SurfacePanelBorderBrush": "#ff374151",
+    "SurfaceChipBackgroundBrush": "#ff1f2937",
+    "SurfaceChipBorderBrush": "#ff374151",
+
+    "EmptyStateBackgroundBrush": "#ff161b22",
+    "EmptyStateBorderBrush": "#ff374151",
+    "EmptyStateTitleForegroundBrush": "#fff9fafb",
+
+    "AlertErrorBackgroundBrush": "#ff1f2937",
+    "AlertErrorBorderBrush": "#ff374151"
+  },
+  "Navigation": {
+    "TabForegroundBrush": "#ff6b7280",
+    "TabIconForegroundBrush": "#ff6b7280",
+    "TabHoverBackgroundBrush": "#ff1f2937",
+    "TabHoverForegroundBrush": "#fff9fafb",
+    "TabHoverIconForegroundBrush": "#fff9fafb",
+
+    "TabSelectedBackgroundBrush": "#ff1f2937",
+    "TabSelectedForegroundBrush": "#fff9fafb",
+    "TabSelectedIconForegroundBrush": "#fff9fafb",
+
+    "TabSelectedHoverBackgroundBrush": "#ff374151",
+    "TabSelectedHoverForegroundBrush": "#fff9fafb",
+    "TabSelectedHoverIconForegroundBrush": "#fff9fafb"
+  },
+  "Ribbons": {
+    "RibbonForegroundBrush": "#fff9fafb",
+    "StatusWishlistRibbonBackgroundBrush": "#ff1f2937",
+    "StatusInProgressRibbonBackgroundBrush": "#ff374151",
+    "StatusFinishedRibbonBackgroundBrush": "#ff1f2937",
+    "StatusPausedRibbonBackgroundBrush": "#ff1f2937",
+
+    "PatternCrochetRibbonBackgroundBrush": "#ff1f2937",
+    "PatternTunisianCrochetRibbonBackgroundBrush": "#ff374151",
+    "PatternTricotRibbonBackgroundBrush": "#ff1f2937"
+  },
+  "Elements": {
+    "PageTitleForegroundBrush": "#fff9fafb",
+    "PageSubtitleForegroundBrush": "#ff9ca3af",
+
+    "FormTitleForegroundBrush": "#fff9fafb",
+    "FormSubtitleForegroundBrush": "#ff9ca3af",
+    "SectionTitleForegroundBrush": "#fff9fafb",
+
+    "FormLabelForegroundBrush": "#fff9fafb",
+    "FormHintForegroundBrush": "#ff6b7280",
+    "FieldRequiredForegroundBrush": "#ff9ca3af",
+
+    "TableHeadingForegroundBrush": "#fff9fafb",
+
+    "EmptyStateTitleForegroundBrush": "#fff9fafb",
+    "EmptyStateMessageForegroundBrush": "#ff9ca3af",
+
+    "CardTitleForegroundBrush": "#fff9fafb",
+    "CardSubtitleForegroundBrush": "#ff9ca3af",
+    "CardMetadataForegroundBrush": "#ff6b7280",
+
+    "DetailHeaderBackgroundBrush": "#ff161b22",
+    "DetailHeaderBorderBrush": "#ff374151",
+    "DetailStatisticDividerBrush": "#ff374151",
+
+    "DetailTitleForegroundBrush": "#fff9fafb",
+    "DetailSubtitleForegroundBrush": "#ff9ca3af",
+
+    "DetailStatisticLabelForegroundBrush": "#ff9ca3af",
+    "DetailStatisticValueForegroundBrush": "#fff9fafb",
+    "DetailStatisticUnitForegroundBrush": "#ff6b7280",
+
+    "DetailFieldLabelForegroundBrush": "#ff9ca3af",
+    "DetailFieldValueForegroundBrush": "#fff9fafb",
+
+    "DetailLinkForegroundBrush": "#ffd1d5db",
+
+    "PaginationTextForegroundBrush": "#ff9ca3af",
+
+    "MetadataTagBackgroundBrush": "#ff1f2937",
+    "MetadataTagBorderBrush": "#ff374151",
+
+    "MetadataDividerBrush": "#ff374151",
+
+    "EmbeddedPanelBackgroundBrush": "#ff161b22",
+    "SummaryPanelBackgroundBrush": "#ff161b22",
+
+    "ListItemDividerBrush": "#ff374151",
+    "ListItemPrimaryForegroundBrush": "#fff9fafb",
+    "ListItemSecondaryForegroundBrush": "#ff9ca3af",
+
+    "PatternPreviewPrimaryForegroundBrush": "#fff9fafb",
+    "PatternPreviewSecondaryForegroundBrush": "#ff9ca3af",
+    "PatternPreviewMetadataForegroundBrush": "#ff6b7280",
+
+    "ProjectWoolPrimaryForegroundBrush": "#fff9fafb",
+    "ProjectWoolMetadataForegroundBrush": "#ff9ca3af",
+
+    "WarningTextForegroundBrush": "#ffd1d5db"
+  },
+  "Notifications": {
+    "NotificationTitleForegroundBrush": "#fff9fafb",
+    "NotificationMessageForegroundBrush": "#ffd1d5db",
+    "NotificationIconForegroundBrush": "#fff9fafb",
+
+    "NotificationDismissForegroundBrush": "#ff9ca3af",
+    "NotificationDismissHoverForegroundBrush": "#fff9fafb",
+
+    "NotificationSuccessAccentBrush": "#ff059669",
+    "NotificationSuccessBackgroundBrush": "#ff161b22",
+    "NotificationSuccessBorderBrush": "#ff059669",
+
+    "NotificationWarningAccentBrush": "#ffd97706",
+    "NotificationWarningBackgroundBrush": "#ff161b22",
+    "NotificationWarningBorderBrush": "#ffd97706",
+
+    "NotificationErrorAccentBrush": "#ffdc2626",
+    "NotificationErrorBackgroundBrush": "#ff161b22",
+    "NotificationErrorBorderBrush": "#ffdc2626",
+
+    "NotificationInfoAccentBrush": "#ff6b7280",
+    "NotificationInfoBackgroundBrush": "#ff161b22",
+    "NotificationInfoBorderBrush": "#ff374151"
+  }
+}

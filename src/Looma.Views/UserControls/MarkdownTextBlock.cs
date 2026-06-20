@@ -108,8 +108,9 @@ public partial class MarkdownTextBlock : StackPanel
         }
     }
 
-    private static TextBlock CreateHeading(string text, double fontSize) =>
-        new()
+    private static TextBlock CreateHeading(string text, double fontSize)
+    {
+        var textBlock = new TextBlock
         {
             Text = NormalizeInlineMarkdown(text),
             FontSize = fontSize,
@@ -118,8 +119,13 @@ public partial class MarkdownTextBlock : StackPanel
             Margin = new Thickness(0, 6, 0, 0)
         };
 
-    private static TextBlock CreateParagraph(string text, double fontSize = 14) =>
-        new()
+        textBlock.Bind(TextBlock.ForegroundProperty, textBlock.GetResourceObservable("SectionTitleForegroundBrush"));
+        return textBlock;
+    }
+
+    private static TextBlock CreateParagraph(string text, double fontSize = 14)
+    {
+        var textBlock = new TextBlock
         {
             Text = NormalizeInlineMarkdown(text),
             FontSize = fontSize,
@@ -127,20 +133,29 @@ public partial class MarkdownTextBlock : StackPanel
             LineHeight = 20
         };
 
-    private static Border CreateCodeBlock(string text) =>
-        new()
+        textBlock.Bind(TextBlock.ForegroundProperty, textBlock.GetResourceObservable("TextPrimaryBrush"));
+        return textBlock;
+    }
+
+    private static Border CreateCodeBlock(string text)
+    {
+        var textBlock = new TextBlock
+        {
+            Text = text,
+            FontFamily = FontFamily.Parse("Consolas,Menlo,Monospace"),
+            FontSize = 12,
+            TextWrapping = TextWrapping.Wrap
+        };
+        textBlock.Bind(TextBlock.ForegroundProperty, textBlock.GetResourceObservable("TextPrimaryBrush"));
+
+        return new Border
         {
             Padding = new Thickness(10),
             CornerRadius = new CornerRadius(6),
             Background = new SolidColorBrush(Color.FromArgb(18, 0, 0, 0)),
-            Child = new TextBlock
-            {
-                Text = text,
-                FontFamily = FontFamily.Parse("Consolas,Menlo,Monospace"),
-                FontSize = 12,
-                TextWrapping = TextWrapping.Wrap
-            }
+            Child = textBlock
         };
+    }
 
     private static string NormalizeInlineMarkdown(string text)
     {

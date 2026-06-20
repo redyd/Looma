@@ -12,6 +12,8 @@ namespace Looma.Presentation.Notifications;
 public partial class NotificationItemViewModel : ObservableObject
 {
     private readonly Action<NotificationItemViewModel> _dismiss;
+    [ObservableProperty]
+    private bool _isDismissing;
 
     public Guid Id { get; }
     public NotificationSeverity Severity { get; }

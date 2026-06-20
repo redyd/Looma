@@ -10,6 +10,8 @@ namespace Looma.Presentation.Notifications;
 
 public class NotificationService : ObservableObject, INotificationService
 {
+    private static readonly TimeSpan DismissAnimationDuration = TimeSpan.FromMilliseconds(180);
+
     private readonly ObservableCollection<NotificationItemViewModel> _notifications = [];
     private readonly Dictionary<Guid, CancellationTokenSource> _timers = new();
     private readonly object _gate = new();
@@ -43,14 +45,7 @@ public class NotificationService : ObservableObject, INotificationService
         cts?.Cancel();
         cts?.Dispose();
 
-        Dispatcher.UIThread.Post(() =>
-        {
-            var item = _notifications.FirstOrDefault(n => n.Id == id);
-            if (item is null)
-                return;
-
-            _notifications.Remove(item);
-        });
+        Dispatcher.UIThread.Post(() => StartDismissAnimation(id));
     }
 
     public void Clear()
@@ -110,5 +105,17 @@ public class NotificationService : ObservableObject, INotificationService
         catch (TaskCanceledException)
         {
         }
+    }
+
+    private async void StartDismissAnimation(Guid id)
+    {
+        var item = _notifications.FirstOrDefault(n => n.Id == id);
+        if (item is null || item.IsDismissing)
+            return;
+
+        item.IsDismissing = true;
+        await Task.Delay(DismissAnimationDuration);
+
+        _notifications.Remove(item);
     }
 }

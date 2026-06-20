@@ -27,7 +27,7 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.25" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.15" />
             </Transitions>
         </Setter>
         <Setter Property="Template">
@@ -42,6 +42,16 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+    </Style>
+
+    <Style Selector="TabItem.main-tab">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="TabItem.icon-tab">
+        <Setter Property="Width" Value="44" />
+        <Setter Property="MinWidth" Value="44" />
+        <Setter Property="Padding" Value="0" />
     </Style>
 
     <Style Selector="TabItem:pointerover">
@@ -62,6 +72,11 @@
 
     <Style Selector="TabItem LucideIcon">
         <Setter Property="Foreground" Value="{DynamicResource TabIconForegroundBrush}" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
     </Style>
 
     <Style Selector="TabItem:pointerover LucideIcon">

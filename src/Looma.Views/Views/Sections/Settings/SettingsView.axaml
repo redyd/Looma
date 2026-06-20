@@ -111,7 +111,7 @@ See LICENSE in the project root for full license text.
                 Classes="surface-chip"
                 Padding="10 6">
             <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                <TextBlock Text="{Binding Updater.InstalledVersion}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" Foreground="{DynamicResource TextForegroundBrush}"/>
+                <TextBlock Text="{Binding Updater.InstalledVersion}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" Foreground="{DynamicResource TextPrimaryBrush}"/>
                 <Button Classes="pagination-btn"
                         Width="28"
                         Height="28"
