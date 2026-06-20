@@ -111,34 +111,43 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private void OnUpdatePromptRequested(object? sender, EventArgs e)
     {
-        if (_updaterService.UpdateInformations is not null)
+        RunOnUiThread(() =>
         {
-            IsUpdatePromptVisible = true;
-        }
+            if (_updaterService.UpdateInformations is not null)
+            {
+                IsUpdatePromptVisible = true;
+            }
+        });
     }
 
     private void OnCurrentReleaseNotesRequested(object? sender, EventArgs e)
     {
-        OnPropertyChanged(nameof(CurrentReleaseNotes));
-        IsReleaseNotesVisible = true;
+        RunOnUiThread(() =>
+        {
+            OnPropertyChanged(nameof(CurrentReleaseNotes));
+            IsReleaseNotesVisible = true;
+        });
     }
 
     private void OnUpdaterStateChanged(object? sender, EventArgs e)
     {
-        if (IsInstallingUpdate && _updaterService.Status == UpdateStatus.Idle)
+        RunOnUiThread(() =>
         {
-            IsInstallingUpdate = false;
-            IsUpdatePromptVisible = false;
-            OnPropertyChanged(nameof(CanCloseUpdatePrompt));
-            OnPropertyChanged(nameof(CanConfirmUpdate));
-        }
+            if (IsInstallingUpdate && _updaterService.Status == UpdateStatus.Idle)
+            {
+                IsInstallingUpdate = false;
+                IsUpdatePromptVisible = false;
+                OnPropertyChanged(nameof(CanCloseUpdatePrompt));
+                OnPropertyChanged(nameof(CanConfirmUpdate));
+            }
 
-        OnPropertyChanged(nameof(CurrentVersion));
-        OnPropertyChanged(nameof(UpdateVersion));
-        OnPropertyChanged(nameof(UpdateReleaseNotes));
-        OnPropertyChanged(nameof(CurrentReleaseNotes));
-        OnPropertyChanged(nameof(DownloadProgress));
-        OnPropertyChanged(nameof(HasDownloadProgress));
+            OnPropertyChanged(nameof(CurrentVersion));
+            OnPropertyChanged(nameof(UpdateVersion));
+            OnPropertyChanged(nameof(UpdateReleaseNotes));
+            OnPropertyChanged(nameof(CurrentReleaseNotes));
+            OnPropertyChanged(nameof(DownloadProgress));
+            OnPropertyChanged(nameof(HasDownloadProgress));
+        });
     }
 
     public void Dispose()

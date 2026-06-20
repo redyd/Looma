@@ -100,7 +100,8 @@ public partial class SettingsUpdaterViewModel(
         notifications.Info("Looma est à jour.");
     }
 
-    private void OnUpdaterStateChanged(object? sender, EventArgs e) => RaiseUpdatePropertiesChanged();
+    private void OnUpdaterStateChanged(object? sender, EventArgs e) =>
+        RunOnUiThread(RaiseUpdatePropertiesChanged);
 
     private void RaiseUpdatePropertiesChanged()
     {

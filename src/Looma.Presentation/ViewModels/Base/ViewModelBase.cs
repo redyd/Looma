@@ -3,9 +3,20 @@
 // See LICENSE in the project root for full license text.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Avalonia.Threading;
 
 namespace Looma.Presentation.ViewModels.Base;
 
 public abstract class ViewModelBase : ObservableObject
 {
+    protected static void RunOnUiThread(Action action)
+    {
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            action();
+            return;
+        }
+
+        Dispatcher.UIThread.Post(action);
+    }
 }
