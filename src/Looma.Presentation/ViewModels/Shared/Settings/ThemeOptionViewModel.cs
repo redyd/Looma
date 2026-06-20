@@ -2,7 +2,7 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
-namespace Looma.Presentation.ViewModels.Sections.Settings;
+namespace Looma.Presentation.ViewModels.Shared.Settings;
 
 public sealed class ThemeOptionViewModel(string name, string? path)
 {

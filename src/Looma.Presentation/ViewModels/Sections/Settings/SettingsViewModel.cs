@@ -6,11 +6,11 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Looma.Domain.IServices;
 using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
+using Looma.Presentation.ViewModels.Shared.Settings;
 
 namespace Looma.Presentation.ViewModels.Sections.Settings;
 
