@@ -15,6 +15,7 @@ public class LoomaDbContext(DbContextOptions<LoomaDbContext> options) : DbContex
     public DbSet<ProjectEntity> Projects => Set<ProjectEntity>();
     public DbSet<DocumentEntity> Documents => Set<DocumentEntity>();
     public DbSet<WoolsForProjectEntity> WoolsForProjects => Set<WoolsForProjectEntity>();
+    public DbSet<TrackedWool> TrackedWools => Set<TrackedWool>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,6 +24,7 @@ public class LoomaDbContext(DbContextOptions<LoomaDbContext> options) : DbContex
             .ApplyConfiguration(new ProjectConfiguration())
             .ApplyConfiguration(new DocumentEntityConfiguration())
             .ApplyConfiguration(new WoolConfiguration())
-            .ApplyConfiguration(new PatternConfiguration());
+            .ApplyConfiguration(new PatternConfiguration())
+            .ApplyConfiguration(new TrackedWoolConfiguration());
     }
 }

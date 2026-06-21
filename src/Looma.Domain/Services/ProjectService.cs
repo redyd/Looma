@@ -14,7 +14,7 @@ namespace Looma.Domain.Services;
 
 public class ProjectService(
     IProjectRepository repo,
-    IWoolRepository woolRepository,
+    IWoolService woolService,
     IWoolUsageRepository woolUsageRepository,
     IDomainLogger? logger = null,
     IDataRefreshService? refreshService = null)
@@ -97,7 +97,7 @@ public class ProjectService(
                 return Result.Failure($"Le stock disponible est insuffisant pour {wool.Name}.");
             }
 
-            var stockResult = await woolRepository.AddStock(wool.Id, -remainingToDeduct);
+            var stockResult = await woolService.AddStockAsync(wool.Id, -remainingToDeduct, projectId);
             if (stockResult.Failed)
             {
                 Logger.Log(DomainLogLevel.Warning, $"Projects.Complete({projectId}) failed while updating stock for wool {wool.Id}.");

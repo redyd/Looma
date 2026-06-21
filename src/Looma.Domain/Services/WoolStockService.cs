@@ -13,6 +13,7 @@ namespace Looma.Domain.Services;
 
 public class WoolStockService(
     IWoolUsageRepository repository,
+    ITrackedWoolRepository? trackedWoolRepository = null,
     IDomainLogger? logger = null,
     IDataRefreshService? refreshService = null)
     : DomainServiceBase(logger), IWoolStockService
@@ -52,17 +53,25 @@ public class WoolStockService(
                 return Result.Failure("Le stock disponible est insuffisant.");
             }
 
+            var newStockUsed = usage.StockUsed + delta;
+
             if (request is { IsAddition: false, DeductImmediately: true })
             {
                 var restore = Math.Min(Math.Abs(delta), usage.StockAlreadyUsed);
-                var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, -restore);
+                var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, restore);
                 if (result.Failed)
                 {
                     return Result.Failure(result.Error ?? "Erreur inconnue");
                 }
+
+                var trackingResult = await TrackStockChangeAsync(request.WoolId, restore, request.ProjectId);
+                if (trackingResult.Failed)
+                {
+                    return trackingResult;
+                }
             }
 
-            var updateResult = await repository.UpdateStockUsedAsync(request.ProjectId, request.WoolId, usage.StockUsed + delta);
+            var updateResult = await repository.UpdateStockUsedAsync(request.ProjectId, request.WoolId, newStockUsed);
             if (updateResult.Failed)
             {
                 return Result.Failure(updateResult.Error ?? "Erreur inconnue");
@@ -70,16 +79,23 @@ public class WoolStockService(
 
             if (request.IsAddition && request.DeductImmediately)
             {
-                var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, delta);
+                var stockDelta = -delta;
+                var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, stockDelta);
                 if (result.Failed)
                 {
                     return Result.Failure(result.Error ?? "Erreur inconnue");
                 }
+
+                var trackingResult = await TrackStockChangeAsync(request.WoolId, stockDelta, request.ProjectId);
+                if (trackingResult.Failed)
+                {
+                    return trackingResult;
+                }
             }
 
-            if (usage.StockAlreadyUsed > usage.StockUsed)
+            if (usage.StockAlreadyUsed > newStockUsed)
             {
-                var result = await repository.UpdateStockAlreadyUsedAsync(request.ProjectId, request.WoolId, usage.StockUsed);
+                var result = await repository.UpdateStockAlreadyUsedAsync(request.ProjectId, request.WoolId, newStockUsed);
                 if (result.Failed)
                 {
                     return Result.Failure(result.Error ?? "Erreur inconnue");
@@ -109,5 +125,16 @@ public class WoolStockService(
         };
 
         return isAddition ? data : -data;
+    }
+
+    private async Task<Result> TrackStockChangeAsync(int woolId, double quantity, int projectId)
+    {
+        if (quantity == 0 || trackedWoolRepository is null)
+            return Result.Ok();
+
+        var result = await trackedWoolRepository.AddAsync(woolId, quantity, projectId);
+        return result.Failed
+            ? Result.Failure(result.Error ?? "Erreur lors de l'ajout du suivi de stock.")
+            : Result.Ok();
     }
 }

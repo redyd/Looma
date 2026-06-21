@@ -3,6 +3,7 @@
 // See LICENSE in the project root for full license text.
 
 using System.Collections.ObjectModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
@@ -57,6 +58,8 @@ public partial class ProjectsDetailViewModel(
     public partial int SelectedImageIndex { get; set; }
     [ObservableProperty]
     public partial double? WoolAdjustmentQuantity { get; set; }
+    [ObservableProperty]
+    public partial string WoolAdjustmentQuantityText { get; set; } = string.Empty;
     [ObservableProperty]
     public partial StockAdjustmentMode WoolAdjustmentMode { get; set; } = StockAdjustmentMode.ByBall;
     [ObservableProperty]
@@ -184,6 +187,13 @@ public partial class ProjectsDetailViewModel(
     partial void OnWoolAdjustmentQuantityChanged(double? value) =>
         OnPropertyChanged(nameof(CanAdjustWool));
 
+    partial void OnWoolAdjustmentQuantityTextChanged(string value)
+    {
+        WoolAdjustmentQuantity = TryParseQuantity(value, out var quantity)
+            ? quantity
+            : null;
+    }
+
     partial void OnWoolDisplayModeChanged(StockAdjustmentMode value)
     {
         foreach (var wool in Wools)
@@ -218,10 +228,22 @@ public partial class ProjectsDetailViewModel(
             return;
         }
 
+        WoolAdjustmentQuantityText = string.Empty;
+        WoolAdjustmentQuantity = null;
     }
 
     private static string FormatDate(DateOnly? value) =>
         value is null ? "Aucune" : value.Value.ToString("dd/MM/yyyy");
+
+    private static bool TryParseQuantity(string? value, out double quantity)
+    {
+        quantity = 0;
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        return double.TryParse(value, NumberStyles.Float, CultureInfo.CurrentCulture, out quantity)
+               || double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out quantity);
+    }
 
     private async Task UpdateStatusAsync(Status status, DateOnly? beginDate = null, DateOnly? endDate = null)
     {

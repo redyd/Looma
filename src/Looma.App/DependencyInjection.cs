@@ -156,5 +156,6 @@ public static class DependencyInjection
         services.AddScoped<IWoolRepository, WoolRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IWoolUsageRepository, WoolUsageRepository>();
+        services.AddScoped<ITrackedWoolRepository, TrackedWoolRepository>();
     }
 }

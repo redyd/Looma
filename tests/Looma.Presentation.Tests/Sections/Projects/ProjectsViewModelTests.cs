@@ -143,7 +143,7 @@ public sealed class ProjectsViewModelTests
         var usage = TestData.WoolUsage(TestData.Wool(id: 8), stockUsed: 1000);
         var vm = CreateDetailViewModel(nav: nav, stockService: stockService);
         vm.Load(TestData.Project(id: 2, pattern: pattern, wools: [usage]));
-        vm.WoolAdjustmentQuantity = 2;
+        vm.WoolAdjustmentQuantityText = "2";
         vm.WoolAdjustmentMode = StockAdjustmentMode.ByBall;
         vm.DeductWoolImmediately = true;
 
@@ -159,6 +159,8 @@ public sealed class ProjectsViewModelTests
             Quantity = 2d,
             DeductImmediately = true
         });
+        vm.WoolAdjustmentQuantityText.Should().BeEmpty();
+        vm.WoolAdjustmentQuantity.Should().BeNull();
         nav.NavigatedTypes.Should().Contain(typeof(PatternsDetailViewModel));
     }
 
@@ -214,6 +216,18 @@ public sealed class ProjectsViewModelTests
 
         stockService.AdjustRequests.Should().BeEmpty();
         notifications.Calls.Should().Contain(c => c.Severity == NotificationSeverity.Error && c.Message == "Indiquez une quantité supérieure à zéro.");
+    }
+
+    [Fact]
+    public void ProjectsDetail_AdjustWool_Empty_Quantity_Text_Clears_Parsed_Quantity()
+    {
+        var vm = CreateDetailViewModel();
+
+        vm.WoolAdjustmentQuantityText = "2";
+        vm.WoolAdjustmentQuantityText = string.Empty;
+
+        vm.WoolAdjustmentQuantity.Should().BeNull();
+        vm.CanAdjustWool.Should().BeFalse();
     }
 
     [Fact]

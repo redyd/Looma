@@ -44,7 +44,8 @@
                                           HorizontalAlignment="Stretch">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Converter={StaticResource EnumDisplayName}}" />
+                                            <TextBlock Text="{Binding Converter={StaticResource EnumDisplayName}}"
+                                                       Foreground="{DynamicResource FormOptionForegroundBrush}" />
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
@@ -57,12 +58,14 @@
                                     <TextBlock Grid.Column="0"
                                                Text="Stock total qui va être retiré du stock"
                                                FontSize="13"
+                                               Foreground="{DynamicResource TextSecondaryBrush}"
                                                Opacity="0.75"
                                                VerticalAlignment="Center" />
                                     <TextBlock Grid.Column="1"
                                                Text="{Binding TotalToDeductDisplay}"
                                                FontSize="15"
                                                FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
                                                VerticalAlignment="Center" />
                                 </Grid>
                             </Border>
@@ -97,6 +100,7 @@
                                                 <StackPanel Grid.Column="1" Spacing="4">
                                                     <TextBlock Text="{Binding Name}"
                                                                FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource ProjectWoolPrimaryForegroundBrush}"
                                                                TextTrimming="CharacterEllipsis" />
                                                     <TextBlock Text="{Binding Brand}"
                                                                Classes="form-hint"
@@ -104,10 +108,12 @@
                                                     <TextBlock
                                                         Text="{Binding AvailableDisplay, StringFormat='Laine en stock: {0}'}"
                                                         FontSize="12"
+                                                        Foreground="{DynamicResource ProjectWoolMetadataForegroundBrush}"
                                                         Opacity="0.75" />
                                                     <TextBlock
                                                         Text="{Binding AlreadyDeductedDisplay, StringFormat='Laine déjà retirée du stock: {0}'}"
                                                         FontSize="12"
+                                                        Foreground="{DynamicResource ProjectWoolMetadataForegroundBrush}"
                                                         Opacity="0.75" />
                                                 </StackPanel>
 
@@ -124,6 +130,7 @@
                                                                    Text="{Binding $parent[vm:ProjectsFinishViewModel].DeductionUnit}"
                                                                    VerticalAlignment="Center"
                                                                    FontSize="12"
+                                                                   Foreground="{DynamicResource TextSecondaryBrush}"
                                                                    Opacity="0.65" />
                                                     </Grid>
                                                 </StackPanel>

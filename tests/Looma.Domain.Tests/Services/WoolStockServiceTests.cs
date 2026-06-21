@@ -279,7 +279,7 @@ public class WoolStockServiceTests
     [Fact]
     public async Task AdjustWoolUsageAsync_AdditionDeductImmediately_SufficientStock_CallsUpdateCurrentStock()
     {
-        // stock=5000, add 1 ball (delta=1000) < stock => calls UpdateCurrentStockUsageAsync(+1000)
+        // stock=5000, add 1 ball (delta=1000) < stock => deducts from current stock
         var wool = MakeWool(stock: 5000);
         var usage = MakeUsage(wool: wool);
         var repo = MakeRepo(usage);
@@ -287,7 +287,23 @@ public class WoolStockServiceTests
 
         await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: true, quantity: 1, deductImmediately: true));
 
-        await repo.Received(1).UpdateCurrentStockUsageAsync(1, 1, 1000);
+        await repo.Received(1).UpdateCurrentStockUsageAsync(1, 1, -1000);
+    }
+
+    [Fact]
+    public async Task AdjustWoolUsageAsync_AdditionDeductImmediately_TracksStockDeduction()
+    {
+        var wool = MakeWool(stock: 5000);
+        var usage = MakeUsage(wool: wool);
+        var repo = MakeRepo(usage);
+        var trackedRepo = Substitute.For<ITrackedWoolRepository>();
+        trackedRepo.AddAsync(1, -1000, 1).Returns(Result.Ok());
+        var sut = new WoolStockService(repo, trackedRepo);
+
+        var result = await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: true, quantity: 1, deductImmediately: true));
+
+        result.Succeeded.Should().BeTrue(result.Error);
+        await trackedRepo.Received(1).AddAsync(1, -1000, 1);
     }
 
     [Fact]
@@ -313,7 +329,7 @@ public class WoolStockServiceTests
     public async Task AdjustWoolUsageAsync_RemovalDeductImmediately_RestoresUpToStockAlreadyUsed()
     {
         // stockUsed=2000, stockAlreadyUsed=1500, remove 1 ball (delta=-1000)
-        // restore = min(1000, 1500) = 1000 => UpdateCurrentStockUsageAsync(-1000)
+        // restore = min(1000, 1500) = 1000 => restores current stock
         var usage = MakeUsage(stockUsed: 2000, stockAlreadyUsed: 1500);
         var repo = MakeRepo(usage);
         var sut = new WoolStockService(repo);
@@ -321,21 +337,50 @@ public class WoolStockServiceTests
         var result = await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: false, quantity: 1, deductImmediately: true));
 
         result.Succeeded.Should().BeTrue();
-        await repo.Received(1).UpdateCurrentStockUsageAsync(1, 1, -1000);
+        await repo.Received(1).UpdateCurrentStockUsageAsync(1, 1, 1000);
+    }
+
+    [Fact]
+    public async Task AdjustWoolUsageAsync_RemovalDeductImmediately_TracksStockRestoration()
+    {
+        var usage = MakeUsage(stockUsed: 2000, stockAlreadyUsed: 1500);
+        var repo = MakeRepo(usage);
+        var trackedRepo = Substitute.For<ITrackedWoolRepository>();
+        trackedRepo.AddAsync(1, 1000, 1).Returns(Result.Ok());
+        var sut = new WoolStockService(repo, trackedRepo);
+
+        var result = await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: false, quantity: 1, deductImmediately: true));
+
+        result.Succeeded.Should().BeTrue(result.Error);
+        await trackedRepo.Received(1).AddAsync(1, 1000, 1);
+    }
+
+    [Fact]
+    public async Task AdjustWoolUsageAsync_WithoutDeductImmediately_DoesNotTrackStockChange()
+    {
+        var usage = MakeUsage(stockUsed: 1000, stockAlreadyUsed: 500);
+        var repo = MakeRepo(usage);
+        var trackedRepo = Substitute.For<ITrackedWoolRepository>();
+        var sut = new WoolStockService(repo, trackedRepo);
+
+        var result = await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: true, quantity: 1, deductImmediately: false));
+
+        result.Succeeded.Should().BeTrue(result.Error);
+        await trackedRepo.DidNotReceive().AddAsync(Arg.Any<int>(), Arg.Any<double>(), Arg.Any<int?>());
     }
 
     [Fact]
     public async Task AdjustWoolUsageAsync_RemovalDeductImmediately_DeltaExceedsStockAlreadyUsed_RestoresCappedAtStockAlreadyUsed()
     {
         // stockUsed=3000, stockAlreadyUsed=500, remove 2 balls (delta=-2000)
-        // restore = min(2000, 500) = 500 => UpdateCurrentStockUsageAsync(-500)
+        // restore = min(2000, 500) = 500 => restores current stock
         var usage = MakeUsage(stockUsed: 3000, stockAlreadyUsed: 500);
         var repo = MakeRepo(usage);
         var sut = new WoolStockService(repo);
 
         await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: false, quantity: 2, deductImmediately: true));
 
-        await repo.Received(1).UpdateCurrentStockUsageAsync(1, 1, -500);
+        await repo.Received(1).UpdateCurrentStockUsageAsync(1, 1, 500);
     }
 
     [Fact]
@@ -372,16 +417,28 @@ public class WoolStockServiceTests
     // ---------------------------------------------------------------------------
 
     [Fact]
-    public async Task AdjustWoolUsageAsync_StockAlreadyUsedExceedsInitialStockUsed_CallsUpdateStockAlreadyUsed()
+    public async Task AdjustWoolUsageAsync_AdditionRaisesStockUsedAboveStockAlreadyUsed_DoesNotSyncAlreadyUsed()
     {
         // stockUsed=500, stockAlreadyUsed=800 (already > stockUsed before delta)
-        // => UpdateStockAlreadyUsedAsync called with 500 (initial StockUsed, NOT stockUsed+delta)
-        // NOTE: ce comportement est potentiellement un bug - voir remarques
+        // => addition increases StockUsed to 1500, so no correction is needed.
         var usage = MakeUsage(stockUsed: 500, stockAlreadyUsed: 800);
         var repo = MakeRepo(usage);
         var sut = new WoolStockService(repo);
 
         var result = await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: true, quantity: 1));
+
+        result.Succeeded.Should().BeTrue();
+        await repo.DidNotReceive().UpdateStockAlreadyUsedAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<double>());
+    }
+
+    [Fact]
+    public async Task AdjustWoolUsageAsync_RemovalMakesStockAlreadyUsedExceedNewStockUsed_SyncsAlreadyUsedToNewStockUsed()
+    {
+        var usage = MakeUsage(stockUsed: 1000, stockAlreadyUsed: 800);
+        var repo = MakeRepo(usage);
+        var sut = new WoolStockService(repo);
+
+        var result = await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: false, quantity: 0.5));
 
         result.Succeeded.Should().BeTrue();
         await repo.Received(1).UpdateStockAlreadyUsedAsync(1, 1, 500);
@@ -412,15 +469,15 @@ public class WoolStockServiceTests
     }
 
     [Fact]
-    public async Task AdjustWoolUsageAsync_StockAlreadyUsedExceedsStockUsed_UpdateStockAlreadyUsedFails_ReturnsFailure()
+    public async Task AdjustWoolUsageAsync_RemovalMakesStockAlreadyUsedExceedNewStockUsed_UpdateStockAlreadyUsedFails_ReturnsFailure()
     {
-        var usage = MakeUsage(stockUsed: 500, stockAlreadyUsed: 800);
+        var usage = MakeUsage(stockUsed: 1000, stockAlreadyUsed: 800);
         var repo = MakeRepo(usage);
         repo.UpdateStockAlreadyUsedAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<double>())
             .Returns(Result.Failure("db error"));
         var sut = new WoolStockService(repo);
 
-        var result = await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: true, quantity: 1));
+        var result = await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: false, quantity: 0.5));
 
         result.Failed.Should().BeTrue();
     }

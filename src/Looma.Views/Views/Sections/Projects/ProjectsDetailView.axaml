@@ -210,7 +210,7 @@ See LICENSE in the project root for full license text.
                                 <StackPanel Grid.Column="0" Spacing="6">
                                     <TextBlock Classes="form-label" Text="Quantité" />
                                     <TextBox Classes="form-input"
-                                             Text="{Binding WoolAdjustmentQuantity}"
+                                             Text="{Binding WoolAdjustmentQuantityText, Mode=TwoWay}"
                                              PlaceholderText="Ex : 1, 50, 120..." />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2" Spacing="6">
