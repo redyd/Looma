@@ -124,6 +124,14 @@
         <Setter Property="Background" Value="{DynamicResource FormControlFocusBackgroundBrush}" />
     </Style>
 
+    <Style Selector="NumericUpDown.form-numeric /template/ ButtonSpinner#PART_Spinner">
+        <Setter Property="Foreground" Value="{DynamicResource FormControlPlaceholderForegroundBrush}" />
+    </Style>
+
+    <Style Selector="NumericUpDown.form-numeric:pointerover /template/ ButtonSpinner#PART_Spinner">
+        <Setter Property="Foreground" Value="{DynamicResource FormOptionHoverForegroundBrush}" />
+    </Style>
+
     <Style Selector="ComboBox.form-select">
         <Setter Property="Background" Value="{DynamicResource FormControlBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource FormControlBorderBrush}" />
