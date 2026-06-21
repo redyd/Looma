@@ -207,6 +207,7 @@ internal sealed class FakeWoolService : IWoolService
     public List<UpdateWoolRequest> UpdateRequests { get; } = [];
     public List<int> DeleteIds { get; } = [];
     public List<(int Id, double Quantity)> AddStockRequests { get; } = [];
+    public List<(int Id, double Quantity, int? ProjectId)> AddStockWithProjectRequests { get; } = [];
 
     public Task<ResultT<IReadOnlyList<Wool>>> GetAllAsync()
     {
@@ -239,6 +240,12 @@ internal sealed class FakeWoolService : IWoolService
     {
         AddStockRequests.Add((id, quantity));
         return Task.FromResult(AddStockResult);
+    }
+
+    public Task<Result> AddStockAsync(int id, double quantity, int? projectId)
+    {
+        AddStockWithProjectRequests.Add((id, quantity, projectId));
+        return AddStockAsync(id, quantity);
     }
 }
 

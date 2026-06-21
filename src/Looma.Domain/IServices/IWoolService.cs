@@ -16,4 +16,5 @@ public interface IWoolService
     Task<ResultT<Wool>> UpdateAsync(UpdateWoolRequest request);
     Task<Result> DeleteAsync(int id);
     Task<Result> AddStockAsync(int id, double quantity);
+    Task<Result> AddStockAsync(int id, double quantity, int? projectId);
 }

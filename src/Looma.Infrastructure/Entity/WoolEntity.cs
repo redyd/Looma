@@ -19,4 +19,5 @@ public class WoolEntity
     public double NeedleMaxSize { get; set; }
 
     public ICollection<WoolsForProjectEntity> WoolsForProjects { get; set; } = new List<WoolsForProjectEntity>();
+    public ICollection<TrackedWool> TrackedWools { get; set; } = [];
 }

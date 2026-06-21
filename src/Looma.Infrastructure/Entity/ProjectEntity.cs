@@ -21,4 +21,5 @@ public class ProjectEntity
 
     public ICollection<WoolsForProjectEntity> WoolsForProjects { get; set; } = [];
     public ICollection<DocumentEntity> Files { get; set; } = [];
+    public ICollection<TrackedWool> TrackedWools { get; set; } = [];
 }

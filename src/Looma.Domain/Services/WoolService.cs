@@ -12,7 +12,11 @@ using Looma.Domain.Request;
 
 namespace Looma.Domain.Services;
 
-public sealed class WoolService(IWoolRepository repository, IDomainLogger logger, IDataRefreshService? refreshService = null)
+public sealed class WoolService(
+    IWoolRepository repository,
+    ITrackedWoolRepository trackedWoolRepository,
+    IDomainLogger logger,
+    IDataRefreshService? refreshService = null)
     : DomainServiceBase(logger), IWoolService
 {
     public Task<ResultT<IReadOnlyList<Wool>>> GetAllAsync() =>
@@ -50,9 +54,35 @@ public sealed class WoolService(IWoolRepository repository, IDomainLogger logger
         return result;
     }
 
-    public async Task<Result> AddStockAsync(int id, double quantity)
+    public Task<Result> AddStockAsync(int id, double quantity) =>
+        AddStockAsync(id, quantity, null);
+
+    public async Task<Result> AddStockAsync(int id, double quantity, int? projectId)
     {
-        var result = await ExecuteAsync($"Wools.AddStock({id}, {quantity})", () => repository.AddStock(id, quantity));
+        var result = await ExecuteAsync($"Wools.AddStock({id}, {quantity})", async () =>
+        {
+            var existing = await repository.GetByIdAsync(id);
+            if (existing.Failed || existing.Value is null)
+                return existing.Status == ResultStatus.NotFound
+                    ? Result.NotFound(existing.Error ?? $"La laine {id} est introuvable.")
+                    : Result.Failure(existing.Error ?? $"Impossible de charger la laine {id}.");
+
+            var trackedQuantity = Math.Max(0, existing.Value.Stock + quantity) - existing.Value.Stock;
+
+            var stockResult = await repository.AddStock(id, quantity);
+            if (stockResult.Failed)
+                return stockResult;
+
+            if (trackedQuantity != 0)
+            {
+                var trackingResult = await trackedWoolRepository.AddAsync(id, trackedQuantity, projectId);
+                if (trackingResult.Failed)
+                    return trackingResult;
+            }
+
+            return Result.Ok();
+        });
+
         PublishIfSucceeded(result, RefreshScope.Wools, $"Wool {id} stock changed.");
         return result;
     }

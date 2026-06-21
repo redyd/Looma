@@ -5,6 +5,7 @@
 using FluentAssertions;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
+using Looma.Domain.IServices;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 using Looma.Domain.Services;
@@ -75,20 +76,20 @@ public class ProjectServiceTests
         int patternId = 1) =>
         new(id, name, status, null, null, null, patternId, []);
 
-    private static (IProjectRepository repo, IWoolRepository woolRepo, IWoolUsageRepository usageRepo, ProjectService sut) MakeSut(Project? existing = null)
+    private static (IProjectRepository repo, IWoolService woolService, IWoolUsageRepository usageRepo, ProjectService sut) MakeSut(Project? existing = null)
     {
         var repo = Substitute.For<IProjectRepository>();
-        var woolRepo = Substitute.For<IWoolRepository>();
+        var woolService = Substitute.For<IWoolService>();
         var usageRepo = Substitute.For<IWoolUsageRepository>();
 
         var project = existing ?? MakeProject();
         repo.GetByIdAsync(Arg.Any<int>()).Returns(ResultT<Project>.Ok(project));
         repo.UpdateAsync(Arg.Any<UpdateProjectRequest>()).Returns(ResultT<Project>.Ok(project));
-        woolRepo.AddStock(Arg.Any<int>(), Arg.Any<double>()).Returns(Result.Ok());
+        woolService.AddStockAsync(Arg.Any<int>(), Arg.Any<double>(), Arg.Any<int?>()).Returns(Result.Ok());
         usageRepo.GetUsageAsync(Arg.Any<int>(), Arg.Any<int>()).Returns(ResultT<WoolUsage>.Ok(MakeWoolUsage()));
         usageRepo.UpdateStockAlreadyUsedAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<double>()).Returns(Result.Ok());
 
-        return (repo, woolRepo, usageRepo, new ProjectService(repo, woolRepo, usageRepo));
+        return (repo, woolService, usageRepo, new ProjectService(repo, woolService, usageRepo));
     }
 
     // ---------------------------------------------------------------------------
@@ -98,7 +99,7 @@ public class ProjectServiceTests
     [Fact]
     public async Task UpdateAsync_ProjectNotFound_ReturnsFailureWithoutCallingUpdateRepo()
     {
-        var (repo, woolRepo, usageRepo, sut) = MakeSut();
+        var (repo, woolService, usageRepo, sut) = MakeSut();
         repo.GetByIdAsync(Arg.Any<int>()).Returns(ResultT<Project>.NotFound("Le projet 1 est introuvable."));
 
         var result = await sut.UpdateAsync(MakeRequest());
@@ -127,31 +128,31 @@ public class ProjectServiceTests
     public async Task UpdateAsync_StatusRemainsInProgress_DoesNotCallCompleteProject()
     {
         var existing = MakeProject(status: Status.InProgress);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
 
         await sut.UpdateAsync(MakeRequest(status: Status.InProgress));
 
         await usageRepo.DidNotReceive().GetUsageAsync(Arg.Any<int>(), Arg.Any<int>());
-        await woolRepo.DidNotReceive().AddStock(Arg.Any<int>(), Arg.Any<double>());
+        await woolService.DidNotReceive().AddStockAsync(Arg.Any<int>(), Arg.Any<double>(), Arg.Any<int?>());
     }
 
     [Fact]
     public async Task UpdateAsync_ProjectAlreadyFinished_DoesNotCallCompleteProjectAgain()
     {
         var existing = MakeProject(status: Status.Finished);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
 
         await sut.UpdateAsync(MakeRequest(status: Status.Finished));
 
         await usageRepo.DidNotReceive().GetUsageAsync(Arg.Any<int>(), Arg.Any<int>());
-        await woolRepo.DidNotReceive().AddStock(Arg.Any<int>(), Arg.Any<double>());
+        await woolService.DidNotReceive().AddStockAsync(Arg.Any<int>(), Arg.Any<double>(), Arg.Any<int?>());
     }
 
     [Fact]
     public async Task UpdateAsync_StatusChangesToPaused_DoesNotCallCompleteProject()
     {
         var existing = MakeProject(status: Status.InProgress);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
 
         await sut.UpdateAsync(MakeRequest(status: Status.Paused));
 
@@ -166,13 +167,13 @@ public class ProjectServiceTests
     public async Task UpdateAsync_TransitionToFinished_NoWools_CallsRepoUpdateDirectly()
     {
         var existing = MakeProject(status: Status.InProgress, wools: []);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
 
         var result = await sut.UpdateAsync(MakeRequest(status: Status.Finished));
 
         result.Succeeded.Should().BeTrue();
         await repo.Received(1).UpdateAsync(Arg.Any<UpdateProjectRequest>());
-        await woolRepo.DidNotReceive().AddStock(Arg.Any<int>(), Arg.Any<double>());
+        await woolService.DidNotReceive().AddStockAsync(Arg.Any<int>(), Arg.Any<double>(), Arg.Any<int?>());
     }
 
     // ---------------------------------------------------------------------------
@@ -186,13 +187,13 @@ public class ProjectServiceTests
         // StockUsed == StockAlreadyUsed => remainingToDeduct = 0 => skip
         var usage = MakeWoolUsage(wool, stockUsed: 1000, stockAlreadyUsed: 1000);
         var existing = MakeProject(status: Status.InProgress, wools: [usage]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(Arg.Any<int>(), Arg.Any<int>()).Returns(ResultT<WoolUsage>.Ok(usage));
 
         var result = await sut.UpdateAsync(MakeRequest(status: Status.Finished));
 
         result.Succeeded.Should().BeTrue();
-        await woolRepo.DidNotReceive().AddStock(Arg.Any<int>(), Arg.Any<double>());
+        await woolService.DidNotReceive().AddStockAsync(Arg.Any<int>(), Arg.Any<double>(), Arg.Any<int?>());
         await usageRepo.DidNotReceive().UpdateStockAlreadyUsedAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<double>());
     }
 
@@ -202,13 +203,13 @@ public class ProjectServiceTests
         var wool = MakeWool(stock: 5000);
         var usage = MakeWoolUsage(wool, stockUsed: 500, stockAlreadyUsed: 1000);
         var existing = MakeProject(status: Status.InProgress, wools: [usage]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(Arg.Any<int>(), Arg.Any<int>()).Returns(ResultT<WoolUsage>.Ok(usage));
 
         var result = await sut.UpdateAsync(MakeRequest(status: Status.Finished));
 
         result.Succeeded.Should().BeTrue();
-        await woolRepo.DidNotReceive().AddStock(Arg.Any<int>(), Arg.Any<double>());
+        await woolService.DidNotReceive().AddStockAsync(Arg.Any<int>(), Arg.Any<double>(), Arg.Any<int?>());
     }
 
     // ---------------------------------------------------------------------------
@@ -222,14 +223,14 @@ public class ProjectServiceTests
         // remainingToDeduct = 1000 - 0 = 1000 > stock 100
         var usage = MakeWoolUsage(wool, stockUsed: 1000, stockAlreadyUsed: 0);
         var existing = MakeProject(status: Status.InProgress, wools: [usage]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(Arg.Any<int>(), Arg.Any<int>()).Returns(ResultT<WoolUsage>.Ok(usage));
 
         var result = await sut.UpdateAsync(MakeRequest(status: Status.Finished));
 
         result.Failed.Should().BeTrue();
         result.Error.Should().Be("Le stock disponible est insuffisant pour Merino.");
-        await woolRepo.DidNotReceive().AddStock(Arg.Any<int>(), Arg.Any<double>());
+        await woolService.DidNotReceive().AddStockAsync(Arg.Any<int>(), Arg.Any<double>(), Arg.Any<int?>());
         await repo.DidNotReceive().UpdateAsync(Arg.Any<UpdateProjectRequest>());
     }
 
@@ -244,12 +245,12 @@ public class ProjectServiceTests
         // remainingToDeduct = 2000 - 500 = 1500
         var usage = MakeWoolUsage(wool, stockUsed: 2000, stockAlreadyUsed: 500);
         var existing = MakeProject(status: Status.InProgress, wools: [usage]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(1, 1).Returns(ResultT<WoolUsage>.Ok(usage));
 
         await sut.UpdateAsync(MakeRequest(status: Status.Finished));
 
-        await woolRepo.Received(1).AddStock(1, -1500);
+        await woolService.Received(1).AddStockAsync(1, -1500, 1);
     }
 
     [Fact]
@@ -259,7 +260,7 @@ public class ProjectServiceTests
         // remainingToDeduct = 2000 - 500 = 1500 => new StockAlreadyUsed = 500 + 1500 = 2000
         var usage = MakeWoolUsage(wool, stockUsed: 2000, stockAlreadyUsed: 500);
         var existing = MakeProject(status: Status.InProgress, wools: [usage]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(1, 1).Returns(ResultT<WoolUsage>.Ok(usage));
 
         await sut.UpdateAsync(MakeRequest(status: Status.Finished));
@@ -277,7 +278,7 @@ public class ProjectServiceTests
         var wool = MakeWool(stock: 5000);
         var usage = MakeWoolUsage(wool, stockUsed: 1000, stockAlreadyUsed: 0);
         var existing = MakeProject(status: Status.InProgress, wools: [usage]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(Arg.Any<int>(), Arg.Any<int>()).Returns(ResultT<WoolUsage>.Failure("db error"));
 
         var result = await sut.UpdateAsync(MakeRequest(status: Status.Finished));
@@ -293,9 +294,9 @@ public class ProjectServiceTests
         var wool = MakeWool(id: 1, stock: 5000);
         var usage = MakeWoolUsage(wool, stockUsed: 1000, stockAlreadyUsed: 0);
         var existing = MakeProject(status: Status.InProgress, wools: [usage]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(Arg.Any<int>(), Arg.Any<int>()).Returns(ResultT<WoolUsage>.Ok(usage));
-        woolRepo.AddStock(Arg.Any<int>(), Arg.Any<double>()).Returns(Result.Failure("db error"));
+        woolService.AddStockAsync(Arg.Any<int>(), Arg.Any<double>(), Arg.Any<int?>()).Returns(Result.Failure("db error"));
 
         var result = await sut.UpdateAsync(MakeRequest(status: Status.Finished));
 
@@ -310,7 +311,7 @@ public class ProjectServiceTests
         var wool = MakeWool(id: 1, stock: 5000);
         var usage = MakeWoolUsage(wool, stockUsed: 1000, stockAlreadyUsed: 0);
         var existing = MakeProject(status: Status.InProgress, wools: [usage]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(Arg.Any<int>(), Arg.Any<int>()).Returns(ResultT<WoolUsage>.Ok(usage));
         usageRepo.UpdateStockAlreadyUsedAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<double>()).Returns(Result.Failure("db error"));
 
@@ -333,15 +334,15 @@ public class ProjectServiceTests
         var usage1 = MakeWoolUsage(wool1, stockUsed: 1000, stockAlreadyUsed: 0);
         var usage2 = MakeWoolUsage(wool2, stockUsed: 2000, stockAlreadyUsed: 0);
         var existing = MakeProject(status: Status.InProgress, wools: [usage1, usage2]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(1, 1).Returns(ResultT<WoolUsage>.Ok(usage1));
         usageRepo.GetUsageAsync(1, 2).Returns(ResultT<WoolUsage>.Ok(usage2));
 
         var result = await sut.UpdateAsync(MakeRequest(status: Status.Finished));
 
         result.Succeeded.Should().BeTrue();
-        await woolRepo.Received(1).AddStock(1, -1000);
-        await woolRepo.Received(1).AddStock(2, -2000);
+        await woolService.Received(1).AddStockAsync(1, -1000, 1);
+        await woolService.Received(1).AddStockAsync(2, -2000, 1);
         await usageRepo.Received(1).UpdateStockAlreadyUsedAsync(1, 1, 1000);
         await usageRepo.Received(1).UpdateStockAlreadyUsedAsync(1, 2, 2000);
     }
@@ -354,15 +355,15 @@ public class ProjectServiceTests
         var usage1 = MakeWoolUsage(wool1, stockUsed: 1000, stockAlreadyUsed: 0);
         var usage2 = MakeWoolUsage(wool2, stockUsed: 2000, stockAlreadyUsed: 0);
         var existing = MakeProject(status: Status.InProgress, wools: [usage1, usage2]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(1, 1).Returns(ResultT<WoolUsage>.Ok(usage1));
         usageRepo.GetUsageAsync(1, 2).Returns(ResultT<WoolUsage>.Ok(usage2));
-        woolRepo.AddStock(1, Arg.Any<double>()).Returns(Result.Failure("db error"));
+        woolService.AddStockAsync(1, Arg.Any<double>(), Arg.Any<int?>()).Returns(Result.Failure("db error"));
 
         var result = await sut.UpdateAsync(MakeRequest(status: Status.Finished));
 
         result.Failed.Should().BeTrue();
-        await woolRepo.DidNotReceive().AddStock(2, Arg.Any<double>());
+        await woolService.DidNotReceive().AddStockAsync(2, Arg.Any<double>(), Arg.Any<int?>());
     }
 
     // ---------------------------------------------------------------------------
@@ -375,7 +376,7 @@ public class ProjectServiceTests
         var wool = MakeWool(id: 1, stock: 5000);
         var usage = MakeWoolUsage(wool, stockUsed: 1000, stockAlreadyUsed: 0);
         var existing = MakeProject(status: Status.InProgress, wools: [usage]);
-        var (repo, woolRepo, usageRepo, sut) = MakeSut(existing);
+        var (repo, woolService, usageRepo, sut) = MakeSut(existing);
         usageRepo.GetUsageAsync(1, 1).Returns(ResultT<WoolUsage>.Ok(usage));
 
         var result = await sut.UpdateAsync(MakeRequest(status: Status.Finished));
