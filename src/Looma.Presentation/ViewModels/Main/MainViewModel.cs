@@ -22,6 +22,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     public SectionNavigationViewModel StocksSection { get; }
     public SectionNavigationViewModel PatternsSection { get; }
     public SectionNavigationViewModel DocumentsSection { get; }
+    public SectionNavigationViewModel StatisticsSection { get; }
     public SectionNavigationViewModel SettingsSection { get; }
     public INotificationService Notifications { get; }
 
@@ -51,6 +52,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         SectionNavigationViewModel stocksSection,
         SectionNavigationViewModel patternsSection,
         SectionNavigationViewModel documentsSection,
+        SectionNavigationViewModel statisticsSection,
         SectionNavigationViewModel settingsSection,
         INotificationService notifications,
         IUpdaterService updaterService,
@@ -63,6 +65,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         StocksSection = stocksSection;
         ProjectsSection = projectsSection;
         DocumentsSection = documentsSection;
+        StatisticsSection = statisticsSection;
         SettingsSection = settingsSection;
         Notifications = notifications;
         SelectedTabIndex = 0;

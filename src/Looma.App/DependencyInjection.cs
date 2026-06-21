@@ -21,6 +21,7 @@ using Looma.Presentation.ViewModels.Sections.Stocks;
 using Looma.Presentation.ViewModels.Sections.Projects;
 using Looma.Presentation.ViewModels.Sections.Documents;
 using Looma.Presentation.ViewModels.Sections.Patterns;
+using Looma.Presentation.ViewModels.Sections.Statistics;
 using Looma.Presentation.ViewModels.Sections.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Looma.Presentation.ViewModels.Shared.Documents;
@@ -48,6 +49,7 @@ public static class DependencyInjection
         services.AddScoped<IPatternService, PatternService>();
         services.AddScoped<IDocumentService, DocumentService>();
         services.AddScoped<IWoolStockService, WoolStockService>();
+        services.AddScoped<IStatisticsService, StatisticsService>();
         services.AddSingleton<ISettingsService, SettingsService>();
 
         services.AddScoped<DocumentSearchSpec>();
@@ -83,6 +85,9 @@ public static class DependencyInjection
         // DOCUMENTS
         services.AddTransient<DocumentsFormViewModel>();
         services.AddTransient<DocumentsListViewModel>();
+
+        // STATISTICS
+        services.AddTransient<StatisticsViewModel>();
 
         // SETTINGS
         services.AddTransient<SettingsViewModel>();
@@ -124,6 +129,12 @@ public static class DependencyInjection
                         sp.GetRequiredService<IDocumentService>(),
                         sp.GetRequiredService<IPatternService>(),
                         sp.GetRequiredService<IProjectService>(),
+                        sp.GetRequiredService<INotificationService>(),
+                        sp.GetRequiredService<IDataRefreshService>())),
+
+                MakeSection<StatisticsViewModel>(_ =>
+                    new StatisticsViewModel(
+                        sp.GetRequiredService<IStatisticsService>(),
                         sp.GetRequiredService<INotificationService>(),
                         sp.GetRequiredService<IDataRefreshService>())),
 

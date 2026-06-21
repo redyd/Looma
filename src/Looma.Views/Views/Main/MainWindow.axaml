@@ -28,7 +28,7 @@
 
             <TabControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Grid ColumnDefinitions="*,*,*,Auto,Auto" />
+                    <Grid ColumnDefinitions="*,*,*,Auto,Auto,Auto" />
                 </ItemsPanelTemplate>
             </TabControl.ItemsPanel>
 
@@ -63,6 +63,17 @@
 
             <TabItem Classes="icon-tab"
                      Grid.Column="4"
+                     Margin="0 0 4 0"
+                     ToolTip.Tip="Statistiques">
+                <TabItem.Header>
+                    <LucideIcon Kind="ChartNoAxesCombined"
+                                Size="18" />
+                </TabItem.Header>
+                <ContentControl Content="{Binding StatisticsSection.CurrentPage}" />
+            </TabItem>
+
+            <TabItem Classes="icon-tab"
+                     Grid.Column="5"
                      ToolTip.Tip="Paramètres">
                 <TabItem.Header>
                     <LucideIcon Kind="Settings"

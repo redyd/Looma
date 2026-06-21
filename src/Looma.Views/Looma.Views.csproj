@@ -8,6 +8,7 @@
         <PackageReference Include="Avalonia" Version="12.0.3"/>
         <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.0.3"/>
         <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.3"/>
+        <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.1.0-dev-798" />
         <PackageReference Include="Lucide.Avalonia" Version="0.2.5" />
     </ItemGroup>
 
