@@ -10,6 +10,9 @@ namespace Looma.Presentation.ViewModels.Base;
 public abstract partial class PageViewModelBase : ViewModelBase
 {
     private readonly List<Action> _refreshUnsubscribers = [];
+    private bool _isDestroyed;
+
+    public virtual bool KeepAliveInNavigationHistory => false;
 
     [ObservableProperty]
     public partial bool IsBusy { get; set; }
@@ -24,6 +27,25 @@ public abstract partial class PageViewModelBase : ViewModelBase
 
     /// <summary>Appelé quand on quitte la page.</summary>
     public virtual void OnNavigatedFrom()
+    {
+        UnregisterRefreshHandlers();
+    }
+
+    public void Destroy()
+    {
+        if (_isDestroyed)
+            return;
+
+        _isDestroyed = true;
+        OnDestroy();
+    }
+
+    protected virtual void OnDestroy()
+    {
+        UnregisterRefreshHandlers();
+    }
+
+    private void UnregisterRefreshHandlers()
     {
         foreach (var unsubscribe in _refreshUnsubscribers)
         {

@@ -22,6 +22,8 @@ public partial class WoolListViewModel(
     IDataRefreshService refreshService)
     : PaginatePageViewModelBase<Wool, WoolSummary, int>(searchSpec)
 {
+    public override bool KeepAliveInNavigationHistory => true;
+
     public override async void OnNavigatedTo()
     {
         RegisterRefresh(refreshService, RefreshScope.Wools, LoadAsync);

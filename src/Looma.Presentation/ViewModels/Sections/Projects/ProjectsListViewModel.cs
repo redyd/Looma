@@ -27,6 +27,8 @@ public partial class ProjectsListViewModel(
 {
     private bool _isInitialized;
 
+    public override bool KeepAliveInNavigationHistory => true;
+
     [ObservableProperty]
     public partial ProjectStatusFilterViewModel? SelectedStatusFilter { get; set; }
     
