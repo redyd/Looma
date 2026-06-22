@@ -4,11 +4,9 @@
 
 namespace Looma.Domain.Statistics;
 
-public enum StatisticsRange
+public enum StatisticsQuantityUnit
 {
-    All,
-    ThisYear,
-    LastSixMonths,
-    ThisMonth,
-    ThisWeek
+    Skein,
+    Weight,
+    Length
 }

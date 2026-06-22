@@ -162,12 +162,16 @@ public sealed class AppDataSeeder(
         IReadOnlyList<Project> projects,
         int? itemCount)
     {
+        var today = DateTime.UtcNow.Date;
+        var yearStart = new DateTime(today.Year, 1, 1, 10, 0, 0, DateTimeKind.Utc);
+        var sixMonthsAgo = DateTime.SpecifyKind(today.AddMonths(-5), DateTimeKind.Utc);
+        var monthStart = new DateTime(today.Year, today.Month, 1, 14, 0, 0, DateTimeKind.Utc);
         var movementCount = itemCount ?? Math.Max(wools.Count, projects.Count * 3);
         for (var i = 0; i < wools.Count && i < movementCount; i++)
         {
             var wool = wools[i];
-            var quantity = 150 + (i % 5) * 50;
-            var date = new DateTime(2026, 1, 3, 10, 0, 0, DateTimeKind.Utc).AddDays(i * 9);
+            var quantity = 450 + (i % 5) * 150;
+            var date = ClampSeedDate(yearStart.AddDays(i * 18), today);
             var result = await trackedWoolRepository.AddAsync(wool.Id, quantity, date: date);
             EnsureSucceeded(result, $"ajouter le mouvement de stock pour {wool.Brand} {wool.Name}");
         }
@@ -179,22 +183,19 @@ public sealed class AppDataSeeder(
                 ? wools.Skip(i).Take(2).ToList()
                 : project.Wools.Select(usage => usage.Wool).ToList();
 
-            var baseDate = project.BeginDate?.ToDateTime(TimeOnly.MinValue)
-                ?? new DateTime(2026, 1, 15);
-
             foreach (var wool in projectWools.Take(3).Select((wool, index) => (wool, index)))
             {
-                var quantity = -Math.Min(850, 180 + (i + wool.index) % 6 * 70);
-                var date = DateTime.SpecifyKind(baseDate.AddDays(7 + wool.index * 12), DateTimeKind.Utc);
+                var quantity = -Math.Min(1_100, 260 + (i + wool.index) % 6 * 120);
+                var date = ClampSeedDate(sixMonthsAgo.AddDays(i * 11 + wool.index * 6), today);
                 var result = await trackedWoolRepository.AddAsync(wool.wool.Id, quantity, project.ProjectId, date);
                 EnsureSucceeded(result, $"ajouter le retrait de stock pour {project.Name}");
             }
         }
 
-        foreach (var wool in wools.Take(Math.Min(4, wools.Count)).Select((wool, index) => (wool, index)))
+        foreach (var wool in wools.Take(Math.Min(6, wools.Count)).Select((wool, index) => (wool, index)))
         {
-            var quantity = wool.index % 2 == 0 ? -75 : 125;
-            var date = new DateTime(2026, 5, 5, 14, 0, 0, DateTimeKind.Utc).AddDays(wool.index * 5);
+            var quantity = wool.index % 2 == 0 ? -150 : 250;
+            var date = ClampSeedDate(monthStart.AddDays(wool.index * 3), today);
             var result = await trackedWoolRepository.AddAsync(wool.wool.Id, quantity, date: date);
             EnsureSucceeded(result, $"ajouter l'ajustement de stock pour {wool.wool.Brand} {wool.wool.Name}");
         }
@@ -332,6 +333,15 @@ public sealed class AppDataSeeder(
         Status.Paused => "en pause",
         _ => status.ToString()
     };
+
+    private static DateTime ClampSeedDate(DateTime date, DateTime today)
+    {
+        var latest = today.AddHours(18);
+        if (date <= latest)
+            return DateTime.SpecifyKind(date, DateTimeKind.Utc);
+
+        return DateTime.SpecifyKind(latest, DateTimeKind.Utc);
+    }
 
     private static string SanitizeFileName(string value)
     {

@@ -28,29 +28,66 @@ public sealed class StatisticsViewModelTests
 
         service.Queries.Should().ContainSingle();
         vm.HasData.Should().BeTrue();
-        vm.IsLineChart.Should().BeTrue();
-        vm.ShowPatternTypeFilter.Should().BeFalse();
-        vm.ShowProjectGroupingFilter.Should().BeFalse();
+        service.Queries.Single().ChartKind.Should().Be(StatisticsChartKind.Line);
+        service.Queries.Single().DataKind.Should().Be(StatisticsDataKind.Wool);
+        service.Queries.Single().Range.Should().Be(StatisticsRange.All);
+        service.Queries.Single().QuantityUnit.Should().Be(StatisticsQuantityUnit.Skein);
+        service.Queries.Single().PatternType.Should().BeNull();
     }
 
     [Fact]
-    public void Changing_Filters_Reloads_Data_And_Updates_Visibility()
+    public async Task LoadAsync_Reloads_Data()
     {
         var service = new FakeStatisticsService();
         var vm = CreateViewModel(service);
         vm.OnNavigatedTo();
         service.Queries.Clear();
 
-        vm.SelectedData = vm.DataOptions.Single(option => option.Value == StatisticsDataKind.Project);
-        vm.SelectedChart = vm.ChartOptions.Single(option => option.Value == StatisticsChartKind.Pie);
-        vm.SelectedProjectStatus = vm.ProjectStatusOptions.Single(option => option.Value == Status.Finished);
+        await vm.LoadAsync();
 
-        service.Queries.Should().HaveCount(3);
-        vm.ShowPatternTypeFilter.Should().BeTrue();
-        vm.ShowProjectGroupingFilter.Should().BeTrue();
-        service.Queries.Last().DataKind.Should().Be(StatisticsDataKind.Project);
-        service.Queries.Last().ChartKind.Should().Be(StatisticsChartKind.Pie);
-        service.Queries.Last().ProjectStatus.Should().Be(Status.Finished);
+        service.Queries.Should().ContainSingle();
+    }
+
+    [Fact]
+    public void Changing_Range_Reloads_Data()
+    {
+        var service = new FakeStatisticsService();
+        var vm = CreateViewModel(service);
+        vm.OnNavigatedTo();
+        service.Queries.Clear();
+
+        vm.SelectedRange = vm.RangeOptions.Single(option => option.Value == StatisticsRange.ThisMonth);
+
+        service.Queries.Should().ContainSingle();
+        service.Queries.Single().Range.Should().Be(StatisticsRange.ThisMonth);
+    }
+
+    [Fact]
+    public void Changing_Pattern_Type_Reloads_Data()
+    {
+        var service = new FakeStatisticsService();
+        var vm = CreateViewModel(service);
+        vm.OnNavigatedTo();
+        service.Queries.Clear();
+
+        vm.SelectedPatternType = vm.PatternTypeOptions.Single(option => option.Value == PatternType.TunisianCrochet);
+
+        service.Queries.Should().ContainSingle();
+        service.Queries.Single().PatternType.Should().Be(PatternType.TunisianCrochet);
+    }
+
+    [Fact]
+    public void Changing_Quantity_Unit_Reloads_Data()
+    {
+        var service = new FakeStatisticsService();
+        var vm = CreateViewModel(service);
+        vm.OnNavigatedTo();
+        service.Queries.Clear();
+
+        vm.SelectedQuantityUnit = vm.QuantityUnitOptions.Single(option => option.Value == StatisticsQuantityUnit.Length);
+
+        service.Queries.Should().ContainSingle();
+        service.Queries.Single().QuantityUnit.Should().Be(StatisticsQuantityUnit.Length);
     }
 
     [Fact]
@@ -66,7 +103,6 @@ public sealed class StatisticsViewModelTests
 
         vm.HasData.Should().BeFalse();
         vm.Series.Should().BeEmpty();
-        vm.Slices.Should().BeEmpty();
     }
 
     private static StatisticsViewModel CreateViewModel(FakeStatisticsService service) =>

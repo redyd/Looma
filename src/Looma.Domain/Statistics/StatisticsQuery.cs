@@ -13,4 +13,5 @@ public sealed record StatisticsQuery(
     PatternType? PatternType,
     Status? ProjectStatus,
     StatisticsProjectGrouping ProjectGrouping,
+    StatisticsQuantityUnit QuantityUnit,
     DateOnly Today);
