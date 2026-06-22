@@ -23,7 +23,7 @@ public class NavigationService(IServiceProvider services) : INavigationService
         var vm = ActivatorUtilities.CreateInstance<TViewModel>(_services, this);
         configure?.Invoke(vm);
         CurrentPage?.OnNavigatedFrom();
-        _stack.Push(vm);
+        DestroyPages(_stack.Push(vm));
         vm.OnNavigatedTo();
         Navigated?.Invoke(this, vm);
     }
@@ -31,7 +31,7 @@ public class NavigationService(IServiceProvider services) : INavigationService
     public void PushPage(PageViewModelBase page)
     {
         CurrentPage?.OnNavigatedFrom();
-        _stack.Push(page);
+        DestroyPages(_stack.Push(page));
         page.OnNavigatedTo();
         Navigated?.Invoke(this, page);
     }
@@ -40,7 +40,8 @@ public class NavigationService(IServiceProvider services) : INavigationService
     {
         if (!CanGoBack) return;
         CurrentPage?.OnNavigatedFrom();
-        var vm = _stack.Pop();
+        var vm = _stack.Pop(out var removedCurrent);
+        removedCurrent?.Destroy();
         if (vm is not null)
         {
             vm.OnNavigatedTo();
@@ -48,5 +49,13 @@ public class NavigationService(IServiceProvider services) : INavigationService
         }
     }
 
-    public void ClearHistory() => _stack.Clear();
+    public void ClearHistory() => DestroyPages(_stack.Clear());
+
+    private static void DestroyPages(IEnumerable<PageViewModelBase> pages)
+    {
+        foreach (var page in pages)
+        {
+            page.Destroy();
+        }
+    }
 }

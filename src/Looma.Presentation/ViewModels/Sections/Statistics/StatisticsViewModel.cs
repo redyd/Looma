@@ -22,6 +22,8 @@ public partial class StatisticsViewModel(
 {
     private bool _isInitialized;
 
+    public override bool KeepAliveInNavigationHistory => true;
+
     public IReadOnlyList<StatisticsOptionViewModel<StatisticsRange>> RangeOptions { get; } =
     [
         new("Tout", StatisticsRange.All),

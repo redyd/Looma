@@ -25,6 +25,8 @@ public partial class DocumentsListViewModel(
     IDataRefreshService refreshService)
 : PaginatePageViewModelBase<Document, DocumentSummaryViewModel, Guid>(searcher: new DocumentSearchSpec())
 {
+    public override bool KeepAliveInNavigationHistory => true;
+
     public override async void OnNavigatedTo()
     {
         RegisterRefresh(refreshService, RefreshScope.Documents, LoadAsync);

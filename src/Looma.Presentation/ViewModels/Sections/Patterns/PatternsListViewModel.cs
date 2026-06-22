@@ -21,6 +21,8 @@ public partial class PatternsListViewModel(
     INotificationService notifications,
     IDataRefreshService refreshService) : PaginatePageViewModelBase<Pattern, PatternSummaryViewModel, int>(new PatternSearchSpec())
 {
+    public override bool KeepAliveInNavigationHistory => true;
+
     public override async void OnNavigatedTo()
     {
         RegisterRefresh(refreshService, RefreshScope.Patterns, LoadAsync);

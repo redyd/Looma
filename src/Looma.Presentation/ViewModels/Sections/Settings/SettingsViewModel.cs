@@ -24,6 +24,8 @@ public partial class SettingsViewModel(
 {
     private bool _isLoadingThemes;
 
+    public override bool KeepAliveInNavigationHistory => true;
+
     public ObservableCollection<ThemeOptionViewModel> Themes { get; } = [];
     public SettingsUpdaterViewModel Updater { get; } = updater;
 
