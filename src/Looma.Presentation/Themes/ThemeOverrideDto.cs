@@ -20,4 +20,5 @@ public class ThemeOverrideDto
     public RibbonColors? Ribbons { get; set; }
     public ElementColors? Elements { get; set; }
     public NotificationColors? Notifications { get; set; }
+    public ChartColors? Charts { get; set; }
 }

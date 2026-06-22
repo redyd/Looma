@@ -37,17 +37,19 @@ public sealed class MainViewModelTests
         var stocks = CreateSection();
         var patterns = CreateSection();
         var documents = CreateSection();
+        var statistics = CreateSection();
         var settings = CreateSection();
 
         var updater = new FakeUpdaterService();
         var updateInteraction = new FakeUpdateInteractionService();
 
-        var vm = new MainViewModel(projects, stocks, patterns, documents, settings, notifications, updater, updateInteraction);
+        var vm = new MainViewModel(projects, stocks, patterns, documents, statistics, settings, notifications, updater, updateInteraction);
 
         vm.ProjectsSection.Should().Be(projects);
         vm.StocksSection.Should().Be(stocks);
         vm.PatternsSection.Should().Be(patterns);
         vm.DocumentsSection.Should().Be(documents);
+        vm.StatisticsSection.Should().Be(statistics);
         vm.SettingsSection.Should().Be(settings);
         vm.Notifications.Should().Be(notifications);
         vm.SelectedTabIndex.Should().Be(0);
@@ -125,6 +127,7 @@ public sealed class MainViewModelTests
         FakeUpdaterService updater,
         FakeUpdateInteractionService interaction) =>
         new(
+            CreateSection(),
             CreateSection(),
             CreateSection(),
             CreateSection(),

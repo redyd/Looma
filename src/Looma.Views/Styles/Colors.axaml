@@ -177,6 +177,16 @@
     <SolidColorBrush x:Key="ProjectWoolPrimaryForegroundBrush">#4A4A4A</SolidColorBrush>
     <SolidColorBrush x:Key="ProjectWoolMetadataForegroundBrush">#6B7280</SolidColorBrush>
 
+    <!-- Graphiques -->
+    <SolidColorBrush x:Key="ChartSeries1Brush">#7C3AED</SolidColorBrush>
+    <SolidColorBrush x:Key="ChartSeries2Brush">#F472B6</SolidColorBrush>
+    <SolidColorBrush x:Key="ChartSeries3Brush">#16A34A</SolidColorBrush>
+    <SolidColorBrush x:Key="ChartSeries4Brush">#2563EB</SolidColorBrush>
+    <SolidColorBrush x:Key="ChartSeries5Brush">#D97706</SolidColorBrush>
+    <SolidColorBrush x:Key="ChartSeries6Brush">#DC2626</SolidColorBrush>
+    <SolidColorBrush x:Key="ChartSeries7Brush">#0891B2</SolidColorBrush>
+    <SolidColorBrush x:Key="ChartSeries8Brush">#9333EA</SolidColorBrush>
+
     <!-- Notifications -->
     <SolidColorBrush x:Key="NotificationTitleForegroundBrush">#4A4A4A</SolidColorBrush>
     <SolidColorBrush x:Key="NotificationMessageForegroundBrush">#4A4A4A</SolidColorBrush>

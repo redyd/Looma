@@ -3,6 +3,7 @@
 // See LICENSE in the project root for full license text.
 
 using Looma.Domain.Core;
+using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Infrastructure.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,49 @@ namespace Looma.Infrastructure.Repositories;
 
 public sealed class TrackedWoolRepository(LoomaDbContext context) : ITrackedWoolRepository
 {
-    public async Task<Result> AddAsync(int woolId, double quantity, int? projectId = null)
+    public async Task<ResultT<IReadOnlyList<TrackedWoolMovement>>> GetMovementsAsync(DateTime? from = null)
+    {
+        try
+        {
+            var query = context.TrackedWools
+                .AsNoTracking()
+                .Include(t => t.WoolEntity)
+                .Include(t => t.ProjectEntity)
+                .ThenInclude(p => p!.PatternEntity)
+                .AsQueryable();
+
+            if (from is not null)
+                query = query.Where(t => t.Date >= from.Value);
+
+            var movements = await query
+                .OrderBy(t => t.Date)
+                .ThenBy(t => t.WoolEntity.Brand)
+                .ThenBy(t => t.WoolEntity.Name)
+                .Select(t => new TrackedWoolMovement(
+                    t.Id,
+                    t.Date,
+                    t.Quantity,
+                    t.WoolId,
+                    t.WoolEntity.Name,
+                    t.WoolEntity.Brand,
+                    t.ProjectId,
+                    t.ProjectEntity == null ? null : t.ProjectEntity.Name,
+                    t.ProjectEntity == null ? null : t.ProjectEntity.Status,
+                    t.ProjectEntity == null || t.ProjectEntity.PatternEntity == null
+                        ? null
+                        : t.ProjectEntity.PatternEntity.Type))
+                .ToListAsync();
+
+            return ResultT<IReadOnlyList<TrackedWoolMovement>>.Ok(movements);
+        }
+        catch (Exception ex)
+        {
+            return ResultT<IReadOnlyList<TrackedWoolMovement>>.Failure(
+                $"Impossible de charger les mouvements de laine: {ex.Message}");
+        }
+    }
+
+    public async Task<Result> AddAsync(int woolId, double quantity, int? projectId = null, DateTime? date = null)
     {
         try
         {
@@ -24,7 +67,7 @@ public sealed class TrackedWoolRepository(LoomaDbContext context) : ITrackedWool
             context.TrackedWools.Add(new TrackedWool
             {
                 Id = Guid.NewGuid().ToString("N"),
-                Date = DateTime.UtcNow,
+                Date = date ?? DateTime.UtcNow,
                 Quantity = quantity,
                 WoolId = woolId,
                 ProjectId = projectId
