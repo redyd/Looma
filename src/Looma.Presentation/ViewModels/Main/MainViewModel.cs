@@ -101,7 +101,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             IsInstallingUpdate = false;
             OnPropertyChanged(nameof(CanCloseUpdatePrompt));
             OnPropertyChanged(nameof(CanConfirmUpdate));
-            _notifications.Error(_updaterService.ErrorMessage ?? "Impossible d'installer la mise à jour.");
+            _notifications.Error(_updaterService.ErrorMessage ?? Translation["Update_Notifications_UnableToInstallUpdate"]);
         }
     }
 

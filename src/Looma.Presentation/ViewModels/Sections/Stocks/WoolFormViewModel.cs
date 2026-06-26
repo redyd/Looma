@@ -90,7 +90,7 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
     public void InitCreate()
     {
         _isEdit = false;
-        Title = "Nouvelle laine";
+        Title = Translation["WoolForm_CreateTitle"];
         Name = Brand = Material = Weight = Length = string.Empty;
         SelectedNeedleRange = NeedleRanges[0];
         SelectedColor = Colors.Gray;
@@ -102,13 +102,13 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
     {
         if (wool is null)
         {
-            ErrorMessage = "Aucune laine sélectionnée";
+            ErrorMessage = Translation["Stocks_Errors_NoSelectedWool"];
             return;
         }
         
         _isEdit = true;
         _editingId = wool.Id;
-        Title = "Modifier la laine";
+        Title = Translation["WoolForm_EditTitle"];
         Name = wool.Name;
         Brand = wool.Brand;
         Material = wool.Material;
@@ -149,19 +149,19 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
 
         if (!double.TryParse(Length, out var length) || length <= 0)
         {
-            ErrorMessage = "La longeur doit être un nombre positif.";
+            ErrorMessage = Translation["WoolForm_Errors_LengthMustBePositive"];
             return;
         }
         
         if (!double.TryParse(Weight, out var weight) || weight <= 0)
         {
-            ErrorMessage = "Le poids doit être un nombre positif.";
+            ErrorMessage = Translation["WoolForm_Errors_WeightMustBePositive"];
             return;
         }
 
         if (SelectedNeedleRange is not { } needleRange)
         {
-            ErrorMessage = "Veuillez sélectionner une taille d'aiguilles.";
+            ErrorMessage = Translation["WoolForm_Errors_SelectNeedleSize"];
             return;
         }
 
@@ -183,11 +183,11 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
                 if (result.Failed)
                 {
                     ErrorMessage = result.Error;
-                    notifications.Error(result.Error ?? "Impossible de sauvegarder la laine.");
+                    notifications.Error(result.Error ?? Translation["Stocks_Notifications_UnableToSaveWool"]);
                     return;
                 }
 
-                notifications.Success("La laine a été mise à jour.");
+                notifications.Success(Translation["Stocks_Notifications_WoolUpdated"]);
             }
             else
             {
@@ -204,11 +204,11 @@ public partial class WoolFormViewModel(INavigationService nav, IWoolService wool
                 if (result.Failed)
                 {
                     ErrorMessage = result.Error;
-                    notifications.Error(result.Error ?? "Impossible de créer la laine.");
+                    notifications.Error(result.Error ?? Translation["Stocks_Notifications_UnableToCreateWool"]);
                     return;
                 }
 
-                notifications.Success("La laine a été créée.");
+                notifications.Success(Translation["Stocks_Notifications_WoolCreated"]);
             }
 
             nav.GoBack();

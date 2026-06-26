@@ -4,6 +4,7 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Services;
@@ -19,23 +20,30 @@ public partial class SettingsViewModel(
     IThemeStorage themeStorage,
     IThemeFilePicker themeFilePicker,
     INotificationService notifications,
+    TranslationService translation,
     SettingsUpdaterViewModel updater)
     : PageViewModelBase
 {
     private bool _isLoadingThemes;
+    private bool _isLoadingLanguages;
 
     public override bool KeepAliveInNavigationHistory => true;
 
     public ObservableCollection<ThemeOptionViewModel> Themes { get; } = [];
+    public ObservableCollection<LanguageOptionViewModel> Languages { get; } = [];
     public SettingsUpdaterViewModel Updater { get; } = updater;
 
     [ObservableProperty]
     public partial ThemeOptionViewModel? SelectedTheme { get; set; }
 
+    [ObservableProperty]
+    public partial LanguageOptionViewModel? SelectedLanguage { get; set; }
+
     public override void OnNavigatedTo()
     {
-        Title = "Paramètres";
+        Title = translation["Settings_Title"];
         Updater.OnNavigatedTo();
+        RefreshLanguages();
         RefreshThemes();
     }
 
@@ -59,21 +67,84 @@ public partial class SettingsViewModel(
             {
                 themeService.ResetToDefault();
                 themeStorage.SaveSelectedTheme(null);
-                notifications.Success("Le thème par défaut a été appliqué.");
+                notifications.Success(translation["Settings_Notifications_DefaultThemeApplied"]);
                 return;
             }
 
             themeService.ApplyOverride(value.Path!);
             themeStorage.SaveSelectedTheme(value.Path);
-            notifications.Success($"Le thème {value.Name} a été appliqué.");
+            notifications.Success(translation.Format("Settings_Notifications_ThemeApplied", value.Name));
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible d'appliquer le thème : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToApplyTheme", ex.Message));
+        }
+    }
+
+    partial void OnSelectedLanguageChanged(LanguageOptionViewModel? value)
+    {
+        if (_isLoadingLanguages || value is null)
+            return;
+
+        var previousCulture = CultureInfo.CurrentCulture.Name;
+        var previousUiCulture = CultureInfo.CurrentUICulture.Name;
+
+        try
+        {
+            translation.SetCulture(value.Culture);
+
+            var currentCulture = CultureInfo.CurrentCulture.Name;
+            var currentUiCulture = CultureInfo.CurrentUICulture.Name;
+
+            Trace.TraceInformation(
+                "Language changed from {0}/{1} to {2}/{3}.",
+                previousCulture,
+                previousUiCulture,
+                currentCulture,
+                currentUiCulture);
+
+            if (!CultureMatches(value.Culture, CultureInfo.CurrentCulture)
+                || !CultureMatches(value.Culture, CultureInfo.CurrentUICulture))
+            {
+                throw new InvalidOperationException(
+                    $"La culture active est {currentCulture}/{currentUiCulture} au lieu de {value.Culture}.");
+            }
+
+            notifications.Success(translation["Success_SelectedLanguageChanged"]);
+        }
+        catch (Exception ex)
+        {
+            Trace.TraceError("Unable to change language to {0}: {1}", value.Culture, ex);
+            notifications.Error(translation.Format("Settings_Notifications_UnableToChangeLanguage", ex.Message));
+            RefreshLanguages();
         }
     }
 
     private bool CanManageSelectedTheme() => SelectedTheme?.IsDefault == false;
+
+    private static bool CultureMatches(string expectedCulture, CultureInfo actualCulture) =>
+        string.Equals(actualCulture.Name, expectedCulture, StringComparison.OrdinalIgnoreCase)
+        || string.Equals(actualCulture.TwoLetterISOLanguageName, expectedCulture, StringComparison.OrdinalIgnoreCase);
+
+    private void RefreshLanguages()
+    {
+        _isLoadingLanguages = true;
+        try
+        {
+            var selectedCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+            Languages.Clear();
+            foreach (var culture in TranslationService.SupportedLanguage)
+                Languages.Add(new LanguageOptionViewModel(translation[culture], culture));
+
+            SelectedLanguage = Languages.FirstOrDefault(language => language.Culture == selectedCulture)
+                               ?? Languages.FirstOrDefault();
+        }
+        finally
+        {
+            _isLoadingLanguages = false;
+        }
+    }
 
     [RelayCommand]
     private void RefreshThemes()
@@ -86,7 +157,7 @@ public partial class SettingsViewModel(
             selectedPath ??= themeStorage.GetSelectedThemePath();
 
             Themes.Clear();
-            Themes.Add(new ThemeOptionViewModel("Défaut", null));
+            Themes.Add(new ThemeOptionViewModel(translation["Settings_DefaultTheme"], null));
 
             foreach (var file in themeStorage.GetThemeFiles())
             {
@@ -113,7 +184,7 @@ public partial class SettingsViewModel(
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible de charger les thèmes : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToLoadThemes", ex.Message));
         }
         finally
         {
@@ -146,11 +217,11 @@ public partial class SettingsViewModel(
             var importedPath = themeStorage.ImportTheme(sourcePath);
             RefreshThemes();
             SelectedTheme = Themes.FirstOrDefault(theme => theme.Path == importedPath);
-            notifications.Success("Le thème a été importé.");
+            notifications.Success(translation["Settings_Notifications_ThemeImported"]);
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible d'importer le thème : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToImportTheme", ex.Message));
         }
     }
 
@@ -161,11 +232,11 @@ public partial class SettingsViewModel(
         {
             var destinationPath = themeStorage.CreateExportPath();
             themeService.ExportCurrentOverride(destinationPath);
-            notifications.Success($"Le thème a été exporté dans {destinationPath}.");
+            notifications.Success(translation.Format("Settings_Notifications_ThemeExported", destinationPath));
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible d'exporter le thème : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToExportTheme", ex.Message));
         }
     }
 
@@ -177,7 +248,7 @@ public partial class SettingsViewModel(
             var path = SelectedTheme?.Path;
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
             {
-                notifications.Error("Le fichier de thème est introuvable.");
+                notifications.Error(translation["Settings_Notifications_ThemeFileNotFound"]);
                 RefreshThemes();
                 return;
             }
@@ -189,7 +260,7 @@ public partial class SettingsViewModel(
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible d'ouvrir le thème : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToOpenTheme", ex.Message));
         }
     }
 
@@ -206,12 +277,14 @@ public partial class SettingsViewModel(
             themeStorage.DeleteTheme(path);
             themeService.ResetToDefault();
             RefreshThemes();
-            notifications.Success($"Le thème {deletedName} a été supprimé.");
+            notifications.Success(translation.Format("Settings_Notifications_ThemeDeleted", deletedName));
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible de supprimer le thème : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToDeleteTheme", ex.Message));
         }
     }
 
 }
+
+public sealed record LanguageOptionViewModel(string Name, string Culture);

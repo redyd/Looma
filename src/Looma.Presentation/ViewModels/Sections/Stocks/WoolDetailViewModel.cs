@@ -94,28 +94,28 @@ public partial class WoolDetailViewModel : PageViewModelBase
         var result = await _woolService.AddStockAsync(WoolId, toSend);
         if (result.Failed)
         {
-            ErrorMessage = "Impossible de mettre à jour les données";
-            _notifications.Error(result.Error ?? "Une erreur est survenue");
+            ErrorMessage = Translation["Common_UnableToUpdateData"];
+            _notifications.Error(result.Error ?? Translation["Common_UnexpectedError"]);
             return;
         }
 
-        _notifications.Success("Stock correctement mis à jour");
+        _notifications.Success(Translation["Stocks_Notifications_StockUpdated"]);
     }
 
     public IList<StatItem> DetailStats =>
     [
-        new() { Label = "Pelotes", Value = BatchQuantity.ToString("N1"), Unit = "x", IsFirst = true },
-        new() { Label = "Poids", Value = StockWeight.ToString("N0"), Unit = "g" },
-        new() { Label = "Longueur", Value = StockLength.ToString("N0"), Unit = "m" }
+        new() { Label = Translation["Common_Skeins"], Value = BatchQuantity.ToString("N1"), Unit = "x", IsFirst = true },
+        new() { Label = Translation["Common_Weight"], Value = StockWeight.ToString("N0"), Unit = "g" },
+        new() { Label = Translation["Common_Length"], Value = StockLength.ToString("N0"), Unit = "m" }
     ];
 
     public IList<InfoItem> DetailInfos =>
     [
-        new() { Label = "Marque", Value = Brand },
-        new() { Label = "Matière", Value = Material },
-        new() { Label = "Aiguilles", Value = NeedleSizeDisplay },
-        new() { Label = "Poids", Value = $"{Weight:N0}g" },
-        new() { Label = "Longueur", Value = $"{Length:N0}m" },
+        new() { Label = Translation["Common_Brand"], Value = Brand },
+        new() { Label = Translation["Common_Material"], Value = Material },
+        new() { Label = Translation["WoolForm_NeedleSize"], Value = NeedleSizeDisplay },
+        new() { Label = Translation["Common_Weight"], Value = $"{Weight:N0}g" },
+        new() { Label = Translation["Common_Length"], Value = $"{Length:N0}m" },
     ];
 
     public string NeedleSizeDisplay =>
@@ -133,7 +133,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
         _notifications = notifications;
         _calculator = calculator;
         _refreshService = refreshService;
-        Title = "Détail laine";
+        Title = Translation["WoolDetail_Title"];
     }
 
     public void Load(Wool wool)
@@ -155,7 +155,7 @@ public partial class WoolDetailViewModel : PageViewModelBase
         var wool = await _woolService.GetByIdAsync(WoolId);
         if (wool.Failed || wool.Value is null)
         {
-            ErrorMessage = wool.Error ?? $"La laine {WoolId} est introuvable.";
+            ErrorMessage = wool.Error ?? Translation.Format("Stocks_Errors_WoolNotFound", WoolId);
             return;
         }
 
@@ -203,11 +203,11 @@ public partial class WoolDetailViewModel : PageViewModelBase
             if (result.Failed)
             {
                 ErrorMessage = result.Error;
-                _notifications.Error(result.Error ?? "Impossible de supprimer la laine.");
+                _notifications.Error(result.Error ?? Translation["Stocks_Notifications_UnableToDeleteWool"]);
                 return;
             }
 
-            _notifications.Success("La laine a été supprimée.");
+            _notifications.Success(Translation["Stocks_Notifications_WoolDeleted"]);
             _nav.GoBack();
         }
         finally

@@ -19,7 +19,7 @@ public partial class DocumentDraftViewModel(IDocumentFilePicker filePicker, Docu
     public partial string Nickname { get; set; } = string.Empty;
 
     public string SelectedFileName
-        => string.IsNullOrWhiteSpace(SourcePath) ? "Aucun fichier sélectionné" : Path.GetFileName(SourcePath);
+        => string.IsNullOrWhiteSpace(SourcePath) ? TranslationService.Current["Documents_NoFileSelected"] : Path.GetFileName(SourcePath);
 
     public string SelectedFileDirectory
         => string.IsNullOrWhiteSpace(SourcePath) ? string.Empty : Path.GetDirectoryName(SourcePath) ?? string.Empty;

@@ -3,6 +3,7 @@
 // See LICENSE in the project root for full license text.
 
 using System.Text.Json;
+using Looma.Presentation.Services;
 using System.Text.Json.Serialization;
 using Avalonia;
 using Avalonia.Controls;
@@ -123,7 +124,7 @@ public class ThemeService
         catch (JsonException ex)
         {
             throw new InvalidOperationException(
-                BuildJsonErrorMessage("Le fichier de thème", jsonPath, ex),
+                BuildJsonErrorMessage(TranslationService.Current["Theme_FileLabel"], jsonPath, ex),
                 ex);
         }
     }
@@ -133,9 +134,9 @@ public class ThemeService
         var fileName = Path.GetFileName(path);
         var location = ex.LineNumber is null || ex.BytePositionInLine is null
             ? string.Empty
-            : $" Ligne {ex.LineNumber + 1}, colonne {ex.BytePositionInLine + 1}.";
+            : TranslationService.Current.Format("Theme_JsonErrorLocation", ex.LineNumber + 1, ex.BytePositionInLine + 1);
 
-        return $"{label} \"{fileName}\" contient un JSON invalide.{location} Vérifiez la syntaxe du fichier.";
+        return TranslationService.Current.Format("Theme_InvalidJson", label, fileName, location);
     }
 
     private void CaptureDefaultResources()

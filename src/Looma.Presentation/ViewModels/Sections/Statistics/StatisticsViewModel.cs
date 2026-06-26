@@ -2,10 +2,11 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
-using Looma.Domain.Extensions;
 using Looma.Domain.IServices;
 using Looma.Domain.Refresh;
 using Looma.Domain.Statistics;
@@ -21,31 +22,16 @@ public partial class StatisticsViewModel(
     : PageViewModelBase
 {
     private bool _isInitialized;
+    private bool _isRefreshingOptions;
+    private bool _isListeningTranslation;
 
     public override bool KeepAliveInNavigationHistory => true;
 
-    public IReadOnlyList<StatisticsOptionViewModel<StatisticsRange>> RangeOptions { get; } =
-    [
-        new("Tout", StatisticsRange.All),
-        new("Cette année", StatisticsRange.ThisYear),
-        new("Ces 6 derniers mois", StatisticsRange.LastSixMonths),
-        new("Ce mois", StatisticsRange.ThisMonth),
-        new("Cette semaine", StatisticsRange.ThisWeek)
-    ];
+    public ObservableCollection<StatisticsOptionViewModel<StatisticsRange>> RangeOptions { get; } = [];
 
-    public IReadOnlyList<StatisticsOptionViewModel<StatisticsQuantityUnit>> QuantityUnitOptions { get; } =
-    [
-        new("Pelotes", StatisticsQuantityUnit.Skein),
-        new("Poids", StatisticsQuantityUnit.Weight),
-        new("Longueur", StatisticsQuantityUnit.Length)
-    ];
+    public ObservableCollection<StatisticsOptionViewModel<StatisticsQuantityUnit>> QuantityUnitOptions { get; } = [];
 
-    public IReadOnlyList<StatisticsOptionViewModel<PatternType?>> PatternTypeOptions { get; } =
-    [
-        new("Tout", null),
-        ..Enum.GetValues<PatternType>()
-            .Select(type => new StatisticsOptionViewModel<PatternType?>(type.GetDisplayName(), type))
-    ];
+    public ObservableCollection<StatisticsOptionViewModel<PatternType?>> PatternTypeOptions { get; } = [];
 
     [ObservableProperty]
     public partial StatisticsOptionViewModel<StatisticsRange>? SelectedRange { get; set; }
@@ -68,10 +54,11 @@ public partial class StatisticsViewModel(
     public override async void OnNavigatedTo()
     {
         RegisterRefresh(refreshService, RefreshScope.Wools, LoadAsync);
+        RegisterTranslationRefresh();
+        RefreshOptions();
 
         if (!_isInitialized)
         {
-            Title = "Statistiques";
             SelectedRange = RangeOptions.First();
             SelectedQuantityUnit = QuantityUnitOptions.First();
             SelectedPatternType = PatternTypeOptions.First();
@@ -79,6 +66,69 @@ public partial class StatisticsViewModel(
         }
 
         await LoadAsync();
+    }
+
+    protected override void OnDestroy()
+    {
+        if (_isListeningTranslation)
+        {
+            Translation.PropertyChanged -= OnTranslationChanged;
+            _isListeningTranslation = false;
+        }
+
+        base.OnDestroy();
+    }
+
+    private void RegisterTranslationRefresh()
+    {
+        if (_isListeningTranslation)
+            return;
+
+        Translation.PropertyChanged += OnTranslationChanged;
+        _isListeningTranslation = true;
+    }
+
+    private void OnTranslationChanged(object? sender, PropertyChangedEventArgs e) => RefreshOptions();
+
+    private void RefreshOptions()
+    {
+        var previousRange = SelectedRange?.Value;
+        var previousQuantityUnit = SelectedQuantityUnit?.Value;
+        var previousPatternType = SelectedPatternType?.Value;
+
+        _isRefreshingOptions = true;
+        try
+        {
+            Title = Translation["Statistics_Title"];
+
+            RangeOptions.Clear();
+            RangeOptions.Add(new(Translation["Statistics_RangeAll"], StatisticsRange.All));
+            RangeOptions.Add(new(Translation["Statistics_RangeThisYear"], StatisticsRange.ThisYear));
+            RangeOptions.Add(new(Translation["Statistics_RangeLastSixMonths"], StatisticsRange.LastSixMonths));
+            RangeOptions.Add(new(Translation["Statistics_RangeThisMonth"], StatisticsRange.ThisMonth));
+            RangeOptions.Add(new(Translation["Statistics_RangeThisWeek"], StatisticsRange.ThisWeek));
+
+            QuantityUnitOptions.Clear();
+            QuantityUnitOptions.Add(new(Translation["Common_Skeins"], StatisticsQuantityUnit.Skein));
+            QuantityUnitOptions.Add(new(Translation["Common_Weight"], StatisticsQuantityUnit.Weight));
+            QuantityUnitOptions.Add(new(Translation["Common_Length"], StatisticsQuantityUnit.Length));
+
+            PatternTypeOptions.Clear();
+            PatternTypeOptions.Add(new(Translation["Statistics_RangeAll"], null));
+            foreach (var type in Enum.GetValues<PatternType>())
+                PatternTypeOptions.Add(new(Translation[$"Enum_{type}"], type));
+
+            SelectedRange = RangeOptions.FirstOrDefault(option => option.Value == previousRange)
+                            ?? RangeOptions.FirstOrDefault();
+            SelectedQuantityUnit = QuantityUnitOptions.FirstOrDefault(option => option.Value == previousQuantityUnit)
+                                   ?? QuantityUnitOptions.FirstOrDefault();
+            SelectedPatternType = PatternTypeOptions.FirstOrDefault(option => option.Value == previousPatternType)
+                                  ?? PatternTypeOptions.FirstOrDefault();
+        }
+        finally
+        {
+            _isRefreshingOptions = false;
+        }
     }
 
     [RelayCommand]
@@ -105,7 +155,7 @@ public partial class StatisticsViewModel(
             var result = await statisticsService.GetAsync(query);
             if (result.Failed || result.Value is null)
             {
-                notifications.Error(result.Error ?? "Impossible de charger les statistiques.");
+                notifications.Error(result.Error ?? Translation["Statistics_Notifications_UnableToLoadStatistics"]);
                 Labels = [];
                 Series = [];
                 HasData = false;
@@ -124,7 +174,7 @@ public partial class StatisticsViewModel(
 
     partial void OnSelectedRangeChanged(StatisticsOptionViewModel<StatisticsRange>? value)
     {
-        if (!_isInitialized)
+        if (!_isInitialized || _isRefreshingOptions)
             return;
 
         _ = LoadAsync();
@@ -132,7 +182,7 @@ public partial class StatisticsViewModel(
 
     partial void OnSelectedPatternTypeChanged(StatisticsOptionViewModel<PatternType?>? value)
     {
-        if (!_isInitialized)
+        if (!_isInitialized || _isRefreshingOptions)
             return;
 
         _ = LoadAsync();
@@ -140,7 +190,7 @@ public partial class StatisticsViewModel(
 
     partial void OnSelectedQuantityUnitChanged(StatisticsOptionViewModel<StatisticsQuantityUnit>? value)
     {
-        if (!_isInitialized)
+        if (!_isInitialized || _isRefreshingOptions)
             return;
 
         _ = LoadAsync();

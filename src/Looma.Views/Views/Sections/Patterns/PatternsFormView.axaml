@@ -6,6 +6,7 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
              xmlns:documents="clr-namespace:Looma.Presentation.ViewModels.Shared.Documents;assembly=Looma.Presentation"
              x:Class="Looma.Views.Views.Sections.Patterns.PatternsFormView"
@@ -24,48 +25,48 @@
                     <StackPanel Classes="form-header">
                         <TextBlock Classes="form-title" Text="{Binding Title}" />
                         <TextBlock Classes="form-subtitle"
-                                   Text="Renseignez le nom, le lien éventuel, la note et ajoutez un document si besoin." />
+                                   Text="{loc:Loc PatternsForm_Subtitle}" />
                     </StackPanel>
 
                     <Border Classes="form-section">
                         <StackPanel Spacing="0">
                             <TextBlock Classes="section-title"
-                                       Text="Informations"
+                                       Text="{loc:Loc Common_Information}"
                                        Margin="0 0 0 16" />
 
                             <StackPanel Classes="form-field">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                    <TextBlock Classes="form-label" Text="Nom" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc Common_Name}" />
                                     <TextBlock Classes="field-required" Text="*" />
                                 </StackPanel>
                                 <TextBox Classes="form-input"
                                          Text="{Binding Name}"
-                                         PlaceholderText="Ex : Happy Hexagon" />
+                                         PlaceholderText="{loc:Loc PatternsForm_NamePlaceholder}" />
                             </StackPanel>
 
                             <StackPanel Classes="form-field">
-                                <TextBlock Classes="form-label" Text="URL" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc Common_Url}" />
                                 <TextBox Classes="form-input"
                                          Text="{Binding Url}"
-                                         PlaceholderText="Lien vers le patron (optionnel)" />
+                                         PlaceholderText="{loc:Loc PatternsForm_UrlPlaceholder}" />
                             </StackPanel>
 
                             <Grid ColumnDefinitions="*,16,*">
                                 <StackPanel Grid.Column="0" Classes="form-field">
-                                    <TextBlock Classes="form-label" Text="Date de début" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc Common_BeginDate}" />
                                     <DatePicker SelectedDate="{Binding BeginDate, Mode=TwoWay}"
                                                 Classes="form-input" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
-                                    <TextBlock Classes="form-label" Text="Date de fin" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc Common_EndDate}" />
                                     <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay}"
                                                 Classes="form-input" />
                                 </StackPanel>
                             </Grid>
 
                             <StackPanel Classes="form-field">
-                                <TextBlock Classes="form-label" Text="Note" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc Common_Note}" />
                                 <TextBox Classes="form-input"
                                          Text="{Binding Note}"
                                          AcceptsReturn="True"
@@ -73,14 +74,14 @@
                                          Padding="10"
                                          Height="180"
                                          VerticalContentAlignment="Top"
-                                         PlaceholderText="Notes, instructions, remarques..." />
+                                         PlaceholderText="{loc:Loc PatternsForm_NotePlaceholder}" />
                             </StackPanel>
                         </StackPanel>
                     </Border>
                     
                     <StackPanel Classes="form-field">
                         <StackPanel Orientation="Horizontal" Spacing="4">
-                            <TextBlock Classes="form-label" Text="Type de patron" />
+                            <TextBlock Classes="form-label" Text="{loc:Loc Common_PatternType}" />
                             <TextBlock Classes="field-required" Text="*" />
                         </StackPanel>
                         <ComboBox ItemsSource="{Binding PatternTypes}"
@@ -95,21 +96,21 @@
                     </StackPanel>
 
                     <StackPanel Classes="form-field">
-                        <CheckBox Content="Projet personnel"
+                        <CheckBox Content="{loc:Loc PatternsForm_PersonalProject}"
                                   IsChecked="{Binding IsPersonal, Mode=TwoWay}" />
                     </StackPanel>
 
                     <Border Classes="form-section" IsVisible="{Binding IsEditMode}">
                         <StackPanel Spacing="0">
                             <TextBlock Classes="section-title"
-                                       Text="Documents existants"
+                                       Text="{loc:Loc PatternsForm_ExistingDocuments}"
                                        Margin="0 0 0 16" />
 
                             <TextBlock Classes="form-hint"
-                                       Text="Renommez ou supprimez les documents déjà liés à ce patron."
+                                       Text="{loc:Loc PatternsForm_EditExistingDocuments}"
                                        Margin="0 0 0 12" />
 
-                            <TextBlock Text="Aucun document existant."
+                            <TextBlock Text="{loc:Loc PatternsForm_NoExistingDocument}"
                                        Classes="form-hint"
                                        IsVisible="{Binding !Documents.ExistingDocuments.Count}" />
 
@@ -122,10 +123,10 @@
                                                 Background="{DynamicResource EmbeddedPanelBackgroundBrush}">
                                             <StackPanel Spacing="12">
                                                 <StackPanel Classes="form-field">
-                                                    <TextBlock Classes="form-label" Text="Nommer le document" />
+                                                    <TextBlock Classes="form-label" Text="{loc:Loc Documents_NameDocument}" />
                                                     <TextBox Classes="form-input"
                                                              Text="{Binding Nickname}"
-                                                             PlaceholderText="Nom affiché du document" />
+                                                             PlaceholderText="{loc:Loc Documents_DisplayNamePlaceholder}" />
                                                 </StackPanel>
 
                                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
@@ -140,7 +141,7 @@
                                                     </StackPanel>
 
                                                     <Button Grid.Column="1"
-                                                            Content="Supprimer"
+                                                            Content="{loc:Loc Common_Delete}"
                                                             Command="{Binding RemoveCommand}"
                                                             Classes="cancel-btn"
                                                             VerticalAlignment="Center" />
@@ -156,11 +157,11 @@
                     <Border Classes="form-section">
                         <StackPanel Spacing="0">
                             <TextBlock Classes="section-title"
-                                       Text="Ajouter des documents"
+                                       Text="{loc:Loc PatternsForm_AddDocuments}"
                                        Margin="0 0 0 16" />
 
                             <TextBlock Classes="form-hint"
-                                       Text="Ajoutez un ou plusieurs fichiers au patron."
+                                       Text="{loc:Loc PatternsForm_AddDocumentsHint}"
                                        Margin="0 0 0 12" />
 
                             <ItemsControl ItemsSource="{Binding Documents.NewDocuments}">
@@ -172,10 +173,10 @@
                                                 Background="{DynamicResource EmbeddedPanelBackgroundBrush}">
                                             <StackPanel Spacing="12">
                                                 <StackPanel Classes="form-field">
-                                                    <TextBlock Classes="form-label" Text="Nommer le document" />
+                                                    <TextBlock Classes="form-label" Text="{loc:Loc Documents_NameDocument}" />
                                                     <TextBox Classes="form-input"
                                                              Text="{Binding Nickname}"
-                                                             PlaceholderText="Nom affiché du document" />
+                                                             PlaceholderText="{loc:Loc Documents_DisplayNamePlaceholder}" />
                                                 </StackPanel>
 
                                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
@@ -193,10 +194,10 @@
                                                                 Orientation="Horizontal"
                                                                 Spacing="8"
                                                                 VerticalAlignment="Center">
-                                                        <Button Content="Choisir un fichier"
+                                                        <Button Content="{loc:Loc Documents_ChooseFile}"
                                                                 Command="{Binding BrowseFileCommand}"
                                                                 Classes="form-submit" />
-                                                        <Button Content="Supprimer"
+                                                        <Button Content="{loc:Loc Common_Delete}"
                                                                 Command="{Binding RemoveCommand}"
                                                                 Classes="cancel-btn" />
                                                     </StackPanel>
@@ -207,7 +208,7 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
-                            <Button Content="Nouveau document"
+                            <Button Content="{loc:Loc Documents_NewDocument}"
                                     Command="{Binding Documents.AddDocumentCommand}"                                   
                                     Classes="form-submit"
                                     HorizontalAlignment="Left"
@@ -217,7 +218,7 @@
 
                     <StackPanel Classes="form-actions">
                         <Button Classes="cancel-btn"
-                                Content="Annuler"
+                                Content="{loc:Loc Common_Cancel}"
                                 Command="{Binding CancelCommand}" />
                         <Button Classes="form-submit"
                                 Content="{Binding Title}"

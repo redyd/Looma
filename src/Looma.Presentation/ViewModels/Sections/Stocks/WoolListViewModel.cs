@@ -41,7 +41,7 @@ public partial class WoolListViewModel(
             var woolsResult = await woolService.GetAllAsync();
             if (woolsResult.Failed || woolsResult.Value is null)
             {
-                notifications.Error(woolsResult.Error ?? "Impossible de charger les laines.");
+                notifications.Error(woolsResult.Error ?? Translation["Stocks_Notifications_UnableToLoadWools"]);
                 ClearPagesState();
                 return;
             }

@@ -5,6 +5,7 @@
 using System.Windows.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
+using Looma.Presentation.Services;
 
 namespace Looma.Presentation.ViewModels.Sections.Documents;
 
@@ -20,7 +21,7 @@ public record DocumentSummaryViewModel(
     public bool HasOrigin => Document.PatternId.HasValue || Document.ProjectId.HasValue;
 
     public string OriginTypeDisplay =>
-        Document.PatternId.HasValue ? "Patron" :
-        Document.ProjectId.HasValue ? "Projet" :
-        "Aucune";
+        Document.PatternId.HasValue ? TranslationService.Current["Common_Pattern"] :
+        Document.ProjectId.HasValue ? TranslationService.Current["Projects_Title"] :
+        TranslationService.Current["Common_NoneFeminine"];
 }

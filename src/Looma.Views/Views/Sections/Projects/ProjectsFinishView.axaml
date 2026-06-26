@@ -6,6 +6,7 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
              xmlns:userControls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsFinishView"
@@ -22,22 +23,22 @@
                 <StackPanel Spacing="14">
 
                     <StackPanel Classes="form-header">
-                        <TextBlock Classes="form-title" Text="Terminer le projet" />
+                        <TextBlock Classes="form-title" Text="{loc:Loc ProjectsFinish_Title}" />
                         <TextBlock Classes="form-subtitle" Text="{Binding ProjectName}" />
                     </StackPanel>
 
                     <Border Classes="form-section">
                         <StackPanel Spacing="12">
-                            <TextBlock Classes="section-title" Text="Récapitulatif" />
+                            <TextBlock Classes="section-title" Text="{loc:Loc ProjectsFinish_Summary}" />
 
                             <StackPanel Classes="form-field">
-                                <TextBlock Classes="form-label" Text="Date de fin du projet" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc ProjectsFinish_ProjectEndDate}" />
                                 <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay}"
                                             Classes="form-input" />
                             </StackPanel>
 
                             <StackPanel Classes="form-field">
-                                <TextBlock Classes="form-label" Text="Mode de retrait" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc ProjectsFinish_DeductionMode}" />
                                 <ComboBox ItemsSource="{Binding DeductionModes}"
                                           SelectedItem="{Binding DeductionMode}"
                                           Classes="form-select"
@@ -56,7 +57,7 @@
                                     Background="{DynamicResource SummaryPanelBackgroundBrush}">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock Grid.Column="0"
-                                               Text="Stock total qui va être retiré du stock"
+                                               Text="{loc:Loc ProjectsFinish_TotalStockDeducted}"
                                                FontSize="13"
                                                Foreground="{DynamicResource TextSecondaryBrush}"
                                                Opacity="0.75"
@@ -74,8 +75,8 @@
 
                     <Border Classes="form-section">
                         <StackPanel Spacing="12">
-                            <TextBlock Classes="section-title" Text="Laines à retirer" />
-                            <TextBlock Text="Aucune laine à retirer."
+                            <TextBlock Classes="section-title" Text="{loc:Loc ProjectsFinish_WoolsToDeduct}" />
+                            <TextBlock Text="{loc:Loc ProjectsFinish_NoWoolToDeduct}"
                                        Classes="form-hint"
                                        IsVisible="{Binding !HasWools}" />
 
@@ -118,7 +119,7 @@
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Column="2" Spacing="6">
-                                                    <TextBlock Classes="form-label" Text="À retirer" />
+                                                    <TextBlock Classes="form-label" Text="{loc:Loc ProjectsFinish_ToDeduct}" />
                                                     <Grid ColumnDefinitions="*,8,Auto">
                                                         <NumericUpDown Grid.Column="0"
                                                                        Classes="form-numeric"
@@ -145,10 +146,10 @@
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Right"
                                 Spacing="12">
-                        <Button Content="Annuler"
+                        <Button Content="{loc:Loc Common_Cancel}"
                                 Command="{Binding CancelCommand}"
                                 Classes="cancel-btn" />
-                        <Button Content="Confirmer"
+                        <Button Content="{loc:Loc Common_Confirm}"
                                 Command="{Binding ConfirmCommand}"
                                 Classes="form-submit" />
                     </StackPanel>

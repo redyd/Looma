@@ -1,0 +1,908 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <data name="Projects_SearchPlaceholder">
+    <value>Rechercher par nom, statut, dates, patron, laine ou note...</value>
+  </data>
+  <data name="Projects_AllStatusesFilter">
+    <value>Tous les statuts</value>
+  </data>
+  <data name="en">
+    <value>English</value>
+  </data>
+  <data name="fr">
+    <value>Français</value>
+  </data>
+  <data name="Enum_Wishlist" xml:space="preserve">
+    <value>Liste des souhaits</value>
+    <comment />
+  </data>
+  <data name="Enum_InProgress" xml:space="preserve">
+    <value>En cours</value>
+    <comment />
+  </data>
+  <data name="Enum_Finished" xml:space="preserve">
+    <value>Fini</value>
+    <comment />
+  </data>
+  <data name="Enum_Paused" xml:space="preserve">
+    <value>En pause</value>
+    <comment />
+  </data>
+  <data name="Projects_Title" xml:space="preserve">
+    <value>Projets</value>
+    <comment />
+  </data>
+  <data name="Projects_Notifications_UnableToLoadTheProjects" xml:space="preserve">
+    <value>Impossible de charger les projets.</value>
+    <comment />
+  </data>
+  <data name="Projects_AddProject" xml:space="preserve">
+    <value>Ajouter un projet</value>
+    <comment />
+  </data>
+  <data name="Projects_NoProjectsAtThisTime" xml:space="preserve">
+    <value>Aucun projet pour l'instant</value>
+    <comment />
+  </data>
+  <data name="Projects_CreateFirstProject" xml:space="preserve">
+    <value>Crée ton premier projet pour commencer à organiser tes patrons et ta laine.</value>
+    <comment />
+  </data>
+  <data name="Projects_NoProjectsFound" xml:space="preserve">
+    <value>Aucun projet trouvé</value>
+    <comment />
+  </data>
+  <data name="Projects_TryEditSearchCriteria" xml:space="preserve">
+    <value>Essaie de modifier ta recherche ou le filtre de statut.</value>
+    <comment />
+  </data>
+  <data name="Notifications_InfoTitle" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="Notifications_SuccessTitle" xml:space="preserve">
+    <value>Succès</value>
+  </data>
+  <data name="Notifications_WarningTitle" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="Notifications_ErrorTitle" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="Success_SelectedLanguageChanged" xml:space="preserve">
+    <value>La langue a été modifiée.</value>
+  </data>
+  <data name="Common_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="Common_Back" xml:space="preserve">
+    <value>Retour</value>
+  </data>
+  <data name="Common_Begin" xml:space="preserve">
+    <value>Début</value>
+  </data>
+  <data name="Common_BeginDate" xml:space="preserve">
+    <value>Date de début</value>
+  </data>
+  <data name="Common_Brand" xml:space="preserve">
+    <value>Marque</value>
+  </data>
+  <data name="Common_ByLength" xml:space="preserve">
+    <value>Par longueur (m)</value>
+  </data>
+  <data name="Common_BySkein" xml:space="preserve">
+    <value>Par pelote</value>
+  </data>
+  <data name="Common_ByWeight" xml:space="preserve">
+    <value>Par poids (g)</value>
+  </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="Common_Close" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="Common_Confirm" xml:space="preserve">
+    <value>Confirmer</value>
+  </data>
+  <data name="Common_Delete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="Common_DeleteQuestion" xml:space="preserve">
+    <value>Supprimer ?</value>
+  </data>
+  <data name="Common_Display" xml:space="preserve">
+    <value>Affichage</value>
+  </data>
+  <data name="Common_Edit" xml:space="preserve">
+    <value>Modifier</value>
+  </data>
+  <data name="Common_EditNote" xml:space="preserve">
+    <value>Modifier la note</value>
+  </data>
+  <data name="Common_End" xml:space="preserve">
+    <value>Fin</value>
+  </data>
+  <data name="Common_EndDate" xml:space="preserve">
+    <value>Date de fin</value>
+  </data>
+  <data name="Common_Example100" xml:space="preserve">
+    <value>Ex : 100</value>
+  </data>
+  <data name="Common_Example200" xml:space="preserve">
+    <value>Ex : 200</value>
+  </data>
+  <data name="Common_Export" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
+  <data name="Common_Images" xml:space="preserve">
+    <value>Images</value>
+  </data>
+  <data name="Common_Import" xml:space="preserve">
+    <value>Importer</value>
+  </data>
+  <data name="Common_Information" xml:space="preserve">
+    <value>Informations</value>
+  </data>
+  <data name="Common_Length" xml:space="preserve">
+    <value>Longueur</value>
+  </data>
+  <data name="Common_Material" xml:space="preserve">
+    <value>Matière</value>
+  </data>
+  <data name="Common_Mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="Common_Name" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="Common_Next" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="Common_NoNote" xml:space="preserve">
+    <value>Aucune note.</value>
+  </data>
+  <data name="Common_Note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="Common_Open" xml:space="preserve">
+    <value>Ouvrir</value>
+  </data>
+  <data name="Common_Origin" xml:space="preserve">
+    <value>Origine</value>
+  </data>
+  <data name="Common_Pattern" xml:space="preserve">
+    <value>Patron</value>
+  </data>
+  <data name="Common_PatternType" xml:space="preserve">
+    <value>Type de patron</value>
+  </data>
+  <data name="Common_PermanentAction" xml:space="preserve">
+    <value>Cette action est définitive.</value>
+  </data>
+  <data name="Common_Preview" xml:space="preserve">
+    <value>Aperçu :</value>
+  </data>
+  <data name="Common_Previous" xml:space="preserve">
+    <value>Précédent</value>
+  </data>
+  <data name="Common_Quantity" xml:space="preserve">
+    <value>Quantité</value>
+  </data>
+  <data name="Common_Remove" xml:space="preserve">
+    <value>Retirer</value>
+  </data>
+  <data name="Common_Size" xml:space="preserve">
+    <value>Taille</value>
+  </data>
+  <data name="Common_Status" xml:space="preserve">
+    <value>Statut</value>
+  </data>
+  <data name="Common_Stock" xml:space="preserve">
+    <value>Stock</value>
+  </data>
+  <data name="Common_TryEditSearch" xml:space="preserve">
+    <value>Essaie de modifier ta recherche.</value>
+  </data>
+  <data name="Common_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Common_Url" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Common_Use" xml:space="preserve">
+    <value>Utiliser</value>
+  </data>
+  <data name="Common_View" xml:space="preserve">
+    <value>Voir</value>
+  </data>
+  <data name="Common_Weight" xml:space="preserve">
+    <value>Poids</value>
+  </data>
+  <data name="Common_Wools" xml:space="preserve">
+    <value>Laines</value>
+  </data>
+  <data name="Navigation_Projects" xml:space="preserve">
+    <value>Projets</value>
+  </data>
+  <data name="Navigation_Stocks" xml:space="preserve">
+    <value>Stocks</value>
+  </data>
+  <data name="Navigation_Patterns" xml:space="preserve">
+    <value>Patrons</value>
+  </data>
+  <data name="Navigation_Documents" xml:space="preserve">
+    <value>Mes documents</value>
+  </data>
+  <data name="Navigation_Statistics" xml:space="preserve">
+    <value>Statistiques</value>
+  </data>
+  <data name="Navigation_Settings" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="Update_UpdateAvailable" xml:space="preserve">
+    <value>Mise à jour disponible</value>
+  </data>
+  <data name="Update_Later" xml:space="preserve">
+    <value>Plus tard</value>
+  </data>
+  <data name="Update_Update" xml:space="preserve">
+    <value>Mettre à jour</value>
+  </data>
+  <data name="Update_ReleaseNotes" xml:space="preserve">
+    <value>Notes de version</value>
+  </data>
+  <data name="Statistics_Title" xml:space="preserve">
+    <value>Statistiques</value>
+  </data>
+  <data name="Statistics_YarnUsedByReference" xml:space="preserve">
+    <value>Laine utilisée par référence</value>
+  </data>
+  <data name="Statistics_Period" xml:space="preserve">
+    <value>Période</value>
+  </data>
+  <data name="Statistics_Unit" xml:space="preserve">
+    <value>Unité</value>
+  </data>
+  <data name="Statistics_NoData" xml:space="preserve">
+    <value>Aucune donnée</value>
+  </data>
+  <data name="Statistics_AddWoolMovements" xml:space="preserve">
+    <value>Ajoute des mouvements de laine liés à des projets pour afficher l'évolution.</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Langue</value>
+  </data>
+  <data name="Settings_Theme" xml:space="preserve">
+    <value>Thème</value>
+  </data>
+  <data name="Stocks_SearchPlaceholder" xml:space="preserve">
+    <value>Rechercher par nom, marque, couleur, matière...</value>
+  </data>
+  <data name="Stocks_Title" xml:space="preserve">
+    <value>Mes laines</value>
+  </data>
+  <data name="Stocks_AddWool" xml:space="preserve">
+    <value>Ajouter une laine</value>
+  </data>
+  <data name="Stocks_NoWoolAtThisTime" xml:space="preserve">
+    <value>Aucune laine pour l'instant</value>
+  </data>
+  <data name="Stocks_CreateFirstWool" xml:space="preserve">
+    <value>Ajoute ta première laine pour suivre ton stock par couleur, matière et quantité.</value>
+  </data>
+  <data name="Stocks_NoWoolFound" xml:space="preserve">
+    <value>Aucune laine trouvée</value>
+  </data>
+  <data name="Stocks_NoWoolToDisplay" xml:space="preserve">
+    <value>Aucune laine à afficher.</value>
+  </data>
+  <data name="WoolForm_Subtitle" xml:space="preserve">
+    <value>Renseignez les informations de la laine</value>
+  </data>
+  <data name="WoolForm_Details" xml:space="preserve">
+    <value>Détails de la laine</value>
+  </data>
+  <data name="WoolForm_NamePlaceholder" xml:space="preserve">
+    <value>Ex : Merino Extra Fine</value>
+  </data>
+  <data name="WoolForm_BrandPlaceholder" xml:space="preserve">
+    <value>Ex : Drops</value>
+  </data>
+  <data name="WoolForm_MaterialPlaceholder" xml:space="preserve">
+    <value>Ex : Mérinos, Coton, Alpaga...</value>
+  </data>
+  <data name="WoolForm_NeedleSize" xml:space="preserve">
+    <value>Taille d'aiguilles</value>
+  </data>
+  <data name="WoolForm_Colors" xml:space="preserve">
+    <value>Couleurs</value>
+  </data>
+  <data name="WoolForm_WoolColor" xml:space="preserve">
+    <value>Couleur de la laine</value>
+  </data>
+  <data name="WoolDetail_StockAdjustment" xml:space="preserve">
+    <value>Ajustement du stock</value>
+  </data>
+  <data name="WoolDetail_AdjustStockSubtitle" xml:space="preserve">
+    <value>Modifiez la quantité de laine disponible en stock</value>
+  </data>
+  <data name="WoolDetail_AdjustmentMode" xml:space="preserve">
+    <value>Mode d'ajustement</value>
+  </data>
+  <data name="WoolDetail_QuantityToAdjust" xml:space="preserve">
+    <value>Quantité à ajuster</value>
+  </data>
+  <data name="WoolDetail_PositiveValueHint" xml:space="preserve">
+    <value>Entrez une valeur positive, puis choisissez l'action ci-dessous.</value>
+  </data>
+  <data name="WoolDetail_RemoveFromStock" xml:space="preserve">
+    <value>Retirer du stock</value>
+  </data>
+  <data name="WoolDetail_AddToStock" xml:space="preserve">
+    <value>Ajouter au stock</value>
+  </data>
+  <data name="Patterns_SearchPlaceholder" xml:space="preserve">
+    <value>Rechercher par nom, url ou note...</value>
+  </data>
+  <data name="Patterns_Title" xml:space="preserve">
+    <value>Mes patrons</value>
+  </data>
+  <data name="Patterns_AddPattern" xml:space="preserve">
+    <value>Ajouter un patron</value>
+  </data>
+  <data name="Patterns_NoPatternAtThisTime" xml:space="preserve">
+    <value>Aucun patron pour l'instant</value>
+  </data>
+  <data name="Patterns_CreateFirstPattern" xml:space="preserve">
+    <value>Ajoute ton premier patron pour le retrouver facilement dans tes projets.</value>
+  </data>
+  <data name="Patterns_NoPatternFound" xml:space="preserve">
+    <value>Aucun patron trouvé</value>
+  </data>
+  <data name="Patterns_NoPatternToDisplay" xml:space="preserve">
+    <value>Aucun patron à afficher.</value>
+  </data>
+  <data name="PatternsForm_Subtitle" xml:space="preserve">
+    <value>Renseignez le nom, le lien éventuel, la note et ajoutez un document si besoin.</value>
+  </data>
+  <data name="PatternsForm_NamePlaceholder" xml:space="preserve">
+    <value>Ex : Happy Hexagon</value>
+  </data>
+  <data name="PatternsForm_UrlPlaceholder" xml:space="preserve">
+    <value>Lien vers le patron (optionnel)</value>
+  </data>
+  <data name="PatternsForm_NotePlaceholder" xml:space="preserve">
+    <value>Notes, instructions, remarques...</value>
+  </data>
+  <data name="PatternsForm_PersonalProject" xml:space="preserve">
+    <value>Projet personnel</value>
+  </data>
+  <data name="PatternsForm_ExistingDocuments" xml:space="preserve">
+    <value>Documents existants</value>
+  </data>
+  <data name="PatternsForm_EditExistingDocuments" xml:space="preserve">
+    <value>Renommez ou supprimez les documents déjà liés à ce patron.</value>
+  </data>
+  <data name="PatternsForm_NoExistingDocument" xml:space="preserve">
+    <value>Aucun document existant.</value>
+  </data>
+  <data name="PatternsForm_AddDocuments" xml:space="preserve">
+    <value>Ajouter des documents</value>
+  </data>
+  <data name="PatternsForm_AddDocumentsHint" xml:space="preserve">
+    <value>Ajoutez un ou plusieurs fichiers au patron.</value>
+  </data>
+  <data name="PatternsDetail_LinkedDocuments" xml:space="preserve">
+    <value>Documents liés</value>
+  </data>
+  <data name="PatternsDetail_LinkedProjects" xml:space="preserve">
+    <value>Projets liés</value>
+  </data>
+  <data name="DocumentsForm_Subtitle" xml:space="preserve">
+    <value>Ajoutez un fichier dans le dossier de l'application ou renommez son affichage.</value>
+  </data>
+  <data name="Documents_SearchPlaceholder" xml:space="preserve">
+    <value>Rechercher par nom ou identifiant...</value>
+  </data>
+  <data name="Documents_Title" xml:space="preserve">
+    <value>Mes documents</value>
+  </data>
+  <data name="Documents_NameDocument" xml:space="preserve">
+    <value>Nommer le document</value>
+  </data>
+  <data name="Documents_DisplayNamePlaceholder" xml:space="preserve">
+    <value>Nom affiché du document</value>
+  </data>
+  <data name="Documents_ChooseFile" xml:space="preserve">
+    <value>Choisir un fichier</value>
+  </data>
+  <data name="Documents_NewDocument" xml:space="preserve">
+    <value>Nouveau document</value>
+  </data>
+  <data name="Documents_NoDocument" xml:space="preserve">
+    <value>Aucun document</value>
+  </data>
+  <data name="Documents_NoDocumentToDisplay" xml:space="preserve">
+    <value>Aucun document à afficher.</value>
+  </data>
+  <data name="Documents_FreeDocument" xml:space="preserve">
+    <value>Document libre</value>
+  </data>
+  <data name="Projects_NoProject" xml:space="preserve">
+    <value>Aucun projet</value>
+  </data>
+  <data name="ProjectsFinish_Title" xml:space="preserve">
+    <value>Terminer le projet</value>
+  </data>
+  <data name="ProjectsFinish_Summary" xml:space="preserve">
+    <value>Récapitulatif</value>
+  </data>
+  <data name="ProjectsFinish_ProjectEndDate" xml:space="preserve">
+    <value>Date de fin du projet</value>
+  </data>
+  <data name="ProjectsFinish_DeductionMode" xml:space="preserve">
+    <value>Mode de retrait</value>
+  </data>
+  <data name="ProjectsFinish_TotalStockDeducted" xml:space="preserve">
+    <value>Stock total qui va être retiré du stock</value>
+  </data>
+  <data name="ProjectsFinish_WoolsToDeduct" xml:space="preserve">
+    <value>Laines à retirer</value>
+  </data>
+  <data name="ProjectsFinish_NoWoolToDeduct" xml:space="preserve">
+    <value>Aucune laine à retirer.</value>
+  </data>
+  <data name="ProjectsFinish_ToDeduct" xml:space="preserve">
+    <value>À retirer</value>
+  </data>
+  <data name="ProjectsDetail_NoProjectImage" xml:space="preserve">
+    <value>Aucune image pour ce projet.</value>
+  </data>
+  <data name="ProjectsDetail_ProjectWools" xml:space="preserve">
+    <value>Laines du projet</value>
+  </data>
+  <data name="ProjectsDetail_QuantityPlaceholder" xml:space="preserve">
+    <value>Ex : 1, 50, 120...</value>
+  </data>
+  <data name="ProjectsDetail_DeductImmediately" xml:space="preserve">
+    <value>Retirer immédiatement du stock</value>
+  </data>
+  <data name="ProjectsDetail_NoSelectedWool" xml:space="preserve">
+    <value>Aucune laine sélectionnée</value>
+  </data>
+  <data name="ProjectsDetail_StartProject" xml:space="preserve">
+    <value>Démarrer le projet</value>
+  </data>
+  <data name="ProjectsDetail_PauseProject" xml:space="preserve">
+    <value>Mettre en pause</value>
+  </data>
+  <data name="ProjectsDetail_FinishProject" xml:space="preserve">
+    <value>Terminer le projet</value>
+  </data>
+  <data name="ProjectsDetail_Resume" xml:space="preserve">
+    <value>Reprendre</value>
+  </data>
+  <data name="ProjectsForm_Subtitle" xml:space="preserve">
+    <value>Renseignez le projet, le patron optionnel et les laines associées.</value>
+  </data>
+  <data name="ProjectsForm_NamePlaceholder" xml:space="preserve">
+    <value>Ex : Pull d'hiver</value>
+  </data>
+  <data name="ProjectsForm_NotePlaceholder" xml:space="preserve">
+    <value>Notes de progression, ajustements, remarques...</value>
+  </data>
+  <data name="ProjectsForm_AddImages" xml:space="preserve">
+    <value>Ajouter des images</value>
+  </data>
+  <data name="ProjectsForm_ImageFormatsHint" xml:space="preserve">
+    <value>PNG, JPG, WEBP, BMP ou GIF. Plusieurs images peuvent être sélectionnées en une fois.</value>
+  </data>
+  <data name="ProjectsForm_NoSelectedImage" xml:space="preserve">
+    <value>Aucune image sélectionnée.</value>
+  </data>
+  <data name="ProjectsForm_ImageDisplayNamePlaceholder" xml:space="preserve">
+    <value>Nom affiché de l'image</value>
+  </data>
+  <data name="ProjectsForm_SearchPattern" xml:space="preserve">
+    <value>Rechercher un patron</value>
+  </data>
+  <data name="ProjectsForm_SearchPatternPlaceholder" xml:space="preserve">
+    <value>Nom, type, url ou note du patron...</value>
+  </data>
+  <data name="ProjectsForm_SelectedPattern" xml:space="preserve">
+    <value>Patron sélectionné</value>
+  </data>
+  <data name="ProjectsForm_SmartSearch" xml:space="preserve">
+    <value>Recherche intelligente</value>
+  </data>
+  <data name="ProjectsForm_WoolSearchPlaceholder" xml:space="preserve">
+    <value>Ex : drops rouge coton...</value>
+  </data>
+  <data name="ProjectsForm_SelectedWools" xml:space="preserve">
+    <value>Laines sélectionnées</value>
+  </data>
+  <data name="Settings_RefreshThemes" xml:space="preserve">
+    <value>Rafraîchir les thèmes</value>
+  </data>
+  <data name="Common_UnexpectedError" xml:space="preserve">
+    <value>Une erreur est survenue.</value>
+  </data>
+  <data name="Common_UnexpectedErrorWithMessage" xml:space="preserve">
+    <value>Une erreur est survenue. Merci de la reporter : {0}</value>
+  </data>
+  <data name="Common_UnableToUpdateData" xml:space="preserve">
+    <value>Impossible de mettre à jour les données</value>
+  </data>
+  <data name="Common_Skeins" xml:space="preserve">
+    <value>Pelotes</value>
+  </data>
+  <data name="Common_SkeinsUnit" xml:space="preserve">
+    <value>pelote(s)</value>
+  </data>
+  <data name="Common_None" xml:space="preserve">
+    <value>Aucun</value>
+  </data>
+  <data name="Common_NoneFeminine" xml:space="preserve">
+    <value>Aucune</value>
+  </data>
+  <data name="Common_Link" xml:space="preserve">
+    <value>Lien</value>
+  </data>
+  <data name="Common_Personal" xml:space="preserve">
+    <value>Personnel</value>
+  </data>
+  <data name="Common_NotPersonal" xml:space="preserve">
+    <value>Non personnel</value>
+  </data>
+  <data name="Common_AllTypes" xml:space="preserve">
+    <value>Tous les types</value>
+  </data>
+  <data name="Common_Errors_QuantityGreaterThanZero" xml:space="preserve">
+    <value>Indiquez une quantité supérieure à zéro.</value>
+  </data>
+  <data name="Common_Notifications_UnableToUpdateNote" xml:space="preserve">
+    <value>Impossible de mettre à jour la note.</value>
+  </data>
+  <data name="Common_Notifications_NoteUpdated" xml:space="preserve">
+    <value>La note a été mise à jour.</value>
+  </data>
+  <data name="Common_Notifications_UnableToOpenLink" xml:space="preserve">
+    <value>Impossible d'ouvrir le lien : {0}</value>
+  </data>
+  <data name="Documents_NoFileSelected" xml:space="preserve">
+    <value>Aucun fichier sélectionné</value>
+  </data>
+  <data name="DocumentsForm_EditTitle" xml:space="preserve">
+    <value>Modifier le document</value>
+  </data>
+  <data name="Documents_Notifications_UnableToLoadDocuments" xml:space="preserve">
+    <value>Impossible de charger les documents.</value>
+  </data>
+  <data name="Documents_Notifications_UnableToOpenDocument" xml:space="preserve">
+    <value>Impossible d'ouvrir le document.</value>
+  </data>
+  <data name="Documents_Notifications_UnableToOpenLinkedPattern" xml:space="preserve">
+    <value>Impossible d'ouvrir le patron lié.</value>
+  </data>
+  <data name="Documents_Notifications_UnableToOpenLinkedProject" xml:space="preserve">
+    <value>Impossible d'ouvrir le projet lié.</value>
+  </data>
+  <data name="Documents_Notifications_UnableToDeleteDocument" xml:space="preserve">
+    <value>Impossible de supprimer le document.</value>
+  </data>
+  <data name="Documents_Notifications_DocumentDeleted" xml:space="preserve">
+    <value>Le document a été supprimé.</value>
+  </data>
+  <data name="Documents_Notifications_UnableToUpdateDocument" xml:space="preserve">
+    <value>Impossible de mettre à jour le document.</value>
+  </data>
+  <data name="Documents_Notifications_DocumentUpdated" xml:space="preserve">
+    <value>Le document a été mis à jour.</value>
+  </data>
+  <data name="Documents_Notifications_UnableToUpdateDocuments" xml:space="preserve">
+    <value>Une erreur est survenue lors de la mise à jour des documents.</value>
+  </data>
+  <data name="Stocks_Notifications_UnableToLoadWools" xml:space="preserve">
+    <value>Impossible de charger les laines.</value>
+  </data>
+  <data name="Stocks_Errors_NoSelectedWool" xml:space="preserve">
+    <value>Aucune laine sélectionnée</value>
+  </data>
+  <data name="Stocks_Errors_WoolNotFound" xml:space="preserve">
+    <value>La laine {0} est introuvable.</value>
+  </data>
+  <data name="Stocks_Notifications_UnableToSaveWool" xml:space="preserve">
+    <value>Impossible de sauvegarder la laine.</value>
+  </data>
+  <data name="Stocks_Notifications_WoolUpdated" xml:space="preserve">
+    <value>La laine a été mise à jour.</value>
+  </data>
+  <data name="Stocks_Notifications_UnableToCreateWool" xml:space="preserve">
+    <value>Impossible de créer la laine.</value>
+  </data>
+  <data name="Stocks_Notifications_WoolCreated" xml:space="preserve">
+    <value>La laine a été créée.</value>
+  </data>
+  <data name="Stocks_Notifications_StockUpdated" xml:space="preserve">
+    <value>Stock correctement mis à jour</value>
+  </data>
+  <data name="Stocks_Notifications_UnableToDeleteWool" xml:space="preserve">
+    <value>Impossible de supprimer la laine.</value>
+  </data>
+  <data name="Stocks_Notifications_WoolDeleted" xml:space="preserve">
+    <value>La laine a été supprimée.</value>
+  </data>
+  <data name="WoolForm_CreateTitle" xml:space="preserve">
+    <value>Nouvelle laine</value>
+  </data>
+  <data name="WoolForm_EditTitle" xml:space="preserve">
+    <value>Modifier la laine</value>
+  </data>
+  <data name="WoolForm_Errors_LengthMustBePositive" xml:space="preserve">
+    <value>La longueur doit être un nombre positif.</value>
+  </data>
+  <data name="WoolForm_Errors_WeightMustBePositive" xml:space="preserve">
+    <value>Le poids doit être un nombre positif.</value>
+  </data>
+  <data name="WoolForm_Errors_SelectNeedleSize" xml:space="preserve">
+    <value>Veuillez sélectionner une taille d'aiguilles.</value>
+  </data>
+  <data name="WoolDetail_Title" xml:space="preserve">
+    <value>Détail laine</value>
+  </data>
+  <data name="Patterns_Notifications_UnableToLoadPatterns" xml:space="preserve">
+    <value>Impossible de charger les patrons.</value>
+  </data>
+  <data name="Patterns_Notifications_UnableToSavePattern" xml:space="preserve">
+    <value>Impossible de sauvegarder le patron.</value>
+  </data>
+  <data name="Patterns_Notifications_SavePatternError" xml:space="preserve">
+    <value>Une erreur est survenue lors de la sauvegarde du patron : {0}</value>
+  </data>
+  <data name="Patterns_Notifications_UnableToDeletePattern" xml:space="preserve">
+    <value>Impossible de supprimer le patron.</value>
+  </data>
+  <data name="Patterns_Notifications_PatternDeleted" xml:space="preserve">
+    <value>Le patron a été supprimé.</value>
+  </data>
+  <data name="Patterns_Errors_PatternNotFound" xml:space="preserve">
+    <value>Le patron {0} est introuvable.</value>
+  </data>
+  <data name="PatternsForm_CreateTitle" xml:space="preserve">
+    <value>Nouveau patron</value>
+  </data>
+  <data name="PatternsForm_EditTitle" xml:space="preserve">
+    <value>Modifier le patron</value>
+  </data>
+  <data name="PatternsDetail_Title" xml:space="preserve">
+    <value>Détail patron</value>
+  </data>
+  <data name="PatternsDetail_LinkedProjectsCount" xml:space="preserve">
+    <value>Nombre de projets liés</value>
+  </data>
+  <data name="Projects_NoPattern" xml:space="preserve">
+    <value>Aucun patron</value>
+  </data>
+  <data name="Projects_Errors_ProjectNotFound" xml:space="preserve">
+    <value>Le projet {0} est introuvable.</value>
+  </data>
+  <data name="Projects_Notifications_UnableToOpenProject" xml:space="preserve">
+    <value>Impossible d'ouvrir le projet.</value>
+  </data>
+  <data name="Projects_Notifications_UnableToUpdateUsedWool" xml:space="preserve">
+    <value>Impossible de mettre à jour la laine utilisée.</value>
+  </data>
+  <data name="Projects_Notifications_UnableToUpdateProject" xml:space="preserve">
+    <value>Impossible de mettre à jour le projet.</value>
+  </data>
+  <data name="Projects_Notifications_UnableToDeleteProject" xml:space="preserve">
+    <value>Impossible de supprimer le projet.</value>
+  </data>
+  <data name="Projects_Notifications_ProjectDeleted" xml:space="preserve">
+    <value>Le projet a été supprimé.</value>
+  </data>
+  <data name="Projects_Notifications_UnableToSaveProject" xml:space="preserve">
+    <value>Impossible de sauvegarder le projet.</value>
+  </data>
+  <data name="Projects_Notifications_ProjectUpdated" xml:space="preserve">
+    <value>Le projet a été mis à jour.</value>
+  </data>
+  <data name="Projects_Notifications_ProjectCreated" xml:space="preserve">
+    <value>Le projet a été créé.</value>
+  </data>
+  <data name="ProjectsForm_CreateTitle" xml:space="preserve">
+    <value>Nouveau projet</value>
+  </data>
+  <data name="ProjectsForm_EditTitle" xml:space="preserve">
+    <value>Modifier le projet</value>
+  </data>
+  <data name="ProjectsForm_Errors_OnlyImagesAccepted" xml:space="preserve">
+    <value>Seules les images sont acceptées.</value>
+  </data>
+  <data name="ProjectsForm_Errors_OnlySupportedImagesAccepted" xml:space="preserve">
+    <value>Seuls les fichiers image PNG, JPG, WEBP, BMP ou GIF sont acceptés.</value>
+  </data>
+  <data name="ProjectsForm_Notifications_UnableToDeleteImage" xml:space="preserve">
+    <value>Impossible de supprimer l'image.</value>
+  </data>
+  <data name="ProjectsForm_Notifications_UnableToAddImages" xml:space="preserve">
+    <value>Impossible d'ajouter les images au projet.</value>
+  </data>
+  <data name="ProjectsFinish_Errors_EndDateRequired" xml:space="preserve">
+    <value>Indiquez une date de fin.</value>
+  </data>
+  <data name="ProjectsFinish_Errors_DeductionsMustBePositive" xml:space="preserve">
+    <value>Les quantités à retirer doivent être positives.</value>
+  </data>
+  <data name="ProjectsFinish_Errors_InsufficientStock" xml:space="preserve">
+    <value>Le stock disponible est insuffisant pour {0}.</value>
+  </data>
+  <data name="ProjectsFinish_Notifications_UnableToFinishProject" xml:space="preserve">
+    <value>Impossible de terminer le projet.</value>
+  </data>
+  <data name="ProjectsFinish_Notifications_ProjectFinished" xml:space="preserve">
+    <value>Le projet a été terminé.</value>
+  </data>
+  <data name="Update_Notifications_UnableToInstallUpdate" xml:space="preserve">
+    <value>Impossible d'installer la mise à jour.</value>
+  </data>
+  <data name="Common_Selected" xml:space="preserve">
+    <value>Sélectionné</value>
+  </data>
+  <data name="Common_SelectedFeminine" xml:space="preserve">
+    <value>Sélectionnée</value>
+  </data>
+  <data name="Common_Choose" xml:space="preserve">
+    <value>Choisir</value>
+  </data>
+  <data name="Common_WoolsUnit" xml:space="preserve">
+    <value>laine(s)</value>
+  </data>
+  <data name="Statistics_RangeAll" xml:space="preserve">
+    <value>Tout</value>
+  </data>
+  <data name="Statistics_RangeThisYear" xml:space="preserve">
+    <value>Cette année</value>
+  </data>
+  <data name="Statistics_RangeLastSixMonths" xml:space="preserve">
+    <value>Ces 6 derniers mois</value>
+  </data>
+  <data name="Statistics_RangeThisMonth" xml:space="preserve">
+    <value>Ce mois</value>
+  </data>
+  <data name="Statistics_RangeThisWeek" xml:space="preserve">
+    <value>Cette semaine</value>
+  </data>
+  <data name="Statistics_Notifications_UnableToLoadStatistics" xml:space="preserve">
+    <value>Impossible de charger les statistiques.</value>
+  </data>
+  <data name="Update_InstallVersion" xml:space="preserve">
+    <value>Installer la version {0}</value>
+  </data>
+  <data name="Update_CheckForUpdates" xml:space="preserve">
+    <value>Rechercher des mises à jour</value>
+  </data>
+  <data name="Update_Notifications_UnableToCheckUpdates" xml:space="preserve">
+    <value>Impossible de vérifier les mises à jour.</value>
+  </data>
+  <data name="Update_Notifications_LoomaIsUpToDate" xml:space="preserve">
+    <value>Looma est à jour.</value>
+  </data>
+  <data name="Documents_Notifications_UnableToRenameDocumentHere" xml:space="preserve">
+    <value>Impossible de renommer le document dans ce contexte.</value>
+  </data>
+  <data name="Documents_Notifications_UnableToRenameDocument" xml:space="preserve">
+    <value>Impossible de renommer le document.</value>
+  </data>
+  <data name="Documents_Notifications_UnableToAddDocumentHere" xml:space="preserve">
+    <value>Impossible d'ajouter le document dans ce contexte.</value>
+  </data>
+  <data name="Documents_Notifications_UnableToAddDocument" xml:space="preserve">
+    <value>Impossible d'ajouter le document.</value>
+  </data>
+  <data name="Patterns_Notifications_PatternAndDocumentsUpdated" xml:space="preserve">
+    <value>Le patron et ses documents ont été mis à jour.</value>
+  </data>
+  <data name="Patterns_Notifications_PatternAndDocumentsAdded" xml:space="preserve">
+    <value>Le patron et ses documents ont été ajoutés.</value>
+  </data>
+  <data name="Patterns_Notifications_PatternUpdated" xml:space="preserve">
+    <value>Le patron a été mis à jour.</value>
+  </data>
+  <data name="Patterns_Notifications_PatternAdded" xml:space="preserve">
+    <value>Le patron a été ajouté.</value>
+  </data>
+  <data name="Theme_FileLabel" xml:space="preserve">
+    <value>Le fichier de thème</value>
+  </data>
+  <data name="Theme_JsonErrorLocation" xml:space="preserve">
+    <value> Ligne {0}, colonne {1}.</value>
+  </data>
+  <data name="Theme_InvalidJson" xml:space="preserve">
+    <value>{0} "{1}" contient un JSON invalide.{2} Vérifiez la syntaxe du fichier.</value>
+  </data>
+  <data name="Settings_Notifications_DefaultThemeApplied" xml:space="preserve">
+    <value>Le thème par défaut a été appliqué.</value>
+  </data>
+  <data name="Settings_Notifications_ThemeApplied" xml:space="preserve">
+    <value>Le thème {0} a été appliqué.</value>
+  </data>
+  <data name="Settings_Notifications_UnableToApplyTheme" xml:space="preserve">
+    <value>Impossible d’appliquer le thème : {0}</value>
+  </data>
+  <data name="Settings_Notifications_UnableToChangeLanguage" xml:space="preserve">
+    <value>Impossible de changer la langue : {0}</value>
+  </data>
+  <data name="Settings_DefaultTheme" xml:space="preserve">
+    <value>Défaut</value>
+  </data>
+  <data name="Settings_Notifications_UnableToLoadThemes" xml:space="preserve">
+    <value>Impossible de charger les thèmes : {0}</value>
+  </data>
+  <data name="Settings_Notifications_ThemeImported" xml:space="preserve">
+    <value>Le thème a été importé.</value>
+  </data>
+  <data name="Settings_Notifications_UnableToImportTheme" xml:space="preserve">
+    <value>Impossible d’importer le thème : {0}</value>
+  </data>
+  <data name="Settings_Notifications_ThemeExported" xml:space="preserve">
+    <value>Le thème a été exporté dans {0}.</value>
+  </data>
+  <data name="Settings_Notifications_UnableToExportTheme" xml:space="preserve">
+    <value>Impossible d’exporter le thème : {0}</value>
+  </data>
+  <data name="Settings_Notifications_ThemeFileNotFound" xml:space="preserve">
+    <value>Le fichier de thème est introuvable.</value>
+  </data>
+  <data name="Settings_Notifications_UnableToOpenTheme" xml:space="preserve">
+    <value>Impossible d’ouvrir le thème : {0}</value>
+  </data>
+  <data name="Settings_Notifications_ThemeDeleted" xml:space="preserve">
+    <value>Le thème {0} a été supprimé.</value>
+  </data>
+  <data name="Settings_Notifications_UnableToDeleteTheme" xml:space="preserve">
+    <value>Impossible de supprimer le thème : {0}</value>
+  </data>
+  <data name="Common_NoName" xml:space="preserve">
+    <value>Aucun nom</value>
+  </data>
+  <data name="Common_NoStatus" xml:space="preserve">
+    <value>Aucun statut</value>
+  </data>
+  <data name="WoolForm_NeedleRangeLabel" xml:space="preserve">
+    <value>{0} - {1:G} à {2:G} mm</value>
+  </data>
+  <data name="Enum_Crochet" xml:space="preserve">
+    <value>Crochet</value>
+  </data>
+  <data name="Enum_TunisianCrochet" xml:space="preserve">
+    <value>Crochet tunisien</value>
+  </data>
+  <data name="Enum_Tricot" xml:space="preserve">
+    <value>Tricot</value>
+  </data>
+  <data name="ProjectsDetail_WoolInStock" xml:space="preserve">
+    <value>Laine en stock : {0}</value>
+  </data>
+  <data name="ProjectsDetail_WoolUsed" xml:space="preserve">
+    <value>Laine utilisée : {0}</value>
+  </data>
+  <data name="ProjectsDetail_WoolAlreadyDeducted" xml:space="preserve">
+    <value>Laine déjà retirée du stock : {0}</value>
+  </data>
+  <data name="Enum_ByBall" xml:space="preserve">
+    <value>Par pelote</value>
+  </data>
+  <data name="Enum_ByWeight" xml:space="preserve">
+    <value>Par poids (g)</value>
+  </data>
+  <data name="Enum_ByLength" xml:space="preserve">
+    <value>Par longueur (m)</value>
+  </data>
+</root>

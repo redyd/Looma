@@ -34,14 +34,14 @@ public partial class PatternsListViewModel(
         GetEntityKey = pattern => pattern.Id;
         GetSummaryKey = summary => summary.Pattern.Id;
         
-        Title = "Mes patrons";
+        Title = Translation["Patterns_Title"];
         IsBusy = true;
         try
         {
             var result = await patternService.GetAllAsync();
             if (result.Failed || result.Value is null)
             {
-                notifications.Error(result.Error ?? "Impossible de charger les patrons.");
+                notifications.Error(result.Error ?? Translation["Patterns_Notifications_UnableToLoadPatterns"]);
                 ClearPagesState();
                 return;
             }

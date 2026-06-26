@@ -7,6 +7,7 @@ using Looma.Domain.Entities;
 using Looma.Domain.Refresh;
 using Looma.Domain.Search;
 using Looma.Presentation.Notifications;
+using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Sections.Patterns;
 using Looma.Presentation.ViewModels.Sections.Projects;
 using Looma.Presentation.Tests.TestSupport;
@@ -26,7 +27,12 @@ public sealed class ProjectsViewModelTests
                 TestData.Project(id: 2, name: "Blanket", status: Status.Finished)
             ])
         };
-        var vm = new ProjectsListViewModel(nav, projectService, new FakeNotificationService(), new FakeRefreshService());
+        var vm = new ProjectsListViewModel(
+            nav,
+            projectService,
+            new FakeNotificationService(),
+            new FakeRefreshService(),
+            new TranslationService());
 
         vm.OnNavigatedTo();
 
@@ -52,7 +58,8 @@ public sealed class ProjectsViewModelTests
             new FakeNavigationService(),
             new FakeProjectService { GetAllResult = ResultT<IReadOnlyList<Project>>.Failure("project load failed") },
             notifications,
-            new FakeRefreshService());
+            new FakeRefreshService(),
+            new TranslationService());
 
         vm.OnNavigatedTo();
 

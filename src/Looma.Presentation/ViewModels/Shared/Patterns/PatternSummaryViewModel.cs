@@ -5,6 +5,7 @@
 using System.Windows.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
+using Looma.Presentation.Services;
 
 namespace Looma.Presentation.ViewModels.Shared.Patterns;
 
@@ -16,8 +17,8 @@ public record PatternSummaryViewModel(
     ICommand OpenDetailCommand)
 {
     public bool HasBeginDate => Pattern.BeginDate is not null;
-    public string BeginDateDisplay => Pattern.BeginDate.FormatWithDefault("Aucune");
+    public string BeginDateDisplay => Pattern.BeginDate.FormatWithDefault(TranslationService.Current["Common_NoneFeminine"]);
     public bool HasEndDate => Pattern.EndDate is not null;
-    public string EndDateDisplay => Pattern.EndDate.FormatWithDefault("Aucune");
+    public string EndDateDisplay => Pattern.EndDate.FormatWithDefault(TranslationService.Current["Common_NoneFeminine"]);
     public string TypeDisplay => Pattern.Type.GetDisplayName();
 }

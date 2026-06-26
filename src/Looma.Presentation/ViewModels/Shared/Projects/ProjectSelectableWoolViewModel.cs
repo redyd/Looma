@@ -4,6 +4,7 @@
 
 using System.Windows.Input;
 using Looma.Domain.Entities;
+using Looma.Presentation.Services;
 
 namespace Looma.Presentation.ViewModels.Shared.Projects;
 
@@ -13,6 +14,6 @@ public class ProjectSelectableWoolViewModel(Wool wool, bool isSelected, ICommand
     public bool IsSelected { get; } = isSelected;
     public ICommand ToggleCommand { get; } = toggleCommand;
     public string DetailDisplay => $"{Wool.Brand} - {Wool.Material}";
-    public string StockDisplay => $"{Wool.BatchQuantity:N2} pelote(s)";
-    public string SelectionDisplay => IsSelected ? "Sélectionnée" : "Ajouter";
+    public string StockDisplay => $"{Wool.BatchQuantity:N2} {TranslationService.Current["Common_SkeinsUnit"]}";
+    public string SelectionDisplay => IsSelected ? TranslationService.Current["Common_SelectedFeminine"] : TranslationService.Current["Common_Add"];
 }

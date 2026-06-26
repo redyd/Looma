@@ -30,8 +30,8 @@ public partial class SettingsUpdaterViewModel(
             ? "Download"
             : "Search";
     public string UpdateToolTip => IsUpdateAvailable
-        ? $"Installer la version {updaterService.UpdateInformations?.Version}"
-        : "Rechercher des mises à jour";
+        ? Translation.Format("Update_InstallVersion", updaterService.UpdateInformations?.Version ?? string.Empty)
+        : Translation["Update_CheckForUpdates"];
 
     public void OnNavigatedTo()
     {
@@ -93,11 +93,11 @@ public partial class SettingsUpdaterViewModel(
 
         if (updaterService.Status == UpdateStatus.Error)
         {
-            notifications.Error(updaterService.ErrorMessage ?? "Impossible de vérifier les mises à jour.");
+            notifications.Error(updaterService.ErrorMessage ?? Translation["Update_Notifications_UnableToCheckUpdates"]);
             return;
         }
 
-        notifications.Info("Looma est à jour.");
+        notifications.Info(Translation["Update_Notifications_LoomaIsUpToDate"]);
     }
 
     private void OnUpdaterStateChanged(object? sender, EventArgs e) =>

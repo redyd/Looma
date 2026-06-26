@@ -35,7 +35,7 @@ public partial class DocumentsListViewModel(
 
     private async Task LoadAsync()
     {
-        Title = "Mes documents";
+        Title = Translation["Documents_Title"];
         GetEntityKey = document => document.Id;
         GetSummaryKey = summary => summary.Document.Id;
 
@@ -45,7 +45,7 @@ public partial class DocumentsListViewModel(
             var result = await documentService.GetAllAsync();
             if (result.Failed || result.Value is null)
             {
-                notifications.Error(result.Error ?? "Impossible de charger les documents.");
+                notifications.Error(result.Error ?? Translation["Documents_Notifications_UnableToLoadDocuments"]);
                 ClearPagesState();
                 return;
             }
@@ -75,7 +75,7 @@ public partial class DocumentsListViewModel(
     {
         var result = await documentService.OpenAsync(id);
         if (result.Failed)
-            notifications.Error(result.Error ?? "Impossible d'ouvrir le document.");
+            notifications.Error(result.Error ?? Translation["Documents_Notifications_UnableToOpenDocument"]);
     }
 
     private async Task OpenOriginAsync(Document document)
@@ -85,7 +85,7 @@ public partial class DocumentsListViewModel(
             var result = await patternService.GetByIdAsync(document.PatternId.Value);
             if (result.Failed || result.Value is null)
             {
-                notifications.Error(result.Error ?? "Impossible d'ouvrir le patron lié.");
+                notifications.Error(result.Error ?? Translation["Documents_Notifications_UnableToOpenLinkedPattern"]);
                 return;
             }
 
@@ -98,7 +98,7 @@ public partial class DocumentsListViewModel(
             var result = await projectService.GetByIdAsync(document.ProjectId.Value);
             if (result.Failed || result.Value is null)
             {
-                notifications.Error(result.Error ?? "Impossible d'ouvrir le projet lié.");
+                notifications.Error(result.Error ?? Translation["Documents_Notifications_UnableToOpenLinkedProject"]);
                 return;
             }
 
@@ -111,10 +111,10 @@ public partial class DocumentsListViewModel(
         var result = await documentService.DeleteAsync(id);
         if (result.Failed)
         {
-            notifications.Error(result.Error ?? "Impossible de supprimer le document.");
+            notifications.Error(result.Error ?? Translation["Documents_Notifications_UnableToDeleteDocument"]);
             return;
         }
 
-        notifications.Success("Le document a été supprimé.");
+        notifications.Success(Translation["Documents_Notifications_DocumentDeleted"]);
     }
 }

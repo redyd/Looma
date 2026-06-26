@@ -31,13 +31,13 @@ public partial class DocumentsFormViewModel(
     public void InitEdit(Guid id, string nickname)
     {
         _editingId = id;
-        Title = "Modifier le document";
+        Title = Translation["DocumentsForm_EditTitle"];
         Nickname = nickname;
         SourcePath = null;
     }
 
     public string SelectedFileName =>
-        string.IsNullOrWhiteSpace(SourcePath) ? "Aucun fichier sélectionné" : Path.GetFileName(SourcePath);
+        string.IsNullOrWhiteSpace(SourcePath) ? Translation["Documents_NoFileSelected"] : Path.GetFileName(SourcePath);
 
     public string SelectedFileDirectory =>
         string.IsNullOrWhiteSpace(SourcePath) ? string.Empty : Path.GetDirectoryName(SourcePath) ?? string.Empty;
@@ -60,17 +60,17 @@ public partial class DocumentsFormViewModel(
             var result = await documentService.UpdateAsync(new UpdateDocumentRequest(_editingId, Nickname));
             if (result.Failed)
             {
-                notifications.Error(result.Error ?? "Impossible de mettre à jour le document.");
+                notifications.Error(result.Error ?? Translation["Documents_Notifications_UnableToUpdateDocument"]);
                 return;
             }
 
-            notifications.Success("Le document a été mis à jour.");
+            notifications.Success(Translation["Documents_Notifications_DocumentUpdated"]);
 
             nav.GoBack();
         }
         catch (Exception ex)
         {
-            notifications.Error("Une erreur est suvenue. Merci de la reporter: " + ex.Message);
+            notifications.Error(Translation.Format("Common_UnexpectedErrorWithMessage", ex.Message));
         }
         finally
         {
