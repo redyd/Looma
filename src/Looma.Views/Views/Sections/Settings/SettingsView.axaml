@@ -24,24 +24,6 @@ See LICENSE in the project root for full license text.
 
             <ScrollViewer Margin="0 0 0 44">
                 <StackPanel Spacing="20">
-                    <Border Classes="form-container">
-                        <StackPanel Spacing="18">
-                            <TextBlock Text="{loc:Loc Settings_Language}"
-                                       Classes="section-title"
-                                       VerticalAlignment="Center" />
-
-                            <ComboBox Classes="form-select"
-                                      ItemsSource="{Binding Languages}"
-                                      SelectedItem="{Binding SelectedLanguage}"
-                                      HorizontalAlignment="Stretch">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate x:DataType="vm:LanguageOptionViewModel">
-                                        <TextBlock Text="{Binding Name}" />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </StackPanel>
-                    </Border>
 
                     <Border Classes="form-container">
                         <StackPanel Spacing="18">
@@ -120,6 +102,25 @@ See LICENSE in the project root for full license text.
                                     </StackPanel>
                                 </Button>
                             </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="form-container">
+                        <StackPanel Spacing="18">
+                            <TextBlock Text="{loc:Loc Settings_Language}"
+                                       Classes="section-title"
+                                       VerticalAlignment="Center" />
+
+                            <ComboBox Classes="form-select"
+                                      ItemsSource="{Binding Languages}"
+                                      SelectedItem="{Binding SelectedLanguage}"
+                                      HorizontalAlignment="Stretch">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:LanguageOptionViewModel">
+                                        <TextBlock Text="{Binding Name}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </StackPanel>
                     </Border>
 

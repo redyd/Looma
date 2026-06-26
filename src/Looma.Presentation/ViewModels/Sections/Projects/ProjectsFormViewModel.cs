@@ -11,12 +11,10 @@ using Looma.Domain.Extensions;
 using Looma.Domain.IServices;
 using Looma.Domain.Request;
 using Looma.Domain.Search;
-using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
-using Looma.Presentation.ViewModels.Shared;
 using Looma.Presentation.ViewModels.Shared.Projects;
 
 namespace Looma.Presentation.ViewModels.Sections.Projects;

@@ -3,6 +3,7 @@
 // See LICENSE in the project root for full license text.
 
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -33,6 +34,7 @@ public partial class ProjectsDetailViewModel(
     : PageViewModelBase
 {
     private Project? _project;
+    private bool _isListeningTranslation;
 
     [ObservableProperty]
     public partial int ProjectId { get; set; }
@@ -67,7 +69,7 @@ public partial class ProjectsDetailViewModel(
     [ObservableProperty]
     public partial bool DeductWoolImmediately { get; set; }
 
-    public string StatusDisplay => Status.GetDisplayName();
+    public string StatusDisplay => Translation[$"Enum_{Status}"];
     public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? Translation["Common_NoNote"] : Note!;
     public string PatternName => Pattern?.Name ?? Translation["Projects_NoPattern"];
     public string PatternTypeDisplay => Pattern?.Type.GetDisplayName() ?? "-";
@@ -121,7 +123,37 @@ public partial class ProjectsDetailViewModel(
     public override async void OnNavigatedTo()
     {
         RegisterRefresh(refreshService, RefreshScope.Projects | RefreshScope.Patterns | RefreshScope.Documents | RefreshScope.Wools, RefreshAsync);
+        RegisterTranslationRefresh();
         await RefreshAsync();
+    }
+
+    protected override void OnDestroy()
+    {
+        if (_isListeningTranslation)
+        {
+            Translation.PropertyChanged -= OnTranslationChanged;
+            _isListeningTranslation = false;
+        }
+
+        base.OnDestroy();
+    }
+
+    private void RegisterTranslationRefresh()
+    {
+        if (_isListeningTranslation)
+            return;
+
+        Translation.PropertyChanged += OnTranslationChanged;
+        _isListeningTranslation = true;
+    }
+
+    private void OnTranslationChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(WoolAdjustmentModes));
+        OnPropertyChanged(nameof(WoolDisplayModes));
+
+        foreach (var wool in Wools)
+            wool.RefreshTranslations();
     }
 
     private async Task RefreshAsync()

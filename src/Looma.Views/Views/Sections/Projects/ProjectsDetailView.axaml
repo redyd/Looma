@@ -273,15 +273,15 @@ See LICENSE in the project root for full license text.
                                                     <TextBlock Text="{Binding Brand}"
                                                                Classes="form-hint"
                                                                TextTrimming="CharacterEllipsis" />
-                                                    <TextBlock Text="{Binding AvailableDisplay, StringFormat='Laine en stock: {0}'}"
+                                                    <TextBlock Text="{Binding AvailableSummary}"
                                                                FontSize="12"
                                                                Foreground="{DynamicResource ProjectWoolMetadataForegroundBrush}"
                                                                Opacity="0.75" />
-                                                    <TextBlock Text="{Binding UsedDisplay, StringFormat='Laine utilisée: {0}'}"
+                                                    <TextBlock Text="{Binding UsedSummary}"
                                                                FontSize="12"
                                                                Foreground="{DynamicResource ProjectWoolMetadataForegroundBrush}"
                                                                Opacity="0.75" />
-                                                    <TextBlock Text="{Binding AlreadyDeductedDisplay, StringFormat='Laine déjà retirée du stock: {0}'}"
+                                                    <TextBlock Text="{Binding AlreadyDeductedSummary}"
                                                                FontSize="12"
                                                                Foreground="{DynamicResource ProjectWoolMetadataForegroundBrush}"
                                                                Opacity="0.75" />

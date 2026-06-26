@@ -131,7 +131,7 @@ public partial class PatternsDetailViewModel(
         Projects = new ObservableCollection<PatternProjectViewModel>(pattern.Projects.Select(p => new PatternProjectViewModel
         {
             Name = p.Name,
-            StatusDisplay = p.Status.GetDisplayName(),
+            StatusDisplay = Translation[$"Enum_{p.Status}"],
             OpenCommand = new AsyncRelayCommand(() => OpenProjectAsync(p.Id))
         }));
 

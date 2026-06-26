@@ -878,4 +878,31 @@
   <data name="WoolForm_NeedleRangeLabel" xml:space="preserve">
     <value>{0} - {1:G} to {2:G} mm</value>
   </data>
+  <data name="Enum_Crochet" xml:space="preserve">
+    <value>Crochet</value>
+  </data>
+  <data name="Enum_TunisianCrochet" xml:space="preserve">
+    <value>Tunisian crochet</value>
+  </data>
+  <data name="Enum_Tricot" xml:space="preserve">
+    <value>Knitting</value>
+  </data>
+  <data name="ProjectsDetail_WoolInStock" xml:space="preserve">
+    <value>Yarn in stock: {0}</value>
+  </data>
+  <data name="ProjectsDetail_WoolUsed" xml:space="preserve">
+    <value>Yarn used: {0}</value>
+  </data>
+  <data name="ProjectsDetail_WoolAlreadyDeducted" xml:space="preserve">
+    <value>Yarn already deducted from stock: {0}</value>
+  </data>
+  <data name="Enum_ByBall" xml:space="preserve">
+    <value>By skein</value>
+  </data>
+  <data name="Enum_ByWeight" xml:space="preserve">
+    <value>By weight (g)</value>
+  </data>
+  <data name="Enum_ByLength" xml:space="preserve">
+    <value>By length (m)</value>
+  </data>
 </root>

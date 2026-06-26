@@ -91,7 +91,7 @@ public static class DependencyInjection
 
         // SETTINGS
         services.AddTransient<SettingsViewModel>();
-        services.AddSingleton<TranslationService>();
+        services.AddSingleton(_ => TranslationService.Current);
 
         services.AddTransient<DocumentsPickerFormViewModel>();
 

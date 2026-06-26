@@ -13,7 +13,7 @@ public class ProjectSummaryViewModel(Project project, ICommand openDetailCommand
 {
     public Project Project { get; } = project;
     public ICommand OpenDetailCommand { get; } = openDetailCommand;
-    public string StatusDisplay => Project.Status.GetDisplayName();
+    public string StatusDisplay => TranslationService.Current[$"Enum_{Project.Status}"];
     public bool HasPatternType => Project.Pattern is not null;
     public string? PatternTypeDisplay => Project.Pattern?.Type.GetDisplayName();
     public string PatternName => Project.Pattern?.Name ?? TranslationService.Current["Projects_NoPattern"];

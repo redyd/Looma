@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Reflection;
 using Avalonia.Data.Converters;
 using Looma.Domain.Extensions;
+using Looma.Presentation.Services;
 
 namespace Looma.Views.Converters;
 
@@ -16,7 +17,8 @@ public class EnumDisplayNameConverter : IValueConverter
     {
         if (value is not Enum enumValue) return value;
 
-        return enumValue.GetDisplayName();
+        var translated = TranslationService.Current[$"Enum_{enumValue}"];
+        return translated.StartsWith('!') ? enumValue.GetDisplayName() : translated;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

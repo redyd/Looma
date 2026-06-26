@@ -36,7 +36,10 @@ public sealed class TranslationService : INotifyPropertyChanged
         CultureInfo.DefaultThreadCurrentUICulture = info;
 
         Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null))
-        );
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item"));
+        });
     }
 }
