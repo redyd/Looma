@@ -4,6 +4,7 @@
 
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
+using Looma.Presentation.Services;
 
 namespace Looma.Presentation.ViewModels.Sections.Stocks;
 
@@ -12,5 +13,9 @@ public class WoolNeedleRangeSummary(WoolNeedleRange NeedleRange)
     public WoolNeedleRange NeedleRange { get; } = NeedleRange;
     public string Label => NeedleRange.Max == double.MaxValue
         ? $"{NeedleRange.Type.GetDisplayName()} - {NeedleRange.Min:G}+ mm"
-        : $"{NeedleRange.Type.GetDisplayName()} - {NeedleRange.Min:G} à {NeedleRange.Max:G} mm";
+        : TranslationService.Current.Format(
+            "WoolForm_NeedleRangeLabel",
+            NeedleRange.Type.GetDisplayName(),
+            NeedleRange.Min,
+            NeedleRange.Max);
 }

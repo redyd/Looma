@@ -5,10 +5,11 @@
 using System.Collections.ObjectModel;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Looma.Presentation.Services;
 
 namespace Looma.Presentation.Notifications;
 
-public class NotificationService : ObservableObject, INotificationService
+public class NotificationService(TranslationService translation) : ObservableObject, INotificationService
 {
     private static readonly TimeSpan DismissAnimationDuration = TimeSpan.FromMilliseconds(180);
 
@@ -19,16 +20,16 @@ public class NotificationService : ObservableObject, INotificationService
     public IReadOnlyList<NotificationItemViewModel> Notifications => _notifications;
 
     public NotificationItemViewModel Info(string message, string? title = null, TimeSpan? duration = null) =>
-        Add(NotificationSeverity.Info, message, title ?? "Information", duration);
+        Add(NotificationSeverity.Info, message, title ?? translation["Notifications_InfoTitle"], duration);
 
     public NotificationItemViewModel Success(string message, string? title = null, TimeSpan? duration = null) =>
-        Add(NotificationSeverity.Success, message, title ?? "Succès", duration);
+        Add(NotificationSeverity.Success, message, title ?? translation["Notifications_SuccessTitle"], duration);
 
     public NotificationItemViewModel Warning(string message, string? title = null, TimeSpan? duration = null) =>
-        Add(NotificationSeverity.Warning, message, title ?? "Attention", duration);
+        Add(NotificationSeverity.Warning, message, title ?? translation["Notifications_WarningTitle"], duration);
 
     public NotificationItemViewModel Error(string message, string? title = null, TimeSpan? duration = null) =>
-        Add(NotificationSeverity.Error, message, title ?? "Erreur", duration);
+        Add(NotificationSeverity.Error, message, title ?? translation["Notifications_ErrorTitle"], duration);
 
     public void Dismiss(Guid id)
     {

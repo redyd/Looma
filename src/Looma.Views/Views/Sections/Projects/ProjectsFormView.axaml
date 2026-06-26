@@ -6,6 +6,7 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
              xmlns:shared="clr-namespace:Looma.Presentation.ViewModels.Shared;assembly=Looma.Presentation"
              xmlns:projects="clr-namespace:Looma.Presentation.ViewModels.Shared.Projects;assembly=Looma.Presentation"
@@ -26,27 +27,27 @@
                     <StackPanel Classes="form-header">
                         <TextBlock Classes="form-title" Text="{Binding Title}" />
                         <TextBlock Classes="form-subtitle"
-                                   Text="Renseignez le projet, le patron optionnel et les laines associées." />
+                                   Text="{loc:Loc ProjectsForm_Subtitle}" />
                     </StackPanel>
 
                     <Border Classes="form-section">
                         <StackPanel Spacing="0">
                             <TextBlock Classes="section-title"
-                                       Text="Informations"
+                                       Text="{loc:Loc Common_Information}"
                                        Margin="0 0 0 16" />
 
                             <StackPanel Classes="form-field">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                    <TextBlock Classes="form-label" Text="Nom" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc Common_Name}" />
                                     <TextBlock Classes="field-required" Text="*" />
                                 </StackPanel>
                                 <TextBox Classes="form-input"
                                          Text="{Binding Name}"
-                                         PlaceholderText="Ex : Pull d'hiver" />
+                                         PlaceholderText="{loc:Loc ProjectsForm_NamePlaceholder}" />
                             </StackPanel>
 
                             <StackPanel Classes="form-field">
-                                <TextBlock Classes="form-label" Text="Status" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc Common_Status}" />
                                 <ComboBox ItemsSource="{Binding Statuses}"
                                           SelectedItem="{Binding Status, Mode=TwoWay}"
                                           Classes="form-select"
@@ -61,20 +62,20 @@
 
                             <Grid ColumnDefinitions="*,16,*">
                                 <StackPanel Grid.Column="0" Classes="form-field">
-                                    <TextBlock Classes="form-label" Text="Date de début" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc Common_BeginDate}" />
                                     <DatePicker SelectedDate="{Binding BeginDate, Mode=TwoWay}"
                                                 Classes="form-input" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
-                                    <TextBlock Classes="form-label" Text="Date de fin" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc Common_EndDate}" />
                                     <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay}"
                                                 Classes="form-input" />
                                 </StackPanel>
                             </Grid>
 
                             <StackPanel Classes="form-field">
-                                <TextBlock Classes="form-label" Text="Note" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc Common_Note}" />
                                 <TextBox Classes="form-input"
                                          Text="{Binding Note}"
                                          AcceptsReturn="True"
@@ -82,7 +83,7 @@
                                          Padding="10"
                                          Height="130"
                                          VerticalContentAlignment="Top"
-                                         PlaceholderText="Notes de progression, ajustements, remarques..." />
+                                         PlaceholderText="{loc:Loc ProjectsForm_NotePlaceholder}" />
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -92,17 +93,17 @@
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBlock Grid.Column="0"
                                            Classes="section-title"
-                                           Text="Images" />
+                                           Text="{loc:Loc Common_Images}" />
                                 <Button Grid.Column="1"
                                         Classes="form-submit"
-                                        Content="Ajouter des images"
+                                        Content="{loc:Loc ProjectsForm_AddImages}"
                                         Command="{Binding BrowseImagesCommand}" />
                             </Grid>
 
                             <TextBlock Classes="form-hint"
-                                       Text="PNG, JPG, WEBP, BMP ou GIF. Plusieurs images peuvent être sélectionnées en une fois." />
+                                       Text="{loc:Loc ProjectsForm_ImageFormatsHint}" />
 
-                            <TextBlock Text="Aucune image sélectionnée."
+                            <TextBlock Text="{loc:Loc ProjectsForm_NoSelectedImage}"
                                        Classes="form-hint"
                                        IsVisible="{Binding !HasImages}" />
 
@@ -130,7 +131,7 @@
                                                                TextTrimming="CharacterEllipsis" />
                                                 </StackPanel>
                                                 <Button Grid.Column="3"
-                                                        Content="Retirer"
+                                                        Content="{loc:Loc Common_Remove}"
                                                         Command="{Binding RemoveCommand}"
                                                         Classes="cancel-btn"
                                                         VerticalAlignment="Center" />
@@ -158,13 +159,13 @@
                                                             VerticalAlignment="Center">
                                                     <TextBox Classes="form-input"
                                                              Text="{Binding Nickname}"
-                                                             PlaceholderText="Nom affiché de l'image" />
+                                                             PlaceholderText="{loc:Loc ProjectsForm_ImageDisplayNamePlaceholder}" />
                                                     <TextBlock Text="{Binding SelectedFileName}"
                                                                Classes="form-hint"
                                                                TextTrimming="CharacterEllipsis" />
                                                 </StackPanel>
                                                 <Button Grid.Column="3"
-                                                        Content="Retirer"
+                                                        Content="{loc:Loc Common_Remove}"
                                                         Command="{Binding RemoveCommand}"
                                                         Classes="cancel-btn"
                                                         VerticalAlignment="Center" />
@@ -178,17 +179,17 @@
 
                     <Border Classes="form-section">
                         <StackPanel Spacing="12">
-                            <TextBlock Classes="section-title" Text="Patron" />
+                            <TextBlock Classes="section-title" Text="{loc:Loc Common_Pattern}" />
                             <Grid ColumnDefinitions="*,16,220">
                                 <StackPanel Grid.Column="0" Classes="form-field">
-                                    <TextBlock Classes="form-label" Text="Rechercher un patron" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc ProjectsForm_SearchPattern}" />
                                     <TextBox Classes="form-input"
                                              Text="{Binding PatternSearchQuery}"
-                                             PlaceholderText="Nom, type, url ou note du patron..." />
+                                             PlaceholderText="{loc:Loc ProjectsForm_SearchPatternPlaceholder}" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
-                                    <TextBlock Classes="form-label" Text="Type de patron" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc Common_PatternType}" />
                                     <ComboBox ItemsSource="{Binding PatternTypeFilters}"
                                               SelectedItem="{Binding SelectedPatternTypeFilter, Mode=TwoWay}"
                                               Classes="form-select"
@@ -206,9 +207,9 @@
                                 <Grid ColumnDefinitions="*,Auto">
                                     <TextBlock Grid.Column="0"
                                                Classes="form-label"
-                                               Text="Patron sélectionné" />
+                                               Text="{loc:Loc ProjectsForm_SelectedPattern}" />
                                     <Button Grid.Column="1"
-                                            Content="Retirer"
+                                            Content="{loc:Loc Common_Remove}"
                                             Command="{Binding ClearPatternCommand}"
                                             Classes="cancel-btn"
                                             Padding="10 4" />
@@ -260,11 +261,11 @@
                                 <Border Padding="12 10"
                                         Classes="table-header">
                                     <Grid ColumnDefinitions="*,130,130,110,110" ColumnSpacing="14">
-                                        <TextBlock Text="Nom" Classes="table-heading" />
-                                        <TextBlock Grid.Column="1" Text="Type" Classes="table-heading" />
-                                        <TextBlock Grid.Column="2" Text="Origine" Classes="table-heading" />
-                                        <TextBlock Grid.Column="3" Text="Début" Classes="table-heading" />
-                                        <TextBlock Grid.Column="4" Text="Fin" Classes="table-heading" />
+                                        <TextBlock Text="{loc:Loc Common_Name}" Classes="table-heading" />
+                                        <TextBlock Grid.Column="1" Text="{loc:Loc Common_Type}" Classes="table-heading" />
+                                        <TextBlock Grid.Column="2" Text="{loc:Loc Common_Origin}" Classes="table-heading" />
+                                        <TextBlock Grid.Column="3" Text="{loc:Loc Common_Begin}" Classes="table-heading" />
+                                        <TextBlock Grid.Column="4" Text="{loc:Loc Common_End}" Classes="table-heading" />
                                     </Grid>
                                 </Border>
 
@@ -318,7 +319,7 @@
                                 <Border Padding="12 18"
                                         Classes="table-empty-row"
                                         IsVisible="{Binding !PatternResults.Count}">
-                                    <TextBlock Text="Aucun patron à afficher."
+                                    <TextBlock Text="{loc:Loc Patterns_NoPatternToDisplay}"
                                                Classes="form-hint"
                                                HorizontalAlignment="Center"
                                                TextAlignment="Center" />
@@ -329,16 +330,16 @@
 
                     <Border Classes="form-section">
                         <StackPanel Spacing="12">
-                            <TextBlock Classes="section-title" Text="Laines" />
+                            <TextBlock Classes="section-title" Text="{loc:Loc Common_Wools}" />
                             <StackPanel Classes="form-field">
-                                <TextBlock Classes="form-label" Text="Recherche intelligente" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc ProjectsForm_SmartSearch}" />
                                 <TextBox Classes="form-input"
                                          Text="{Binding WoolSearchQuery}"
-                                         PlaceholderText="Ex : drops rouge coton..." />
+                                         PlaceholderText="{loc:Loc ProjectsForm_WoolSearchPlaceholder}" />
                             </StackPanel>
 
                             <StackPanel Spacing="6" IsVisible="{Binding HasSelectedWools}">
-                                <TextBlock Classes="form-label" Text="Laines sélectionnées" />
+                                <TextBlock Classes="form-label" Text="{loc:Loc ProjectsForm_SelectedWools}" />
                                 <ItemsControl ItemsSource="{Binding SelectedWools}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -399,10 +400,10 @@
                                         Classes="table-header">
                                     <Grid ColumnDefinitions="28,*,130,130,110" ColumnSpacing="14">
                                         <TextBlock Text="" />
-                                        <TextBlock Grid.Column="1" Text="Nom" Classes="table-heading" />
-                                        <TextBlock Grid.Column="2" Text="Marque" Classes="table-heading" />
-                                        <TextBlock Grid.Column="3" Text="Matière" Classes="table-heading" />
-                                        <TextBlock Grid.Column="4" Text="Stock" Classes="table-heading" />
+                                        <TextBlock Grid.Column="1" Text="{loc:Loc Common_Name}" Classes="table-heading" />
+                                        <TextBlock Grid.Column="2" Text="{loc:Loc Common_Brand}" Classes="table-heading" />
+                                        <TextBlock Grid.Column="3" Text="{loc:Loc Common_Material}" Classes="table-heading" />
+                                        <TextBlock Grid.Column="4" Text="{loc:Loc Common_Stock}" Classes="table-heading" />
                                     </Grid>
                                 </Border>
 
@@ -458,7 +459,7 @@
                                 <Border Padding="12 18"
                                         Classes="table-empty-row"
                                         IsVisible="{Binding !WoolResults.Count}">
-                                    <TextBlock Text="Aucune laine à afficher."
+                                    <TextBlock Text="{loc:Loc Stocks_NoWoolToDisplay}"
                                                Classes="form-hint"
                                                HorizontalAlignment="Center"
                                                TextAlignment="Center" />
@@ -477,7 +478,7 @@
 
                     <StackPanel Classes="form-actions">
                         <Button Classes="cancel-btn"
-                                Content="Annuler"
+                                Content="{loc:Loc Common_Cancel}"
                                 Command="{Binding CancelCommand}" />
                         <Button Classes="form-submit"
                                 Content="{Binding Title}"

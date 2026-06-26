@@ -45,7 +45,6 @@ public partial class ProjectsListViewModel : PaginatePageViewModelBase<Project, 
     }
 
     public override bool KeepAliveInNavigationHistory => true;
-    public TranslationService Translation => _translation;
 
     [ObservableProperty]
     public partial ProjectStatusFilterViewModel? SelectedStatusFilter { get; set; }

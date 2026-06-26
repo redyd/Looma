@@ -5,6 +5,7 @@
 using System.Windows.Input;
 using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
+using Looma.Presentation.Services;
 
 namespace Looma.Presentation.ViewModels.Shared.Projects;
 
@@ -15,10 +16,10 @@ public class ProjectSummaryViewModel(Project project, ICommand openDetailCommand
     public string StatusDisplay => Project.Status.GetDisplayName();
     public bool HasPatternType => Project.Pattern is not null;
     public string? PatternTypeDisplay => Project.Pattern?.Type.GetDisplayName();
-    public string PatternName => Project.Pattern?.Name ?? "Aucun patron";
+    public string PatternName => Project.Pattern?.Name ?? TranslationService.Current["Projects_NoPattern"];
     public bool HasBeginDate => Project.BeginDate is not null;
-    public string BeginDateDisplay => Project.BeginDate.FormatWithDefault("Aucune");
+    public string BeginDateDisplay => Project.BeginDate.FormatWithDefault(TranslationService.Current["Common_NoneFeminine"]);
     public bool HasEndDate => Project.EndDate is not null;
-    public string EndDateDisplay => Project.EndDate.FormatWithDefault("Aucune");
-    public string WoolCountDisplay => $"{Project.Wools.Count:N0} laine(s)";
+    public string EndDateDisplay => Project.EndDate.FormatWithDefault(TranslationService.Current["Common_NoneFeminine"]);
+    public string WoolCountDisplay => $"{Project.Wools.Count:N0} {TranslationService.Current["Common_WoolsUnit"]}";
 }

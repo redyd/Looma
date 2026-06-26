@@ -52,9 +52,9 @@ public partial class ProjectsFormViewModel(
 
     public IReadOnlyList<Status> Statuses { get; } = Enum.GetValues<Status>().ToList();
 
-    public IReadOnlyList<ProjectPatternTypeFilterViewModel> PatternTypeFilters { get; } =
+    public IReadOnlyList<ProjectPatternTypeFilterViewModel> PatternTypeFilters =>
     [
-        new("Tous les types", null),
+        new(Translation["Common_AllTypes"], null),
         ..Enum.GetValues<PatternType>()
             .Select(type => new ProjectPatternTypeFilterViewModel(type.GetDisplayName(), type))
     ];
@@ -112,7 +112,7 @@ public partial class ProjectsFormViewModel(
     {
         _isEdit = false;
         _editingId = 0;
-        Title = "Nouveau projet";
+        Title = Translation["ProjectsForm_CreateTitle"];
         Name = string.Empty;
         Status = Status.InProgress;
         Note = null;
@@ -134,7 +134,7 @@ public partial class ProjectsFormViewModel(
     {
         _isEdit = true;
         _editingId = project.ProjectId;
-        Title = "Modifier le projet";
+        Title = Translation["ProjectsForm_EditTitle"];
         Name = project.Name;
         Status = project.Status;
         Note = project.Note;
@@ -170,14 +170,14 @@ public partial class ProjectsFormViewModel(
             if (patternsResult.Failed || patternsResult.Value is null)
             {
                 ErrorMessage = patternsResult.Error;
-                notifications.Error(patternsResult.Error ?? "Impossible de charger les patrons.");
+                notifications.Error(patternsResult.Error ?? Translation["Patterns_Notifications_UnableToLoadPatterns"]);
                 return;
             }
 
             if (woolsResult.Failed || woolsResult.Value is null)
             {
                 ErrorMessage = woolsResult.Error;
-                notifications.Error(woolsResult.Error ?? "Impossible de charger les laines.");
+                notifications.Error(woolsResult.Error ?? Translation["Stocks_Notifications_UnableToLoadWools"]);
                 return;
             }
 
@@ -325,14 +325,14 @@ public partial class ProjectsFormViewModel(
             if (result.Failed || result.Value is null)
             {
                 ErrorMessage = result.Error;
-                notifications.Error(result.Error ?? "Impossible de sauvegarder le projet.");
+                notifications.Error(result.Error ?? Translation["Projects_Notifications_UnableToSaveProject"]);
                 return;
             }
 
             if (!await SyncImagesAsync(result.Value.ProjectId))
                 return;
 
-            notifications.Success(_isEdit ? "Le projet a été mis à jour." : "Le projet a été créé.");
+            notifications.Success(_isEdit ? Translation["Projects_Notifications_ProjectUpdated"] : Translation["Projects_Notifications_ProjectCreated"]);
             nav.GoBack();
         }
         finally
@@ -351,7 +351,7 @@ public partial class ProjectsFormViewModel(
         var invalid = paths.Where(path => !IsSupportedImagePath(path)).ToList();
         if (invalid.Count > 0)
         {
-            ErrorMessage = "Seuls les image sont acceptés.";
+            ErrorMessage = Translation["ProjectsForm_Errors_OnlyImagesAccepted"];
             notifications.Error(ErrorMessage);
             return;
         }
@@ -384,7 +384,7 @@ public partial class ProjectsFormViewModel(
             if (deleteResult.Failed)
             {
                 ErrorMessage = deleteResult.Error;
-                notifications.Error(deleteResult.Error ?? "Impossible de supprimer l'image.");
+                notifications.Error(deleteResult.Error ?? Translation["ProjectsForm_Notifications_UnableToDeleteImage"]);
                 return false;
             }
         }
@@ -394,7 +394,7 @@ public partial class ProjectsFormViewModel(
         {
             if (!IsSupportedImagePath(image.SourcePath))
             {
-                ErrorMessage = "Seuls les fichiers image PNG, JPG, WEBP, BMP ou GIF sont acceptés.";
+                ErrorMessage = Translation["ProjectsForm_Errors_OnlySupportedImagesAccepted"];
                 notifications.Error(ErrorMessage);
                 return false;
             }
@@ -413,7 +413,7 @@ public partial class ProjectsFormViewModel(
             if (documentResult.Failed)
             {
                 ErrorMessage = documentResult.Error;
-                notifications.Error(documentResult.Error ?? "Impossible d'ajouter les images au projet.");
+                notifications.Error(documentResult.Error ?? Translation["ProjectsForm_Notifications_UnableToAddImages"]);
                 return false;
             }
         }

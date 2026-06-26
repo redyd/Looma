@@ -6,6 +6,7 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
              xmlns:userControls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolListView"
@@ -23,7 +24,7 @@
             <TextBox Grid.Column="1"
                      Classes="form-input"
                      Text="{Binding SearchQuery}"
-                     PlaceholderText="Rechercher par nom, marque, couleur, matière..."
+                     PlaceholderText="{loc:Loc Stocks_SearchPlaceholder}"
                      VerticalContentAlignment="Center" />
         </Grid>
 
@@ -32,7 +33,7 @@
             DockPanel.Dock="Top"
             Margin="0 0 0 20"
             HorizontalSpacing="20">
-            <TextBlock Text="Mes laines"
+            <TextBlock Text="{loc:Loc Stocks_Title}"
                        Classes="page-title"
                        VerticalAlignment="Center" />
             <Button DockPanel.Dock="Right"
@@ -43,7 +44,7 @@
                                 Size="16"
                                 Foreground="{DynamicResource SubmitButtonIconForegroundBrush}"
                                 VerticalAlignment="Center" />
-                    <TextBlock Text="Ajouter une laine" VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc Stocks_AddWool}" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
         </DockPanel>
@@ -63,10 +64,10 @@
                     Classes="empty-state">
                 <StackPanel Spacing="8"
                             HorizontalAlignment="Center">
-                    <TextBlock Text="Aucune laine pour l'instant"
+                    <TextBlock Text="{loc:Loc Stocks_NoWoolAtThisTime}"
                                Classes="empty-state-title" />
 
-                    <TextBlock Text="Ajoute ta première laine pour suivre ton stock par couleur, matière et quantité."
+                    <TextBlock Text="{loc:Loc Stocks_CreateFirstWool}"
                                Classes="empty-state-message" />
                 </StackPanel>
             </Border>
@@ -75,10 +76,10 @@
                     Classes="empty-state">
                 <StackPanel Spacing="8"
                             HorizontalAlignment="Center">
-                    <TextBlock Text="Aucune laine trouvée"
+                    <TextBlock Text="{loc:Loc Stocks_NoWoolFound}"
                                Classes="empty-state-title" />
 
-                    <TextBlock Text="Essaie de modifier ta recherche."
+                    <TextBlock Text="{loc:Loc Common_TryEditSearch}"
                                Classes="empty-state-message" />
                 </StackPanel>
             </Border>
@@ -149,7 +150,7 @@
                                         <!-- Poids et longeur -->
                                         <Grid ColumnDefinitions="*,*">
                                             <StackPanel Grid.Column="0" Spacing="2">
-                                                <TextBlock Text="Poids" Classes="card-meta" FontSize="10" Opacity="0.5" />
+                                                <TextBlock Text="{loc:Loc Common_Weight}" Classes="card-meta" FontSize="10" Opacity="0.5" />
                                                 <StackPanel Orientation="Horizontal" Spacing="3">
                                                     <TextBlock Text="{Binding Wool.StockWeight, StringFormat='{}{0:N0}'}"
                                                                Classes="card-title"
@@ -160,7 +161,7 @@
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="1" Spacing="2">
-                                                <TextBlock Text="Longueur" Classes="card-meta" FontSize="10" Opacity="0.5" />
+                                                <TextBlock Text="{loc:Loc Common_Length}" Classes="card-meta" FontSize="10" Opacity="0.5" />
                                                 <StackPanel Orientation="Horizontal" Spacing="3">
                                                     <TextBlock Text="{Binding Wool.StockLength, StringFormat='{}{0:N0}'}"
                                                                Classes="card-title"

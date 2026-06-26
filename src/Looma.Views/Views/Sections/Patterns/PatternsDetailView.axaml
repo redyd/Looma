@@ -6,6 +6,7 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
     xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
     xmlns:controls="clr-namespace:Looma.Views.UserControls"
     xmlns:documents="clr-namespace:Looma.Presentation.ViewModels.Sections.Documents;assembly=Looma.Presentation"
@@ -64,13 +65,13 @@
                                 <TextBlock
                                     Grid.Row="0"
                                     Classes="section-title"
-                                    Text="Note"
+                                    Text="{loc:Loc Common_Note}"
                                 />
                                 <TextBox
                                     Grid.Row="2"
                                     Classes="form-input"
                                     Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    PlaceholderText="Aucune note."
+                                    PlaceholderText="{loc:Loc Common_NoNote}"
                                     AcceptsReturn="True"
                                     TextWrapping="Wrap"
                                     Height="NaN"
@@ -81,7 +82,7 @@
                                 />
                                 <Button
                                     Grid.Row="4"
-                                    Content="Modifier la note"
+                                    Content="{loc:Loc Common_EditNote}"
                                     Command="{Binding SaveNoteCommand}"
                                     Classes="form-submit"
                                     HorizontalAlignment="Stretch"
@@ -98,10 +99,10 @@
                             <StackPanel Spacing="12">
                                 <TextBlock
                                     Classes="section-title"
-                                    Text="Documents liés"
+                                    Text="{loc:Loc PatternsDetail_LinkedDocuments}"
                                 />
                                 <TextBlock
-                                    Text="Aucun document"
+                                    Text="{loc:Loc Documents_NoDocument}"
                                     Classes="form-hint"
                                     IsVisible="{Binding !HasDocuments}"
                                 />
@@ -152,7 +153,7 @@
                                                     />
                                                     <Button
                                                         Grid.Column="3"
-                                                        Content="Ouvrir"
+                                                        Content="{loc:Loc Common_Open}"
                                                         Command="{Binding OpenCommand}"
                                                         Classes="cancel-btn"
                                                         MinWidth="80"
@@ -176,10 +177,10 @@
                             <StackPanel Spacing="12">
                                 <TextBlock
                                     Classes="section-title"
-                                    Text="Projets liés"
+                                    Text="{loc:Loc PatternsDetail_LinkedProjects}"
                                 />
                                 <TextBlock
-                                    Text="Aucun projet"
+                                    Text="{loc:Loc Projects_NoProject}"
                                     Classes="form-hint"
                                     IsVisible="{Binding !HasProjects}"
                                 />

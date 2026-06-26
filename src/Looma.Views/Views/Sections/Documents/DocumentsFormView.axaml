@@ -6,6 +6,7 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Documents"
              x:Class="Looma.Views.Views.Sections.Documents.DocumentsFormView"
              x:DataType="vm:DocumentsFormViewModel">
@@ -23,30 +24,30 @@
                     <StackPanel Classes="form-header">
                         <TextBlock Classes="form-title" Text="{Binding Title}" />
                         <TextBlock Classes="form-subtitle"
-                                   Text="Ajoutez un fichier dans le dossier de l'application ou renommez son affichage." />
+                                   Text="{loc:Loc DocumentsForm_Subtitle}" />
                     </StackPanel>
 
                     <Border Classes="form-section">
                         <StackPanel Spacing="0">
                             <TextBlock Classes="section-title"
-                                       Text="Informations"
+                                       Text="{loc:Loc Common_Information}"
                                        Margin="0 0 0 16" />
 
                             <StackPanel Classes="form-field">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                    <TextBlock Classes="form-label" Text="Nommer le document" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc Documents_NameDocument}" />
                                     <TextBlock Classes="form-label" Opacity="0.5" Text="(optionnel à la création)" />
                                 </StackPanel>
                                 <TextBox Classes="form-input"
                                          Text="{Binding Nickname}"
-                                         PlaceholderText="Nom affiché du document" />
+                                         PlaceholderText="{loc:Loc Documents_DisplayNamePlaceholder}" />
                             </StackPanel>
                         </StackPanel>
                     </Border>
 
                     <StackPanel Classes="form-actions">
                         <Button Classes="cancel-btn"
-                                Content="Annuler"
+                                Content="{loc:Loc Common_Cancel}"
                                 Command="{Binding CancelCommand}" />
                         <Button Classes="form-submit"
                                 Content="{Binding Title}"

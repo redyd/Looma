@@ -70,7 +70,7 @@ public partial class DocumentsPickerFormViewModel(
         var result = await documentService.GetAllAsync();
         if (result.Failed || result.Value is null)
         {
-            notifications.Error(result.Error ?? "Impossible de charger les documents.");
+            notifications.Error(result.Error ?? TranslationService.Current["Documents_Notifications_UnableToLoadDocuments"]);
             return false;
         }
 
@@ -100,7 +100,7 @@ public partial class DocumentsPickerFormViewModel(
             var result = await documentService.DeleteAsync(deletedId);
             if (result.Failed)
             {
-                notifications.Error(result.Error ?? "Impossible de supprimer le document.");
+                notifications.Error(result.Error ?? TranslationService.Current["Documents_Notifications_UnableToDeleteDocument"]);
                 return false;
             }
         }
@@ -112,14 +112,14 @@ public partial class DocumentsPickerFormViewModel(
 
             if (UpdateDocumentCallback is null)
             {
-                notifications.Error("Impossible de renommer le document dans ce contexte.");
+                notifications.Error(TranslationService.Current["Documents_Notifications_UnableToRenameDocumentHere"]);
                 return false;
             }
 
             var result = await UpdateDocumentCallback(document.DocumentId, document.Nickname);
             if (result.Failed)
             {
-                notifications.Error(result.Error ?? "Impossible de renommer le document.");
+                notifications.Error(result.Error ?? TranslationService.Current["Documents_Notifications_UnableToRenameDocument"]);
                 return false;
             }
         }
@@ -141,14 +141,14 @@ public partial class DocumentsPickerFormViewModel(
         {
             if (CreateDocumentsCallback is null)
             {
-                notifications.Error("Impossible d'ajouter le document dans ce contexte.");
+                notifications.Error(TranslationService.Current["Documents_Notifications_UnableToAddDocumentHere"]);
                 return false;
             }
 
             var result = await CreateDocumentsCallback(newDocumentRequests);
             if (result.Failed)
             {
-                notifications.Error(result.Error ?? "Impossible d'ajouter le document.");
+                notifications.Error(result.Error ?? TranslationService.Current["Documents_Notifications_UnableToAddDocument"]);
                 return false;
             }
 

@@ -66,27 +66,27 @@ public partial class PatternsDetailViewModel(
     public bool HasUrl => !string.IsNullOrWhiteSpace(Url);
     public bool HasDocuments => Documents.Count > 0;
     public bool HasProjects => Projects.Count > 0;
-    public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? "Aucune note." : Note!;
+    public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? Translation["Common_NoNote"] : Note!;
 
     public IList<StatItem> DetailStats =>
     [
-        new() { Label = "Nombre de projets lié", Value = Projects.Count.ToString("N0"), Unit = "x", IsFirst = true },
+        new() { Label = Translation["PatternsDetail_LinkedProjectsCount"], Value = Projects.Count.ToString("N0"), Unit = "x", IsFirst = true },
     ];
 
     public IList<InfoItem> DetailInfos =>
     [
-        new() { Label = "Nom", Value = Name },
-        new() { Label = "Lien", Value = Url ?? "Aucun", IsLink = HasUrl },
-        new() { Label = "Type", Value = Type.GetDisplayName() },
-        new() { Label = "Patron", Value = IsPersonal ? "Personnel" : "Non personnel" },
-        new() { Label = "Début", Value = BeginDate.FormatWithDefault("Aucune") },
-        new() { Label = "Fin", Value = EndDate.FormatWithDefault("Aucune") },
-        new() { Label = "Documents", Value = Documents.Count.ToString("N0") },
+        new() { Label = Translation["Common_Name"], Value = Name },
+        new() { Label = Translation["Common_Link"], Value = Url ?? Translation["Common_None"], IsLink = HasUrl },
+        new() { Label = Translation["Common_Type"], Value = Type.GetDisplayName() },
+        new() { Label = Translation["Common_Pattern"], Value = IsPersonal ? Translation["Common_Personal"] : Translation["Common_NotPersonal"] },
+        new() { Label = Translation["Common_Begin"], Value = BeginDate.FormatWithDefault(Translation["Common_NoneFeminine"]) },
+        new() { Label = Translation["Common_End"], Value = EndDate.FormatWithDefault(Translation["Common_NoneFeminine"]) },
+        new() { Label = Translation["Navigation_Documents"], Value = Documents.Count.ToString("N0") },
     ];
 
     public void Load(Pattern pattern)
     {
-        Title = "Détail patron";
+        Title = Translation["PatternsDetail_Title"];
         _patternId = pattern.Id;
 
         ApplyPattern(pattern);
@@ -105,7 +105,7 @@ public partial class PatternsDetailViewModel(
         var pattern = await patternService.GetByIdAsync(_patternId);
         if (pattern.Failed || pattern.Value is null)
         {
-            ErrorMessage = pattern.Error ?? $"Le patron {_patternId} est introuvable.";
+            ErrorMessage = pattern.Error ?? Translation.Format("Patterns_Errors_PatternNotFound", _patternId);
             return;
         }
 
@@ -146,7 +146,7 @@ public partial class PatternsDetailViewModel(
     {
         var result = await documentService.OpenAsync(id);
         if (result.Failed)
-            notifications.Error(result.Error ?? "Impossible d'ouvrir le document.");
+            notifications.Error(result.Error ?? Translation["Documents_Notifications_UnableToOpenDocument"]);
     }
 
     private async Task OpenProjectAsync(int id)
@@ -154,7 +154,7 @@ public partial class PatternsDetailViewModel(
         var result = await projectService.GetByIdAsync(id);
         if (result.Failed || result.Value is null)
         {
-            notifications.Error(result.Error ?? "Impossible d'ouvrir le projet.");
+            notifications.Error(result.Error ?? Translation["Projects_Notifications_UnableToOpenProject"]);
             return;
         }
 
@@ -183,12 +183,12 @@ public partial class PatternsDetailViewModel(
             if (result.Failed || result.Value is null)
             {
                 ErrorMessage = result.Error;
-                notifications.Error(result.Error ?? "Impossible de mettre à jour la note.");
+                notifications.Error(result.Error ?? Translation["Common_Notifications_UnableToUpdateNote"]);
                 return;
             }
 
             ApplyPattern(result.Value);
-            notifications.Success("La note a été mise à jour.");
+            notifications.Success(Translation["Common_Notifications_NoteUpdated"]);
         }
         finally
         {
@@ -211,7 +211,7 @@ public partial class PatternsDetailViewModel(
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible d'ouvrir le lien: {ex.Message}");
+            notifications.Error(Translation.Format("Common_Notifications_UnableToOpenLink", ex.Message));
         }
     }
 
@@ -231,11 +231,11 @@ public partial class PatternsDetailViewModel(
             if (result.Failed)
             {
                 ErrorMessage = result.Error;
-                notifications.Error(result.Error ?? "Impossible de supprimer le patron.");
+                notifications.Error(result.Error ?? Translation["Patterns_Notifications_UnableToDeletePattern"]);
                 return;
             }
 
-            notifications.Success("Le patron a été supprimé.");
+            notifications.Success(Translation["Patterns_Notifications_PatternDeleted"]);
             nav.GoBack();
         }
         finally

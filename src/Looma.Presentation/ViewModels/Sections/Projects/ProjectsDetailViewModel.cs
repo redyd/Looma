@@ -68,11 +68,11 @@ public partial class ProjectsDetailViewModel(
     public partial bool DeductWoolImmediately { get; set; }
 
     public string StatusDisplay => Status.GetDisplayName();
-    public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? "Aucune note." : Note!;
-    public string PatternName => Pattern?.Name ?? "Aucun patron";
+    public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? Translation["Common_NoNote"] : Note!;
+    public string PatternName => Pattern?.Name ?? Translation["Projects_NoPattern"];
     public string PatternTypeDisplay => Pattern?.Type.GetDisplayName() ?? "-";
-    public string PatternNoteDisplay => string.IsNullOrWhiteSpace(Pattern?.Note) ? "Aucune note." : Pattern.Note!;
-    public string PatternActionText => Pattern is null ? "Ajouter" : "Ouvrir";
+    public string PatternNoteDisplay => string.IsNullOrWhiteSpace(Pattern?.Note) ? Translation["Common_NoNote"] : Pattern.Note!;
+    public string PatternActionText => Pattern is null ? Translation["Common_Add"] : Translation["Common_Open"];
     public bool HasWools => Wools.Count > 0;
     public bool HasImages => Images.Count > 0;
     public bool HasMultipleImages => Images.Count > 1;
@@ -89,27 +89,27 @@ public partial class ProjectsDetailViewModel(
 
     public IList<StatItem> PatternStats =>
     [
-        new() { Label = "Documents", Value = (Pattern?.Documents.Count ?? 0).ToString("N0"), Unit = "x", IsFirst = true },
-        new() { Label = "Projets liés", Value = (Pattern?.Projects.Count ?? 0).ToString("N0"), Unit = "x" }
+        new() { Label = Translation["Navigation_Documents"], Value = (Pattern?.Documents.Count ?? 0).ToString("N0"), Unit = "x", IsFirst = true },
+        new() { Label = Translation["PatternsDetail_LinkedProjects"], Value = (Pattern?.Projects.Count ?? 0).ToString("N0"), Unit = "x" }
     ];
 
     public IList<InfoItem> ProjectInfos =>
     [
-        new() { Label = "Nom", Value = Name },
-        new() { Label = "Status", Value = StatusDisplay },
-        new() { Label = "Début", Value = FormatDate(BeginDate) },
-        new() { Label = "Fin", Value = FormatDate(EndDate) },
-        new() { Label = "Laines", Value = Wools.Count.ToString("N0") },
+        new() { Label = Translation["Common_Name"], Value = Name },
+        new() { Label = Translation["Common_Status"], Value = StatusDisplay },
+        new() { Label = Translation["Common_Begin"], Value = FormatDate(BeginDate) },
+        new() { Label = Translation["Common_End"], Value = FormatDate(EndDate) },
+        new() { Label = Translation["Common_Wools"], Value = Wools.Count.ToString("N0") },
     ];
 
     public IList<InfoItem> PatternInfos =>
     [
-        new() { Label = "Patron", Value = PatternName },
-        new() { Label = "Type", Value = PatternTypeDisplay },
-        new() { Label = "Origine", Value = Pattern?.IsPersonal == true ? "Personnel" : "Non personnel" },
-        new() { Label = "Lien", Value = Pattern?.Url ?? "Aucun" },
-        new() { Label = "Début", Value = FormatDate(Pattern?.BeginDate) },
-        new() { Label = "Fin", Value = FormatDate(Pattern?.EndDate) },
+        new() { Label = Translation["Common_Pattern"], Value = PatternName },
+        new() { Label = Translation["Common_Type"], Value = PatternTypeDisplay },
+        new() { Label = Translation["Common_Origin"], Value = Pattern?.IsPersonal == true ? Translation["Common_Personal"] : Translation["Common_NotPersonal"] },
+        new() { Label = Translation["Common_Link"], Value = Pattern?.Url ?? Translation["Common_None"] },
+        new() { Label = Translation["Common_Begin"], Value = FormatDate(Pattern?.BeginDate) },
+        new() { Label = Translation["Common_End"], Value = FormatDate(Pattern?.EndDate) },
     ];
 
     public void Load(Project project)
@@ -132,7 +132,7 @@ public partial class ProjectsDetailViewModel(
         var result = await projectService.GetByIdAsync(ProjectId);
         if (result.Failed || result.Value is null)
         {
-            ErrorMessage = result.Error ?? $"Le projet {ProjectId} est introuvable.";
+            ErrorMessage = result.Error ?? Translation.Format("Projects_Errors_ProjectNotFound", ProjectId);
             notifications.Error(ErrorMessage);
             return;
         }
@@ -211,7 +211,7 @@ public partial class ProjectsDetailViewModel(
     {
         if (WoolAdjustmentQuantity is null || WoolAdjustmentQuantity <= 0)
         {
-            notifications.Error("Indiquez une quantité supérieure à zéro.");
+            notifications.Error(Translation["Common_Errors_QuantityGreaterThanZero"]);
             return;
         }
 
@@ -224,7 +224,7 @@ public partial class ProjectsDetailViewModel(
             DeductWoolImmediately));
         if (result.Failed)
         {
-            notifications.Error(result.Error ?? "Impossible de mettre à jour la laine utilisée.");
+            notifications.Error(result.Error ?? Translation["Projects_Notifications_UnableToUpdateUsedWool"]);
             return;
         }
 
@@ -232,8 +232,8 @@ public partial class ProjectsDetailViewModel(
         WoolAdjustmentQuantity = null;
     }
 
-    private static string FormatDate(DateOnly? value) =>
-        value is null ? "Aucune" : value.Value.ToString("dd/MM/yyyy");
+    private string FormatDate(DateOnly? value) =>
+        value is null ? Translation["Common_NoneFeminine"] : value.Value.ToString("dd/MM/yyyy");
 
     private static bool TryParseQuantity(string? value, out double quantity)
     {
@@ -263,7 +263,7 @@ public partial class ProjectsDetailViewModel(
             if (result.Failed || result.Value is null)
             {
                 ErrorMessage = result.Error;
-                notifications.Error(result.Error ?? "Impossible de mettre à jour le projet.");
+                notifications.Error(result.Error ?? Translation["Projects_Notifications_UnableToUpdateProject"]);
                 return;
             }
 
@@ -294,12 +294,12 @@ public partial class ProjectsDetailViewModel(
             if (result.Failed || result.Value is null)
             {
                 ErrorMessage = result.Error;
-                notifications.Error(result.Error ?? "Impossible de mettre à jour la note.");
+                notifications.Error(result.Error ?? Translation["Common_Notifications_UnableToUpdateNote"]);
                 return;
             }
 
             ApplyProject(result.Value);
-            notifications.Success("La note a été mise à jour.");
+            notifications.Success(Translation["Common_Notifications_NoteUpdated"]);
         }
         finally
         {
@@ -386,11 +386,11 @@ public partial class ProjectsDetailViewModel(
             if (result.Failed)
             {
                 ErrorMessage = result.Error;
-                notifications.Error(result.Error ?? "Impossible de supprimer le projet.");
+                notifications.Error(result.Error ?? Translation["Projects_Notifications_UnableToDeleteProject"]);
                 return;
             }
 
-            notifications.Success("Le projet a été supprimé.");
+            notifications.Success(Translation["Projects_Notifications_ProjectDeleted"]);
             nav.GoBack();
         }
         finally

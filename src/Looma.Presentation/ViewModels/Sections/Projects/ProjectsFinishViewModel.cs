@@ -46,7 +46,7 @@ public partial class ProjectsFinishViewModel(
     {
         StockAdjustmentMode.ByWeight => "g",
         StockAdjustmentMode.ByLength => "m",
-        _ => "pelote(s)"
+        _ => Translation["Common_SkeinsUnit"]
     };
 
     public void Load(int projectId)
@@ -67,7 +67,7 @@ public partial class ProjectsFinishViewModel(
         var result = await projectService.GetByIdAsync(ProjectId);
         if (result.Failed || result.Value is null)
         {
-            ErrorMessage = result.Error ?? $"Le projet {ProjectId} est introuvable.";
+            ErrorMessage = result.Error ?? Translation.Format("Projects_Errors_ProjectNotFound", ProjectId);
             notifications.Error(ErrorMessage);
             return;
         }
@@ -110,7 +110,7 @@ public partial class ProjectsFinishViewModel(
 
         if (EndDate is null)
         {
-            notifications.Error("Indiquez une date de fin.");
+            notifications.Error(Translation["ProjectsFinish_Errors_EndDateRequired"]);
             return;
         }
 
@@ -118,13 +118,13 @@ public partial class ProjectsFinishViewModel(
         {
             if (wool.QuantityToDeduct < 0)
             {
-                notifications.Error("Les quantités à retirer doivent être positives.");
+                notifications.Error(Translation["ProjectsFinish_Errors_DeductionsMustBePositive"]);
                 return;
             }
 
             if (wool.StockToDeduct > wool.Usage.Wool.Stock)
             {
-                notifications.Error($"Le stock disponible est insuffisant pour {wool.Name}.");
+                notifications.Error(Translation.Format("ProjectsFinish_Errors_InsufficientStock", wool.Name));
                 return;
             }
         }
@@ -149,7 +149,7 @@ public partial class ProjectsFinishViewModel(
 
                 if (adjustResult.Failed)
                 {
-                    notifications.Error(adjustResult.Error ?? "Impossible de mettre à jour la laine utilisée.");
+                    notifications.Error(adjustResult.Error ?? Translation["Projects_Notifications_UnableToUpdateUsedWool"]);
                     return;
                 }
             }
@@ -166,11 +166,11 @@ public partial class ProjectsFinishViewModel(
 
             if (updateResult.Failed)
             {
-                notifications.Error(updateResult.Error ?? "Impossible de terminer le projet.");
+                notifications.Error(updateResult.Error ?? Translation["ProjectsFinish_Notifications_UnableToFinishProject"]);
                 return;
             }
 
-            notifications.Success("Le projet a été terminé.");
+            notifications.Success(Translation["ProjectsFinish_Notifications_ProjectFinished"]);
             nav.GoBack();
         }
         finally

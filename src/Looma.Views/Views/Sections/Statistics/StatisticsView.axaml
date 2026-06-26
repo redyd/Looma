@@ -6,6 +6,7 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Statistics"
              x:Class="Looma.Views.Views.Sections.Statistics.StatisticsView"
@@ -16,9 +17,9 @@
                    Margin="0 0 0 20"
                    HorizontalSpacing="20">
             <StackPanel Spacing="4">
-                <TextBlock Text="Statistiques"
+                <TextBlock Text="{loc:Loc Statistics_Title}"
                            Classes="page-title" />
-                <TextBlock Text="Laine utilisée par référence"
+                <TextBlock Text="{loc:Loc Statistics_YarnUsedByReference}"
                            Classes="page-subtitle" />
             </StackPanel>
         </DockPanel>
@@ -34,7 +35,7 @@
                             Classes="form-field"
                             Margin="0"
                             Width="180">
-                    <TextBlock Text="Période" Classes="form-label" />
+                    <TextBlock Text="{loc:Loc Statistics_Period}" Classes="form-label" />
                     <ComboBox Classes="form-select"
                               ItemsSource="{Binding RangeOptions}"
                               SelectedItem="{Binding SelectedRange}" />
@@ -44,7 +45,7 @@
                             Classes="form-field"
                             Margin="0"
                             Width="150">
-                    <TextBlock Text="Unité" Classes="form-label" />
+                    <TextBlock Text="{loc:Loc Statistics_Unit}" Classes="form-label" />
                     <ComboBox Classes="form-select"
                               ItemsSource="{Binding QuantityUnitOptions}"
                               SelectedItem="{Binding SelectedQuantityUnit}" />
@@ -54,7 +55,7 @@
                             Classes="form-field"
                             Margin="0"
                             Width="180">
-                    <TextBlock Text="Type de patron" Classes="form-label" />
+                    <TextBlock Text="{loc:Loc Common_PatternType}" Classes="form-label" />
                     <ComboBox Classes="form-select"
                               ItemsSource="{Binding PatternTypeOptions}"
                               SelectedItem="{Binding SelectedPatternType}" />
@@ -77,9 +78,9 @@
                         Classes="empty-state">
                     <StackPanel Spacing="8"
                                 HorizontalAlignment="Center">
-                        <TextBlock Text="Aucune donnée"
+                        <TextBlock Text="{loc:Loc Statistics_NoData}"
                                    Classes="empty-state-title" />
-                        <TextBlock Text="Ajoute des mouvements de laine liés à des projets pour afficher l'évolution."
+                        <TextBlock Text="{loc:Loc Statistics_AddWoolMovements}"
                                    Classes="empty-state-message" />
                     </StackPanel>
                 </Border>

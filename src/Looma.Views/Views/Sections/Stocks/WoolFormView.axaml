@@ -6,6 +6,7 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
              xmlns:cp="using:Avalonia.Controls"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
@@ -26,7 +27,7 @@
                     <StackPanel Classes="form-header">
                         <TextBlock Classes="form-title" Text="{Binding Title}" />
                         <TextBlock Classes="form-subtitle"
-                                   Text="Renseignez les informations de la laine" />
+                                   Text="{loc:Loc WoolForm_Subtitle}" />
                     </StackPanel>
 
                     <!-- Section détails -->
@@ -34,72 +35,72 @@
                         <StackPanel Spacing="0">
 
                             <TextBlock Classes="section-title"
-                                       Text="Détails de la laine"
+                                       Text="{loc:Loc WoolForm_Details}"
                                        Margin="0 0 0 16" />
 
                             <!-- Nom + Marque -->
                             <Grid ColumnDefinitions="*,16,*">
                                 <StackPanel Grid.Column="0" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Nom" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc Common_Name}" />
                                         <TextBlock Classes="field-required" Text="*" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding Name}"
-                                             PlaceholderText="Ex : Merino Extra Fine" />
+                                             PlaceholderText="{loc:Loc WoolForm_NamePlaceholder}" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Marque" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc Common_Brand}" />
                                         <TextBlock Classes="field-required" Text="*" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding Brand}"
-                                             PlaceholderText="Ex : Drops" />
+                                             PlaceholderText="{loc:Loc WoolForm_BrandPlaceholder}" />
                                 </StackPanel>
                             </Grid>
 
                             <!-- Matière -->
                             <StackPanel Classes="form-field">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                    <TextBlock Classes="form-label" Text="Matière" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc Common_Material}" />
                                     <TextBlock Classes="field-required" Text="*" />
                                 </StackPanel>
                                 <TextBox Classes="form-input"
                                          Text="{Binding Material}"
-                                         PlaceholderText="Ex : Mérinos, Coton, Alpaga..." />
+                                         PlaceholderText="{loc:Loc WoolForm_MaterialPlaceholder}" />
                             </StackPanel>
 
                             <!-- Poids + Longueur -->
                             <Grid ColumnDefinitions="*,16,*">
                                 <StackPanel Grid.Column="0" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Poids" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc Common_Weight}" />
                                         <TextBlock Classes="field-required" Text="*" />
                                         <TextBlock Classes="form-label" Opacity="0.5" Text="(g)" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding Weight}"
-                                             PlaceholderText="Ex : 100" />
+                                             PlaceholderText="{loc:Loc Common_Example100}" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Classes="form-field">
                                     <StackPanel Orientation="Horizontal" Spacing="4">
-                                        <TextBlock Classes="form-label" Text="Longueur" />
+                                        <TextBlock Classes="form-label" Text="{loc:Loc Common_Length}" />
                                         <TextBlock Classes="field-required" Text="*" />
                                         <TextBlock Classes="form-label" Opacity="0.5" Text="(m)" />
                                     </StackPanel>
                                     <TextBox Classes="form-input"
                                              Text="{Binding Length}"
-                                             PlaceholderText="Ex : 200" />
+                                             PlaceholderText="{loc:Loc Common_Example200}" />
                                 </StackPanel>
                             </Grid>
 
                             <!-- Taille d'aiguilles -->
                             <StackPanel Classes="form-field">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                    <TextBlock Classes="form-label" Text="Taille d'aiguilles" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc WoolForm_NeedleSize}" />
                                     <TextBlock Classes="field-required" Text="*" />
                                     <TextBlock Classes="form-label" Opacity="0.5" Text="(mm)" />
                                 </StackPanel>
@@ -121,7 +122,7 @@
                         <StackPanel Spacing="0">
 
                             <TextBlock Classes="section-title"
-                                       Text="Couleurs"
+                                       Text="{loc:Loc WoolForm_Colors}"
                                        Margin="0 0 0 16" />
 
                             <!-- Chips des couleurs sélectionnées -->
@@ -160,7 +161,7 @@
                             <!-- Picker + bouton ajouter -->
                             <StackPanel Classes="form-field">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
-                                    <TextBlock Classes="form-label" Text="Couleur de la laine" />
+                                    <TextBlock Classes="form-label" Text="{loc:Loc WoolForm_WoolColor}" />
                                 </StackPanel>
 
                                 <Border Classes="color-picker-container">
@@ -172,7 +173,7 @@
                                         <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                                             <TextBlock Grid.Column="0"
                                                        Classes="form-hint"
-                                                       Text="Aperçu :"
+                                                       Text="{loc:Loc Common_Preview}"
                                                        VerticalAlignment="Center"
                                                        Margin="0" />
                                             <Border Grid.Column="1"
@@ -191,7 +192,7 @@
                                                        Classes="form-hint"
                                                        Margin="0 0 12 0" />
                                             <Button Grid.Column="3"
-                                                    Content="Ajouter"
+                                                    Content="{loc:Loc Common_Add}"
                                                     Command="{Binding AddColorCommand}"
                                                     Classes="form-submit"
                                                     VerticalAlignment="Center" />
@@ -210,7 +211,7 @@
                                    Text="{Binding ErrorMessage}"
                                    IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
                         <Button Classes="cancel-btn"
-                                Content="Annuler"
+                                Content="{loc:Loc Common_Cancel}"
                                 Command="{Binding CancelCommand}" />
                         <Button Classes="form-submit"
                                 Content="{Binding Title}"

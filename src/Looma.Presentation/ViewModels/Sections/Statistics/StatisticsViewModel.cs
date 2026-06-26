@@ -24,25 +24,25 @@ public partial class StatisticsViewModel(
 
     public override bool KeepAliveInNavigationHistory => true;
 
-    public IReadOnlyList<StatisticsOptionViewModel<StatisticsRange>> RangeOptions { get; } =
+    public IReadOnlyList<StatisticsOptionViewModel<StatisticsRange>> RangeOptions =>
     [
-        new("Tout", StatisticsRange.All),
-        new("Cette année", StatisticsRange.ThisYear),
-        new("Ces 6 derniers mois", StatisticsRange.LastSixMonths),
-        new("Ce mois", StatisticsRange.ThisMonth),
-        new("Cette semaine", StatisticsRange.ThisWeek)
+        new(Translation["Statistics_RangeAll"], StatisticsRange.All),
+        new(Translation["Statistics_RangeThisYear"], StatisticsRange.ThisYear),
+        new(Translation["Statistics_RangeLastSixMonths"], StatisticsRange.LastSixMonths),
+        new(Translation["Statistics_RangeThisMonth"], StatisticsRange.ThisMonth),
+        new(Translation["Statistics_RangeThisWeek"], StatisticsRange.ThisWeek)
     ];
 
-    public IReadOnlyList<StatisticsOptionViewModel<StatisticsQuantityUnit>> QuantityUnitOptions { get; } =
+    public IReadOnlyList<StatisticsOptionViewModel<StatisticsQuantityUnit>> QuantityUnitOptions =>
     [
-        new("Pelotes", StatisticsQuantityUnit.Skein),
-        new("Poids", StatisticsQuantityUnit.Weight),
-        new("Longueur", StatisticsQuantityUnit.Length)
+        new(Translation["Common_Skeins"], StatisticsQuantityUnit.Skein),
+        new(Translation["Common_Weight"], StatisticsQuantityUnit.Weight),
+        new(Translation["Common_Length"], StatisticsQuantityUnit.Length)
     ];
 
-    public IReadOnlyList<StatisticsOptionViewModel<PatternType?>> PatternTypeOptions { get; } =
+    public IReadOnlyList<StatisticsOptionViewModel<PatternType?>> PatternTypeOptions =>
     [
-        new("Tout", null),
+        new(Translation["Statistics_RangeAll"], null),
         ..Enum.GetValues<PatternType>()
             .Select(type => new StatisticsOptionViewModel<PatternType?>(type.GetDisplayName(), type))
     ];
@@ -71,7 +71,7 @@ public partial class StatisticsViewModel(
 
         if (!_isInitialized)
         {
-            Title = "Statistiques";
+            Title = Translation["Statistics_Title"];
             SelectedRange = RangeOptions.First();
             SelectedQuantityUnit = QuantityUnitOptions.First();
             SelectedPatternType = PatternTypeOptions.First();
@@ -105,7 +105,7 @@ public partial class StatisticsViewModel(
             var result = await statisticsService.GetAsync(query);
             if (result.Failed || result.Value is null)
             {
-                notifications.Error(result.Error ?? "Impossible de charger les statistiques.");
+                notifications.Error(result.Error ?? Translation["Statistics_Notifications_UnableToLoadStatistics"]);
                 Labels = [];
                 Series = [];
                 HasData = false;

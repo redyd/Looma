@@ -96,7 +96,7 @@ public partial class PatternsFormViewModel(
             if (patternResult.Failed || patternResult.Value is null)
             {
                 ErrorMessage = patternResult.Error;
-                notifications.Error(patternResult.Error ?? "Impossible de sauvegarder le patron.");
+                notifications.Error(patternResult.Error ?? Translation["Patterns_Notifications_UnableToSavePattern"]);
                 return;
             }
 
@@ -109,7 +109,7 @@ public partial class PatternsFormViewModel(
             if (!wasEdit)
             {
                 _isEdit = true;
-                Title = "Modifier le patron";
+                Title = Translation["PatternsForm_EditTitle"];
                 OnPropertyChanged(nameof(IsCreateMode));
                 OnPropertyChanged(nameof(IsEditMode));
             }
@@ -120,7 +120,7 @@ public partial class PatternsFormViewModel(
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            notifications.Error("Une erreur est survenue lors de la sauvegarde du patron: " + ex.Message);
+            notifications.Error(Translation.Format("Patterns_Notifications_SavePatternError", ex.Message));
         }
         finally
         {
@@ -135,7 +135,7 @@ public partial class PatternsFormViewModel(
     {
         _isEdit = false;
         _patternId = 0;
-        Title = "Nouveau patron";
+        Title = Translation["PatternsForm_CreateTitle"];
 
         Name = string.Empty;
         Url = null;
@@ -162,7 +162,7 @@ public partial class PatternsFormViewModel(
     {
         _isEdit = true;
         _patternId = id;
-        Title = "Modifier le patron";
+        Title = Translation["PatternsForm_EditTitle"];
 
         Name = name;
         Url = url;
@@ -186,7 +186,7 @@ public partial class PatternsFormViewModel(
 
         if (!ok)
         {
-            ErrorMessage = "Une erreur est survenue lors de la mise à jour des documents.";
+            ErrorMessage = Translation["Documents_Notifications_UnableToUpdateDocuments"];
         }
 
         IsBusy = false;
@@ -196,10 +196,10 @@ public partial class PatternsFormViewModel(
         OnPropertyChanged(nameof(IsEditMode));
     }
 
-    private static string BuildSuccessMessage(bool wasEdit, bool hasDocumentChanges) =>
+    private string BuildSuccessMessage(bool wasEdit, bool hasDocumentChanges) =>
         hasDocumentChanges
             ? (wasEdit
-                ? "Le patron et ses documents ont été mis à jour."
-                : "Le patron et ses documents ont été ajoutés.")
-            : (wasEdit ? "Le patron a été mis à jour." : "Le patron a été ajouté.");
+                ? Translation["Patterns_Notifications_PatternAndDocumentsUpdated"]
+                : Translation["Patterns_Notifications_PatternAndDocumentsAdded"])
+            : (wasEdit ? Translation["Patterns_Notifications_PatternUpdated"] : Translation["Patterns_Notifications_PatternAdded"]);
 }

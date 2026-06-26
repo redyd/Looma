@@ -6,6 +6,7 @@
 
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
         Icon="avares://Looma.App/Assets/icon.ico"
         xmlns:controls="using:Looma.Views.UserControls"
         xmlns:notifications="using:Looma.Presentation.Notifications"
@@ -34,26 +35,26 @@
 
             <TabItem Classes="main-tab"
                      Grid.Column="0"
-                     Header="Projets">
+                     Header="{loc:Loc Navigation_Projects}">
                 <ContentControl Content="{Binding ProjectsSection.CurrentPage}" />
             </TabItem>
 
             <TabItem Classes="main-tab"
                      Grid.Column="1"
-                     Header="Stocks">
+                     Header="{loc:Loc Navigation_Stocks}">
                 <ContentControl Content="{Binding StocksSection.CurrentPage}" />
             </TabItem>
 
             <TabItem Classes="main-tab"
                      Grid.Column="2"
-                     Header="Patrons">
+                     Header="{loc:Loc Navigation_Patterns}">
                 <ContentControl Content="{Binding PatternsSection.CurrentPage}" />
             </TabItem>
 
             <TabItem Classes="icon-tab"
                      Grid.Column="3"
                      Margin="18 0 4 0"
-                     ToolTip.Tip="Mes documents">
+                     ToolTip.Tip="{loc:Loc Navigation_Documents}">
                 <TabItem.Header>
                     <LucideIcon Kind="Files"
                                 Size="18" />
@@ -64,7 +65,7 @@
             <TabItem Classes="icon-tab"
                      Grid.Column="4"
                      Margin="0 0 4 0"
-                     ToolTip.Tip="Statistiques">
+                     ToolTip.Tip="{loc:Loc Navigation_Statistics}">
                 <TabItem.Header>
                     <LucideIcon Kind="ChartNoAxesCombined"
                                 Size="18" />
@@ -74,7 +75,7 @@
 
             <TabItem Classes="icon-tab"
                      Grid.Column="5"
-                     ToolTip.Tip="Paramètres">
+                     ToolTip.Tip="{loc:Loc Navigation_Settings}">
                 <TabItem.Header>
                     <LucideIcon Kind="Settings"
                                 Size="18" />
@@ -102,7 +103,7 @@
                             <LucideIcon Kind="X" Size="14" />
                         </Button>
                         <StackPanel Spacing="4">
-                            <TextBlock Text="Mise à jour disponible"
+                            <TextBlock Text="{loc:Loc Update_UpdateAvailable}"
                                        Classes="page-title" />
                             <TextBlock Text="{Binding UpdateVersion, StringFormat='Version {0}'}"
                                        Classes="page-subtitle" />
@@ -124,7 +125,7 @@
                                     Classes="cancel-btn"
                                     Command="{Binding CloseUpdatePromptCommand}"
                                     IsEnabled="{Binding CanCloseUpdatePrompt}">
-                                <TextBlock Text="Plus tard" />
+                                <TextBlock Text="{loc:Loc Update_Later}" />
                             </Button>
                             <Button Grid.Column="2"
                                     Classes="form-submit"
@@ -134,7 +135,7 @@
                                     <LucideIcon Kind="Download"
                                                 Size="16"
                                                 Foreground="{DynamicResource SubmitButtonIconForegroundBrush}" />
-                                    <TextBlock Text="Mettre à jour" />
+                                    <TextBlock Text="{loc:Loc Update_Update}" />
                                 </StackPanel>
                             </Button>
                         </Grid>
@@ -154,7 +155,7 @@
                     VerticalAlignment="Center">
                 <Grid RowDefinitions="Auto,*,Auto" RowSpacing="18">
                     <StackPanel Spacing="4">
-                        <TextBlock Text="Notes de version"
+                        <TextBlock Text="{loc:Loc Update_ReleaseNotes}"
                                    Classes="page-title" />
                         <TextBlock Text="{Binding CurrentVersion, StringFormat='Version {0}'}"
                                    Classes="page-subtitle" />
@@ -169,7 +170,7 @@
                             Classes="form-submit"
                             HorizontalAlignment="Right"
                             Command="{Binding CloseReleaseNotesCommand}">
-                        <TextBlock Text="Fermer" />
+                        <TextBlock Text="{loc:Loc Common_Close}" />
                     </Button>
                 </Grid>
             </Border>

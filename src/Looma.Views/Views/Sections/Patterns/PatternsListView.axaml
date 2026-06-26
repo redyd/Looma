@@ -6,6 +6,7 @@
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:core="clr-namespace:Looma.Domain.Core;assembly=Looma.Domain"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Patterns"
              xmlns:userControls="clr-namespace:Looma.Views.UserControls"
@@ -24,14 +25,14 @@
             <TextBox Grid.Column="1"
                      Classes="form-input"
                      Text="{Binding SearchQuery}"
-                     PlaceholderText="Rechercher par nom, url ou note..."
+                     PlaceholderText="{loc:Loc Patterns_SearchPlaceholder}"
                      VerticalContentAlignment="Center" />
         </Grid>
 
         <DockPanel DockPanel.Dock="Top"
                    Margin="0 0 0 20"
                    HorizontalSpacing="20">
-            <TextBlock Text="Mes patrons"
+            <TextBlock Text="{loc:Loc Patterns_Title}"
                        Classes="page-title"
                        VerticalAlignment="Center" />
             <Button DockPanel.Dock="Right"
@@ -42,7 +43,7 @@
                                 Size="16"
                                 Foreground="{DynamicResource SubmitButtonIconForegroundBrush}"
                                 VerticalAlignment="Center" />
-                    <TextBlock Text="Ajouter un patron" VerticalAlignment="Center" />
+                    <TextBlock Text="{loc:Loc Patterns_AddPattern}" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
         </DockPanel>
@@ -61,10 +62,10 @@
                     Classes="empty-state">
                 <StackPanel Spacing="8"
                             HorizontalAlignment="Center">
-                    <TextBlock Text="Aucun patron pour l'instant"
+                    <TextBlock Text="{loc:Loc Patterns_NoPatternAtThisTime}"
                                Classes="empty-state-title" />
 
-                    <TextBlock Text="Ajoute ton premier patron pour le retrouver facilement dans tes projets."
+                    <TextBlock Text="{loc:Loc Patterns_CreateFirstPattern}"
                                Classes="empty-state-message" />
                 </StackPanel>
             </Border>
@@ -73,10 +74,10 @@
                     Classes="empty-state">
                 <StackPanel Spacing="8"
                             HorizontalAlignment="Center">
-                    <TextBlock Text="Aucun patron trouvé"
+                    <TextBlock Text="{loc:Loc Patterns_NoPatternFound}"
                                Classes="empty-state-title" />
 
-                    <TextBlock Text="Essaie de modifier ta recherche."
+                    <TextBlock Text="{loc:Loc Common_TryEditSearch}"
                                Classes="empty-state-message" />
                 </StackPanel>
             </Border>

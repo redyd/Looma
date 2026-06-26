@@ -7,9 +7,15 @@ namespace Looma.Presentation.Services;
 public sealed class TranslationService : INotifyPropertyChanged
 {
     public static readonly string[] SupportedLanguage = ["fr", "en"];
+    public static TranslationService Current { get; private set; } = new();
 
     private readonly ResourceManager _resourceManager =
         new("Looma.Presentation.Resources.Translations", typeof(TranslationService).Assembly);
+
+    public TranslationService()
+    {
+        Current = this;
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

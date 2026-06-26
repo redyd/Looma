@@ -4,11 +4,14 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Avalonia.Threading;
+using Looma.Presentation.Services;
 
 namespace Looma.Presentation.ViewModels.Base;
 
 public abstract class ViewModelBase : ObservableObject
 {
+    public TranslationService Translation => TranslationService.Current;
+
     protected static void RunOnUiThread(Action action)
     {
         if (Dispatcher.UIThread.CheckAccess())

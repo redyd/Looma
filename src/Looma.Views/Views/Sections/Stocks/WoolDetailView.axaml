@@ -6,6 +6,7 @@ See LICENSE in the project root for full license text.
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Stocks"
              xmlns:controls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Stocks.WoolDetailView"
@@ -56,27 +57,27 @@ See LICENSE in the project root for full license text.
                                     Size="18"
                                     Foreground="{DynamicResource DetailLinkForegroundBrush}"
                                     VerticalAlignment="Center" />
-                                <TextBlock Text="Ajustement du stock"
+                                <TextBlock Text="{loc:Loc WoolDetail_StockAdjustment}"
                                            Classes="section-title"
                                            FontSize="16"
                                            VerticalAlignment="Center" />
                             </StackPanel>
-                                <TextBlock Text="Modifiez la quantité de laine disponible en stock" Classes="form-subtitle" />
+                                <TextBlock Text="{loc:Loc WoolDetail_AdjustStockSubtitle}" Classes="form-subtitle" />
                         </StackPanel>
 
                         <Border Classes="form-divider" Margin="0 4" />
 
                         <!-- Étape 1 : Choix du mode d'ajustement -->
                         <StackPanel Classes="form-field">
-                            <TextBlock Text="Mode d'ajustement" Classes="form-label" Margin="0 0 0 4" />
+                            <TextBlock Text="{loc:Loc WoolDetail_AdjustmentMode}" Classes="form-label" Margin="0 0 0 4" />
                             <StackPanel Orientation="Horizontal" Spacing="16">
-                                <RadioButton Content="Par pelote"
+                                <RadioButton Content="{loc:Loc Common_BySkein}"
                                              Cursor="Hand"
                                              IsChecked="{Binding AdjustmentMode, Converter={StaticResource EnumToBool}, ConverterParameter=ByBall}" />
-                                <RadioButton Content="Par poids (g)"
+                                <RadioButton Content="{loc:Loc Common_ByWeight}"
                                              Cursor="Hand"
                                              IsChecked="{Binding AdjustmentMode, Converter={StaticResource EnumToBool}, ConverterParameter=ByWeight}" />
-                                <RadioButton Content="Par longueur (m)"
+                                <RadioButton Content="{loc:Loc Common_ByLength}"
                                              Cursor="Hand"
                                              IsChecked="{Binding AdjustmentMode, Converter={StaticResource EnumToBool}, ConverterParameter=ByLength}" />
                             </StackPanel>
@@ -85,7 +86,7 @@ See LICENSE in the project root for full license text.
                         <!-- Étape 2 : Saisie de la quantité -->
                         <StackPanel Classes="form-field">
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <TextBlock Text="Quantité à ajuster" Classes="form-label" />
+                                <TextBlock Text="{loc:Loc WoolDetail_QuantityToAdjust}" Classes="form-label" />
                                 <TextBlock Text="*" Classes="field-required" />
                             </StackPanel>
 
@@ -96,7 +97,7 @@ See LICENSE in the project root for full license text.
                                            FormatString="N2"
                                            HorizontalAlignment="Stretch" />
 
-                            <TextBlock Text="Entrez une valeur positive, puis choisissez l'action ci-dessous."
+                            <TextBlock Text="{loc:Loc WoolDetail_PositiveValueHint}"
                                        Classes="form-hint" />
                         </StackPanel>
 
@@ -112,7 +113,7 @@ See LICENSE in the project root for full license text.
                                     <LucideIcon Kind="Trash2"
                                                 Size="16"
                                                 VerticalAlignment="Center" />
-                                    <TextBlock Text="Retirer du stock"
+                                    <TextBlock Text="{loc:Loc WoolDetail_RemoveFromStock}"
                                                Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                                VerticalAlignment="Center" />
                                 </StackPanel>
@@ -128,7 +129,7 @@ See LICENSE in the project root for full license text.
                                     <LucideIcon Kind="PackagePlus"
                                                 Size="16"
                                                 VerticalAlignment="Center" />
-                                    <TextBlock Text="Ajouter au stock"
+                                    <TextBlock Text="{loc:Loc WoolDetail_AddToStock}"
                                                Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                                VerticalAlignment="Center" />
                                 </StackPanel>

@@ -41,7 +41,7 @@ public partial class SettingsViewModel(
 
     public override void OnNavigatedTo()
     {
-        Title = "Paramètres";
+        Title = translation["Settings_Title"];
         Updater.OnNavigatedTo();
         RefreshLanguages();
         RefreshThemes();
@@ -67,17 +67,17 @@ public partial class SettingsViewModel(
             {
                 themeService.ResetToDefault();
                 themeStorage.SaveSelectedTheme(null);
-                notifications.Success("Le thème par défaut a été appliqué.");
+                notifications.Success(translation["Settings_Notifications_DefaultThemeApplied"]);
                 return;
             }
 
             themeService.ApplyOverride(value.Path!);
             themeStorage.SaveSelectedTheme(value.Path);
-            notifications.Success($"Le thème {value.Name} a été appliqué.");
+            notifications.Success(translation.Format("Settings_Notifications_ThemeApplied", value.Name));
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible d'appliquer le thème : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToApplyTheme", ex.Message));
         }
     }
 
@@ -115,7 +115,7 @@ public partial class SettingsViewModel(
         catch (Exception ex)
         {
             Trace.TraceError("Unable to change language to {0}: {1}", value.Culture, ex);
-            notifications.Error($"Impossible de changer la langue : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToChangeLanguage", ex.Message));
             RefreshLanguages();
         }
     }
@@ -157,7 +157,7 @@ public partial class SettingsViewModel(
             selectedPath ??= themeStorage.GetSelectedThemePath();
 
             Themes.Clear();
-            Themes.Add(new ThemeOptionViewModel("Défaut", null));
+            Themes.Add(new ThemeOptionViewModel(translation["Settings_DefaultTheme"], null));
 
             foreach (var file in themeStorage.GetThemeFiles())
             {
@@ -184,7 +184,7 @@ public partial class SettingsViewModel(
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible de charger les thèmes : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToLoadThemes", ex.Message));
         }
         finally
         {
@@ -217,11 +217,11 @@ public partial class SettingsViewModel(
             var importedPath = themeStorage.ImportTheme(sourcePath);
             RefreshThemes();
             SelectedTheme = Themes.FirstOrDefault(theme => theme.Path == importedPath);
-            notifications.Success("Le thème a été importé.");
+            notifications.Success(translation["Settings_Notifications_ThemeImported"]);
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible d'importer le thème : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToImportTheme", ex.Message));
         }
     }
 
@@ -232,11 +232,11 @@ public partial class SettingsViewModel(
         {
             var destinationPath = themeStorage.CreateExportPath();
             themeService.ExportCurrentOverride(destinationPath);
-            notifications.Success($"Le thème a été exporté dans {destinationPath}.");
+            notifications.Success(translation.Format("Settings_Notifications_ThemeExported", destinationPath));
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible d'exporter le thème : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToExportTheme", ex.Message));
         }
     }
 
@@ -248,7 +248,7 @@ public partial class SettingsViewModel(
             var path = SelectedTheme?.Path;
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
             {
-                notifications.Error("Le fichier de thème est introuvable.");
+                notifications.Error(translation["Settings_Notifications_ThemeFileNotFound"]);
                 RefreshThemes();
                 return;
             }
@@ -260,7 +260,7 @@ public partial class SettingsViewModel(
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible d'ouvrir le thème : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToOpenTheme", ex.Message));
         }
     }
 
@@ -277,11 +277,11 @@ public partial class SettingsViewModel(
             themeStorage.DeleteTheme(path);
             themeService.ResetToDefault();
             RefreshThemes();
-            notifications.Success($"Le thème {deletedName} a été supprimé.");
+            notifications.Success(translation.Format("Settings_Notifications_ThemeDeleted", deletedName));
         }
         catch (Exception ex)
         {
-            notifications.Error($"Impossible de supprimer le thème : {ex.Message}");
+            notifications.Error(translation.Format("Settings_Notifications_UnableToDeleteTheme", ex.Message));
         }
     }
 

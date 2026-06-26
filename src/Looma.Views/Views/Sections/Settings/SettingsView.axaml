@@ -6,6 +6,7 @@ See LICENSE in the project root for full license text.
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:settings="using:Looma.Presentation.ViewModels.Shared.Settings"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Settings"
              x:Class="Looma.Views.Views.Sections.Settings.SettingsView"
@@ -16,7 +17,7 @@ See LICENSE in the project root for full license text.
             <DockPanel DockPanel.Dock="Top"
                        Margin="0 0 0 24"
                        HorizontalSpacing="20">
-                <TextBlock Text="Paramètres"
+                <TextBlock Text="{loc:Loc Settings_Title}"
                            Classes="page-title"
                            VerticalAlignment="Center" />
             </DockPanel>
@@ -25,7 +26,7 @@ See LICENSE in the project root for full license text.
                 <StackPanel Spacing="20">
                     <Border Classes="form-container">
                         <StackPanel Spacing="18">
-                            <TextBlock Text="Langue"
+                            <TextBlock Text="{loc:Loc Settings_Language}"
                                        Classes="section-title"
                                        VerticalAlignment="Center" />
 
@@ -45,14 +46,14 @@ See LICENSE in the project root for full license text.
                     <Border Classes="form-container">
                         <StackPanel Spacing="18">
                             <DockPanel HorizontalSpacing="12">
-                                <TextBlock Text="Thème"
+                                <TextBlock Text="{loc:Loc Settings_Theme}"
                                            Classes="section-title"
                                            VerticalAlignment="Center" />
 
                                 <Button DockPanel.Dock="Right"
                                         Classes="pagination-btn"
                                         Command="{Binding RefreshThemesCommand}"
-                                        ToolTip.Tip="Rafraîchir les thèmes">
+                                        ToolTip.Tip="{loc:Loc Settings_RefreshThemes}">
                                     <LucideIcon Kind="RefreshCw" Size="18" />
                                 </Button>
                             </DockPanel>
@@ -79,7 +80,7 @@ See LICENSE in the project root for full license text.
                                                     Size="16"
                                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                                     VerticalAlignment="Center" />
-                                        <TextBlock Text="Ouvrir" VerticalAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Common_Open}" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
 
@@ -91,7 +92,7 @@ See LICENSE in the project root for full license text.
                                                     Size="16"
                                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                                     VerticalAlignment="Center" />
-                                        <TextBlock Text="Supprimer" VerticalAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Common_Delete}" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
 
@@ -103,7 +104,7 @@ See LICENSE in the project root for full license text.
                                                     Size="16"
                                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                                     VerticalAlignment="Center" />
-                                        <TextBlock Text="Importer" VerticalAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Common_Import}" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
 
@@ -115,7 +116,7 @@ See LICENSE in the project root for full license text.
                                                     Size="16"
                                                     Foreground="{DynamicResource SubmitButtonIconForegroundBrush}"
                                                     VerticalAlignment="Center" />
-                                        <TextBlock Text="Exporter" VerticalAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Common_Export}" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -137,7 +138,7 @@ See LICENSE in the project root for full license text.
                         Height="28"
                         MinWidth="28"
                         Command="{Binding Updater.ShowCurrentReleaseNotesCommand}"
-                        ToolTip.Tip="Notes de version">
+                        ToolTip.Tip="{loc:Loc Update_ReleaseNotes}">
                     <LucideIcon Kind="FileText" Size="15" />
                 </Button>
                 <Button Classes="pagination-btn no-disable-style"
