@@ -25,6 +25,25 @@ See LICENSE in the project root for full license text.
                 <StackPanel Spacing="20">
                     <Border Classes="form-container">
                         <StackPanel Spacing="18">
+                            <TextBlock Text="Langue"
+                                       Classes="section-title"
+                                       VerticalAlignment="Center" />
+
+                            <ComboBox Classes="form-select"
+                                      ItemsSource="{Binding Languages}"
+                                      SelectedItem="{Binding SelectedLanguage}"
+                                      HorizontalAlignment="Stretch">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:LanguageOptionViewModel">
+                                        <TextBlock Text="{Binding Name}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="form-container">
+                        <StackPanel Spacing="18">
                             <DockPanel HorizontalSpacing="12">
                                 <TextBlock Text="Thème"
                                            Classes="section-title"

@@ -91,6 +91,7 @@ public static class DependencyInjection
 
         // SETTINGS
         services.AddTransient<SettingsViewModel>();
+        services.AddSingleton<TranslationService>();
 
         services.AddTransient<DocumentsPickerFormViewModel>();
 
@@ -110,7 +111,8 @@ public static class DependencyInjection
                     new ProjectsListViewModel(nav,
                         sp.GetRequiredService<IProjectService>(),
                         sp.GetRequiredService<INotificationService>(),
-                        sp.GetRequiredService<IDataRefreshService>())),
+                        sp.GetRequiredService<IDataRefreshService>(),
+                        sp.GetRequiredService<TranslationService>())),
                 
                 MakeSection<WoolListViewModel>(nav =>
                     new WoolListViewModel(nav, sp.GetRequiredService<IWoolService>(),
@@ -144,6 +146,7 @@ public static class DependencyInjection
                         sp.GetRequiredService<IThemeStorage>(),
                         sp.GetRequiredService<IThemeFilePicker>(),
                         sp.GetRequiredService<INotificationService>(),
+                        sp.GetRequiredService<TranslationService>(),
                         new SettingsUpdaterViewModel(
                             sp.GetRequiredService<INotificationService>(),
                             sp.GetRequiredService<IUpdaterService>(),

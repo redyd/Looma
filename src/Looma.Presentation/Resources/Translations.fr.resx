@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <data name="Projects_SearchPlaceholder">
+        <value>Rechercher par nom, statut, dates, patron, laine ou note...</value>
+    </data>
+    <data name="Projects_AllStatusesFilter">
+        <value>Tous les statuts</value>
+    </data>
+    <data name="en">
+        <value>English</value>
+    </data>
+    <data name="fr">
+        <value>Français</value>
+    </data>
+  <data name="Enum_Wishlist" xml:space="preserve">
+    <value>Liste des souhaits</value>
+    <comment></comment>
+  </data>
+  <data name="Enum_InProgress" xml:space="preserve">
+    <value>En cours</value>
+    <comment></comment>
+  </data>
+  <data name="Enum_Finished" xml:space="preserve">
+    <value>Fini</value>
+    <comment></comment>
+  </data>
+  <data name="Enum_Paused" xml:space="preserve">
+    <value>En pause</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_Title" xml:space="preserve">
+    <value>Projets</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_Notifications_UnableToLoadTheProjects" xml:space="preserve">
+    <value>Impossible de charger les projets.</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_AddProject" xml:space="preserve">
+    <value>Ajouter un projet</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_NoProjectsAtThisTime" xml:space="preserve">
+    <value>Aucun projet pour l&apos;instant</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_CreateFirstProject" xml:space="preserve">
+    <value>Crée ton premier projet pour commencer à organiser tes patrons et ta laine.</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_NoProjectsFound" xml:space="preserve">
+    <value>Aucun projet trouvé</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_TryEditSearchCriteria" xml:space="preserve">
+    <value>Essaie de modifier ta recherche ou le filtre de statut.</value>
+    <comment></comment>
+  </data>
+</root>

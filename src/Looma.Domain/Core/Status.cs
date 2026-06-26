@@ -8,12 +8,8 @@ namespace Looma.Domain.Core;
 
 public enum Status
 {
-    [Display(Name = "Wishlist")]
     Wishlist = 0,
-    [Display(Name = "En cours")]
     InProgress = 1,
-    [Display(Name = "Terminé")]
     Finished = 2,
-    [Display(Name = "En pause")]
     Paused = 3
 }

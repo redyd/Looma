@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <data name="Projects_SearchPlaceholder">
+        <value>Search by name, status, dates, designer, yarn, or rating...</value>
+    </data>
+    <data name="Projects_AllStatusesFilter">
+        <value>All Statuses</value>
+    </data>
+    <data name="en">
+        <value>English</value>
+    </data>
+    <data name="fr">
+        <value>Français</value>
+    </data>
+  <data name="Enum_Wishlist" xml:space="preserve">
+    <value>Wishlist</value>
+    <comment></comment>
+  </data>
+  <data name="Enum_InProgress" xml:space="preserve">
+    <value>In progress</value>
+    <comment></comment>
+  </data>
+  <data name="Enum_Finished" xml:space="preserve">
+    <value>Finished</value>
+    <comment></comment>
+  </data>
+  <data name="Enum_Paused" xml:space="preserve">
+    <value>Paused</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_Title" xml:space="preserve">
+    <value>Projects</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_Notifications_UnableToLoadTheProjects" xml:space="preserve">
+    <value>Unable to load the projects.</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_AddProject" xml:space="preserve">
+    <value>Add a project</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_NoProjectsAtThisTime" xml:space="preserve">
+    <value>No projects at this time</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_CreateFirstProject" xml:space="preserve">
+    <value>Create your first project to start organizing your patterns and yarn.</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_NoProjectsFound" xml:space="preserve">
+    <value>No projects found</value>
+    <comment></comment>
+  </data>
+  <data name="Projects_TryEditSearchCriteria" xml:space="preserve">
+    <value>No projects found. Try modifying your search or the status filter.</value>
+    <comment></comment>
+  </data>
+</root>

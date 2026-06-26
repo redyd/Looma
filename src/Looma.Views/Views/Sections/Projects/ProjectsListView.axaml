@@ -18,7 +18,7 @@
             <TextBox Grid.Column="0"
                      Classes="form-input"
                      Text="{Binding SearchQuery}"
-                     PlaceholderText="Rechercher par nom, statut, dates, patron, laine ou note..."
+                     PlaceholderText="{Binding Translation[Projects_SearchPlaceholder]}"
                      VerticalContentAlignment="Center" />
 
             <ComboBox Grid.Column="2"
@@ -37,7 +37,7 @@
         <DockPanel DockPanel.Dock="Top"
                    Margin="0 0 0 20"
                    HorizontalSpacing="20">
-            <TextBlock Text="Projets"
+            <TextBlock Text="{Binding Translation[Projects_Title]}"
                        Classes="page-title"
                        VerticalAlignment="Center" />
             <Button DockPanel.Dock="Right"
@@ -48,7 +48,7 @@
                                 Size="16"
                                 Foreground="{DynamicResource SubmitButtonIconForegroundBrush}"
                                 VerticalAlignment="Center" />
-                    <TextBlock Text="Ajouter un projet" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Translation[Projects_AddProject]}" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
         </DockPanel>
@@ -67,10 +67,10 @@
                     Classes="empty-state">
                 <StackPanel Spacing="8"
                             HorizontalAlignment="Center">
-                    <TextBlock Text="Aucun projet pour l'instant"
+                    <TextBlock Text="{Binding Translation[Projects_NoProjectsAtThisTime]}"
                                Classes="empty-state-title" />
 
-                    <TextBlock Text="Crée ton premier projet pour commencer à organiser tes patrons et ta laine."
+                    <TextBlock Text="{Binding Translation[Projects_CreateFirstProject]}"
                                Classes="empty-state-message" />
                 </StackPanel>
             </Border>
@@ -79,10 +79,10 @@
                     Classes="empty-state">
                 <StackPanel Spacing="8"
                             HorizontalAlignment="Center">
-                    <TextBlock Text="Aucun projet trouvé"
+                    <TextBlock Text="{Binding Translation[Projects_NoProjectsFound]}"
                                Classes="empty-state-title" />
 
-                    <TextBlock Text="Essaie de modifier ta recherche ou le filtre de statut."
+                    <TextBlock Text="{Binding Translation[Projects_TryEditSearchCriteria]}"
                                Classes="empty-state-message" />
                 </StackPanel>
             </Border>

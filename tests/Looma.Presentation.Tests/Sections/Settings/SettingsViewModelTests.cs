@@ -2,6 +2,7 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
+using System.Globalization;
 using Looma.Domain.Core;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
@@ -125,6 +126,48 @@ public sealed class SettingsViewModelTests
     }
 
     [Fact]
+    public void SelectedLanguage_WhenChanged_UpdatesCurrentCultureAndNotifies()
+    {
+        var originalCulture = CultureInfo.CurrentCulture;
+        var originalUiCulture = CultureInfo.CurrentUICulture;
+        var originalDefaultCulture = CultureInfo.DefaultThreadCurrentCulture;
+        var originalDefaultUiCulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+        try
+        {
+            var notifications = new FakeNotificationService();
+            var translation = new TranslationService();
+            translation.SetCulture("fr");
+
+            var vm = CreateViewModel(
+                notifications,
+                new FakeUpdaterService(),
+                new FakeUpdateInteractionService(),
+                translation: translation);
+
+            vm.OnNavigatedTo();
+            notifications.Calls.Clear();
+
+            vm.SelectedLanguage = vm.Languages.Single(language => language.Culture == "en");
+
+            CultureInfo.CurrentCulture.TwoLetterISOLanguageName.Should().Be("en");
+            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Should().Be("en");
+            CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName.Should().Be("en");
+            CultureInfo.DefaultThreadCurrentUICulture?.TwoLetterISOLanguageName.Should().Be("en");
+            notifications.Calls.Should().ContainSingle(call =>
+                call.Severity == NotificationSeverity.Success
+                && call.Message == "The language has been changed.");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+            CultureInfo.CurrentUICulture = originalUiCulture;
+            CultureInfo.DefaultThreadCurrentCulture = originalDefaultCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = originalDefaultUiCulture;
+        }
+    }
+
+    [Fact]
     public void OnNavigatedTo_WhenSelectedThemeJsonIsInvalid_ShowsClearNotification()
     {
         var tempFolder = Path.Combine(Path.GetTempPath(), "looma-settings-tests", Guid.NewGuid().ToString("N"));
@@ -161,11 +204,13 @@ public sealed class SettingsViewModelTests
         FakeNotificationService notifications,
         FakeUpdaterService updater,
         FakeUpdateInteractionService interaction,
-        FakeThemeStorage? themeStorage = null) =>
+        FakeThemeStorage? themeStorage = null,
+        TranslationService? translation = null) =>
         new(
             new ThemeService(),
             themeStorage ?? new FakeThemeStorage(),
             new FakeThemeFilePicker(),
             notifications,
+            translation ?? new TranslationService(),
             new SettingsUpdaterViewModel(notifications, updater, interaction));
 }
