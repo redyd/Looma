@@ -55,7 +55,7 @@ Looma est construit avec [Avalonia UI](https://avaloniaui.net/) et vise Windows,
 
 ### Réglages
 
-- Interface disponible en français et en anglais.
+- Interface disponible en français, anglais, néerlandais, allemand et espagnol.
 - Thèmes JSON importables, exportables, ouvrables et supprimables.
 - Thèmes fournis au démarrage dans `src/Looma.App/Seed/Themes`.
 - Vérification des mises à jour, notes de version et installation via Velopack.
@@ -111,6 +111,19 @@ dotnet test
 ```bash
 dotnet build
 ```
+
+### Langues
+
+Les traductions de l'application sont dans `src/Looma.Presentation/Resources` :
+
+- `Translations.resx` : ressources neutres.
+- `Translations.fr.resx` : français.
+- `Translations.en.resx` : anglais.
+- `Translations.nl.resx` : néerlandais.
+- `Translations.de.resx` : allemand.
+- `Translations.es.resx` : espagnol.
+
+La liste des langues affichées dans les réglages est déclarée dans `TranslationService.SupportedLanguage`.
 
 ---
 
