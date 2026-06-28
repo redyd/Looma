@@ -150,7 +150,8 @@ public static class DependencyInjection
                         new SettingsUpdaterViewModel(
                             sp.GetRequiredService<INotificationService>(),
                             sp.GetRequiredService<IUpdaterService>(),
-                            sp.GetRequiredService<IUpdateInteractionService>()))),
+                            sp.GetRequiredService<IUpdateInteractionService>()),
+                        sp.GetRequiredService<IDomainLogger>())),
                 
                 sp.GetRequiredService<INotificationService>(),
                 sp.GetRequiredService<IUpdaterService>(),

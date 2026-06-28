@@ -20,7 +20,7 @@ public partial class SettingsUpdaterViewModel(
     private bool _isListeningUpdater;
     private bool _isCheckingForUpdates;
 
-    public string InstalledVersion => $"Version {updaterService.CurrentVersion}";
+    public string InstalledVersion => $"v.{updaterService.CurrentVersion}";
     public bool IsCheckingForUpdates => _isCheckingForUpdates || updaterService.Status == UpdateStatus.Checking;
     public bool IsUpdateAvailable => updaterService.Status == UpdateStatus.Available;
     private bool CanCheckForUpdates() => true;

@@ -4,6 +4,7 @@
 
 using System.Globalization;
 using Looma.Domain.Core;
+using Looma.Domain.Logging;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 using Looma.Presentation.Tests.TestSupport;
@@ -212,5 +213,6 @@ public sealed class SettingsViewModelTests
             new FakeThemeFilePicker(),
             notifications,
             translation ?? new TranslationService(),
-            new SettingsUpdaterViewModel(notifications, updater, interaction));
+            new SettingsUpdaterViewModel(notifications, updater, interaction),
+            NullDomainLogger.Instance);
 }

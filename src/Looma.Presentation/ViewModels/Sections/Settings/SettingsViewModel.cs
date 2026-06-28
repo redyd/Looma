@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Looma.Domain.Logging;
 using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
@@ -21,7 +22,8 @@ public partial class SettingsViewModel(
     IThemeFilePicker themeFilePicker,
     INotificationService notifications,
     TranslationService translation,
-    SettingsUpdaterViewModel updater)
+    SettingsUpdaterViewModel updater,
+    IDomainLogger logger)
     : PageViewModelBase
 {
     private bool _isLoadingThemes;
@@ -96,12 +98,9 @@ public partial class SettingsViewModel(
             var currentCulture = CultureInfo.CurrentCulture.Name;
             var currentUiCulture = CultureInfo.CurrentUICulture.Name;
 
-            Trace.TraceInformation(
-                "Language changed from {0}/{1} to {2}/{3}.",
-                previousCulture,
-                previousUiCulture,
-                currentCulture,
-                currentUiCulture);
+            logger.Log(
+                DomainLogLevel.Information,
+                $"Language changed from {previousCulture}/{previousUiCulture} to {currentCulture}/{currentUiCulture}.");
 
             if (!CultureMatches(value.Culture, CultureInfo.CurrentCulture)
                 || !CultureMatches(value.Culture, CultureInfo.CurrentUICulture))
@@ -114,7 +113,7 @@ public partial class SettingsViewModel(
         }
         catch (Exception ex)
         {
-            Trace.TraceError("Unable to change language to {0}: {1}", value.Culture, ex);
+            logger.Log(DomainLogLevel.Error, $"Unable to change language to {value.Culture}.", ex);
             notifications.Error(translation.Format("Settings_Notifications_UnableToChangeLanguage", ex.Message));
             RefreshLanguages();
         }
@@ -197,11 +196,11 @@ public partial class SettingsViewModel(
         try
         {
             return themeService.GetThemeName(file)
-                   ?? System.IO.Path.GetFileNameWithoutExtension(file);
+                   ?? Path.GetFileNameWithoutExtension(file);
         }
         catch
         {
-            return System.IO.Path.GetFileNameWithoutExtension(file);
+            return Path.GetFileNameWithoutExtension(file);
         }
     }
 
@@ -273,7 +272,7 @@ public partial class SettingsViewModel(
             if (string.IsNullOrWhiteSpace(path))
                 return;
 
-            var deletedName = SelectedTheme?.Name ?? System.IO.Path.GetFileNameWithoutExtension(path);
+            var deletedName = SelectedTheme?.Name ?? Path.GetFileNameWithoutExtension(path);
             themeStorage.DeleteTheme(path);
             themeService.ResetToDefault();
             RefreshThemes();
