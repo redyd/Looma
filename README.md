@@ -3,198 +3,233 @@
   <h1 align="center">Looma</h1>
 </p>
 
-Looma is a local-first desktop app for knitters and crafters. It helps you manage wool stock, patterns, documents and projects without an account or remote service.
+Looma est une application de bureau local-first pour organiser ses projets de tricot, crochet et crochet tunisien.
 
-Built with [Avalonia UI](https://avaloniaui.net/), Looma targets Windows, macOS and Linux.
+Elle centralise le stock de laine, les patrons, les documents, les images de projets et les statistiques d'utilisation, sans compte utilisateur ni service distant obligatoire. Les données restent sur la machine, dans une base SQLite et un dossier de documents local.
 
----
-
-## Features
-
-**Wool stock**
-
-- Track brand, material, colors, weight, length and current stock.
-- Adjust stock by ball, weight or length.
-- Select needle size from the domain wool ranges instead of entering free-form min/max values.
-- Display the matching wool type image from the selected needle range.
-- Search and paginate the stock list.
-
-**Patterns**
-
-- Create personal or external patterns.
-- Track pattern type: crochet, Tunisian crochet or knitting.
-- Attach and rename documents such as PDFs, text files and images.
-- Open linked URLs and keep notes on each pattern.
-
-**Projects**
-
-- Link projects to patterns and one or more wools.
-- Track status: wishlist, in progress, paused or finished.
-- Attach project images and browse them in the detail view.
-- Search available patterns and wools while editing a project.
-- Finish projects with wool deduction options.
-
-**Documents**
-
-- Store imported files in Looma's local document folder.
-- Search, paginate, rename and delete documents.
-- Jump from a document back to its linked pattern or project.
-
-**Local storage**
-
-- SQLite database.
-- Imported documents are copied into the app data folder.
-- No account, no cloud sync.
+Looma est construit avec [Avalonia UI](https://avaloniaui.net/) et vise Windows, macOS et Linux.
 
 ---
 
-## Tech Stack
+## Fonctionnalités
+
+### Projets
+
+- Suivi des projets par statut : liste des souhaits, en cours, en pause ou fini.
+- Association d'un projet à un patron et à une ou plusieurs laines du stock.
+- Dates de début et de fin, notes, recherche et filtrage.
+- Ajout d'images au projet, renommage au moment de l'import et consultation en détail.
+- Actions rapides pour démarrer, mettre en pause, reprendre ou terminer un projet.
+- Finalisation avec déduction de laine par pelote, poids ou longueur.
+
+### Stock de laine
+
+- Gestion des laines avec marque, nom, matière, couleurs, poids, longueur et quantité disponible.
+- Ajustement du stock par pelote, par poids ou par longueur.
+- Calcul automatique des quantités totales en grammes, mètres et pelotes.
+- Sélection de la taille d'aiguilles via les plages de laine du domaine.
+- Affichage d'une image de type de laine selon la plage d'aiguilles choisie.
+- Recherche, pagination et fiche détaillée pour chaque laine.
+
+### Patrons
+
+- Création de patrons personnels ou externes.
+- Types pris en charge : crochet, crochet tunisien et tricot.
+- Notes, URL source, dates, documents associés et projets liés.
+- Import, renommage et consultation de documents rattachés aux patrons.
+- Navigation directe entre un patron et ses projets.
+
+### Documents
+
+- Import de documents dans le dossier local de Looma.
+- Prise en charge des fichiers génériques pour les patrons et des images pour les projets.
+- Recherche, pagination, renommage et suppression.
+- Retour rapide vers le patron ou le projet lié à un document.
+
+### Statistiques
+
+- Graphique d'utilisation de laine basé sur les mouvements de stock.
+- Filtres par période : tout, année en cours, six derniers mois, mois en cours ou semaine en cours.
+- Filtre par type de patron.
+- Affichage des quantités en pelotes, grammes ou mètres.
+
+### Réglages
+
+- Interface disponible en français, anglais, néerlandais, allemand et espagnol.
+- Thèmes JSON importables, exportables, ouvrables et supprimables.
+- Thèmes fournis au démarrage dans `src/Looma.App/Seed/Themes`.
+- Vérification des mises à jour, notes de version et installation via Velopack.
+
+### Stockage local
+
+- Base de données SQLite.
+- Documents importés copiés dans le dossier de données de l'application.
+- Images de projets stockées comme documents locaux.
+- Aucun compte, aucune synchronisation cloud imposée.
+
+---
+
+## Stack technique
 
 - .NET 10
 - Avalonia UI 12
 - Entity Framework Core
 - SQLite
 - Velopack
-- xUnit, FluentAssertions and NSubstitute
+- xUnit, FluentAssertions et NSubstitute
 
-The solution is split into domain, infrastructure, presentation, views and app projects:
+La solution est découpée en plusieurs projets :
 
-- `src/Looma.Domain`
-- `src/Looma.Infrastructure`
-- `src/Looma.Presentation`
-- `src/Looma.Views`
-- `src/Looma.App`
+- `src/Looma.Domain` : entités, services métier, recherches, statistiques et contrats.
+- `src/Looma.Infrastructure` : SQLite, repositories, migrations EF Core et stockage local.
+- `src/Looma.Presentation` : view models, navigation, traductions, notifications et thèmes.
+- `src/Looma.Views` : vues Avalonia, styles, contrôles et converters.
+- `src/Looma.App` : application de bureau, injection de dépendances, assets, seeds et mises à jour.
 
 ---
 
-## Development
+## Développement
 
-### Prerequisites
+### Prérequis
 
 - .NET 10 SDK
 
-### Run
+### Lancer l'application
 
 ```bash
 dotnet run --project src/Looma.App
 ```
 
-### Test
+### Tester
 
 ```bash
 dotnet test
 ```
 
-### Build
+### Compiler
 
 ```bash
 dotnet build
 ```
 
+### Langues
+
+Les traductions de l'application sont dans `src/Looma.Presentation/Resources` :
+
+- `Translations.resx` : ressources neutres.
+- `Translations.fr.resx` : français.
+- `Translations.en.resx` : anglais.
+- `Translations.nl.resx` : néerlandais.
+- `Translations.de.resx` : allemand.
+- `Translations.es.resx` : espagnol.
+
+La liste des langues affichées dans les réglages est déclarée dans `TranslationService.SupportedLanguage`.
+
 ---
 
-## Development Arguments
+## Arguments de développement
 
-Startup arguments are handled in `src/Looma.App/App.axaml.cs`.
+Les arguments de démarrage sont gérés dans `src/Looma.App/App.axaml.cs`.
 
-Pass app arguments after `--` when using `dotnet run`:
+Passe les arguments après `--` avec `dotnet run` :
 
 ```bash
-dotnet run --project src/Looma.App --local
+dotnet run --project src/Looma.App -- --local
 ```
 
 ### `--local`
 
-Uses a local development data folder at:
+Utilise un dossier de données local au projet :
 
 ```text
 ./Data
 ```
 
-Without `--local`, Looma stores data under the OS application data folder in a `Looma` directory.
+Sans `--local`, Looma stocke ses données dans le dossier applicatif du système, dans un répertoire `Looma`.
 
 ### `--clear`
 
-Deletes the SQLite database and clears the document storage folder before startup.
+Supprime la base SQLite et vide le dossier de documents avant le démarrage.
 
-Use carefully:
+À utiliser avec attention :
 
 ```bash
-dotnet run --project src/Looma.App --local --clear
+dotnet run --project src/Looma.App -- --local --clear
 ```
 
 ### `--seed`
 
-Seeds the database with the default demonstration data:
+Remplit une base vide avec des données de démonstration :
 
-- 10 wool entries
-- 3 patterns
-- 1 project per project status
-- demo documents attached to patterns
+- 10 laines
+- 3 patrons
+- 1 projet par statut
+- documents de démonstration attachés aux patrons
 
-The seeder only runs on an empty database. To regenerate demo data, combine it with `--clear`:
+Le seeder ne s'exécute que sur une base vide. Pour régénérer les données de démo, combine-le avec `--clear` :
 
 ```bash
-dotnet run --project src/Looma.App --local --clear --seed
+dotnet run --project src/Looma.App -- --local --clear --seed
 ```
 
 ### `--seed-N`
 
-Seeds `N` generated items per main collection, where `N >= 0`.
+Génère `N` éléments par collection principale, avec `N >= 0`.
 
-Example with 25 generated records:
+Exemple avec 25 enregistrements générés :
 
 ```bash
-dotnet run --project src/Looma.App --local --clear --seed-25
+dotnet run --project src/Looma.App -- --local --clear --seed-25
 ```
 
-Invalid values throw an argument error. For example, `--seed--1` or `--seed-abc` are rejected.
+Les valeurs invalides déclenchent une erreur d'argument. Par exemple, `--seed--1` et `--seed-abc` sont rejetés.
 
-### Common Development Commands
+### Commandes utiles
 
-Use an isolated local database:
+Utiliser une base locale isolée :
 
 ```bash
-dotnet run --project src/Looma.App --local
+dotnet run --project src/Looma.App -- --local
 ```
 
-Reset the local database:
+Réinitialiser la base locale :
 
 ```bash
-dotnet run --project src/Looma.App --local --clear
+dotnet run --project src/Looma.App -- --local --clear
 ```
 
-Reset and seed default demo data:
+Réinitialiser avec les données de démonstration :
 
 ```bash
-dotnet run --project src/Looma.App --local --clear --seed
+dotnet run --project src/Looma.App -- --local --clear --seed
 ```
 
-Reset and seed a larger dataset:
+Réinitialiser avec un jeu de données plus large :
 
 ```bash
-dotnet run --project src/Looma.App --local --clear --seed-100
+dotnet run --project src/Looma.App -- --local --clear --seed-100
 ```
 
 ---
 
-## Data Files
+## Fichiers de données
 
-Looma stores:
+Looma stocke :
 
-- `looma.db` for the SQLite database.
-- `documents/` for imported documents and project images.
+- `looma.db` pour la base SQLite.
+- `documents/` pour les documents importés et les images de projets.
+- `themes/` pour les thèmes JSON importés ou exportés.
 
-With `--local`, both are created inside `./Data`.
-
----
-
-## Website & Downloads
-
-Find Looma's website here: [looma.redyd.dev](https://looma.redyd.dev).
+Avec `--local`, ces fichiers sont créés dans `./Data`.
 
 ---
 
-## License
+## Site et téléchargements
 
-This project is licensed under the [GNU Affero General Public License v3.0](./LICENSE). It is open to read, but not open for contributions or commercial use.
+Le site de Looma est disponible ici : [looma.redyd.dev](https://looma.redyd.dev).
+
+---
+
+## Licence
+
+Ce projet est distribué sous licence [GNU Affero General Public License v3.0](./LICENSE). Le code est ouvert à la lecture, mais pas aux contributions ni à l'usage commercial.

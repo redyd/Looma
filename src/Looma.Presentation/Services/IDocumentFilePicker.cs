@@ -2,7 +2,6 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
-using Looma.Domain.Core;
 using Looma.Domain.Entities;
 
 namespace Looma.Presentation.Services;
@@ -11,5 +10,6 @@ public interface IDocumentFilePicker
 {
     Task<string?> PickAsync(DocumentPickerMode mode);
     Task<List<string>> PicksAsync(DocumentPickerMode mode);
+    bool IsSupportedPath(DocumentPickerMode mode, string? path);
     bool IsSupportedFile(DocumentPickerMode mode, Document document);
 }

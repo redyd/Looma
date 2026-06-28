@@ -6,8 +6,9 @@
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:loc="clr-namespace:Looma.Views.Markup"
+    xmlns:loc="clr-namespace:Looma.Views.Markup"
     xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Documents"
+    xmlns:shared="using:Looma.Presentation.ViewModels.Shared"
     xmlns:userControls="clr-namespace:Looma.Views.UserControls"
     x:Class="Looma.Views.Views.Sections.Documents.DocumentsListView"
     x:DataType="vm:DocumentsListViewModel"
@@ -95,7 +96,7 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:DocumentSummaryViewModel">
+                        <DataTemplate x:DataType="shared:DocumentSummaryViewModel">
                             <Border
                                 Classes="table-row"
                             >

@@ -9,6 +9,7 @@
              xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
              xmlns:shared="clr-namespace:Looma.Presentation.ViewModels.Shared;assembly=Looma.Presentation"
+             xmlns:documents="clr-namespace:Looma.Presentation.ViewModels.Shared.Documents;assembly=Looma.Presentation"
              xmlns:projects="clr-namespace:Looma.Presentation.ViewModels.Shared.Projects;assembly=Looma.Presentation"
              xmlns:userControls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsFormView"
@@ -105,12 +106,12 @@
 
                             <TextBlock Text="{loc:Loc ProjectsForm_NoSelectedImage}"
                                        Classes="form-hint"
-                                       IsVisible="{Binding !HasImages}" />
+                                       IsVisible="{Binding !Images.HasDocuments}" />
 
-                            <ItemsControl ItemsSource="{Binding ExistingImages}"
-                                          IsVisible="{Binding HasExistingImages}">
+                            <ItemsControl ItemsSource="{Binding Images.ExistingDocuments}"
+                                          IsVisible="{Binding Images.HasExistingDocuments}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="projects:ProjectImageViewModel">
+                                    <DataTemplate x:DataType="documents:DocumentFormSummaryViewModel">
                                         <Border Classes="surface-panel"
                                                 Padding="12"
                                                 Margin="0 0 0 8">
@@ -123,7 +124,7 @@
                                                 <StackPanel Grid.Column="2"
                                                             Spacing="4"
                                                             VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Name}"
+                                                    <TextBlock Text="{Binding Nickname}"
                                                                FontWeight="SemiBold"
                                                                TextTrimming="CharacterEllipsis" />
                                                     <TextBlock Text="{Binding DetailText}"
@@ -141,14 +142,14 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
-                            <ItemsControl ItemsSource="{Binding NewImages}"
-                                          IsVisible="{Binding HasNewImages}">
+                            <ItemsControl ItemsSource="{Binding Images.NewDocuments}"
+                                          IsVisible="{Binding Images.HasNewDocuments}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="projects:ProjectImageDraftViewModel">
+                                    <DataTemplate x:DataType="documents:DocumentDraftViewModel">
                                         <Border Classes="surface-panel"
                                                 Padding="12"
                                                 Margin="0 0 0 8">
-                                            <Grid ColumnDefinitions="120,16,*,Auto">
+                                            <Grid ColumnDefinitions="120,16,*">
                                                 <Image Grid.Column="0"
                                                        Source="{Binding SourcePath, Converter={StaticResource StringToUri}}"
                                                        Width="120"
@@ -157,18 +158,21 @@
                                                 <StackPanel Grid.Column="2"
                                                             Spacing="8"
                                                             VerticalAlignment="Center">
-                                                    <TextBox Classes="form-input"
-                                                             Text="{Binding Nickname}"
-                                                             PlaceholderText="{loc:Loc ProjectsForm_ImageDisplayNamePlaceholder}" />
+                                                    <Grid ColumnDefinitions="*,12,Auto">
+                                                        <TextBox Grid.Column="0"
+                                                                 Classes="form-input"
+                                                                 Text="{Binding Nickname}"
+                                                                 PlaceholderText="{loc:Loc ProjectsForm_ImageDisplayNamePlaceholder}" />
+                                                        <Button Grid.Column="2"
+                                                                Content="{loc:Loc Common_Remove}"
+                                                                Command="{Binding RemoveCommand}"
+                                                                Classes="cancel-btn"
+                                                                VerticalAlignment="Center" />
+                                                    </Grid>
                                                     <TextBlock Text="{Binding SelectedFileName}"
                                                                Classes="form-hint"
                                                                TextTrimming="CharacterEllipsis" />
                                                 </StackPanel>
-                                                <Button Grid.Column="3"
-                                                        Content="{loc:Loc Common_Remove}"
-                                                        Command="{Binding RemoveCommand}"
-                                                        Classes="cancel-btn"
-                                                        VerticalAlignment="Center" />
                                             </Grid>
                                         </Border>
                                     </DataTemplate>

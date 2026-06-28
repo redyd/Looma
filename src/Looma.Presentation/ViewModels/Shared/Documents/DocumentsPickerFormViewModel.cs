@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
+using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
 using Looma.Domain.IServices;
 using Looma.Domain.Request;
@@ -33,8 +34,15 @@ public partial class DocumentsPickerFormViewModel(
     [ObservableProperty]
     public partial ObservableCollection<DocumentDraftViewModel> NewDocuments { get; set; } = [];
 
+    [ObservableProperty]
+    public partial string? ErrorMessage { get; set; }
+
     public bool CanAddDocument =>
         ExistingDocuments.Count + NewDocuments.Count(d => !string.IsNullOrWhiteSpace(d.SourcePath)) < MaxDocuments;
+
+    public bool HasExistingDocuments => ExistingDocuments.Count > 0;
+    public bool HasNewDocuments => NewDocuments.Any(d => !string.IsNullOrWhiteSpace(d.SourcePath));
+    public bool HasDocuments => HasExistingDocuments || HasNewDocuments;
 
     public bool HasPendingChanges =>
         _deletedDocumentIds.Count > 0
@@ -42,11 +50,38 @@ public partial class DocumentsPickerFormViewModel(
         || NewDocuments.Any(d => !string.IsNullOrWhiteSpace(d.SourcePath));
 
     [RelayCommand(CanExecute = nameof(CanAddDocument))]
-    private void AddDocument() => NewDocuments.Add(CreateDocumentDraft());
+    private void AddDocument()
+    {
+        NewDocuments.Add(CreateDocumentDraft());
+        RefreshDocumentState();
+    }
+
+    public async Task<bool> AddPickedDocumentsAsync(string? unsupportedFileMessage = null)
+    {
+        ErrorMessage = null;
+
+        var paths = await filePicker.PicksAsync(PickerMode);
+        if (paths.Count == 0)
+            return true;
+
+        if (paths.Any(path => !filePicker.IsSupportedPath(PickerMode, path)))
+        {
+            ErrorMessage = unsupportedFileMessage ?? TranslationService.Current["Documents_Notifications_UnableToAddDocument"];
+            notifications.Error(ErrorMessage);
+            return false;
+        }
+
+        foreach (var path in paths)
+            AddDocumentDraft(path);
+
+        RefreshDocumentState();
+        return true;
+    }
 
     public void InitCreate(Func<IReadOnlyList<CreateDocumentRequest>, Task<ResultBase>> createDocumentsCallback)
     {
         _deletedDocumentIds.Clear();
+        ErrorMessage = null;
         ResetExistingDocuments();
         ResetNewDocuments();
         CreateDocumentsCallback = createDocumentsCallback;
@@ -59,6 +94,7 @@ public partial class DocumentsPickerFormViewModel(
         Func<Guid, string, Task<ResultBase>> updateDocumentCallback)
     {
         _deletedDocumentIds.Clear();
+        ErrorMessage = null;
         ResetExistingDocuments();
         ResetNewDocuments();
         CreateDocumentsCallback = createDocumentsCallback;
@@ -82,11 +118,39 @@ public partial class DocumentsPickerFormViewModel(
                 d.Nickname,
                 d.Type,
                 d.SizeBytes.ToBytesDisplay(),
+                d.StoragePath,
                 RemoveExistingDocument))
             .ToList();
 
         ExistingDocuments = new ObservableCollection<DocumentFormSummaryViewModel>(documents);
+        RefreshDocumentState();
         return true;
+    }
+
+    public void InitEdit(
+        IEnumerable<Document> documents,
+        Func<IReadOnlyList<CreateDocumentRequest>, Task<ResultBase>> createDocumentsCallback,
+        Func<Guid, string, Task<ResultBase>> updateDocumentCallback)
+    {
+        _deletedDocumentIds.Clear();
+        ErrorMessage = null;
+        ResetNewDocuments();
+        CreateDocumentsCallback = createDocumentsCallback;
+        UpdateDocumentCallback = updateDocumentCallback;
+
+        ExistingDocuments = new ObservableCollection<DocumentFormSummaryViewModel>(
+            documents
+                .Where(document => filePicker.IsSupportedFile(PickerMode, document))
+                .OrderBy(document => document.Nickname)
+                .Select(document => new DocumentFormSummaryViewModel(
+                    document.Id,
+                    document.Nickname,
+                    document.Type,
+                    document.SizeBytes.ToBytesDisplay(),
+                    document.StoragePath,
+                    RemoveExistingDocument)));
+
+        RefreshDocumentState();
     }
 
     /// <summary>
@@ -134,6 +198,13 @@ public partial class DocumentsPickerFormViewModel(
             if (string.IsNullOrWhiteSpace(draft.Nickname))
                 draft.Nickname = Path.GetFileNameWithoutExtension(draft.SourcePath!);
 
+            if (!filePicker.IsSupportedPath(PickerMode, draft.SourcePath))
+            {
+                ErrorMessage = TranslationService.Current["Documents_Notifications_UnableToAddDocument"];
+                notifications.Error(ErrorMessage);
+                return false;
+            }
+
             newDocumentRequests.Add(new CreateDocumentRequest(draft.SourcePath!, draft.Nickname));
         }
 
@@ -163,6 +234,20 @@ public partial class DocumentsPickerFormViewModel(
 
     private DocumentDraftViewModel CreateDocumentDraft() => new(filePicker, PickerMode, RemoveDocument);
 
+    private void AddDocumentDraft(string path)
+    {
+        var draft = NewDocuments.FirstOrDefault(document => string.IsNullOrWhiteSpace(document.SourcePath));
+        if (draft is null)
+        {
+            draft = CreateDocumentDraft();
+            NewDocuments.Add(draft);
+        }
+
+        draft.SourcePath = path;
+        if (string.IsNullOrWhiteSpace(draft.Nickname))
+            draft.Nickname = Path.GetFileNameWithoutExtension(path);
+    }
+
     private void ResetNewDocuments() => NewDocuments = [CreateDocumentDraft()];
 
     private void ResetExistingDocuments() => ExistingDocuments = [];
@@ -172,19 +257,34 @@ public partial class DocumentsPickerFormViewModel(
         if (NewDocuments.Count <= 1)
         {
             draft.Reset();
+            RefreshDocumentState();
             return;
         }
 
         NewDocuments.Remove(draft);
-        OnPropertyChanged(nameof(CanAddDocument));
-        AddDocumentCommand.NotifyCanExecuteChanged();
+        RefreshDocumentState();
     }
 
     private void RemoveExistingDocument(DocumentFormSummaryViewModel document)
     {
         _deletedDocumentIds.Add(document.DocumentId);
         ExistingDocuments.Remove(document);
+        RefreshDocumentState();
+    }
+
+    partial void OnExistingDocumentsChanged(ObservableCollection<DocumentFormSummaryViewModel> value) =>
+        RefreshDocumentState();
+
+    partial void OnNewDocumentsChanged(ObservableCollection<DocumentDraftViewModel> value) =>
+        RefreshDocumentState();
+
+    private void RefreshDocumentState()
+    {
         OnPropertyChanged(nameof(CanAddDocument));
+        OnPropertyChanged(nameof(HasExistingDocuments));
+        OnPropertyChanged(nameof(HasNewDocuments));
+        OnPropertyChanged(nameof(HasDocuments));
+        OnPropertyChanged(nameof(HasPendingChanges));
         AddDocumentCommand.NotifyCanExecuteChanged();
     }
 }

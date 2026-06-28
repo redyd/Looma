@@ -7,7 +7,7 @@ using Looma.Domain.Entities;
 using Looma.Domain.Extensions;
 using Looma.Presentation.Services;
 
-namespace Looma.Presentation.ViewModels.Sections.Documents;
+namespace Looma.Presentation.ViewModels.Shared;
 
 public record DocumentSummaryViewModel(
     Document Document,

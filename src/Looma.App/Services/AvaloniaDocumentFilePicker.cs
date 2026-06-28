@@ -10,7 +10,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Looma.Presentation.Services;
-using Looma.Domain.Core;
 using System;
 using Looma.Domain.Entities;
 
@@ -40,14 +39,34 @@ public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
 
     public bool IsSupportedFile(DocumentPickerMode mode, Document document)
     {
-        if (document.StoragePath is null) return false;
-        if (mode == DocumentPickerMode.All) return true;
-        
-        var fileExt = Path.GetExtension(document.StoragePath);
-        var isImage = ImageExtensions.Any(ext => fileExt.Equals(ext, StringComparison.OrdinalIgnoreCase));
-        
-        return isImage;
+        return IsSupportedPath(mode, document.StoragePath);
     }
+
+    public bool IsSupportedPath(DocumentPickerMode mode, string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return false;
+        if (mode == DocumentPickerMode.All) return true;
+
+        return mode switch
+        {
+            DocumentPickerMode.Images => IsSupportedImagePath(path),
+            _ => throw new ArgumentOutOfRangeException(nameof(mode))
+        };
+    }
+
+    private static bool IsSupportedImagePath(string path) =>
+        ImageExtensions.Any(ext => Path.GetExtension(path).Equals(ext, StringComparison.OrdinalIgnoreCase));
+
+    private static string ToImageMimeType(string extension) =>
+        extension.ToLowerInvariant() switch
+        {
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".webp" => "image/webp",
+            ".bmp" => "image/bmp",
+            ".gif" => "image/gif",
+            _ => "image/*"
+        };
 
     private static IReadOnlyList<FilePickerFileType> AllFileTypes =>
     [
@@ -59,7 +78,7 @@ public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
         new("Images")
         {
             Patterns = ImageExtensions.Select(ext => $"*{ext}").ToArray(),
-            MimeTypes = ImageExtensions.Select(ext => $"image/{ext}").ToArray()
+            MimeTypes = ImageExtensions.Select(ToImageMimeType).ToArray()
         },
         new("Tous les fichiers")
         {

@@ -24,12 +24,12 @@ See LICENSE in the project root for full license text.
 
             <controls:DetailHeader.TitleContent>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding Name}"
+                    <TextBlock Text="{Binding Display.Name}"
                                FontSize="20"
                                FontWeight="SemiBold"
                                Foreground="{DynamicResource DetailTitleForegroundBrush}"
                                HorizontalAlignment="Center" />
-                    <TextBlock Text="{Binding StatusDisplay}"
+                    <TextBlock Text="{Binding Display.StatusDisplay}"
                                FontSize="14"
                                Opacity="0.5"
                                Foreground="{DynamicResource DetailSubtitleForegroundBrush}"
@@ -51,12 +51,12 @@ See LICENSE in the project root for full license text.
                             Padding="16">
                         <Grid ColumnDefinitions="*,120,120,140,100" ColumnSpacing="18">
                             <StackPanel Grid.Column="0" Spacing="3">
-                                <TextBlock Text="{Binding PatternName}"
+                                <TextBlock Text="{Binding Display.PatternName}"
                                            FontSize="18"
                                            FontWeight="SemiBold"
                                            Foreground="{DynamicResource PatternPreviewPrimaryForegroundBrush}"
                                            TextTrimming="CharacterEllipsis" />
-                                <TextBlock Text="{Binding PatternNoteDisplay}"
+                                <TextBlock Text="{Binding Display.PatternNoteDisplay}"
                                            FontSize="12"
                                            Opacity="0.65"
                                            Foreground="{DynamicResource PatternPreviewSecondaryForegroundBrush}"
@@ -64,26 +64,26 @@ See LICENSE in the project root for full license text.
                                            MaxLines="1" />
                             </StackPanel>
                             <TextBlock Grid.Column="1"
-                                       Text="{Binding PatternTypeDisplay}"
+                                       Text="{Binding Display.PatternTypeDisplay}"
                                        FontSize="13"
                                        Opacity="0.8"
                                        Foreground="{DynamicResource PatternPreviewMetadataForegroundBrush}"
                                        VerticalAlignment="Center" />
                             <TextBlock Grid.Column="2"
-                                       Text="{Binding Pattern.Documents.Count, StringFormat='Documents: {0}'}"
+                                       Text="{Binding Display.Pattern.Documents.Count, StringFormat='Documents: {0}'}"
                                        FontSize="13"
                                        Opacity="0.7"
                                        Foreground="{DynamicResource PatternPreviewMetadataForegroundBrush}"
                                        VerticalAlignment="Center" />
                             <TextBlock Grid.Column="3"
-                                       Text="{Binding Pattern.Url}"
+                                       Text="{Binding Display.Pattern.Url}"
                                        FontSize="13"
                                        Opacity="0.65"
                                        Foreground="{DynamicResource PatternPreviewMetadataForegroundBrush}"
                                        VerticalAlignment="Center"
                                        TextTrimming="CharacterEllipsis" />
                             <TextBlock Grid.Column="4"
-                                       Text="{Binding PatternActionText}"
+                                       Text="{Binding Display.PatternActionText}"
                                        FontSize="13"
                                        FontWeight="SemiBold"
                                        Opacity="0.7"
@@ -99,10 +99,10 @@ See LICENSE in the project root for full license text.
                             Classes="form-section"
                             Padding="16"
                             MinHeight="260"
-                            IsVisible="{Binding HasImages}">
+                            IsVisible="{Binding Display.HasImages}">
                         <Grid RowDefinitions="*,12,Auto">
                             <Image Grid.Row="0"
-                                   Source="{Binding SelectedImage.SourcePath, Converter={StaticResource StringToUri}}"
+                                   Source="{Binding Display.SelectedImage.SourcePath, Converter={StaticResource StringToUri}}"
                                    MaxHeight="340"
                                    Stretch="Uniform"
                                    HorizontalAlignment="Center"
@@ -110,13 +110,13 @@ See LICENSE in the project root for full license text.
 
                             <Grid Grid.Row="2"
                                   ColumnDefinitions="Auto,*,Auto"
-                                  IsVisible="{Binding HasMultipleImages}">
+                                  IsVisible="{Binding Display.HasMultipleImages}">
                                 <Button Grid.Column="0"
                                         Content="{loc:Loc Common_Previous}"
                                         Command="{Binding PreviousImageCommand}"
                                         Classes="cancel-btn" />
                                 <TextBlock Grid.Column="1"
-                                           Text="{Binding ImagePositionDisplay}"
+                                           Text="{Binding Display.ImagePositionDisplay}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            FontWeight="SemiBold"
@@ -131,7 +131,7 @@ See LICENSE in the project root for full license text.
 
                     <Border Grid.Column="0"
                             Classes="form-section"
-                            IsVisible="{Binding !HasImages}">
+                            IsVisible="{Binding !Display.HasImages}">
                         <StackPanel Spacing="8">
                             <TextBlock Classes="section-title" Text="{loc:Loc Common_Images}" />
                             <TextBlock Text="{loc:Loc ProjectsDetail_NoProjectImage}"
@@ -152,7 +152,7 @@ See LICENSE in the project root for full license text.
                                            Text="{loc:Loc Common_Information}"
                                            VerticalAlignment="Center" />
                             </StackPanel>
-                            <ItemsControl ItemsSource="{Binding ProjectInfos}">
+                            <ItemsControl ItemsSource="{Binding Display.ProjectInfos}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="pcontrols:InfoItem">
                                         <Grid ColumnDefinitions="92,*">
@@ -186,7 +186,7 @@ See LICENSE in the project root for full license text.
                                        Text="{loc:Loc Common_Note}" />
                             <TextBox Classes="form-input"
                                      Grid.Row="2"
-                                     Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Text="{Binding Display.Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PlaceholderText="{loc:Loc Common_NoNote}"
                                      AcceptsReturn="True"
                                      TextWrapping="Wrap"
@@ -207,7 +207,7 @@ See LICENSE in the project root for full license text.
                     <Border Grid.Column="2" Classes="form-section">
                         <StackPanel Spacing="12">
                             <TextBlock Classes="section-title" Text="{loc:Loc ProjectsDetail_ProjectWools}" />
-                            <Grid ColumnDefinitions="*,12,200" IsVisible="{Binding HasWools}">
+                            <Grid ColumnDefinitions="*,12,200" IsVisible="{Binding Display.HasWools}">
                                 <StackPanel Grid.Column="0" Spacing="6">
                                     <TextBlock Classes="form-label" Text="{loc:Loc Common_Quantity}" />
                                     <TextBox Classes="form-input"
@@ -230,11 +230,11 @@ See LICENSE in the project root for full license text.
                             </Grid>
                             <CheckBox Content="{loc:Loc ProjectsDetail_DeductImmediately}"
                                       IsChecked="{Binding DeductWoolImmediately}"
-                                      IsVisible="{Binding HasWools}" />
+                                      IsVisible="{Binding Display.HasWools}" />
                             <TextBlock Text="{loc:Loc ProjectsDetail_NoSelectedWool}"
                                        Classes="form-hint"
-                                       IsVisible="{Binding !HasWools}" />
-                            <StackPanel Spacing="6" IsVisible="{Binding HasWools}">
+                                       IsVisible="{Binding !Display.HasWools}" />
+                            <StackPanel Spacing="6" IsVisible="{Binding Display.HasWools}">
                                 <TextBlock Classes="form-label" Text="{loc:Loc Common_Display}" />
                                 <ComboBox ItemsSource="{Binding WoolDisplayModes}"
                                           SelectedItem="{Binding WoolDisplayMode}"
@@ -247,8 +247,8 @@ See LICENSE in the project root for full license text.
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
                             </StackPanel>
-                            <ItemsControl ItemsSource="{Binding Wools}"
-                                          IsVisible="{Binding HasWools}">
+                            <ItemsControl ItemsSource="{Binding Display.Wools}"
+                                          IsVisible="{Binding Display.HasWools}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel Spacing="8" />
@@ -308,7 +308,7 @@ See LICENSE in the project root for full license text.
                 </Grid>
 
                 <Grid ColumnDefinitions="*,12,*"
-                      IsVisible="{Binding HasProjectActions}">
+                      IsVisible="{Binding Display.HasProjectActions}">
                     <Button Grid.Column="0"
                             Grid.ColumnSpan="3"
                             Content="{loc:Loc ProjectsDetail_StartProject}"
@@ -316,21 +316,21 @@ See LICENSE in the project root for full license text.
                             Classes="form-submit"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
-                            IsVisible="{Binding IsWishlist}" />
+                            IsVisible="{Binding Display.IsWishlist}" />
                     <Button Grid.Column="0"
                             Content="{loc:Loc ProjectsDetail_PauseProject}"
                             Command="{Binding PauseProjectCommand}"
                             Classes="cancel-btn"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
-                            IsVisible="{Binding IsInProgress}" />
+                            IsVisible="{Binding Display.IsInProgress}" />
                     <Button Grid.Column="2"
                             Content="{loc:Loc ProjectsDetail_FinishProject}"
                             Command="{Binding FinishProjectCommand}"
                             Classes="form-submit"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
-                            IsVisible="{Binding IsInProgress}" />
+                            IsVisible="{Binding Display.IsInProgress}" />
                     <Button Grid.Column="0"
                             Grid.ColumnSpan="3"
                             Content="{loc:Loc ProjectsDetail_Resume}"
@@ -338,7 +338,7 @@ See LICENSE in the project root for full license text.
                             Classes="form-submit"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
-                            IsVisible="{Binding IsPaused}" />
+                            IsVisible="{Binding Display.IsPaused}" />
                 </Grid>
 
             </StackPanel>

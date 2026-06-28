@@ -10,6 +10,7 @@ using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Sections.Patterns;
 using Looma.Presentation.ViewModels.Sections.Projects;
+using Looma.Presentation.ViewModels.Shared.Documents;
 using Looma.Presentation.Tests.TestSupport;
 
 namespace Looma.Presentation.Tests.Sections.Projects;
@@ -116,8 +117,8 @@ public sealed class ProjectsViewModelTests
 
         await vm.BrowseImagesCommand.ExecuteAsync();
 
-        vm.NewImages.Should().BeEmpty();
-        vm.ErrorMessage.Should().Be("Seuls les image sont acceptés.");
+        vm.Images.NewDocuments.Where(image => !string.IsNullOrWhiteSpace(image.SourcePath)).Should().BeEmpty();
+        vm.ErrorMessage.Should().Be("Seules les images sont acceptées.");
         notifications.Calls.Should().Contain(c => c.Severity == NotificationSeverity.Error);
     }
 
@@ -132,7 +133,7 @@ public sealed class ProjectsViewModelTests
 
         vm.InitEdit(project);
         await TestHelpers.WaitUntilAsync(() => !vm.IsBusy);
-        vm.ExistingImages.Single().RemoveCommand!.Execute(null);
+        vm.Images.ExistingDocuments.Single().RemoveCommand.Execute(null);
         vm.Name = "Updated";
 
         await vm.SaveCommand.ExecuteAsync();
@@ -154,7 +155,7 @@ public sealed class ProjectsViewModelTests
         vm.WoolAdjustmentMode = StockAdjustmentMode.ByBall;
         vm.DeductWoolImmediately = true;
 
-        await vm.Wools.Single().AddCommand.ExecuteAsync();
+        await vm.Display.Wools.Single().AddCommand.ExecuteAsync();
         vm.OpenPatternCommand.Execute(null);
 
         stockService.AdjustRequests.Should().ContainSingle().Which.Should().BeEquivalentTo(new
@@ -198,7 +199,7 @@ public sealed class ProjectsViewModelTests
         };
         var vm = CreateDetailViewModel(projectService: projectService);
         vm.Load(TestData.Project(id: 5, name: "Pull", note: "Ancienne note"));
-        vm.Note = "Nouvelle note";
+        vm.Display.Note = "Nouvelle note";
 
         await vm.SaveNoteCommand.ExecuteAsync();
 
@@ -208,7 +209,7 @@ public sealed class ProjectsViewModelTests
             Name = "Pull",
             Note = "Nouvelle note"
         });
-        vm.Note.Should().Be("Nouvelle note");
+        vm.Display.Note.Should().Be("Nouvelle note");
     }
 
     [Fact]
@@ -219,7 +220,7 @@ public sealed class ProjectsViewModelTests
         var vm = CreateDetailViewModel(notifications: notifications, stockService: stockService);
         vm.Load(TestData.Project(wools: [TestData.WoolUsage()]));
 
-        await vm.Wools.Single().AddCommand.ExecuteAsync();
+        await vm.Display.Wools.Single().AddCommand.ExecuteAsync();
 
         stockService.AdjustRequests.Should().BeEmpty();
         notifications.Calls.Should().Contain(c => c.Severity == NotificationSeverity.Error && c.Message == "Indiquez une quantité supérieure à zéro.");
@@ -260,12 +261,12 @@ public sealed class ProjectsViewModelTests
             TestData.Document(storagePath: "/tmp/2.jpg")
         ]));
 
-        vm.SelectedImageIndex.Should().Be(0);
+        vm.Display.SelectedImageIndex.Should().Be(0);
         vm.PreviousImageCommand.Execute(null);
-        vm.SelectedImageIndex.Should().Be(1);
+        vm.Display.SelectedImageIndex.Should().Be(1);
         vm.NextImageCommand.Execute(null);
-        vm.SelectedImageIndex.Should().Be(0);
-        vm.ImagePositionDisplay.Should().Be("1 / 2");
+        vm.Display.SelectedImageIndex.Should().Be(0);
+        vm.Display.ImagePositionDisplay.Should().Be("1 / 2");
     }
 
     [Fact]
@@ -334,16 +335,24 @@ public sealed class ProjectsViewModelTests
         FakeDocumentService? documentService = null,
         FakeDocumentFilePicker? picker = null,
         FakeNotificationService? notifications = null)
-        => new(
+    {
+        var resolvedDocumentService = documentService ?? new FakeDocumentService();
+        var resolvedNotifications = notifications ?? new FakeNotificationService();
+
+        return new ProjectsFormViewModel(
             nav ?? new FakeNavigationService(),
             projectService ?? new FakeProjectService(),
             patternService ?? new FakePatternService(),
             woolService ?? new FakeWoolService(),
-            documentService ?? new FakeDocumentService(),
-            picker ?? new FakeDocumentFilePicker(),
-            notifications ?? new FakeNotificationService(),
+            resolvedDocumentService,
+            resolvedNotifications,
             new PatternSearchSpec(),
-            new WoolSearchSpec());
+            new WoolSearchSpec(),
+            new DocumentsPickerFormViewModel(
+                resolvedDocumentService,
+                picker ?? new FakeDocumentFilePicker(),
+                resolvedNotifications));
+    }
 
     private static ProjectsDetailViewModel CreateDetailViewModel(
         FakeNavigationService? nav = null,

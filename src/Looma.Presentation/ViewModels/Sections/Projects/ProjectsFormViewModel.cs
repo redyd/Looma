@@ -15,6 +15,7 @@ using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
+using Looma.Presentation.ViewModels.Shared.Documents;
 using Looma.Presentation.ViewModels.Shared.Projects;
 
 namespace Looma.Presentation.ViewModels.Sections.Projects;
@@ -25,10 +26,10 @@ public partial class ProjectsFormViewModel(
     IPatternService patternService,
     IWoolService woolService,
     IDocumentService documentService,
-    IDocumentFilePicker filePicker,
     INotificationService notifications,
     PatternSearchSpec patternSearchSpec,
-    WoolSearchSpec woolSearchSpec)
+    WoolSearchSpec woolSearchSpec,
+    DocumentsPickerFormViewModel images)
     : PageViewModelBase
 {
     private bool _isEdit;
@@ -36,17 +37,8 @@ public partial class ProjectsFormViewModel(
     private IReadOnlyList<Pattern> _allPatterns = [];
     private IReadOnlyList<Wool> _allWools = [];
     private readonly HashSet<int> _selectedWoolIds = [];
-    private readonly HashSet<Guid> _deletedImageIds = [];
 
-    private static readonly HashSet<string> SupportedImageExtensions = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ".png",
-        ".jpg",
-        ".jpeg",
-        ".webp",
-        ".bmp",
-        ".gif"
-    };
+    public DocumentsPickerFormViewModel Images => images;
 
     public IReadOnlyList<Status> Statuses { get; } = Enum.GetValues<Status>().ToList();
 
@@ -60,9 +52,6 @@ public partial class ProjectsFormViewModel(
     public bool HasSelectedPattern => SelectedPattern is not null;
     public bool HasSelectedWools => SelectedWools.Count > 0;
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
-    public bool HasExistingImages => ExistingImages.Count > 0;
-    public bool HasNewImages => NewImages.Count > 0;
-    public bool HasImages => HasExistingImages || HasNewImages;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
@@ -100,16 +89,11 @@ public partial class ProjectsFormViewModel(
     [ObservableProperty]
     public partial ObservableCollection<ProjectSelectableWoolViewModel> SelectedWools { get; set; } = [];
 
-    [ObservableProperty]
-    public partial ObservableCollection<ProjectImageViewModel> ExistingImages { get; set; } = [];
-
-    [ObservableProperty]
-    public partial ObservableCollection<ProjectImageDraftViewModel> NewImages { get; set; } = [];
-
     public void InitCreate()
     {
         _isEdit = false;
         _editingId = 0;
+        ConfigureImagePicker();
         Title = Translation["ProjectsForm_CreateTitle"];
         Name = string.Empty;
         Status = Status.InProgress;
@@ -122,9 +106,7 @@ public partial class ProjectsFormViewModel(
         WoolSearchQuery = string.Empty;
         ErrorMessage = null;
         _selectedWoolIds.Clear();
-        _deletedImageIds.Clear();
-        ExistingImages = [];
-        NewImages = [];
+        InitImagesCreate();
         _ = LoadChoicesAsync();
     }
 
@@ -132,6 +114,7 @@ public partial class ProjectsFormViewModel(
     {
         _isEdit = true;
         _editingId = project.ProjectId;
+        ConfigureImagePicker();
         Title = Translation["ProjectsForm_EditTitle"];
         Name = project.Name;
         Status = project.Status;
@@ -144,16 +127,9 @@ public partial class ProjectsFormViewModel(
         WoolSearchQuery = string.Empty;
         ErrorMessage = null;
         _selectedWoolIds.Clear();
-        _deletedImageIds.Clear();
         foreach (var woolId in project.Wools.Select(w => w.Wool.Id))
             _selectedWoolIds.Add(woolId);
-        ExistingImages = new ObservableCollection<ProjectImageViewModel>(
-            project.Files
-                .Where(IsSupportedImage)
-                .Select(image => new ProjectImageViewModel(
-                    image,
-                    new RelayCommand(() => RemoveExistingImage(image.Id)))));
-        NewImages = [];
+        InitImagesEdit(project);
         _ = LoadChoicesAsync();
     }
 
@@ -204,12 +180,6 @@ public partial class ProjectsFormViewModel(
 
     partial void OnSelectedWoolsChanged(ObservableCollection<ProjectSelectableWoolViewModel> value) =>
         OnPropertyChanged(nameof(HasSelectedWools));
-
-    partial void OnExistingImagesChanged(ObservableCollection<ProjectImageViewModel> value) =>
-        NotifyImagesChanged();
-
-    partial void OnNewImagesChanged(ObservableCollection<ProjectImageDraftViewModel> value) =>
-        NotifyImagesChanged();
 
     partial void OnPatternSearchQueryChanged(string value) => ApplyPatternSearch();
     partial void OnWoolSearchQueryChanged(string value) => ApplyWoolSearch();
@@ -342,95 +312,42 @@ public partial class ProjectsFormViewModel(
     [RelayCommand]
     private async Task BrowseImagesAsync()
     {
-        var paths = await filePicker.PicksAsync(DocumentPickerMode.Images);
-        if (paths.Count == 0)
-            return;
-
-        var invalid = paths.Where(path => !IsSupportedImagePath(path)).ToList();
-        if (invalid.Count > 0)
-        {
-            ErrorMessage = Translation["ProjectsForm_Errors_OnlyImagesAccepted"];
-            notifications.Error(ErrorMessage);
-            return;
-        }
-
-        foreach (var path in paths)
-            NewImages.Add(new ProjectImageDraftViewModel(path, RemoveNewImage));
-
-        NotifyImagesChanged();
-    }
-
-    private void RemoveExistingImage(Guid imageId)
-    {
-        _deletedImageIds.Add(imageId);
-        ExistingImages = new ObservableCollection<ProjectImageViewModel>(
-            ExistingImages.Where(image => image.Document.Id != imageId));
-        NotifyImagesChanged();
-    }
-
-    private void RemoveNewImage(Shared.Projects.ProjectImageDraftViewModel image)
-    {
-        NewImages.Remove(image);
-        NotifyImagesChanged();
+        if (!await images.AddPickedDocumentsAsync(Translation["ProjectsForm_Errors_OnlyImagesAccepted"]))
+            ErrorMessage = images.ErrorMessage;
     }
 
     private async Task<bool> SyncImagesAsync(int projectId)
     {
-        foreach (var imageId in _deletedImageIds.ToList())
-        {
-            var deleteResult = await documentService.DeleteAsync(imageId);
-            if (deleteResult.Failed)
-            {
-                ErrorMessage = deleteResult.Error;
-                notifications.Error(deleteResult.Error ?? Translation["ProjectsForm_Notifications_UnableToDeleteImage"]);
-                return false;
-            }
-        }
+        _editingId = projectId;
+        if (await images.SaveAsync())
+            return true;
 
-        var newImageRequests = new List<CreateDocumentRequest>();
-        foreach (var image in NewImages.ToList())
-        {
-            if (!IsSupportedImagePath(image.SourcePath))
-            {
-                ErrorMessage = Translation["ProjectsForm_Errors_OnlySupportedImagesAccepted"];
-                notifications.Error(ErrorMessage);
-                return false;
-            }
-
-            newImageRequests.Add(new CreateDocumentRequest(
-                image.SourcePath,
-                string.IsNullOrWhiteSpace(image.Nickname)
-                    ? Path.GetFileNameWithoutExtension(image.SourcePath)
-                    : image.Nickname,
-                ProjectId: projectId));
-        }
-
-        if (newImageRequests.Count > 0)
-        {
-            var documentResult = await documentService.AddAllAsync(newImageRequests);
-            if (documentResult.Failed)
-            {
-                ErrorMessage = documentResult.Error;
-                notifications.Error(documentResult.Error ?? Translation["ProjectsForm_Notifications_UnableToAddImages"]);
-                return false;
-            }
-        }
-
-        return true;
+        ErrorMessage = images.ErrorMessage;
+        return false;
     }
 
-    private static bool IsSupportedImage(Document document) =>
-        document.StoragePath is not null && IsSupportedImagePath(document.StoragePath);
-
-    private static bool IsSupportedImagePath(string path) =>
-        SupportedImageExtensions.Contains(Path.GetExtension(path));
-
-    private void NotifyImagesChanged()
+    private void ConfigureImagePicker()
     {
-        OnPropertyChanged(nameof(HasExistingImages));
-        OnPropertyChanged(nameof(HasNewImages));
-        OnPropertyChanged(nameof(HasImages));
+        images.PickerMode = DocumentPickerMode.Images;
     }
+
+    private void InitImagesCreate()
+    {
+        images.InitCreate(AddImagesToProjectAsync);
+    }
+
+    private void InitImagesEdit(Project project)
+    {
+        images.InitEdit(
+            project.Files,
+            AddImagesToProjectAsync,
+            async (id, nickname) => await documentService.UpdateAsync(new UpdateDocumentRequest(id, nickname)));
+    }
+
+    private async Task<ResultBase> AddImagesToProjectAsync(IReadOnlyList<CreateDocumentRequest> requests) =>
+        await documentService.AddAllAsync(requests
+            .Select(request => request with { ProjectId = _editingId })
+            .ToList());
 
     [RelayCommand]
     private void Cancel() => nav.GoBack();

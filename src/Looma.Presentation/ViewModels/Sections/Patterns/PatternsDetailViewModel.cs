@@ -12,13 +12,12 @@ using Looma.Domain.Extensions;
 using Looma.Domain.IServices;
 using Looma.Domain.Refresh;
 using Looma.Domain.Request;
-using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.UserControls;
 using Looma.Presentation.ViewModels.Base;
-using Looma.Presentation.ViewModels.Sections.Documents;
 using Looma.Presentation.ViewModels.Sections.Projects;
+using Looma.Presentation.ViewModels.Shared;
 using Looma.Presentation.ViewModels.Shared.Patterns;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;

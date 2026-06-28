@@ -12,12 +12,14 @@ public partial class DocumentFormSummaryViewModel(
     string nickname,
     string typeDisplay,
     string sizeDisplay,
+    string? sourcePath = null,
     Action<DocumentFormSummaryViewModel>? removeRequested = null)
     : ObservableObject
 {
     public Guid DocumentId { get; } = documentId;
     public string TypeDisplay { get; } = typeDisplay;
     public string SizeDisplay { get; } = sizeDisplay;
+    public string? SourcePath { get; } = sourcePath;
     public string OriginalNickname { get; } = nickname;
 
     [ObservableProperty]
