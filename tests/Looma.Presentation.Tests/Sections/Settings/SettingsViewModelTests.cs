@@ -156,7 +156,7 @@ public sealed class SettingsViewModelTests
             CultureInfo.DefaultThreadCurrentUICulture?.TwoLetterISOLanguageName.Should().Be("en");
             notifications.Calls.Should().ContainSingle(call =>
                 call.Severity == NotificationSeverity.Success
-                && call.Message == "The language has been changed.");
+                && call.Message == "Language changed.");
         }
         finally
         {

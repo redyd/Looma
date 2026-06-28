@@ -9,6 +9,7 @@
              xmlns:loc="clr-namespace:Looma.Views.Markup"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Projects"
              xmlns:shared="clr-namespace:Looma.Presentation.ViewModels.Shared;assembly=Looma.Presentation"
+             xmlns:documents="clr-namespace:Looma.Presentation.ViewModels.Shared.Documents;assembly=Looma.Presentation"
              xmlns:projects="clr-namespace:Looma.Presentation.ViewModels.Shared.Projects;assembly=Looma.Presentation"
              xmlns:userControls="clr-namespace:Looma.Views.UserControls"
              x:Class="Looma.Views.Views.Sections.Projects.ProjectsFormView"
@@ -105,12 +106,12 @@
 
                             <TextBlock Text="{loc:Loc ProjectsForm_NoSelectedImage}"
                                        Classes="form-hint"
-                                       IsVisible="{Binding !HasImages}" />
+                                       IsVisible="{Binding !Images.HasDocuments}" />
 
-                            <ItemsControl ItemsSource="{Binding ExistingImages}"
-                                          IsVisible="{Binding HasExistingImages}">
+                            <ItemsControl ItemsSource="{Binding Images.ExistingDocuments}"
+                                          IsVisible="{Binding Images.HasExistingDocuments}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="projects:ProjectImageViewModel">
+                                    <DataTemplate x:DataType="documents:DocumentFormSummaryViewModel">
                                         <Border Classes="surface-panel"
                                                 Padding="12"
                                                 Margin="0 0 0 8">
@@ -123,7 +124,7 @@
                                                 <StackPanel Grid.Column="2"
                                                             Spacing="4"
                                                             VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Name}"
+                                                    <TextBlock Text="{Binding Nickname}"
                                                                FontWeight="SemiBold"
                                                                TextTrimming="CharacterEllipsis" />
                                                     <TextBlock Text="{Binding DetailText}"
@@ -141,10 +142,10 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
-                            <ItemsControl ItemsSource="{Binding NewImages}"
-                                          IsVisible="{Binding HasNewImages}">
+                            <ItemsControl ItemsSource="{Binding Images.NewDocuments}"
+                                          IsVisible="{Binding Images.HasNewDocuments}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="projects:ProjectImageDraftViewModel">
+                                    <DataTemplate x:DataType="documents:DocumentDraftViewModel">
                                         <Border Classes="surface-panel"
                                                 Padding="12"
                                                 Margin="0 0 0 8">

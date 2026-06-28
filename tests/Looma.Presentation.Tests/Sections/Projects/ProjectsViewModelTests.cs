@@ -10,6 +10,7 @@ using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Sections.Patterns;
 using Looma.Presentation.ViewModels.Sections.Projects;
+using Looma.Presentation.ViewModels.Shared.Documents;
 using Looma.Presentation.Tests.TestSupport;
 
 namespace Looma.Presentation.Tests.Sections.Projects;
@@ -116,8 +117,8 @@ public sealed class ProjectsViewModelTests
 
         await vm.BrowseImagesCommand.ExecuteAsync();
 
-        vm.NewImages.Should().BeEmpty();
-        vm.ErrorMessage.Should().Be("Seuls les image sont acceptés.");
+        vm.Images.NewDocuments.Where(image => !string.IsNullOrWhiteSpace(image.SourcePath)).Should().BeEmpty();
+        vm.ErrorMessage.Should().Be("Seules les images sont acceptées.");
         notifications.Calls.Should().Contain(c => c.Severity == NotificationSeverity.Error);
     }
 
@@ -132,7 +133,7 @@ public sealed class ProjectsViewModelTests
 
         vm.InitEdit(project);
         await TestHelpers.WaitUntilAsync(() => !vm.IsBusy);
-        vm.ExistingImages.Single().RemoveCommand!.Execute(null);
+        vm.Images.ExistingDocuments.Single().RemoveCommand.Execute(null);
         vm.Name = "Updated";
 
         await vm.SaveCommand.ExecuteAsync();
@@ -334,16 +335,24 @@ public sealed class ProjectsViewModelTests
         FakeDocumentService? documentService = null,
         FakeDocumentFilePicker? picker = null,
         FakeNotificationService? notifications = null)
-        => new(
+    {
+        var resolvedDocumentService = documentService ?? new FakeDocumentService();
+        var resolvedNotifications = notifications ?? new FakeNotificationService();
+
+        return new ProjectsFormViewModel(
             nav ?? new FakeNavigationService(),
             projectService ?? new FakeProjectService(),
             patternService ?? new FakePatternService(),
             woolService ?? new FakeWoolService(),
-            documentService ?? new FakeDocumentService(),
-            picker ?? new FakeDocumentFilePicker(),
-            notifications ?? new FakeNotificationService(),
+            resolvedDocumentService,
+            resolvedNotifications,
             new PatternSearchSpec(),
-            new WoolSearchSpec());
+            new WoolSearchSpec(),
+            new DocumentsPickerFormViewModel(
+                resolvedDocumentService,
+                picker ?? new FakeDocumentFilePicker(),
+                resolvedNotifications));
+    }
 
     private static ProjectsDetailViewModel CreateDetailViewModel(
         FakeNavigationService? nav = null,

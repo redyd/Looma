@@ -121,8 +121,8 @@ public partial class ProjectsDetailViewModel(
 
     public void RefreshProjectWools(Project project)
     {
-        var wools = new ObservableCollection<Shared.Projects.ProjectWoolUsageViewModel>(
-            project.Wools.Select(usage => new Shared.Projects.ProjectWoolUsageViewModel(
+        var wools = new ObservableCollection<ProjectWoolUsageViewModel>(
+            project.Wools.Select(usage => new ProjectWoolUsageViewModel(
                 usage,
                 new AsyncRelayCommand(() => AddWoolUsageAsync(usage)))
             {

@@ -10,5 +10,6 @@ public interface IDocumentFilePicker
 {
     Task<string?> PickAsync(DocumentPickerMode mode);
     Task<List<string>> PicksAsync(DocumentPickerMode mode);
+    bool IsSupportedPath(DocumentPickerMode mode, string? path);
     bool IsSupportedFile(DocumentPickerMode mode, Document document);
 }

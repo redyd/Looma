@@ -56,7 +56,7 @@ public sealed class MainViewModelTests
     }
 
     [Fact]
-    public void UpdatePromptRequest_WhenUpdateExists_ShowsReusablePrompt()
+    public async Task UpdatePromptRequest_WhenUpdateExists_ShowsReusablePrompt()
     {
         var updater = new FakeUpdaterService
         {
@@ -71,6 +71,7 @@ public sealed class MainViewModelTests
 
         interaction.RequestUpdatePrompt();
 
+        await TestHelpers.WaitUntilAsync(() => vm.IsUpdatePromptVisible);
         vm.IsUpdatePromptVisible.Should().BeTrue();
         vm.UpdateVersion.Should().Be("2.0.0");
         vm.UpdateReleaseNotes.Should().Be("## Notes");
@@ -112,6 +113,7 @@ public sealed class MainViewModelTests
         var vm = CreateMainViewModel(updater, interaction);
 
         interaction.RequestCurrentReleaseNotes();
+        await TestHelpers.WaitUntilAsync(() => vm.IsReleaseNotesVisible);
         vm.IsReleaseNotesVisible.Should().BeTrue();
 
         await vm.CloseReleaseNotesCommand.ExecuteAsync(null);

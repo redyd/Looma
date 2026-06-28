@@ -188,9 +188,14 @@ internal sealed class FakeDocumentFilePicker : IDocumentFilePicker
         (mode, document) => mode == DocumentPickerMode.All
             || Path.GetExtension(document.StoragePath ?? string.Empty).Equals(".png", StringComparison.OrdinalIgnoreCase)
             || Path.GetExtension(document.StoragePath ?? string.Empty).Equals(".jpg", StringComparison.OrdinalIgnoreCase);
+    public Func<DocumentPickerMode, string?, bool> IsSupportedPathResult { get; set; } =
+        (mode, path) => mode == DocumentPickerMode.All
+            || Path.GetExtension(path ?? string.Empty).Equals(".png", StringComparison.OrdinalIgnoreCase)
+            || Path.GetExtension(path ?? string.Empty).Equals(".jpg", StringComparison.OrdinalIgnoreCase);
 
     public Task<string?> PickAsync(DocumentPickerMode mode) => Task.FromResult(NextPick);
     public Task<List<string>> PicksAsync(DocumentPickerMode mode) => Task.FromResult(NextPicks);
+    public bool IsSupportedPath(DocumentPickerMode mode, string? path) => IsSupportedPathResult(mode, path);
     public bool IsSupportedFile(DocumentPickerMode mode, Document document) => IsSupported(mode, document);
 }
 
