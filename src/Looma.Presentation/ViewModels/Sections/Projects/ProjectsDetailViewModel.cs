@@ -9,15 +9,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
-using Looma.Domain.Extensions;
 using Looma.Domain.IServices;
 using Looma.Domain.Refresh;
 using Looma.Domain.Request;
-using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
-using Looma.Presentation.UserControls;
 using Looma.Presentation.ViewModels.Base;
 using Looma.Presentation.ViewModels.Sections.Patterns;
 using Looma.Presentation.ViewModels.Shared.Projects;
@@ -36,28 +33,10 @@ public partial class ProjectsDetailViewModel(
     private Project? _project;
     private bool _isListeningTranslation;
 
-    [ObservableProperty]
-    public partial int ProjectId { get; set; }
-    [ObservableProperty]
-    public partial string Name { get; set; } = string.Empty;
-    [ObservableProperty]
-    public partial Status Status { get; set; }
-    [ObservableProperty]
-    public partial string? Note { get; set; }
-    [ObservableProperty]
-    public partial DateOnly? BeginDate { get; set; }
-    [ObservableProperty]
-    public partial DateOnly? EndDate { get; set; }
-    [ObservableProperty]
-    public partial Pattern? Pattern { get; set; }
+    public ProjectDetailDisplayViewModel Display { get; } = new();
+
     [ObservableProperty]
     public partial string? ErrorMessage { get; set; }
-    [ObservableProperty]
-    public partial ObservableCollection<Shared.Projects.ProjectWoolUsageViewModel> Wools { get; set; } = [];
-    [ObservableProperty]
-    public partial ObservableCollection<ProjectImageViewModel> Images { get; set; } = [];
-    [ObservableProperty]
-    public partial int SelectedImageIndex { get; set; }
     [ObservableProperty]
     public partial double? WoolAdjustmentQuantity { get; set; }
     [ObservableProperty]
@@ -69,54 +48,12 @@ public partial class ProjectsDetailViewModel(
     [ObservableProperty]
     public partial bool DeductWoolImmediately { get; set; }
 
-    public string StatusDisplay => Translation[$"Enum_{Status}"];
-    public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? Translation["Common_NoNote"] : Note!;
-    public string PatternName => Pattern?.Name ?? Translation["Projects_NoPattern"];
-    public string PatternTypeDisplay => Pattern?.Type.GetDisplayName() ?? "-";
-    public string PatternNoteDisplay => string.IsNullOrWhiteSpace(Pattern?.Note) ? Translation["Common_NoNote"] : Pattern.Note!;
-    public string PatternActionText => Pattern is null ? Translation["Common_Add"] : Translation["Common_Open"];
-    public bool HasWools => Wools.Count > 0;
-    public bool HasImages => Images.Count > 0;
-    public bool HasMultipleImages => Images.Count > 1;
-    public bool IsWishlist => Status == Status.Wishlist;
-    public bool IsInProgress => Status == Status.InProgress;
-    public bool IsPaused => Status == Status.Paused;
-    public bool HasProjectActions => Status != Status.Finished;
     public bool CanAdjustWool => WoolAdjustmentQuantity > 0;
     public IReadOnlyList<StockAdjustmentMode> WoolAdjustmentModes { get; } = Enum.GetValues<StockAdjustmentMode>().ToList();
     public IReadOnlyList<StockAdjustmentMode> WoolDisplayModes { get; } = Enum.GetValues<StockAdjustmentMode>().ToList();
-    public ProjectImageViewModel? SelectedImage =>
-        SelectedImageIndex >= 0 && SelectedImageIndex < Images.Count ? Images[SelectedImageIndex] : null;
-    public string ImagePositionDisplay => HasImages ? $"{SelectedImageIndex + 1} / {Images.Count}" : string.Empty;
-
-    public IList<StatItem> PatternStats =>
-    [
-        new() { Label = Translation["Navigation_Documents"], Value = (Pattern?.Documents.Count ?? 0).ToString("N0"), Unit = "x", IsFirst = true },
-        new() { Label = Translation["PatternsDetail_LinkedProjects"], Value = (Pattern?.Projects.Count ?? 0).ToString("N0"), Unit = "x" }
-    ];
-
-    public IList<InfoItem> ProjectInfos =>
-    [
-        new() { Label = Translation["Common_Name"], Value = Name },
-        new() { Label = Translation["Common_Status"], Value = StatusDisplay },
-        new() { Label = Translation["Common_Begin"], Value = FormatDate(BeginDate) },
-        new() { Label = Translation["Common_End"], Value = FormatDate(EndDate) },
-        new() { Label = Translation["Common_Wools"], Value = Wools.Count.ToString("N0") },
-    ];
-
-    public IList<InfoItem> PatternInfos =>
-    [
-        new() { Label = Translation["Common_Pattern"], Value = PatternName },
-        new() { Label = Translation["Common_Type"], Value = PatternTypeDisplay },
-        new() { Label = Translation["Common_Origin"], Value = Pattern?.IsPersonal == true ? Translation["Common_Personal"] : Translation["Common_NotPersonal"] },
-        new() { Label = Translation["Common_Link"], Value = Pattern?.Url ?? Translation["Common_None"] },
-        new() { Label = Translation["Common_Begin"], Value = FormatDate(Pattern?.BeginDate) },
-        new() { Label = Translation["Common_End"], Value = FormatDate(Pattern?.EndDate) },
-    ];
 
     public void Load(Project project)
     {
-        ProjectId = project.ProjectId;
         ApplyProject(project);
     }
 
@@ -151,20 +88,18 @@ public partial class ProjectsDetailViewModel(
     {
         OnPropertyChanged(nameof(WoolAdjustmentModes));
         OnPropertyChanged(nameof(WoolDisplayModes));
-
-        foreach (var wool in Wools)
-            wool.RefreshTranslations();
+        RefreshProjectTranslations();
     }
 
     private async Task RefreshAsync()
     {
-        if (ProjectId == 0)
+        if (Display.ProjectId == 0)
             return;
 
-        var result = await projectService.GetByIdAsync(ProjectId);
+        var result = await projectService.GetByIdAsync(Display.ProjectId);
         if (result.Failed || result.Value is null)
         {
-            ErrorMessage = result.Error ?? Translation.Format("Projects_Errors_ProjectNotFound", ProjectId);
+            ErrorMessage = result.Error ?? Translation.Format("Projects_Errors_ProjectNotFound", Display.ProjectId);
             notifications.Error(ErrorMessage);
             return;
         }
@@ -176,45 +111,38 @@ public partial class ProjectsDetailViewModel(
     {
         _project = project;
         ErrorMessage = null;
-        ProjectId = project.ProjectId;
-        Name = project.Name;
-        Status = project.Status;
-        Note = project.Note;
-        BeginDate = project.BeginDate;
-        EndDate = project.EndDate;
-        Pattern = project.Pattern;
-        Wools = new ObservableCollection<Shared.Projects.ProjectWoolUsageViewModel>(
+
+        RefreshProjectDisplay(project);
+        RefreshProjectWools(project);
+        RefreshProjectImages(project);
+    }
+
+    public void RefreshProjectDisplay(Project project) => Display.RefreshProject(project);
+
+    public void RefreshProjectWools(Project project)
+    {
+        var wools = new ObservableCollection<Shared.Projects.ProjectWoolUsageViewModel>(
             project.Wools.Select(usage => new Shared.Projects.ProjectWoolUsageViewModel(
                 usage,
                 new AsyncRelayCommand(() => AddWoolUsageAsync(usage)))
             {
                 DisplayMode = WoolDisplayMode
             }));
-        Images = new ObservableCollection<ProjectImageViewModel>(
+
+        Display.RefreshWools(wools);
+    }
+
+    public void RefreshProjectImages(Project project)
+    {
+        var images = new ObservableCollection<ProjectImageViewModel>(
             project.Files
                 .Where(document => documentFilePicker.IsSupportedFile(DocumentPickerMode.Images, document))
                 .Select(image => new ProjectImageViewModel(image)));
-        SelectedImageIndex = Images.Count == 0 ? -1 : Math.Clamp(SelectedImageIndex, 0, Images.Count - 1);
 
-        OnPropertyChanged(nameof(StatusDisplay));
-        OnPropertyChanged(nameof(NoteDisplay));
-        OnPropertyChanged(nameof(PatternName));
-        OnPropertyChanged(nameof(PatternTypeDisplay));
-        OnPropertyChanged(nameof(PatternNoteDisplay));
-        OnPropertyChanged(nameof(PatternActionText));
-        OnPropertyChanged(nameof(IsWishlist));
-        OnPropertyChanged(nameof(IsInProgress));
-        OnPropertyChanged(nameof(IsPaused));
-        OnPropertyChanged(nameof(HasProjectActions));
-        OnPropertyChanged(nameof(HasWools));
-        OnPropertyChanged(nameof(HasImages));
-        OnPropertyChanged(nameof(HasMultipleImages));
-        OnPropertyChanged(nameof(SelectedImage));
-        OnPropertyChanged(nameof(ImagePositionDisplay));
-        OnPropertyChanged(nameof(ProjectInfos));
-        OnPropertyChanged(nameof(PatternInfos));
-        OnPropertyChanged(nameof(PatternStats));
+        Display.RefreshImages(images);
     }
+
+    public void RefreshProjectTranslations() => Display.RefreshTranslations();
 
     partial void OnWoolAdjustmentQuantityChanged(double? value) =>
         OnPropertyChanged(nameof(CanAdjustWool));
@@ -228,7 +156,7 @@ public partial class ProjectsDetailViewModel(
 
     partial void OnWoolDisplayModeChanged(StockAdjustmentMode value)
     {
-        foreach (var wool in Wools)
+        foreach (var wool in Display.Wools)
         {
             wool.DisplayMode = value;
         }
@@ -248,7 +176,7 @@ public partial class ProjectsDetailViewModel(
         }
 
         var result = await stockService.AdjustWoolUsageAsync(new AdjustProjectWoolUsageRequest(
-            ProjectId,
+            Display.ProjectId,
             usage.Wool.Id,
             WoolAdjustmentMode,
             true,
@@ -263,9 +191,6 @@ public partial class ProjectsDetailViewModel(
         WoolAdjustmentQuantityText = string.Empty;
         WoolAdjustmentQuantity = null;
     }
-
-    private string FormatDate(DateOnly? value) =>
-        value is null ? Translation["Common_NoneFeminine"] : value.Value.ToString("dd/MM/yyyy");
 
     private static bool TryParseQuantity(string? value, out double quantity)
     {
@@ -283,14 +208,14 @@ public partial class ProjectsDetailViewModel(
         try
         {
             var result = await projectService.UpdateAsync(new UpdateProjectRequest(
-                ProjectId,
-                Name,
+                Display.ProjectId,
+                Display.Name,
                 status,
-                Note,
-                beginDate ?? BeginDate,
-                endDate ?? EndDate,
-                Pattern?.Id,
-                Wools.Select(w => w.Usage.Wool.Id).ToList()));
+                Display.Note,
+                beginDate ?? Display.BeginDate,
+                endDate ?? Display.EndDate,
+                Display.Pattern?.Id,
+                Display.Wools.Select(w => w.Usage.Wool.Id).ToList()));
 
             if (result.Failed || result.Value is null)
             {
@@ -314,14 +239,14 @@ public partial class ProjectsDetailViewModel(
         try
         {
             var result = await projectService.UpdateAsync(new UpdateProjectRequest(
-                ProjectId,
-                Name,
-                Status,
-                Note,
-                BeginDate,
-                EndDate,
-                Pattern?.Id,
-                Wools.Select(w => w.Usage.Wool.Id).ToList()));
+                Display.ProjectId,
+                Display.Name,
+                Display.Status,
+                Display.Note,
+                Display.BeginDate,
+                Display.EndDate,
+                Display.Pattern?.Id,
+                Display.Wools.Select(w => w.Usage.Wool.Id).ToList()));
 
             if (result.Failed || result.Value is null)
             {
@@ -353,14 +278,14 @@ public partial class ProjectsDetailViewModel(
 
     [RelayCommand]
     private void FinishProject() =>
-        nav.NavigateTo<ProjectsFinishViewModel>(vm => vm.Load(ProjectId));
+        nav.NavigateTo<ProjectsFinishViewModel>(vm => vm.Load(Display.ProjectId));
 
     [RelayCommand]
     private void OpenPattern()
     {
-        if (Pattern is not null)
+        if (Display.Pattern is not null)
         {
-            nav.NavigateTo<PatternsDetailViewModel>(vm => vm.Load(Pattern));
+            nav.NavigateTo<PatternsDetailViewModel>(vm => vm.Load(Display.Pattern));
             return;
         }
 
@@ -376,36 +301,22 @@ public partial class ProjectsDetailViewModel(
         nav.NavigateTo<ProjectsFormViewModel>(vm => vm.InitEdit(_project));
     }
 
-    partial void OnImagesChanged(ObservableCollection<ProjectImageViewModel> value)
-    {
-        OnPropertyChanged(nameof(HasImages));
-        OnPropertyChanged(nameof(HasMultipleImages));
-        OnPropertyChanged(nameof(SelectedImage));
-        OnPropertyChanged(nameof(ImagePositionDisplay));
-    }
-
-    partial void OnSelectedImageIndexChanged(int value)
-    {
-        OnPropertyChanged(nameof(SelectedImage));
-        OnPropertyChanged(nameof(ImagePositionDisplay));
-    }
-
     [RelayCommand]
     private void PreviousImage()
     {
-        if (Images.Count == 0)
+        if (Display.Images.Count == 0)
             return;
 
-        SelectedImageIndex = SelectedImageIndex <= 0 ? Images.Count - 1 : SelectedImageIndex - 1;
+        Display.SelectedImageIndex = Display.SelectedImageIndex <= 0 ? Display.Images.Count - 1 : Display.SelectedImageIndex - 1;
     }
 
     [RelayCommand]
     private void NextImage()
     {
-        if (Images.Count == 0)
+        if (Display.Images.Count == 0)
             return;
 
-        SelectedImageIndex = SelectedImageIndex >= Images.Count - 1 ? 0 : SelectedImageIndex + 1;
+        Display.SelectedImageIndex = Display.SelectedImageIndex >= Display.Images.Count - 1 ? 0 : Display.SelectedImageIndex + 1;
     }
 
     [RelayCommand]
@@ -414,7 +325,7 @@ public partial class ProjectsDetailViewModel(
         IsBusy = true;
         try
         {
-            var result = await projectService.DeleteAsync(ProjectId);
+            var result = await projectService.DeleteAsync(Display.ProjectId);
             if (result.Failed)
             {
                 ErrorMessage = result.Error;

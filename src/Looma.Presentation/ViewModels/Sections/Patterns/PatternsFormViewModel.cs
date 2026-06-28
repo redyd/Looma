@@ -4,16 +4,14 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.ViewModels.Base;
 using Looma.Domain.Core;
 using Looma.Domain.Extensions;
 using Looma.Domain.Request;
-using Looma.Presentation.ViewModels.Shared;
-using DocumentsPickerFormViewModel = Looma.Presentation.ViewModels.Shared.Documents.DocumentsPickerFormViewModel;
 using Looma.Domain.IServices;
+using Looma.Presentation.ViewModels.Shared.Documents;
 
 namespace Looma.Presentation.ViewModels.Sections.Patterns;
 

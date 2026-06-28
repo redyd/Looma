@@ -10,7 +10,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Looma.Presentation.Services;
-using Looma.Domain.Core;
 using System;
 using Looma.Domain.Entities;
 

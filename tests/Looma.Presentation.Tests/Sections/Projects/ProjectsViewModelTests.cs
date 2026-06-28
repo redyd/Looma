@@ -154,7 +154,7 @@ public sealed class ProjectsViewModelTests
         vm.WoolAdjustmentMode = StockAdjustmentMode.ByBall;
         vm.DeductWoolImmediately = true;
 
-        await vm.Wools.Single().AddCommand.ExecuteAsync();
+        await vm.Display.Wools.Single().AddCommand.ExecuteAsync();
         vm.OpenPatternCommand.Execute(null);
 
         stockService.AdjustRequests.Should().ContainSingle().Which.Should().BeEquivalentTo(new
@@ -198,7 +198,7 @@ public sealed class ProjectsViewModelTests
         };
         var vm = CreateDetailViewModel(projectService: projectService);
         vm.Load(TestData.Project(id: 5, name: "Pull", note: "Ancienne note"));
-        vm.Note = "Nouvelle note";
+        vm.Display.Note = "Nouvelle note";
 
         await vm.SaveNoteCommand.ExecuteAsync();
 
@@ -208,7 +208,7 @@ public sealed class ProjectsViewModelTests
             Name = "Pull",
             Note = "Nouvelle note"
         });
-        vm.Note.Should().Be("Nouvelle note");
+        vm.Display.Note.Should().Be("Nouvelle note");
     }
 
     [Fact]
@@ -219,7 +219,7 @@ public sealed class ProjectsViewModelTests
         var vm = CreateDetailViewModel(notifications: notifications, stockService: stockService);
         vm.Load(TestData.Project(wools: [TestData.WoolUsage()]));
 
-        await vm.Wools.Single().AddCommand.ExecuteAsync();
+        await vm.Display.Wools.Single().AddCommand.ExecuteAsync();
 
         stockService.AdjustRequests.Should().BeEmpty();
         notifications.Calls.Should().Contain(c => c.Severity == NotificationSeverity.Error && c.Message == "Indiquez une quantité supérieure à zéro.");
@@ -260,12 +260,12 @@ public sealed class ProjectsViewModelTests
             TestData.Document(storagePath: "/tmp/2.jpg")
         ]));
 
-        vm.SelectedImageIndex.Should().Be(0);
+        vm.Display.SelectedImageIndex.Should().Be(0);
         vm.PreviousImageCommand.Execute(null);
-        vm.SelectedImageIndex.Should().Be(1);
+        vm.Display.SelectedImageIndex.Should().Be(1);
         vm.NextImageCommand.Execute(null);
-        vm.SelectedImageIndex.Should().Be(0);
-        vm.ImagePositionDisplay.Should().Be("1 / 2");
+        vm.Display.SelectedImageIndex.Should().Be(0);
+        vm.Display.ImagePositionDisplay.Should().Be("1 / 2");
     }
 
     [Fact]

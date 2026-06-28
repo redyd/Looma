@@ -7,7 +7,6 @@ using Looma.Domain.Entities;
 using Looma.Domain.IServices;
 using Looma.Domain.Refresh;
 using Looma.Domain.Search;
-using Looma.Domain.Services;
 using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.ViewModels.Base;

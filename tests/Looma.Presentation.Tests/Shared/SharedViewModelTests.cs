@@ -4,13 +4,14 @@
 
 using Looma.Domain.Core;
 using Looma.Domain.Request;
-using Looma.Presentation.ViewModels.Sections.Documents;
+using Looma.Presentation.ViewModels.Shared;
 using Looma.Presentation.ViewModels.Sections.Projects;
 using Looma.Presentation.ViewModels.Shared.Documents;
 using Looma.Presentation.ViewModels.Shared.Patterns;
 using Looma.Presentation.ViewModels.Shared.Projects;
 using Looma.Presentation.Tests.TestSupport;
 using CommunityToolkit.Mvvm.Input;
+using Looma.Presentation.Services;
 
 namespace Looma.Presentation.Tests.Shared;
 
