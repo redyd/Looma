@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -80,6 +81,7 @@ public partial class App : Application
 
         pathManager.EnsureDirectoriesExist();
         SeedInternalThemes();
+        ApplyStoredLanguage();
 
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<LoomaDbContext>();
@@ -146,6 +148,40 @@ public partial class App : Application
         catch
         {
             // The settings screen surfaces the detailed configuration or theme parsing error.
+        }
+    }
+
+    private void ApplyStoredLanguage()
+    {
+        var translation = Services.GetRequiredService<TranslationService>();
+        var settings = Services.GetRequiredService<ISettingsService>();
+        var result = settings.GetSelectedLanguageAsync().GetAwaiter().GetResult();
+        var culture = result.Succeeded
+            ? GetSupportedCulture(result.Value)
+            : null;
+
+        culture ??= GetSupportedCulture(CultureInfo.CurrentUICulture.Name)
+                    ?? GetSupportedCulture(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+
+        if (culture is not null)
+            translation.SetCulture(culture);
+    }
+
+    private static string? GetSupportedCulture(string? culture)
+    {
+        if (string.IsNullOrWhiteSpace(culture))
+            return null;
+
+        try
+        {
+            var cultureInfo = new CultureInfo(culture);
+            return TranslationService.SupportedLanguage.FirstOrDefault(supported =>
+                string.Equals(supported, culture, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(supported, cultureInfo.TwoLetterISOLanguageName, StringComparison.OrdinalIgnoreCase));
+        }
+        catch (CultureNotFoundException)
+        {
+            return null;
         }
     }
 

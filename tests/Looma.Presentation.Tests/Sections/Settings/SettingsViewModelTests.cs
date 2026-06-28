@@ -138,12 +138,14 @@ public sealed class SettingsViewModelTests
         {
             var notifications = new FakeNotificationService();
             var translation = new TranslationService();
+            var settings = new FakeSettingsService();
             translation.SetCulture("fr");
 
             var vm = CreateViewModel(
                 notifications,
                 new FakeUpdaterService(),
                 new FakeUpdateInteractionService(),
+                settingsService: settings,
                 translation: translation);
 
             vm.OnNavigatedTo();
@@ -155,6 +157,7 @@ public sealed class SettingsViewModelTests
             CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Should().Be("en");
             CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName.Should().Be("en");
             CultureInfo.DefaultThreadCurrentUICulture?.TwoLetterISOLanguageName.Should().Be("en");
+            settings.SelectedLanguage.Should().Be("en");
             notifications.Calls.Should().ContainSingle(call =>
                 call.Severity == NotificationSeverity.Success
                 && call.Message == "Language changed.");
@@ -206,11 +209,13 @@ public sealed class SettingsViewModelTests
         FakeUpdaterService updater,
         FakeUpdateInteractionService interaction,
         FakeThemeStorage? themeStorage = null,
+        FakeSettingsService? settingsService = null,
         TranslationService? translation = null) =>
         new(
             new ThemeService(),
             themeStorage ?? new FakeThemeStorage(),
             new FakeThemeFilePicker(),
+            settingsService ?? new FakeSettingsService(),
             notifications,
             translation ?? new TranslationService(),
             new SettingsUpdaterViewModel(notifications, updater, interaction),

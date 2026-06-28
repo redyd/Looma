@@ -18,6 +18,20 @@ public sealed class SettingsRepository(AppPaths paths) : ISettingsRepository
         WriteIndented = true
     };
 
+    public Task<string?> GetSelectedLanguageAsync()
+    {
+        var config = ReadConfig();
+        return Task.FromResult(config.SelectedLanguage);
+    }
+
+    public Task SetSelectedLanguageAsync(string culture)
+    {
+        var config = ReadConfig();
+        config.SelectedLanguage = culture;
+        WriteConfig(config);
+        return Task.CompletedTask;
+    }
+
     public Task<string?> GetVersionAsync()
     {
         var config = ReadConfig();
@@ -119,6 +133,7 @@ public sealed class SettingsRepository(AppPaths paths) : ISettingsRepository
     private sealed class AppConfig
     {
         public string? SelectedTheme { get; set; }
+        public string? SelectedLanguage { get; set; }
         public string? Version { get; set; }
         public Dictionary<string, ReleaseNoteConfig> ReleaseNotes { get; set; } = [];
     }

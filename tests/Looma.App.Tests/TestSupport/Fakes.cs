@@ -49,9 +49,19 @@ internal sealed class FakeUpdateManagerAdapter : IUpdateManagerAdapter
 
 internal sealed class FakeSettingsService : ISettingsService
 {
+    public string? SelectedLanguage { get; private set; }
     public string? Version { get; private set; }
     public Dictionary<string, string> ReleaseNotes { get; } = [];
     public Dictionary<string, bool> ReleaseNotesShown { get; } = [];
+
+    public Task<ResultT<string?>> GetSelectedLanguageAsync() =>
+        Task.FromResult(ResultT<string?>.Ok(SelectedLanguage));
+
+    public Task<Result> SetSelectedLanguageAsync(string culture)
+    {
+        SelectedLanguage = culture;
+        return Task.FromResult(Result.Ok());
+    }
 
     public Task<ResultT<string?>> GetVersionAsync() => Task.FromResult(ResultT<string?>.Ok(Version));
 

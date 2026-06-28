@@ -5,6 +5,8 @@ namespace Looma.Domain.Repositories;
 
 public interface ISettingsRepository
 {
+    Task<string?> GetSelectedLanguageAsync();
+    Task SetSelectedLanguageAsync(string culture);
     Task<string?> GetVersionAsync();
     Task SetVersionAsync(string version);
     Task<string?> GetReleaseNotesAsync(string version);

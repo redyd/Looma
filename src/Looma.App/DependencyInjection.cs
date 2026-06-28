@@ -145,6 +145,7 @@ public static class DependencyInjection
                         sp.GetRequiredService<ThemeService>(),
                         sp.GetRequiredService<IThemeStorage>(),
                         sp.GetRequiredService<IThemeFilePicker>(),
+                        sp.GetRequiredService<ISettingsService>(),
                         sp.GetRequiredService<INotificationService>(),
                         sp.GetRequiredService<TranslationService>(),
                         new SettingsUpdaterViewModel(

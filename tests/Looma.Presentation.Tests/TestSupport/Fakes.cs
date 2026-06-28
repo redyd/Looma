@@ -180,6 +180,38 @@ internal sealed class FakeThemeFilePicker : IThemeFilePicker
     public Task<string?> PickThemeJsonAsync() => Task.FromResult(NextPick);
 }
 
+internal sealed class FakeSettingsService : ISettingsService
+{
+    public string? SelectedLanguage { get; private set; }
+
+    public Task<ResultT<string?>> GetSelectedLanguageAsync() =>
+        Task.FromResult(ResultT<string?>.Ok(SelectedLanguage));
+
+    public Task<Result> SetSelectedLanguageAsync(string culture)
+    {
+        SelectedLanguage = culture;
+        return Task.FromResult(Result.Ok());
+    }
+
+    public Task<ResultT<string?>> GetVersionAsync() =>
+        Task.FromResult(ResultT<string?>.Ok(null));
+
+    public Task<Result> SetVersionAsync(string version) =>
+        Task.FromResult(Result.Ok());
+
+    public Task<ResultT<string?>> GetReleaseNotesAsync(string version) =>
+        Task.FromResult(ResultT<string?>.Ok(null));
+
+    public Task<Result> SetReleaseNotesAsync(string version, string releaseNotes) =>
+        Task.FromResult(Result.Ok());
+
+    public Task<ResultT<bool>> GetReleaseNotesShownAsync(string version) =>
+        Task.FromResult(ResultT<bool>.Ok(false));
+
+    public Task<Result> SetReleaseNotesShownAsync(string version, bool shown) =>
+        Task.FromResult(Result.Ok());
+}
+
 internal sealed class FakeDocumentFilePicker : IDocumentFilePicker
 {
     public string? NextPick { get; set; }

@@ -8,6 +8,8 @@ namespace Looma.Domain.IServices;
 
 public interface ISettingsService
 {
+    Task<ResultT<string?>> GetSelectedLanguageAsync();
+    Task<Result> SetSelectedLanguageAsync(string culture);
     Task<ResultT<string?>> GetVersionAsync();
     Task<Result> SetVersionAsync(string version);
     Task<ResultT<string?>> GetReleaseNotesAsync(string version);

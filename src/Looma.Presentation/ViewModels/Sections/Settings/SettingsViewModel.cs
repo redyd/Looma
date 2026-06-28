@@ -8,6 +8,7 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Logging;
+using Looma.Domain.IServices;
 using Looma.Domain.Services;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
@@ -20,6 +21,7 @@ public partial class SettingsViewModel(
     ThemeService themeService,
     IThemeStorage themeStorage,
     IThemeFilePicker themeFilePicker,
+    ISettingsService settingsService,
     INotificationService notifications,
     TranslationService translation,
     SettingsUpdaterViewModel updater,
@@ -94,6 +96,9 @@ public partial class SettingsViewModel(
         try
         {
             translation.SetCulture(value.Culture);
+            var saveResult = settingsService.SetSelectedLanguageAsync(value.Culture).GetAwaiter().GetResult();
+            if (!saveResult.Succeeded)
+                throw new InvalidOperationException(saveResult.Error);
 
             var currentCulture = CultureInfo.CurrentCulture.Name;
             var currentUiCulture = CultureInfo.CurrentUICulture.Name;

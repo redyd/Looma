@@ -12,6 +12,17 @@ namespace Looma.Domain.Services;
 public sealed class SettingsService(ISettingsRepository repository, IDomainLogger logger)
     : DomainServiceBase(logger), ISettingsService
 {
+    public Task<ResultT<string?>> GetSelectedLanguageAsync() =>
+        ExecuteAsync("Settings.GetSelectedLanguage", async () =>
+            ResultT<string?>.Ok(await repository.GetSelectedLanguageAsync()));
+
+    public Task<Result> SetSelectedLanguageAsync(string culture) =>
+        ExecuteAsync($"Settings.SetSelectedLanguage({culture})", async () =>
+        {
+            await repository.SetSelectedLanguageAsync(culture);
+            return Result.Ok();
+        });
+
     public Task<ResultT<string?>> GetVersionAsync() =>
         ExecuteAsync("Settings.GetVersion", async () =>
             ResultT<string?>.Ok(await repository.GetVersionAsync()));

@@ -87,6 +87,22 @@ public sealed class ThemeStorageTests : IDisposable
     }
 
     [Fact]
+    public void SaveSelectedTheme_PreservesSelectedLanguage()
+    {
+        var paths = new AppPaths(_rootPath);
+        paths.EnsureDirectoriesExist();
+        var themePath = Path.Combine(paths.ThemesFolder, "looma.json");
+        File.WriteAllText(themePath, """{"Name":"Theme"}""");
+        File.WriteAllText(paths.ConfigPath, """{"SelectedLanguage":"es"}""");
+        var storage = new ThemeStorage(paths);
+
+        storage.SaveSelectedTheme(themePath);
+
+        var json = File.ReadAllText(paths.ConfigPath);
+        Assert.Contains("\"SelectedLanguage\": \"es\"", json);
+    }
+
+    [Fact]
     public void GetSelectedThemePath_WhenConfigJsonIsInvalid_ThrowsClearError()
     {
         var paths = new AppPaths(_rootPath);
