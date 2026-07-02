@@ -289,6 +289,22 @@ public partial class SettingsViewModel(
         }
     }
 
+    [RelayCommand]
+    private void SupportAuthor()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo("https://www.buymeacoffee.com/redyd")
+            {
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            notifications.Error(translation.Format("Settings_Notifications_UnableToOpenSupportLink", ex.Message));
+        }
+    }
 }
+
 
 public sealed record LanguageOptionViewModel(string Name, string Culture);
