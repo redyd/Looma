@@ -355,6 +355,15 @@
   <data name="Settings_Theme" xml:space="preserve">
     <value>Theme</value>
   </data>
+  <data name="Settings_SupportCardTitle" xml:space="preserve">
+    <value>Buy Me A Coffee</value>
+  </data>
+  <data name="Settings_SupportCardDescription" xml:space="preserve">
+    <value>Looma is free, consider supporting its creator</value>
+  </data>
+  <data name="Settings_SupportCardTooltip" xml:space="preserve">
+    <value>Support &lt;3</value>
+  </data>
   <data name="Stocks_SearchPlaceholder" xml:space="preserve">
     <value>Search by name, brand, color, material...</value>
   </data>

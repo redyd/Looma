@@ -290,6 +290,15 @@
   <data name="Settings_Theme" xml:space="preserve">
     <value>Theme</value>
   </data>
+  <data name="Settings_SupportCardTitle" xml:space="preserve">
+    <value>Unterstütze den Ersteller</value>
+  </data>
+  <data name="Settings_SupportCardDescription" xml:space="preserve">
+    <value>Looma ist kostenlos, denk daran, seinen Ersteller zu unterstützen</value>
+  </data>
+  <data name="Settings_SupportCardTooltip" xml:space="preserve">
+    <value>Unterstütze den Ersteller</value>
+  </data>
   <data name="Stocks_SearchPlaceholder" xml:space="preserve">
     <value>Nach Name, Marke, Farbe, Material suchen...</value>
   </data>

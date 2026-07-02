@@ -128,6 +128,18 @@ See LICENSE in the project root for full license text.
             </ScrollViewer>
         </DockPanel>
 
+        <Button Classes="card-button"
+                Command="{Binding SupportAuthorCommand}"
+                ToolTip.Tip="{loc:Loc Settings_SupportCardTooltip}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Margin="0">
+            <Image Source="avares://Looma.App/Assets/bmc-button.png"
+                   Width="142"
+                   Height="40"
+                   Stretch="Uniform" />
+        </Button>
+
         <Border HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Classes="surface-chip"
