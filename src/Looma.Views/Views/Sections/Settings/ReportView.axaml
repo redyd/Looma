@@ -1,0 +1,77 @@
+<!--
+Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+This file is part of Looma, licensed under the AGPL-3.0.
+See LICENSE in the project root for full license text.
+-->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:Looma.Views.Markup"
+             xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Settings"
+             x:Class="Looma.Views.Views.Sections.Settings.ReportView"
+             x:DataType="vm:ReportViewModel">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <StackPanel HorizontalAlignment="Center"
+                    Margin="32"
+                    Width="820"
+                    MinWidth="820">
+
+            <Border Classes="form-container" Width="820" MinWidth="820">
+                <StackPanel Spacing="10">
+
+                    <StackPanel Classes="form-header">
+                        <TextBlock Classes="form-title" Text="{Binding Title}" />
+                        <TextBlock Classes="form-subtitle"
+                                   Text="{loc:Loc SettingsReport_Subtitle}" />
+                    </StackPanel>
+
+                    <Border Classes="form-section">
+                        <StackPanel Spacing="0">
+                            <StackPanel Classes="form-field">
+                                <TextBlock Classes="form-label" Text="{loc:Loc SettingsReport_TypeLabel}" />
+                                <Border Classes="segmented-group"
+                                        HorizontalAlignment="Left"
+                                        Margin="0 4 0 0">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <Button Content="{loc:Loc SettingsReport_TypeBug}"
+                                                Command="{Binding SelectBugCommand}"
+                                                Classes="segmented-btn"
+                                                Classes.active="{Binding !IsSuggestion}" />
+                                        <Button Content="{loc:Loc SettingsReport_TypeSuggestion}"
+                                                Command="{Binding SelectSuggestionCommand}"
+                                                Classes="segmented-btn"
+                                                Classes.active="{Binding IsSuggestion}" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Classes="form-field">
+                                <TextBlock Classes="form-label" Text="{loc:Loc SettingsReport_ContentLabel}" />
+                                <TextBox Classes="form-input"
+                                         Text="{Binding Content}"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"
+                                         Padding="10"
+                                         Height="220"
+                                         VerticalContentAlignment="Top"
+                                         PlaceholderText="{loc:Loc SettingsReport_ContentPlaceholder}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Classes="form-actions">
+                        <Button Classes="cancel-btn"
+                                Content="{loc:Loc Common_Cancel}"
+                                Command="{Binding CancelCommand}" />
+                        <Button Classes="form-submit"
+                                Content="{loc:Loc SettingsReport_Submit}"
+                                Command="{Binding SubmitCommand}" />
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

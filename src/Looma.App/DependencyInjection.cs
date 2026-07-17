@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using Looma.Domain.Core;
 using Looma.Domain.Logging;
 using Looma.Domain.Repositories;
 using Looma.App.Services;
@@ -11,6 +12,7 @@ using Looma.Domain.Refresh;
 using Looma.Domain.Search;
 using Looma.Domain.Services;
 using Looma.Infrastructure.Repositories;
+using Looma.Infrastructure.Services;
 using Looma.Infrastructure.Storage;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Navigation;
@@ -91,6 +93,7 @@ public static class DependencyInjection
 
         // SETTINGS
         services.AddTransient<SettingsViewModel>();
+        services.AddTransient<ReportViewModel>();
         services.AddSingleton(_ => TranslationService.Current);
 
         services.AddTransient<DocumentsPickerFormViewModel>();
@@ -140,8 +143,9 @@ public static class DependencyInjection
                         sp.GetRequiredService<INotificationService>(),
                         sp.GetRequiredService<IDataRefreshService>())),
 
-                MakeSection<SettingsViewModel>(_ =>
+                MakeSection<SettingsViewModel>(nav =>
                     new SettingsViewModel(
+                        nav,
                         sp.GetRequiredService<ThemeService>(),
                         sp.GetRequiredService<IThemeStorage>(),
                         sp.GetRequiredService<IThemeFilePicker>(),
@@ -163,6 +167,14 @@ public static class DependencyInjection
 
     public static void AddInfrastructure(this IServiceCollection services)
     {
+#if DEBUG
+        // services.AddSingleton(new ApiSettings("http://localhost:8080"));
+        services.AddSingleton(new ApiSettings("https://looma-api.redyd.dev"));
+#else
+        services.AddSingleton(new ApiSettings("https://looma-api.redyd.dev"));
+#endif
+        services.AddHttpClient<IReportService, ReportService>();
+
         services.AddSingleton<IDocumentFilePicker, AvaloniaDocumentFilePicker>();
         services.AddSingleton<IThemeFilePicker, AvaloniaThemeFilePicker>();
         services.AddSingleton<IThemeStorage, ThemeStorage>();

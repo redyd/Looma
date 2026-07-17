@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using Looma.Domain.Logging;
 using Looma.Domain.IServices;
 using Looma.Domain.Services;
+using Looma.Presentation.Navigation;
 using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
@@ -18,6 +19,7 @@ using Looma.Presentation.ViewModels.Shared.Settings;
 namespace Looma.Presentation.ViewModels.Sections.Settings;
 
 public partial class SettingsViewModel(
+    INavigationService nav,
     ThemeService themeService,
     IThemeStorage themeStorage,
     IThemeFilePicker themeFilePicker,
@@ -288,6 +290,9 @@ public partial class SettingsViewModel(
             notifications.Error(translation.Format("Settings_Notifications_UnableToDeleteTheme", ex.Message));
         }
     }
+
+    [RelayCommand]
+    private void OpenReport() => nav.NavigateTo<ReportViewModel>();
 
     [RelayCommand]
     private void SupportAuthor()

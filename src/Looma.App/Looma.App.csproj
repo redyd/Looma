@@ -9,25 +9,26 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.0.3"/>
-        <PackageReference Include="Avalonia.Desktop" Version="12.0.3"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.3"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.3"/>
+        <PackageReference Include="Avalonia" Version="12.0.3" />
+        <PackageReference Include="Avalonia.Desktop" Version="12.0.3" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.3" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Velopack" Version="0.0.1589-ga2c5a97"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
+        <PackageReference Include="Velopack" Version="0.0.1589-ga2c5a97" />
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets/**"/>
+        <AvaloniaResource Include="Assets/**" />
         <Content Include="Seed\Themes\*.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Looma.Presentation\Looma.Presentation.csproj"/>
-        <ProjectReference Include="..\Looma.Views\Looma.Views.csproj"/>
-        <ProjectReference Include="..\Looma.Infrastructure\Looma.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Looma.Presentation\Looma.Presentation.csproj" />
+        <ProjectReference Include="..\Looma.Views\Looma.Views.csproj" />
+        <ProjectReference Include="..\Looma.Infrastructure\Looma.Infrastructure.csproj" />
     </ItemGroup>
 </Project>

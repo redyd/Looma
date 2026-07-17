@@ -923,4 +923,40 @@
   <data name="Enum_ByLength" xml:space="preserve">
     <value>Por longitud (m)</value>
   </data>
+  <data name="Settings_ReportSectionTitle" xml:space="preserve">
+    <value>Comentarios</value>
+  </data>
+  <data name="Settings_ReportButton" xml:space="preserve">
+    <value>Informar de un error o sugerencia</value>
+  </data>
+  <data name="SettingsReport_Title" xml:space="preserve">
+    <value>Informar de un error o sugerencia</value>
+  </data>
+  <data name="SettingsReport_Subtitle" xml:space="preserve">
+    <value>Describe el problema encontrado o comparte una idea para mejorar Looma.</value>
+  </data>
+  <data name="SettingsReport_TypeLabel" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="SettingsReport_TypeBug" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="SettingsReport_TypeSuggestion" xml:space="preserve">
+    <value>Sugerencia</value>
+  </data>
+  <data name="SettingsReport_ContentLabel" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="SettingsReport_ContentPlaceholder" xml:space="preserve">
+    <value>Describe el error o tu sugerencia...</value>
+  </data>
+  <data name="SettingsReport_Submit" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="SettingsReport_Notifications_Sent" xml:space="preserve">
+    <value>¡Gracias! Tu informe ha sido enviado.</value>
+  </data>
+  <data name="SettingsReport_Notifications_UnableToSend" xml:space="preserve">
+    <value>No se pudo enviar el informe: {0}</value>
+  </data>
 </root>

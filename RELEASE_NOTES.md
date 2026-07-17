@@ -1,3 +1,3 @@
 # Update
 
-- Add BuyMeACoffee in the settings page
+- Add reports and suggestions page

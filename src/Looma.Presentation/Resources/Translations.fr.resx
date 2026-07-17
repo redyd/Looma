@@ -923,4 +923,40 @@
   <data name="Enum_ByLength" xml:space="preserve">
     <value>Par longueur (m)</value>
   </data>
+  <data name="Settings_ReportSectionTitle" xml:space="preserve">
+    <value>Retours</value>
+  </data>
+  <data name="Settings_ReportButton" xml:space="preserve">
+    <value>Signaler un bug ou une suggestion</value>
+  </data>
+  <data name="SettingsReport_Title" xml:space="preserve">
+    <value>Signaler un bug ou une suggestion</value>
+  </data>
+  <data name="SettingsReport_Subtitle" xml:space="preserve">
+    <value>Décrivez le problème rencontré ou partagez une idée pour améliorer Looma.</value>
+  </data>
+  <data name="SettingsReport_TypeLabel" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="SettingsReport_TypeBug" xml:space="preserve">
+    <value>Bug</value>
+  </data>
+  <data name="SettingsReport_TypeSuggestion" xml:space="preserve">
+    <value>Suggestion</value>
+  </data>
+  <data name="SettingsReport_ContentLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="SettingsReport_ContentPlaceholder" xml:space="preserve">
+    <value>Décrivez le bug ou votre suggestion...</value>
+  </data>
+  <data name="SettingsReport_Submit" xml:space="preserve">
+    <value>Envoyer</value>
+  </data>
+  <data name="SettingsReport_Notifications_Sent" xml:space="preserve">
+    <value>Merci ! Votre signalement a été envoyé.</value>
+  </data>
+  <data name="SettingsReport_Notifications_UnableToSend" xml:space="preserve">
+    <value>Impossible d'envoyer le signalement : {0}</value>
+  </data>
 </root>

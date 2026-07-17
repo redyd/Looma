@@ -71,6 +71,49 @@ See LICENSE in the project root for full license text.
         <Setter Property="Foreground" Value="{DynamicResource DangerButtonHoverForegroundBrush}" />
     </Style>
 
+    <!-- SEGMENTED -->
+
+    <Style Selector="Border.segmented-group">
+        <Setter Property="Background" Value="{DynamicResource FormControlBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FormControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="4" />
+    </Style>
+
+    <Style Selector="Button.segmented-btn">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource CancelButtonForegroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="20 0" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="MinWidth" Value="100" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.2" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.segmented-btn:pointerover">
+        <Setter Property="Background" Value="{DynamicResource CancelButtonHoverBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource CancelButtonHoverForegroundBrush}" />
+    </Style>
+
+    <Style Selector="Button.segmented-btn.active">
+        <Setter Property="Background" Value="{DynamicResource SubmitButtonBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SubmitButtonForegroundBrush}" />
+    </Style>
+
+    <Style Selector="Button.segmented-btn.active:pointerover">
+        <Setter Property="Background" Value="{DynamicResource SubmitButtonHoverBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SubmitButtonHoverForegroundBrush}" />
+    </Style>
+
     <!-- PAGINATION -->
 
     <Style Selector="Button.pagination-btn">
