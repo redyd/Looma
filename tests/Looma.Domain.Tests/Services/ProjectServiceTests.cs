@@ -229,7 +229,7 @@ public class ProjectServiceTests
         var result = await sut.UpdateAsync(MakeRequest(status: Status.Finished));
 
         result.Failed.Should().BeTrue();
-        result.Error.Should().Be("Le stock disponible est insuffisant pour Merino.");
+        result.Error.Should().Be("Errors_InsufficientStockFor: Merino");
         await woolService.DidNotReceive().AddStockAsync(Arg.Any<int>(), Arg.Any<double>(), Arg.Any<int?>());
         await repo.DidNotReceive().UpdateAsync(Arg.Any<UpdateProjectRequest>());
     }

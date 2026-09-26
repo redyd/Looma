@@ -211,6 +211,71 @@ public sealed class BackupAndIntegrityTests : IDisposable
         after.Of(IntegrityIssueKind.DocumentFileOrphan).Should().BeEmpty();
     }
 
+    [Fact]
+    public async Task Reset_backs_up_then_erases_all_data()
+    {
+        var documentId = await SeedAsync("Wool");
+        File.WriteAllText(Path.Combine(_paths.ThemesFolder, "mine.json"), "{}");
+        _config.Update(config => { config.SelectedLanguage = "de"; config.Version = "1.2.3"; });
+
+        (await _backup.ScheduleResetAsync()).Succeeded.Should().BeTrue();
+        SqliteConnection.ClearAllPools();
+        var result = _backup.ApplyPendingReset();
+
+        result.Should().NotBeNull();
+        result!.Succeeded.Should().BeTrue(result.Error);
+        File.Exists(_paths.DatabasePath).Should().BeFalse();
+        File.Exists(_paths.GetDocumentStoragePath(documentId)).Should().BeFalse();
+        Directory.EnumerateFiles(_paths.ThemesFolder).Should().BeEmpty();
+        _config.Read().SelectedLanguage.Should().BeNull();
+        _config.Read().Version.Should().Be("1.2.3", "release-note tracking is not user data");
+        _backup.HasPendingReset.Should().BeFalse();
+
+        var backup = _backup.ListAutomaticBackups().Should().ContainSingle(b => b.Reason == BackupService.PreResetReason).Subject;
+        var validation = _backup.Validate(backup.Path);
+        validation.Succeeded.Should().BeTrue(validation.Error);
+        validation.Value!.DocumentCount.Should().Be(1);
+    }
+
+    [Fact]
+    public void Reset_with_damaged_database_moves_files_aside_instead_of_deleting()
+    {
+        SqliteConnection.ClearAllPools();
+        File.WriteAllText(_paths.DatabasePath, "damaged database content, not sqlite at all.....");
+        var document = Path.Combine(_paths.DocumentsFolder, $"{Guid.NewGuid()}.pdf");
+        File.WriteAllText(document, "keep me");
+
+        _backup.ScheduleResetAsync().GetAwaiter().GetResult();
+        var result = _backup.ApplyPendingReset();
+
+        result!.Succeeded.Should().BeTrue(result.Error);
+        var previous = Directory.EnumerateDirectories(_root, "reset-previous-*").Should().ContainSingle().Subject;
+        File.Exists(Path.Combine(previous, "looma.db")).Should().BeTrue();
+        File.Exists(Path.Combine(previous, "documents", Path.GetFileName(document))).Should().BeTrue();
+        File.Exists(_paths.DatabasePath).Should().BeFalse();
+    }
+
+    [Fact]
+    public void ApplyPendingReset_without_request_does_nothing()
+    {
+        _backup.ApplyPendingReset().Should().BeNull();
+        File.Exists(_paths.DatabasePath).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ScheduleReset_cancels_a_pending_import()
+    {
+        await SeedAsync("Wool");
+        var archive = Path.Combine(_root, "export.looma");
+        _backup.Export(archive).Succeeded.Should().BeTrue();
+        _backup.StageRestore(archive).Succeeded.Should().BeTrue();
+
+        await _backup.ScheduleResetAsync();
+
+        _backup.HasPendingRestore.Should().BeFalse();
+        _backup.HasPendingReset.Should().BeTrue();
+    }
+
     private LoomaDbContext CreateContext() =>
         new(new DbContextOptionsBuilder<LoomaDbContext>()
             .UseSqlite($"Data Source={_paths.DatabasePath}")

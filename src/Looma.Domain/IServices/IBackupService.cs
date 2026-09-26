@@ -24,4 +24,10 @@ public interface IBackupService
     Task<ResultT<BackupManifest>> StageRestoreAsync(string archivePath);
 
     IReadOnlyList<BackupInfo> ListAutomaticBackups();
+
+    /// <summary>
+    /// Schedules a full reset of the application data for the next start.
+    /// A backup of the current data is created automatically before anything is erased.
+    /// </summary>
+    Task<Result> ScheduleResetAsync();
 }

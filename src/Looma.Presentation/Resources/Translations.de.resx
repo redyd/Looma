@@ -1358,4 +1358,262 @@
   <data name="Enum_Jumbo" xml:space="preserve">
     <value>Jumbo</value>
   </data>
+  <data name="Settings_Reset_Title" xml:space="preserve">
+    <value>Anwendung zurücksetzen</value>
+  </data>
+  <data name="Settings_Reset_Hint" xml:space="preserve">
+    <value>Löscht alle Garne, Anleitungen, Projekte, Dokumente, importierten Themes und Einstellungen und startet Looma wie beim ersten Start neu. Vorher wird automatisch eine Sicherung erstellt.</value>
+  </data>
+  <data name="Settings_Reset_Button" xml:space="preserve">
+    <value>Anwendung zurücksetzen…</value>
+  </data>
+  <data name="Settings_Reset_FirstConfirmTitle" xml:space="preserve">
+    <value>Alle Ihre Daten löschen?</value>
+  </data>
+  <data name="Settings_Reset_FirstConfirmMessage" xml:space="preserve">
+    <value>Alle Garne, Anleitungen, Projekte, Dokumente, der Statistikverlauf, importierte Themes und Einstellungen werden gelöscht.</value>
+  </data>
+  <data name="Settings_Reset_Continue" xml:space="preserve">
+    <value>Weiter</value>
+  </data>
+  <data name="Settings_Reset_FinalConfirmTitle" xml:space="preserve">
+    <value>Sind Sie wirklich sicher?</value>
+  </data>
+  <data name="Settings_Reset_FinalConfirmMessage" xml:space="preserve">
+    <value>Dies ist die letzte Bestätigung. Looma startet mit leeren Daten neu. Ihre aktuellen Daten bleiben nur in der automatischen Sicherung erhalten (Ordner Automatische Sicherungen).</value>
+  </data>
+  <data name="Settings_Reset_Confirm" xml:space="preserve">
+    <value>Alles löschen und neu starten</value>
+  </data>
+  <data name="Settings_Data_Notifications_UnableToReset" xml:space="preserve">
+    <value>Die Anwendung kann nicht zurückgesetzt werden.</value>
+  </data>
+  <data name="Backup_Errors_UnableToReset" xml:space="preserve">
+    <value>Die Anwendung kann nicht zurückgesetzt werden: {0}</value>
+  </data>
+  <data name="Backup_Notifications_ResetApplied" xml:space="preserve">
+    <value>Die Anwendung wurde zurückgesetzt. Eine Sicherung Ihrer bisherigen Daten finden Sie in den automatischen Sicherungen.</value>
+  </data>
+  <data name="Backup_Reason_PreReset" xml:space="preserve">
+    <value>vor dem Zurücksetzen</value>
+  </data>
+  <data name="Errors_UnableToLoadWools" xml:space="preserve">
+    <value>Die Garne können nicht geladen werden: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadPatterns" xml:space="preserve">
+    <value>Die Anleitungen können nicht geladen werden: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadProjects" xml:space="preserve">
+    <value>Die Projekte können nicht geladen werden: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadDocuments" xml:space="preserve">
+    <value>Die Dokumente können nicht geladen werden: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadWool" xml:space="preserve">
+    <value>Garn {0} kann nicht geladen werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToLoadWoolNoDetail" xml:space="preserve">
+    <value>Garn {0} kann nicht geladen werden.</value>
+  </data>
+  <data name="Errors_UnableToLoadPattern" xml:space="preserve">
+    <value>Anleitung {0} kann nicht geladen werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToLoadProject" xml:space="preserve">
+    <value>Projekt {0} kann nicht geladen werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToLoadDocument" xml:space="preserve">
+    <value>Dokument {0} kann nicht geladen werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToAddWool" xml:space="preserve">
+    <value>Das Garn kann nicht hinzugefügt werden: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddPattern" xml:space="preserve">
+    <value>Die Anleitung kann nicht hinzugefügt werden: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddProject" xml:space="preserve">
+    <value>Das Projekt kann nicht hinzugefügt werden: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddDocument" xml:space="preserve">
+    <value>Das Dokument kann nicht hinzugefügt werden: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddDocuments" xml:space="preserve">
+    <value>Die Dokumente können nicht hinzugefügt werden.</value>
+  </data>
+  <data name="Errors_UnableToUpdateWool" xml:space="preserve">
+    <value>Garn {0} kann nicht aktualisiert werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToUpdatePattern" xml:space="preserve">
+    <value>Anleitung {0} kann nicht aktualisiert werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToUpdateProject" xml:space="preserve">
+    <value>Projekt {0} kann nicht aktualisiert werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToUpdateDocument" xml:space="preserve">
+    <value>Dokument {0} kann nicht aktualisiert werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeleteWool" xml:space="preserve">
+    <value>Garn {0} kann nicht gelöscht werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeletePattern" xml:space="preserve">
+    <value>Anleitung {0} kann nicht gelöscht werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeleteProject" xml:space="preserve">
+    <value>Projekt {0} kann nicht gelöscht werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeleteDocument" xml:space="preserve">
+    <value>Dokument {0} kann nicht gelöscht werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToOpenDocument" xml:space="preserve">
+    <value>Dokument {0} kann nicht geöffnet werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToLinkDocumentToPattern" xml:space="preserve">
+    <value>Das Dokument kann nicht zur Anleitung {0} hinzugefügt werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToUnlinkDocumentFromPattern" xml:space="preserve">
+    <value>Das Dokument kann nicht aus der Anleitung {0} entfernt werden: {1}</value>
+  </data>
+  <data name="Errors_UnableToTrackStock" xml:space="preserve">
+    <value>Die Bestandsbewegung des Garns kann nicht gespeichert werden: {0}</value>
+  </data>
+  <data name="Errors_UnableToUpdateWoolUsageGeneric" xml:space="preserve">
+    <value>Die Garnverwendung kann nicht aktualisiert werden: {0}</value>
+  </data>
+  <data name="Errors_WoolNotFound" xml:space="preserve">
+    <value>Garn {0} wurde nicht gefunden.</value>
+  </data>
+  <data name="Errors_PatternNotFound" xml:space="preserve">
+    <value>Anleitung {0} wurde nicht gefunden.</value>
+  </data>
+  <data name="Errors_ProjectNotFound" xml:space="preserve">
+    <value>Projekt {0} wurde nicht gefunden.</value>
+  </data>
+  <data name="Errors_DocumentNotFound" xml:space="preserve">
+    <value>Dokument {0} wurde nicht gefunden.</value>
+  </data>
+  <data name="Errors_DocumentFileNotFound" xml:space="preserve">
+    <value>Die Datei des Dokuments {0} wurde nicht gefunden.</value>
+  </data>
+  <data name="Errors_SourceFileNotFound" xml:space="preserve">
+    <value>Die Quelldatei „{0}“ wurde nicht gefunden.</value>
+  </data>
+  <data name="Errors_DocumentNotLinkedToPattern" xml:space="preserve">
+    <value>Dokument {0} ist nicht mit dieser Anleitung verknüpft.</value>
+  </data>
+  <data name="Errors_WoolNotLinkedToProject" xml:space="preserve">
+    <value>Das ausgewählte Garn ist nicht mit diesem Projekt verknüpft.</value>
+  </data>
+  <data name="Errors_ProjectNotFoundGeneric" xml:space="preserve">
+    <value>Projekt nicht gefunden.</value>
+  </data>
+  <data name="Errors_InvalidPatternName" xml:space="preserve">
+    <value>Der Name der Anleitung ist ungültig.</value>
+  </data>
+  <data name="Errors_InvalidProjectName" xml:space="preserve">
+    <value>Der Projektname ist ungültig.</value>
+  </data>
+  <data name="Errors_InvalidWoolData" xml:space="preserve">
+    <value>Die Garndaten sind ungültig.</value>
+  </data>
+  <data name="Errors_InvalidDocumentSource" xml:space="preserve">
+    <value>Der Quellpfad des Dokuments ist ungültig.</value>
+  </data>
+  <data name="Errors_InvalidDocumentName" xml:space="preserve">
+    <value>Der Dokumentname ist ungültig.</value>
+  </data>
+  <data name="Errors_DocumentNameRequired" xml:space="preserve">
+    <value>Der Dokumentname darf nicht leer sein.</value>
+  </data>
+  <data name="Errors_DocumentSingleOwner" xml:space="preserve">
+    <value>Ein Dokument kann nur mit einer Anleitung oder einem Projekt verknüpft sein.</value>
+  </data>
+  <data name="Errors_DocumentAlreadyLinkedToProject" xml:space="preserve">
+    <value>Dieses Dokument ist bereits mit einem Projekt verknüpft.</value>
+  </data>
+  <data name="Errors_WoolsNotFound" xml:space="preserve">
+    <value>Ein oder mehrere ausgewählte Garne wurden nicht gefunden.</value>
+  </data>
+  <data name="Errors_WoolNameRequired" xml:space="preserve">
+    <value>Der Name des Garns ist erforderlich.</value>
+  </data>
+  <data name="Errors_WoolBrandRequired" xml:space="preserve">
+    <value>Die Marke des Garns ist erforderlich.</value>
+  </data>
+  <data name="Errors_WoolMaterialRequired" xml:space="preserve">
+    <value>Das Material des Garns ist erforderlich.</value>
+  </data>
+  <data name="Errors_WoolWeightPositive" xml:space="preserve">
+    <value>Das Gewicht muss eine positive Zahl sein.</value>
+  </data>
+  <data name="Errors_WoolLengthPositive" xml:space="preserve">
+    <value>Die Länge muss eine positive Zahl sein.</value>
+  </data>
+  <data name="Errors_WoolNeedleRangeUnknown" xml:space="preserve">
+    <value>Die Nadelstärke muss einem bekannten Garnbereich entsprechen.</value>
+  </data>
+  <data name="Errors_UnableToFinishProject" xml:space="preserve">
+    <value>Das Projekt kann nicht abgeschlossen werden.</value>
+  </data>
+  <data name="Errors_UnableToReadWoolUsage" xml:space="preserve">
+    <value>Die Garnverwendung kann nicht gelesen werden.</value>
+  </data>
+  <data name="Errors_InsufficientStockFor" xml:space="preserve">
+    <value>Nicht genügend Bestand für {0}.</value>
+  </data>
+  <data name="Errors_InsufficientStock" xml:space="preserve">
+    <value>Nicht genügend Bestand verfügbar.</value>
+  </data>
+  <data name="Errors_UnableToUpdateStock" xml:space="preserve">
+    <value>Der Bestand kann nicht aktualisiert werden.</value>
+  </data>
+  <data name="Errors_UnableToTrackStockNoDetail" xml:space="preserve">
+    <value>Die Bestandsbewegung kann nicht gespeichert werden.</value>
+  </data>
+  <data name="Errors_Unknown" xml:space="preserve">
+    <value>Unbekannter Fehler</value>
+  </data>
+  <data name="Errors_QuantityMustBePositive" xml:space="preserve">
+    <value>Die Menge muss größer als null sein.</value>
+  </data>
+  <data name="Errors_ThemePathRequired" xml:space="preserve">
+    <value>Der Theme-Pfad ist erforderlich.</value>
+  </data>
+  <data name="Errors_ThemeFileNotFound" xml:space="preserve">
+    <value>Die Theme-Datei wurde nicht gefunden.</value>
+  </data>
+  <data name="Errors_ThemeMustBeJson" xml:space="preserve">
+    <value>Das Theme muss eine JSON-Datei sein.</value>
+  </data>
+  <data name="Errors_NoAvailableThemeName" xml:space="preserve">
+    <value>Für dieses Theme wurde kein freier Name gefunden.</value>
+  </data>
+  <data name="Settings_Errors_CultureMismatch" xml:space="preserve">
+    <value>Die aktive Sprache ist {0}/{1} statt {2}.</value>
+  </data>
+  <data name="Pickers_SelectImage" xml:space="preserve">
+    <value>Ein Bild auswählen</value>
+  </data>
+  <data name="Pickers_SelectDocument" xml:space="preserve">
+    <value>Ein Dokument auswählen</value>
+  </data>
+  <data name="Pickers_SelectImages" xml:space="preserve">
+    <value>Bilder auswählen</value>
+  </data>
+  <data name="Pickers_SelectDocuments" xml:space="preserve">
+    <value>Dokumente auswählen</value>
+  </data>
+  <data name="Pickers_ThemeFileType" xml:space="preserve">
+    <value>JSON-Themes</value>
+  </data>
+  <data name="Pickers_ImportThemeTitle" xml:space="preserve">
+    <value>Ein Theme importieren</value>
+  </data>
+  <data name="Pickers_AllFiles" xml:space="preserve">
+    <value>Alle Dateien</value>
+  </data>
+  <data name="Pickers_Images" xml:space="preserve">
+    <value>Bilder</value>
+  </data>
+  <data name="Settings_Notifications_UnableToOpenSupportLink" xml:space="preserve">
+    <value>Der Unterstützungslink kann nicht geöffnet werden: {0}</value>
+  </data>
 </root>

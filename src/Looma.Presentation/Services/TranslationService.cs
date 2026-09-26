@@ -5,6 +5,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Resources;
+using Looma.Domain.Extensions;
 using Looma.Domain.Localization;
 
 namespace Looma.Presentation.Services;
@@ -28,6 +29,13 @@ public sealed class TranslationService : INotifyPropertyChanged, ILocalizer
     public string this[string key] =>
         _resourceManager.GetString(key, CultureInfo.CurrentUICulture)
         ?? $"!{key}!";
+
+    /// <summary>Translated name of an enum value (key "Enum_{Value}"), falling back to its display name.</summary>
+    public string EnumName(Enum value)
+    {
+        var translated = this[$"Enum_{value}"];
+        return translated.StartsWith('!') ? value.GetDisplayName() : translated;
+    }
 
     public string Format(string key, params object[] args) =>
         string.Format(CultureInfo.CurrentUICulture, this[key], args);

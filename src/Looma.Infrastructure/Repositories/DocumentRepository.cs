@@ -42,7 +42,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         }
         catch (Exception ex)
         {
-            return ResultT<IReadOnlyList<Document>>.Failure($"Impossible de charger les documents: {ex.Message}");
+            return ResultT<IReadOnlyList<Document>>.Failure(Localizer.Format("Errors_UnableToLoadDocuments", ex.Message));
         }
     }
 
@@ -61,12 +61,12 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             }
 
             return entity is null
-                ? ResultT<Document>.NotFound($"Le document {id} est introuvable.")
+                ? ResultT<Document>.NotFound(Localizer.Format("Errors_DocumentNotFound", id))
                 : ResultT<Document>.Ok(ApplyFileMetadata(entity.ToDomain(), pathManager));
         }
         catch (Exception ex)
         {
-            return ResultT<Document>.Failure($"Impossible de charger le document {id}: {ex.Message}");
+            return ResultT<Document>.Failure(Localizer.Format("Errors_UnableToLoadDocument", id, ex.Message));
         }
     }
 
@@ -74,12 +74,12 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
     {
         if (string.IsNullOrWhiteSpace(request.SourcePath))
         {
-            return ResultT<Document>.Failure("Le chemin source du document est invalide.");
+            return ResultT<Document>.Failure(Localizer.Get("Errors_InvalidDocumentSource"));
         }
 
         if (!File.Exists(request.SourcePath))
         {
-            return ResultT<Document>.NotFound($"Le fichier source \"{request.SourcePath}\" est introuvable.");
+            return ResultT<Document>.NotFound(Localizer.Format("Errors_SourceFileNotFound", request.SourcePath));
         }
 
         var id = Guid.NewGuid();
@@ -88,7 +88,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             : request.Nickname.Trim();
 
         if (string.IsNullOrWhiteSpace(nickname))
-            return ResultT<Document>.Failure("Le nom affiché du document est invalide.");
+            return ResultT<Document>.Failure(Localizer.Get("Errors_InvalidDocumentName"));
 
         var destinationFileName = AppPaths.BuildDocumentFileName(id, request.SourcePath);
         var destinationPath = Path.Combine(pathManager.DocumentsFolder, destinationFileName);
@@ -97,7 +97,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         {
             if (request is { PatternId: not null, ProjectId: not null })
             {
-                return ResultT<Document>.Failure("Un document ne peut être lié qu'à un patron ou à un projet.");
+                return ResultT<Document>.Failure(Localizer.Get("Errors_DocumentSingleOwner"));
             }
 
             if (request.PatternId.HasValue)
@@ -105,7 +105,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 var patternExists = await context.Patterns.AnyAsync(p => p.PatternId == request.PatternId.Value);
                 if (!patternExists)
                 {
-                    return ResultT<Document>.NotFound($"Le patron {request.PatternId.Value} est introuvable.");
+                    return ResultT<Document>.NotFound(Localizer.Format("Errors_PatternNotFound", request.PatternId.Value));
                 }
             }
 
@@ -114,7 +114,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 var projectExists = await context.Projects.AnyAsync(p => p.ProjectId == request.ProjectId.Value);
                 if (!projectExists)
                 {
-                    return ResultT<Document>.NotFound($"Le projet {request.ProjectId.Value} est introuvable.");
+                    return ResultT<Document>.NotFound(Localizer.Format("Errors_ProjectNotFound", request.ProjectId.Value));
                 }
             }
 
@@ -146,7 +146,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 File.Delete(destinationPath);
             }
 
-            return ResultT<Document>.Failure($"Impossible d'ajouter le document: {ex.Message}");
+            return ResultT<Document>.Failure(Localizer.Format("Errors_UnableToAddDocument", ex.Message));
         }
         catch (Exception ex)
         {
@@ -155,7 +155,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 File.Delete(destinationPath);
             }
 
-            return ResultT<Document>.Failure($"Impossible d'ajouter le document: {ex.Message}");
+            return ResultT<Document>.Failure(Localizer.Format("Errors_UnableToAddDocument", ex.Message));
         }
     }
 
@@ -166,13 +166,13 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             var entity = await context.Documents.FirstOrDefaultAsync(d => d.DocumentId == request.Id);
             if (entity is null)
             {
-                return ResultT<Document>.NotFound($"Le document {request.Id} est introuvable.");
+                return ResultT<Document>.NotFound(Localizer.Format("Errors_DocumentNotFound", request.Id));
             }
 
             var nickname = request.Nickname.Trim();
             if (string.IsNullOrWhiteSpace(nickname))
             {
-                return ResultT<Document>.Failure("Le nom du document ne peut pas être vide.");
+                return ResultT<Document>.Failure(Localizer.Get("Errors_DocumentNameRequired"));
             }
 
             entity.Nickname = nickname;
@@ -182,11 +182,11 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         }
         catch (DbUpdateException ex)
         {
-            return ResultT<Document>.Failure($"Impossible de mettre à jour le document {request.Id}: {ex.Message}");
+            return ResultT<Document>.Failure(Localizer.Format("Errors_UnableToUpdateDocument", request.Id, ex.Message));
         }
         catch (Exception ex)
         {
-            return ResultT<Document>.Failure($"Impossible de mettre à jour le document {request.Id}: {ex.Message}");
+            return ResultT<Document>.Failure(Localizer.Format("Errors_UnableToUpdateDocument", request.Id, ex.Message));
         }
     }
 
@@ -197,7 +197,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             var entity = await context.Documents.FindAsync(id);
             if (entity is null)
             {
-                return Result.NotFound($"Le document {id} est introuvable.");
+                return Result.NotFound(Localizer.Format("Errors_DocumentNotFound", id));
             }
 
             context.Documents.Remove(entity);
@@ -207,11 +207,11 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         }
         catch (DbUpdateException ex)
         {
-            return Result.Failure($"Impossible de supprimer le document {id}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToDeleteDocument", id, ex.Message));
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Impossible de supprimer le document {id}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToDeleteDocument", id, ex.Message));
         }
     }
 
@@ -222,7 +222,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             var filePath = pathManager.GetDocumentStoragePath(id);
             if (!File.Exists(filePath))
             {
-                return Task.FromResult(Result.NotFound($"Le fichier du document {id} est introuvable."));
+                return Task.FromResult(Result.NotFound(Localizer.Format("Errors_DocumentFileNotFound", id)));
             }
 
             Process.Start(new ProcessStartInfo(filePath)
@@ -234,7 +234,7 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
         }
         catch (Exception ex)
         {
-            return Task.FromResult(Result.Failure($"Impossible d'ouvrir le document {id}: {ex.Message}"));
+            return Task.FromResult(Result.Failure(Localizer.Format("Errors_UnableToOpenDocument", id, ex.Message)));
         }
     }
 

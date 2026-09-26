@@ -10,6 +10,7 @@ using Looma.Infrastructure.Entity;
 using Looma.Infrastructure.Mapping;
 using Looma.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
+using Looma.Domain.Localization;
 
 namespace Looma.Infrastructure.Repositories;
 
@@ -33,7 +34,7 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
         catch (Exception ex)
         {
-            return ResultT<IReadOnlyList<Pattern>>.Failure($"Impossible de charger les patrons: {ex.Message}");
+            return ResultT<IReadOnlyList<Pattern>>.Failure(Localizer.Format("Errors_UnableToLoadPatterns", ex.Message));
         }
     }
 
@@ -50,12 +51,12 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
                 await context.SaveChangesAsync();
 
             return entity is null
-                ? ResultT<Pattern>.NotFound($"Le patron {id} est introuvable.")
+                ? ResultT<Pattern>.NotFound(Localizer.Format("Errors_PatternNotFound", id))
                 : ResultT<Pattern>.Ok(ApplyFileMetadata(entity.ToDomain()));
         }
         catch (Exception ex)
         {
-            return ResultT<Pattern>.Failure($"Impossible de charger le patron {id}: {ex.Message}");
+            return ResultT<Pattern>.Failure(Localizer.Format("Errors_UnableToLoadPattern", id, ex.Message));
         }
     }
 
@@ -65,7 +66,7 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
         {
             var name = request.Name.Trim();
             if (string.IsNullOrWhiteSpace(name))
-                return ResultT<Pattern>.Failure("Le nom du patron est invalide.");
+                return ResultT<Pattern>.Failure(Localizer.Get("Errors_InvalidPatternName"));
 
             var entity = new PatternEntity
             {
@@ -91,11 +92,11 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
         catch (DbUpdateException ex)
         {
-            return ResultT<Pattern>.Failure($"Impossible d'ajouter le patron: {ex.Message}");
+            return ResultT<Pattern>.Failure(Localizer.Format("Errors_UnableToAddPattern", ex.Message));
         }
         catch (Exception ex)
         {
-            return ResultT<Pattern>.Failure($"Impossible d'ajouter le patron: {ex.Message}");
+            return ResultT<Pattern>.Failure(Localizer.Format("Errors_UnableToAddPattern", ex.Message));
         }
     }
 
@@ -108,11 +109,11 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
                 .Include(p => p.Projects)
                 .FirstOrDefaultAsync(p => p.PatternId == request.Id);
             if (entity is null)
-                return ResultT<Pattern>.NotFound($"Le patron {request.Id} est introuvable.");
+                return ResultT<Pattern>.NotFound(Localizer.Format("Errors_PatternNotFound", request.Id));
 
             var name = request.Name.Trim();
             if (string.IsNullOrWhiteSpace(name))
-                return ResultT<Pattern>.Failure("Le nom du patron est invalide.");
+                return ResultT<Pattern>.Failure(Localizer.Get("Errors_InvalidPatternName"));
 
             entity.Name = name;
             entity.Url = NormalizeOptional(request.Url);
@@ -127,11 +128,11 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
         catch (DbUpdateException ex)
         {
-            return ResultT<Pattern>.Failure($"Impossible de mettre à jour le patron {request.Id}: {ex.Message}");
+            return ResultT<Pattern>.Failure(Localizer.Format("Errors_UnableToUpdatePattern", request.Id, ex.Message));
         }
         catch (Exception ex)
         {
-            return ResultT<Pattern>.Failure($"Impossible de mettre à jour le patron {request.Id}: {ex.Message}");
+            return ResultT<Pattern>.Failure(Localizer.Format("Errors_UnableToUpdatePattern", request.Id, ex.Message));
         }
     }
 
@@ -143,18 +144,18 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
                 .Include(p => p.Documents)
                 .FirstOrDefaultAsync(p => p.PatternId == patternId);
             if (pattern is null)
-                return Result.NotFound($"Le patron {patternId} est introuvable.");
+                return Result.NotFound(Localizer.Format("Errors_PatternNotFound", patternId));
 
             var document = await context.Documents
                 .FirstOrDefaultAsync(d => d.DocumentId == documentId);
             if (document is null)
-                return Result.NotFound($"Le document {documentId} est introuvable.");
+                return Result.NotFound(Localizer.Format("Errors_DocumentNotFound", documentId));
 
             if (pattern.Documents.Any(d => d.DocumentId == documentId))
                 return Result.Ok();
 
             if (document.ProjectId.HasValue)
-                return Result.Failure("Ce document est déjà lié à un projet.");
+                return Result.Failure(Localizer.Get("Errors_DocumentAlreadyLinkedToProject"));
 
             document.PatternId = patternId;
             await context.SaveChangesAsync();
@@ -162,11 +163,11 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
         catch (DbUpdateException ex)
         {
-            return Result.Failure($"Impossible d'ajouter le document au patron {patternId}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToLinkDocumentToPattern", patternId, ex.Message));
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Impossible d'ajouter le document au patron {patternId}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToLinkDocumentToPattern", patternId, ex.Message));
         }
     }
 
@@ -178,11 +179,11 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
                 .Include(p => p.Documents)
                 .FirstOrDefaultAsync(p => p.PatternId == patternId);
             if (pattern is null)
-                return Result.NotFound($"Le patron {patternId} est introuvable.");
+                return Result.NotFound(Localizer.Format("Errors_PatternNotFound", patternId));
 
             var document = pattern.Documents.FirstOrDefault(d => d.DocumentId == documentId);
             if (document is null)
-                return Result.NotFound($"Le document {documentId} n'est pas lié à ce patron.");
+                return Result.NotFound(Localizer.Format("Errors_DocumentNotLinkedToPattern", documentId));
 
             pattern.Documents.Remove(document);
             await context.SaveChangesAsync();
@@ -190,11 +191,11 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
         catch (DbUpdateException ex)
         {
-            return Result.Failure($"Impossible de retirer le document du patron {patternId}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToUnlinkDocumentFromPattern", patternId, ex.Message));
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Impossible de retirer le document du patron {patternId}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToUnlinkDocumentFromPattern", patternId, ex.Message));
         }
     }
 
@@ -206,7 +207,7 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
                 .Include(p => p.Documents)
                 .FirstOrDefaultAsync(p => p.PatternId == id);
             if (entity is null)
-                return Result.NotFound($"Le patron {id} est introuvable.");
+                return Result.NotFound(Localizer.Format("Errors_PatternNotFound", id));
 
             var documentIds = entity.Documents.Select(d => d.DocumentId).ToList();
             context.Documents.RemoveRange(entity.Documents);
@@ -220,11 +221,11 @@ public class PatternRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
         catch (DbUpdateException ex)
         {
-            return Result.Failure($"Impossible de supprimer le patron {id}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToDeletePattern", id, ex.Message));
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Impossible de supprimer le patron {id}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToDeletePattern", id, ex.Message));
         }
     }
 

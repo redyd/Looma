@@ -35,6 +35,15 @@ internal sealed class FakeBackupService : IBackupService
     }
 
     public IReadOnlyList<BackupInfo> ListAutomaticBackups() => Backups;
+
+    public Result ResetResult { get; set; } = Result.Ok();
+    public int ResetCalls { get; private set; }
+
+    public Task<Result> ScheduleResetAsync()
+    {
+        ResetCalls++;
+        return Task.FromResult(ResetResult);
+    }
 }
 
 internal sealed class FakeDataIntegrityService : IDataIntegrityService

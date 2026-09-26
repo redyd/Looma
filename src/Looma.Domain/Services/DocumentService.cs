@@ -9,6 +9,7 @@ using Looma.Domain.Logging;
 using Looma.Domain.Refresh;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
+using Looma.Domain.Localization;
 
 namespace Looma.Domain.Services;
 
@@ -65,7 +66,7 @@ public sealed class DocumentService(
                 if (documentResult.Failed || documentResult.Value is null)
                 {
                     return ResultT<IReadOnlyList<Document>>.Failure(
-                        documentResult.Error ?? "Impossible d'ajouter les documents.");
+                        documentResult.Error ?? Localizer.Get("Errors_UnableToAddDocuments"));
                 }
 
                 added.Add(documentResult.Value);

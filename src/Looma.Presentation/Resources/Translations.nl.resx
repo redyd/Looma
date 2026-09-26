@@ -1358,4 +1358,262 @@
   <data name="Enum_Jumbo" xml:space="preserve">
     <value>Jumbo</value>
   </data>
+  <data name="Settings_Reset_Title" xml:space="preserve">
+    <value>De applicatie resetten</value>
+  </data>
+  <data name="Settings_Reset_Hint" xml:space="preserve">
+    <value>Wist al je garens, patronen, projecten, documenten, geïmporteerde thema's en voorkeuren en start Looma opnieuw zoals bij de eerste keer. Eerst wordt automatisch een back-up gemaakt.</value>
+  </data>
+  <data name="Settings_Reset_Button" xml:space="preserve">
+    <value>De applicatie resetten…</value>
+  </data>
+  <data name="Settings_Reset_FirstConfirmTitle" xml:space="preserve">
+    <value>Al je gegevens wissen?</value>
+  </data>
+  <data name="Settings_Reset_FirstConfirmMessage" xml:space="preserve">
+    <value>Alle garens, patronen, projecten, documenten, statistiekgeschiedenis, geïmporteerde thema's en voorkeuren worden gewist.</value>
+  </data>
+  <data name="Settings_Reset_Continue" xml:space="preserve">
+    <value>Doorgaan</value>
+  </data>
+  <data name="Settings_Reset_FinalConfirmTitle" xml:space="preserve">
+    <value>Weet je het echt zeker?</value>
+  </data>
+  <data name="Settings_Reset_FinalConfirmMessage" xml:space="preserve">
+    <value>Dit is de laatste bevestiging. Looma start opnieuw met lege gegevens. Je huidige gegevens blijven alleen bewaard in de automatische back-up (map Automatische back-ups).</value>
+  </data>
+  <data name="Settings_Reset_Confirm" xml:space="preserve">
+    <value>Alles wissen en herstarten</value>
+  </data>
+  <data name="Settings_Data_Notifications_UnableToReset" xml:space="preserve">
+    <value>Kan de applicatie niet resetten.</value>
+  </data>
+  <data name="Backup_Errors_UnableToReset" xml:space="preserve">
+    <value>Kan de applicatie niet resetten: {0}</value>
+  </data>
+  <data name="Backup_Notifications_ResetApplied" xml:space="preserve">
+    <value>De applicatie is gereset. Een back-up van je vorige gegevens staat bij de automatische back-ups.</value>
+  </data>
+  <data name="Backup_Reason_PreReset" xml:space="preserve">
+    <value>vóór reset</value>
+  </data>
+  <data name="Errors_UnableToLoadWools" xml:space="preserve">
+    <value>Kan de garens niet laden: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadPatterns" xml:space="preserve">
+    <value>Kan de patronen niet laden: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadProjects" xml:space="preserve">
+    <value>Kan de projecten niet laden: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadDocuments" xml:space="preserve">
+    <value>Kan de documenten niet laden: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadWool" xml:space="preserve">
+    <value>Kan garen {0} niet laden: {1}</value>
+  </data>
+  <data name="Errors_UnableToLoadWoolNoDetail" xml:space="preserve">
+    <value>Kan garen {0} niet laden.</value>
+  </data>
+  <data name="Errors_UnableToLoadPattern" xml:space="preserve">
+    <value>Kan patroon {0} niet laden: {1}</value>
+  </data>
+  <data name="Errors_UnableToLoadProject" xml:space="preserve">
+    <value>Kan project {0} niet laden: {1}</value>
+  </data>
+  <data name="Errors_UnableToLoadDocument" xml:space="preserve">
+    <value>Kan document {0} niet laden: {1}</value>
+  </data>
+  <data name="Errors_UnableToAddWool" xml:space="preserve">
+    <value>Kan het garen niet toevoegen: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddPattern" xml:space="preserve">
+    <value>Kan het patroon niet toevoegen: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddProject" xml:space="preserve">
+    <value>Kan het project niet toevoegen: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddDocument" xml:space="preserve">
+    <value>Kan het document niet toevoegen: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddDocuments" xml:space="preserve">
+    <value>Kan de documenten niet toevoegen.</value>
+  </data>
+  <data name="Errors_UnableToUpdateWool" xml:space="preserve">
+    <value>Kan garen {0} niet bijwerken: {1}</value>
+  </data>
+  <data name="Errors_UnableToUpdatePattern" xml:space="preserve">
+    <value>Kan patroon {0} niet bijwerken: {1}</value>
+  </data>
+  <data name="Errors_UnableToUpdateProject" xml:space="preserve">
+    <value>Kan project {0} niet bijwerken: {1}</value>
+  </data>
+  <data name="Errors_UnableToUpdateDocument" xml:space="preserve">
+    <value>Kan document {0} niet bijwerken: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeleteWool" xml:space="preserve">
+    <value>Kan garen {0} niet verwijderen: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeletePattern" xml:space="preserve">
+    <value>Kan patroon {0} niet verwijderen: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeleteProject" xml:space="preserve">
+    <value>Kan project {0} niet verwijderen: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeleteDocument" xml:space="preserve">
+    <value>Kan document {0} niet verwijderen: {1}</value>
+  </data>
+  <data name="Errors_UnableToOpenDocument" xml:space="preserve">
+    <value>Kan document {0} niet openen: {1}</value>
+  </data>
+  <data name="Errors_UnableToLinkDocumentToPattern" xml:space="preserve">
+    <value>Kan het document niet aan patroon {0} toevoegen: {1}</value>
+  </data>
+  <data name="Errors_UnableToUnlinkDocumentFromPattern" xml:space="preserve">
+    <value>Kan het document niet uit patroon {0} verwijderen: {1}</value>
+  </data>
+  <data name="Errors_UnableToTrackStock" xml:space="preserve">
+    <value>Kan de voorraadbeweging van het garen niet vastleggen: {0}</value>
+  </data>
+  <data name="Errors_UnableToUpdateWoolUsageGeneric" xml:space="preserve">
+    <value>Kan het garengebruik niet bijwerken: {0}</value>
+  </data>
+  <data name="Errors_WoolNotFound" xml:space="preserve">
+    <value>Garen {0} is niet gevonden.</value>
+  </data>
+  <data name="Errors_PatternNotFound" xml:space="preserve">
+    <value>Patroon {0} is niet gevonden.</value>
+  </data>
+  <data name="Errors_ProjectNotFound" xml:space="preserve">
+    <value>Project {0} is niet gevonden.</value>
+  </data>
+  <data name="Errors_DocumentNotFound" xml:space="preserve">
+    <value>Document {0} is niet gevonden.</value>
+  </data>
+  <data name="Errors_DocumentFileNotFound" xml:space="preserve">
+    <value>Het bestand van document {0} is niet gevonden.</value>
+  </data>
+  <data name="Errors_SourceFileNotFound" xml:space="preserve">
+    <value>Het bronbestand "{0}" is niet gevonden.</value>
+  </data>
+  <data name="Errors_DocumentNotLinkedToPattern" xml:space="preserve">
+    <value>Document {0} is niet aan dit patroon gekoppeld.</value>
+  </data>
+  <data name="Errors_WoolNotLinkedToProject" xml:space="preserve">
+    <value>Het geselecteerde garen is niet aan dit project gekoppeld.</value>
+  </data>
+  <data name="Errors_ProjectNotFoundGeneric" xml:space="preserve">
+    <value>Project niet gevonden.</value>
+  </data>
+  <data name="Errors_InvalidPatternName" xml:space="preserve">
+    <value>De naam van het patroon is ongeldig.</value>
+  </data>
+  <data name="Errors_InvalidProjectName" xml:space="preserve">
+    <value>De naam van het project is ongeldig.</value>
+  </data>
+  <data name="Errors_InvalidWoolData" xml:space="preserve">
+    <value>De garengegevens zijn ongeldig.</value>
+  </data>
+  <data name="Errors_InvalidDocumentSource" xml:space="preserve">
+    <value>Het bronpad van het document is ongeldig.</value>
+  </data>
+  <data name="Errors_InvalidDocumentName" xml:space="preserve">
+    <value>De documentnaam is ongeldig.</value>
+  </data>
+  <data name="Errors_DocumentNameRequired" xml:space="preserve">
+    <value>De documentnaam mag niet leeg zijn.</value>
+  </data>
+  <data name="Errors_DocumentSingleOwner" xml:space="preserve">
+    <value>Een document kan alleen aan een patroon of een project gekoppeld zijn.</value>
+  </data>
+  <data name="Errors_DocumentAlreadyLinkedToProject" xml:space="preserve">
+    <value>Dit document is al aan een project gekoppeld.</value>
+  </data>
+  <data name="Errors_WoolsNotFound" xml:space="preserve">
+    <value>Een of meer geselecteerde garens zijn niet gevonden.</value>
+  </data>
+  <data name="Errors_WoolNameRequired" xml:space="preserve">
+    <value>De naam van het garen is verplicht.</value>
+  </data>
+  <data name="Errors_WoolBrandRequired" xml:space="preserve">
+    <value>Het merk van het garen is verplicht.</value>
+  </data>
+  <data name="Errors_WoolMaterialRequired" xml:space="preserve">
+    <value>Het materiaal van het garen is verplicht.</value>
+  </data>
+  <data name="Errors_WoolWeightPositive" xml:space="preserve">
+    <value>Het gewicht moet een positief getal zijn.</value>
+  </data>
+  <data name="Errors_WoolLengthPositive" xml:space="preserve">
+    <value>De lengte moet een positief getal zijn.</value>
+  </data>
+  <data name="Errors_WoolNeedleRangeUnknown" xml:space="preserve">
+    <value>De naaldmaat moet overeenkomen met een bekend garenbereik.</value>
+  </data>
+  <data name="Errors_UnableToFinishProject" xml:space="preserve">
+    <value>Kan het project niet afronden.</value>
+  </data>
+  <data name="Errors_UnableToReadWoolUsage" xml:space="preserve">
+    <value>Kan het garengebruik niet lezen.</value>
+  </data>
+  <data name="Errors_InsufficientStockFor" xml:space="preserve">
+    <value>Onvoldoende voorraad voor {0}.</value>
+  </data>
+  <data name="Errors_InsufficientStock" xml:space="preserve">
+    <value>Onvoldoende voorraad beschikbaar.</value>
+  </data>
+  <data name="Errors_UnableToUpdateStock" xml:space="preserve">
+    <value>Kan de voorraad niet bijwerken.</value>
+  </data>
+  <data name="Errors_UnableToTrackStockNoDetail" xml:space="preserve">
+    <value>Kan de voorraadbeweging niet vastleggen.</value>
+  </data>
+  <data name="Errors_Unknown" xml:space="preserve">
+    <value>Onbekende fout</value>
+  </data>
+  <data name="Errors_QuantityMustBePositive" xml:space="preserve">
+    <value>De hoeveelheid moet groter dan nul zijn.</value>
+  </data>
+  <data name="Errors_ThemePathRequired" xml:space="preserve">
+    <value>Het pad van het thema is verplicht.</value>
+  </data>
+  <data name="Errors_ThemeFileNotFound" xml:space="preserve">
+    <value>Het themabestand is niet gevonden.</value>
+  </data>
+  <data name="Errors_ThemeMustBeJson" xml:space="preserve">
+    <value>Het thema moet een JSON-bestand zijn.</value>
+  </data>
+  <data name="Errors_NoAvailableThemeName" xml:space="preserve">
+    <value>Kan geen beschikbare naam voor dit thema vinden.</value>
+  </data>
+  <data name="Settings_Errors_CultureMismatch" xml:space="preserve">
+    <value>De actieve taal is {0}/{1} in plaats van {2}.</value>
+  </data>
+  <data name="Pickers_SelectImage" xml:space="preserve">
+    <value>Een afbeelding selecteren</value>
+  </data>
+  <data name="Pickers_SelectDocument" xml:space="preserve">
+    <value>Een document selecteren</value>
+  </data>
+  <data name="Pickers_SelectImages" xml:space="preserve">
+    <value>Afbeeldingen selecteren</value>
+  </data>
+  <data name="Pickers_SelectDocuments" xml:space="preserve">
+    <value>Documenten selecteren</value>
+  </data>
+  <data name="Pickers_ThemeFileType" xml:space="preserve">
+    <value>JSON-thema's</value>
+  </data>
+  <data name="Pickers_ImportThemeTitle" xml:space="preserve">
+    <value>Een thema importeren</value>
+  </data>
+  <data name="Pickers_AllFiles" xml:space="preserve">
+    <value>Alle bestanden</value>
+  </data>
+  <data name="Pickers_Images" xml:space="preserve">
+    <value>Afbeeldingen</value>
+  </data>
+  <data name="Settings_Notifications_UnableToOpenSupportLink" xml:space="preserve">
+    <value>Kan de ondersteuningslink niet openen: {0}</value>
+  </data>
 </root>

@@ -8,6 +8,7 @@ using Looma.Domain.Repositories;
 using Looma.Domain.Request;
 using Looma.Infrastructure.Mapping;
 using Microsoft.EntityFrameworkCore;
+using Looma.Domain.Localization;
 
 namespace Looma.Infrastructure.Repositories;
 
@@ -27,7 +28,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         }
         catch (Exception ex)
         {
-            return ResultT<IReadOnlyList<Wool>>.Failure($"Impossible de charger les laines: {ex.Message}");
+            return ResultT<IReadOnlyList<Wool>>.Failure(Localizer.Format("Errors_UnableToLoadWools", ex.Message));
         }
     }
 
@@ -40,12 +41,12 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
                 .FirstOrDefaultAsync(w => w.WoolId == id);
 
             return entity is null
-                ? ResultT<Wool>.NotFound($"La laine {id} est introuvable.")
+                ? ResultT<Wool>.NotFound(Localizer.Format("Errors_WoolNotFound", id))
                 : ResultT<Wool>.Ok(entity.ToDomain());
         }
         catch (Exception ex)
         {
-            return ResultT<Wool>.Failure($"Impossible de charger la laine {id}: {ex.Message}");
+            return ResultT<Wool>.Failure(Localizer.Format("Errors_UnableToLoadWool", id, ex.Message));
         }
     }
 
@@ -56,7 +57,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
             var wool = BuildCreate(request);
             if (wool is null)
             {
-                return ResultT<Wool>.Failure("Les donnees de creation de laine sont invalides.");
+                return ResultT<Wool>.Failure(Localizer.Get("Errors_InvalidWoolData"));
             }
 
             var entity = wool.ToEntity();
@@ -66,11 +67,11 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         }
         catch (DbUpdateException ex)
         {
-            return ResultT<Wool>.Failure($"Impossible d'ajouter la laine: {ex.Message}");
+            return ResultT<Wool>.Failure(Localizer.Format("Errors_UnableToAddWool", ex.Message));
         }
         catch (Exception ex)
         {
-            return ResultT<Wool>.Failure($"Impossible d'ajouter la laine: {ex.Message}");
+            return ResultT<Wool>.Failure(Localizer.Format("Errors_UnableToAddWool", ex.Message));
         }
     }
 
@@ -80,7 +81,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         {
             var entity = await context.Wools.FirstOrDefaultAsync(w => w.WoolId == request.Id);
             if (entity is null)
-                return ResultT<Wool>.NotFound($"La laine {request.Id} est introuvable.");
+                return ResultT<Wool>.NotFound(Localizer.Format("Errors_WoolNotFound", request.Id));
 
             var name = request.Name.Trim();
             var brand = request.Brand.Trim();
@@ -93,7 +94,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
 
             if (!IsValid(name, brand, material, color, weight, length, null, needleMinSize, needleMaxSize))
             {
-                return ResultT<Wool>.Failure("Les données de mise à jours sont invalides");
+                return ResultT<Wool>.Failure(Localizer.Get("Errors_InvalidWoolData"));
             }
 
             entity.Name = name;
@@ -110,15 +111,15 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            return ResultT<Wool>.Failure($"Impossible de mettre à jour la laine {request.Id}: {ex.Message}");
+            return ResultT<Wool>.Failure(Localizer.Format("Errors_UnableToUpdateWool", request.Id, ex.Message));
         }
         catch (DbUpdateException ex)
         {
-            return ResultT<Wool>.Failure($"Impossible de mettre à jour la laine {request.Id}: {ex.Message}");
+            return ResultT<Wool>.Failure(Localizer.Format("Errors_UnableToUpdateWool", request.Id, ex.Message));
         }
         catch (Exception ex)
         {
-            return ResultT<Wool>.Failure($"Impossible de mettre à jour la laine {request.Id}: {ex.Message}");
+            return ResultT<Wool>.Failure(Localizer.Format("Errors_UnableToUpdateWool", request.Id, ex.Message));
         }
     }
 
@@ -128,7 +129,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         {
             var entity = await context.Wools.FindAsync([id]);
             if (entity is null)
-                return Result.NotFound($"La laine {id} est introuvable.");
+                return Result.NotFound(Localizer.Format("Errors_WoolNotFound", id));
 
             context.Wools.Remove(entity);
             await context.SaveChangesAsync();
@@ -136,11 +137,11 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         }
         catch (DbUpdateException ex)
         {
-            return Result.Failure($"Impossible de supprimer la laine {id}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToDeleteWool", id, ex.Message));
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Impossible de supprimer la laine {id}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToDeleteWool", id, ex.Message));
         }
     }
 
@@ -150,7 +151,7 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         {
             var entity = await context.Wools.FindAsync([id]);
             if (entity is null)
-                return Result.NotFound($"La laine {id} est introuvable.");
+                return Result.NotFound(Localizer.Format("Errors_WoolNotFound", id));
 
             entity.Stock = Math.Max(0, entity.Stock + quantity);
 
@@ -159,11 +160,11 @@ public class WoolRepository(LoomaDbContext context) : IWoolRepository
         }
         catch (DbUpdateException ex)
         {
-            return Result.Failure($"Impossible de mettre à jour le stock de la laine {id}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Data_Errors_UnableToUpdateWoolStock", id, ex.Message));
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Impossible de mettre à jour le stock de la laine {id}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Data_Errors_UnableToUpdateWoolStock", id, ex.Message));
         }
     }
 

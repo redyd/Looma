@@ -92,6 +92,7 @@ public partial class App : Application
 
         // A staged import replaces the data files: it must happen before anything reads them.
         var dataGuard = Services.GetRequiredService<StartupDataGuard>();
+        dataGuard.ApplyPendingReset();
         dataGuard.ApplyPendingRestore();
 
         SeedInternalThemes();
@@ -222,6 +223,8 @@ public partial class App : Application
         }
     }
 
+    private static readonly CultureInfo SystemUiCulture = CultureInfo.CurrentUICulture;
+
     private void ApplyStoredLanguage()
     {
         var translation = Services.GetRequiredService<TranslationService>();
@@ -231,8 +234,9 @@ public partial class App : Application
             ? GetSupportedCulture(result.Value)
             : null;
 
-        culture ??= GetSupportedCulture(CultureInfo.CurrentUICulture.Name)
-                    ?? GetSupportedCulture(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+        // Use the system language (not the current one, which a previous call may have changed).
+        culture ??= GetSupportedCulture(SystemUiCulture.Name)
+                    ?? GetSupportedCulture(SystemUiCulture.TwoLetterISOLanguageName);
 
         if (culture is not null)
             translation.SetCulture(culture);

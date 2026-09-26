@@ -1358,4 +1358,262 @@
   <data name="Enum_Jumbo" xml:space="preserve">
     <value>Jumbo</value>
   </data>
+  <data name="Settings_Reset_Title" xml:space="preserve">
+    <value>Réinitialiser l'application</value>
+  </data>
+  <data name="Settings_Reset_Hint" xml:space="preserve">
+    <value>Efface toutes vos laines, patrons, projets, documents, thèmes importés et préférences, puis redémarre Looma comme au premier lancement. Une sauvegarde est créée automatiquement avant.</value>
+  </data>
+  <data name="Settings_Reset_Button" xml:space="preserve">
+    <value>Réinitialiser l'application…</value>
+  </data>
+  <data name="Settings_Reset_FirstConfirmTitle" xml:space="preserve">
+    <value>Effacer toutes vos données ?</value>
+  </data>
+  <data name="Settings_Reset_FirstConfirmMessage" xml:space="preserve">
+    <value>Toutes les laines, patrons, projets, documents, l'historique des statistiques, les thèmes importés et les préférences seront effacés.</value>
+  </data>
+  <data name="Settings_Reset_Continue" xml:space="preserve">
+    <value>Continuer</value>
+  </data>
+  <data name="Settings_Reset_FinalConfirmTitle" xml:space="preserve">
+    <value>Êtes-vous vraiment sûr(e) ?</value>
+  </data>
+  <data name="Settings_Reset_FinalConfirmMessage" xml:space="preserve">
+    <value>C'est la dernière confirmation. Looma va redémarrer avec des données vides. Vos données actuelles ne subsisteront que dans la sauvegarde automatique (dossier Sauvegardes automatiques).</value>
+  </data>
+  <data name="Settings_Reset_Confirm" xml:space="preserve">
+    <value>Tout effacer et redémarrer</value>
+  </data>
+  <data name="Settings_Data_Notifications_UnableToReset" xml:space="preserve">
+    <value>Impossible de réinitialiser l'application.</value>
+  </data>
+  <data name="Backup_Errors_UnableToReset" xml:space="preserve">
+    <value>Impossible de réinitialiser l'application : {0}</value>
+  </data>
+  <data name="Backup_Notifications_ResetApplied" xml:space="preserve">
+    <value>L'application a été réinitialisée. Une sauvegarde de vos anciennes données est disponible dans les sauvegardes automatiques.</value>
+  </data>
+  <data name="Backup_Reason_PreReset" xml:space="preserve">
+    <value>avant réinitialisation</value>
+  </data>
+  <data name="Errors_UnableToLoadWools" xml:space="preserve">
+    <value>Impossible de charger les laines: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadPatterns" xml:space="preserve">
+    <value>Impossible de charger les patrons: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadProjects" xml:space="preserve">
+    <value>Impossible de charger les projets: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadDocuments" xml:space="preserve">
+    <value>Impossible de charger les documents: {0}</value>
+  </data>
+  <data name="Errors_UnableToLoadWool" xml:space="preserve">
+    <value>Impossible de charger la laine {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToLoadWoolNoDetail" xml:space="preserve">
+    <value>Impossible de charger la laine {0}.</value>
+  </data>
+  <data name="Errors_UnableToLoadPattern" xml:space="preserve">
+    <value>Impossible de charger le patron {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToLoadProject" xml:space="preserve">
+    <value>Impossible de charger le projet {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToLoadDocument" xml:space="preserve">
+    <value>Impossible de charger le document {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToAddWool" xml:space="preserve">
+    <value>Impossible d'ajouter la laine: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddPattern" xml:space="preserve">
+    <value>Impossible d'ajouter le patron: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddProject" xml:space="preserve">
+    <value>Impossible d'ajouter le projet: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddDocument" xml:space="preserve">
+    <value>Impossible d'ajouter le document: {0}</value>
+  </data>
+  <data name="Errors_UnableToAddDocuments" xml:space="preserve">
+    <value>Impossible d'ajouter les documents.</value>
+  </data>
+  <data name="Errors_UnableToUpdateWool" xml:space="preserve">
+    <value>Impossible de mettre à jour la laine {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToUpdatePattern" xml:space="preserve">
+    <value>Impossible de mettre à jour le patron {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToUpdateProject" xml:space="preserve">
+    <value>Impossible de mettre à jour le projet {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToUpdateDocument" xml:space="preserve">
+    <value>Impossible de mettre à jour le document {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeleteWool" xml:space="preserve">
+    <value>Impossible de supprimer la laine {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeletePattern" xml:space="preserve">
+    <value>Impossible de supprimer le patron {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeleteProject" xml:space="preserve">
+    <value>Impossible de supprimer le projet {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToDeleteDocument" xml:space="preserve">
+    <value>Impossible de supprimer le document {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToOpenDocument" xml:space="preserve">
+    <value>Impossible d'ouvrir le document {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToLinkDocumentToPattern" xml:space="preserve">
+    <value>Impossible d'ajouter le document au patron {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToUnlinkDocumentFromPattern" xml:space="preserve">
+    <value>Impossible de retirer le document du patron {0}: {1}</value>
+  </data>
+  <data name="Errors_UnableToTrackStock" xml:space="preserve">
+    <value>Impossible d'ajouter le suivi de stock de laine: {0}</value>
+  </data>
+  <data name="Errors_UnableToUpdateWoolUsageGeneric" xml:space="preserve">
+    <value>Impossible de mettre à jour l'utilisation de laine: {0}</value>
+  </data>
+  <data name="Errors_WoolNotFound" xml:space="preserve">
+    <value>La laine {0} est introuvable.</value>
+  </data>
+  <data name="Errors_PatternNotFound" xml:space="preserve">
+    <value>Le patron {0} est introuvable.</value>
+  </data>
+  <data name="Errors_ProjectNotFound" xml:space="preserve">
+    <value>Le projet {0} est introuvable.</value>
+  </data>
+  <data name="Errors_DocumentNotFound" xml:space="preserve">
+    <value>Le document {0} est introuvable.</value>
+  </data>
+  <data name="Errors_DocumentFileNotFound" xml:space="preserve">
+    <value>Le fichier du document {0} est introuvable.</value>
+  </data>
+  <data name="Errors_SourceFileNotFound" xml:space="preserve">
+    <value>Le fichier source "{0}" est introuvable.</value>
+  </data>
+  <data name="Errors_DocumentNotLinkedToPattern" xml:space="preserve">
+    <value>Le document {0} n'est pas lié à ce patron.</value>
+  </data>
+  <data name="Errors_WoolNotLinkedToProject" xml:space="preserve">
+    <value>La laine sélectionnée n'est pas liée à ce projet.</value>
+  </data>
+  <data name="Errors_ProjectNotFoundGeneric" xml:space="preserve">
+    <value>Projet non trouvé.</value>
+  </data>
+  <data name="Errors_InvalidPatternName" xml:space="preserve">
+    <value>Le nom du patron est invalide.</value>
+  </data>
+  <data name="Errors_InvalidProjectName" xml:space="preserve">
+    <value>Le nom du projet est invalide.</value>
+  </data>
+  <data name="Errors_InvalidWoolData" xml:space="preserve">
+    <value>Les donnees de creation de laine sont invalides.</value>
+  </data>
+  <data name="Errors_InvalidDocumentSource" xml:space="preserve">
+    <value>Le chemin source du document est invalide.</value>
+  </data>
+  <data name="Errors_InvalidDocumentName" xml:space="preserve">
+    <value>Le nom affiché du document est invalide.</value>
+  </data>
+  <data name="Errors_DocumentNameRequired" xml:space="preserve">
+    <value>Le nom du document ne peut pas être vide.</value>
+  </data>
+  <data name="Errors_DocumentSingleOwner" xml:space="preserve">
+    <value>Un document ne peut être lié qu'à un patron ou à un projet.</value>
+  </data>
+  <data name="Errors_DocumentAlreadyLinkedToProject" xml:space="preserve">
+    <value>Ce document est déjà lié à un projet.</value>
+  </data>
+  <data name="Errors_WoolsNotFound" xml:space="preserve">
+    <value>Une ou plusieurs laines sélectionnées sont introuvables.</value>
+  </data>
+  <data name="Errors_WoolNameRequired" xml:space="preserve">
+    <value>Le nom de la laine est requis.</value>
+  </data>
+  <data name="Errors_WoolBrandRequired" xml:space="preserve">
+    <value>La marque de la laine est requise.</value>
+  </data>
+  <data name="Errors_WoolMaterialRequired" xml:space="preserve">
+    <value>La matière de la laine est requise.</value>
+  </data>
+  <data name="Errors_WoolWeightPositive" xml:space="preserve">
+    <value>Le poids doit être un nombre positif.</value>
+  </data>
+  <data name="Errors_WoolLengthPositive" xml:space="preserve">
+    <value>La longueur doit être un nombre positif.</value>
+  </data>
+  <data name="Errors_WoolNeedleRangeUnknown" xml:space="preserve">
+    <value>La taille d'aiguilles doit correspondre à une plage de laine connue.</value>
+  </data>
+  <data name="Errors_UnableToFinishProject" xml:space="preserve">
+    <value>Impossible de terminer le projet.</value>
+  </data>
+  <data name="Errors_UnableToReadWoolUsage" xml:space="preserve">
+    <value>Erreur lors de la récupération de l'usage.</value>
+  </data>
+  <data name="Errors_InsufficientStockFor" xml:space="preserve">
+    <value>Le stock disponible est insuffisant pour {0}.</value>
+  </data>
+  <data name="Errors_InsufficientStock" xml:space="preserve">
+    <value>Le stock disponible est insuffisant.</value>
+  </data>
+  <data name="Errors_UnableToUpdateStock" xml:space="preserve">
+    <value>Erreur lors de la mise à jour du stock.</value>
+  </data>
+  <data name="Errors_UnableToTrackStockNoDetail" xml:space="preserve">
+    <value>Erreur lors de l'ajout du suivi de stock.</value>
+  </data>
+  <data name="Errors_Unknown" xml:space="preserve">
+    <value>Erreur inconnue</value>
+  </data>
+  <data name="Errors_QuantityMustBePositive" xml:space="preserve">
+    <value>La quantité doit être supérieure à zéro.</value>
+  </data>
+  <data name="Errors_ThemePathRequired" xml:space="preserve">
+    <value>Le chemin du thème est requis.</value>
+  </data>
+  <data name="Errors_ThemeFileNotFound" xml:space="preserve">
+    <value>Le fichier de thème est introuvable.</value>
+  </data>
+  <data name="Errors_ThemeMustBeJson" xml:space="preserve">
+    <value>Le thème doit être un fichier JSON.</value>
+  </data>
+  <data name="Errors_NoAvailableThemeName" xml:space="preserve">
+    <value>Impossible de trouver un nom disponible pour ce thème.</value>
+  </data>
+  <data name="Settings_Errors_CultureMismatch" xml:space="preserve">
+    <value>La culture active est {0}/{1} au lieu de {2}.</value>
+  </data>
+  <data name="Pickers_SelectImage" xml:space="preserve">
+    <value>Sélectionner une image</value>
+  </data>
+  <data name="Pickers_SelectDocument" xml:space="preserve">
+    <value>Sélectionner un document</value>
+  </data>
+  <data name="Pickers_SelectImages" xml:space="preserve">
+    <value>Sélectionner des images</value>
+  </data>
+  <data name="Pickers_SelectDocuments" xml:space="preserve">
+    <value>Sélectionner des documents</value>
+  </data>
+  <data name="Pickers_ThemeFileType" xml:space="preserve">
+    <value>Thèmes JSON</value>
+  </data>
+  <data name="Pickers_ImportThemeTitle" xml:space="preserve">
+    <value>Importer un thème</value>
+  </data>
+  <data name="Pickers_AllFiles" xml:space="preserve">
+    <value>Tous les fichiers</value>
+  </data>
+  <data name="Pickers_Images" xml:space="preserve">
+    <value>Images</value>
+  </data>
+  <data name="Settings_Notifications_UnableToOpenSupportLink" xml:space="preserve">
+    <value>Impossible d'ouvrir le lien de soutien : {0}</value>
+  </data>
 </root>

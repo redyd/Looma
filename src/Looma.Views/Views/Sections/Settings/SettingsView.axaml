@@ -241,6 +241,73 @@ See LICENSE in the project root for full license text.
 
                     <Border Classes="form-container">
                         <StackPanel Spacing="18">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="{loc:Loc Settings_Reset_Title}"
+                                           Classes="section-title" />
+                                <TextBlock Text="{loc:Loc Settings_Reset_Hint}"
+                                           Classes="form-hint"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+
+                            <Button Classes="danger-btn"
+                                    HorizontalAlignment="Left"
+                                    IsVisible="{Binding Data.IsResetIdle}"
+                                    Command="{Binding Data.RequestResetCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <LucideIcon Kind="RotateCcw"
+                                                Size="16"
+                                                Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                VerticalAlignment="Center" />
+                                    <TextBlock Text="{loc:Loc Settings_Reset_Button}" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+
+                            <Border Classes="alert-error"
+                                    Padding="16"
+                                    IsVisible="{Binding Data.IsResetFirstConfirmationVisible}">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="{loc:Loc Settings_Reset_FirstConfirmTitle}"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource WarningTextForegroundBrush}" />
+                                    <TextBlock Text="{loc:Loc Settings_Reset_FirstConfirmMessage}"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource FormLabelForegroundBrush}" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                        <Button Classes="cancel-btn"
+                                                Content="{loc:Loc Common_Cancel}"
+                                                Command="{Binding Data.CancelResetCommand}" />
+                                        <Button Classes="danger-btn"
+                                                Content="{loc:Loc Settings_Reset_Continue}"
+                                                Command="{Binding Data.ContinueResetCommand}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Classes="alert-error"
+                                    Padding="16"
+                                    IsVisible="{Binding Data.IsResetFinalConfirmationVisible}">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="{loc:Loc Settings_Reset_FinalConfirmTitle}"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource WarningTextForegroundBrush}" />
+                                    <TextBlock Text="{loc:Loc Settings_Reset_FinalConfirmMessage}"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource FormLabelForegroundBrush}" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                        <Button Classes="cancel-btn"
+                                                Content="{loc:Loc Common_Cancel}"
+                                                Command="{Binding Data.CancelResetCommand}" />
+                                        <Button Classes="danger-btn-solid"
+                                                Content="{loc:Loc Settings_Reset_Confirm}"
+                                                Command="{Binding Data.ConfirmResetCommand}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="form-container">
+                        <StackPanel Spacing="18">
                             <TextBlock Text="{loc:Loc Settings_ReportSectionTitle}"
                                        Classes="section-title"
                                        VerticalAlignment="Center" />

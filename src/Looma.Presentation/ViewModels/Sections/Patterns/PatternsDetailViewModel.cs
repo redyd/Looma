@@ -76,7 +76,7 @@ public partial class PatternsDetailViewModel(
     [
         new() { Label = Translation["Common_Name"], Value = Name },
         new() { Label = Translation["Common_Link"], Value = Url ?? Translation["Common_None"], IsLink = HasUrl },
-        new() { Label = Translation["Common_Type"], Value = Type.GetDisplayName() },
+        new() { Label = Translation["Common_Type"], Value = Translation.EnumName(Type) },
         new() { Label = Translation["Common_Pattern"], Value = IsPersonal ? Translation["Common_Personal"] : Translation["Common_NotPersonal"] },
         new() { Label = Translation["Common_Begin"], Value = BeginDate.FormatWithDefault(Translation["Common_NoneFeminine"]) },
         new() { Label = Translation["Common_End"], Value = EndDate.FormatWithDefault(Translation["Common_NoneFeminine"]) },

@@ -77,7 +77,7 @@ public class WoolStockServiceTests
         var result = await sut.AdjustWoolUsageAsync(MakeRequest(quantity: 0));
 
         result.Failed.Should().BeTrue();
-        result.Error.Should().Be("La quantité doit être supérieure à zéro.");
+        result.Error.Should().Be("Errors_QuantityMustBePositive");
         await repo.DidNotReceive().GetUsageAsync(Arg.Any<int>(), Arg.Any<int>());
     }
 
@@ -90,7 +90,7 @@ public class WoolStockServiceTests
         var result = await sut.AdjustWoolUsageAsync(MakeRequest(quantity: -5));
 
         result.Failed.Should().BeTrue();
-        result.Error.Should().Be("La quantité doit être supérieure à zéro.");
+        result.Error.Should().Be("Errors_QuantityMustBePositive");
     }
 
     // ---------------------------------------------------------------------------
@@ -108,7 +108,7 @@ public class WoolStockServiceTests
         var result = await sut.AdjustWoolUsageAsync(MakeRequest());
 
         result.Failed.Should().BeTrue();
-        result.Error.Should().Be("Une erreur est survenue lors de la récupération de l'usage de la laine.");
+        result.Error.Should().Be("Errors_UnableToReadWoolUsage");
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class WoolStockServiceTests
         var result = await sut.AdjustWoolUsageAsync(MakeRequest());
 
         result.Failed.Should().BeTrue();
-        result.Error.Should().Be("Une erreur est survenue lors de la récupération de l'usage de la laine.");
+        result.Error.Should().Be("Errors_UnableToReadWoolUsage");
     }
 
     // ---------------------------------------------------------------------------
@@ -258,7 +258,7 @@ public class WoolStockServiceTests
         var result = await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByBall, isAddition: true, quantity: 2, deductImmediately: true));
 
         result.Failed.Should().BeTrue();
-        result.Error.Should().Be("Le stock disponible est insuffisant.");
+        result.Error.Should().Be("Errors_InsufficientStock");
         await repo.DidNotReceive().UpdateCurrentStockUsageAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<double>());
     }
 

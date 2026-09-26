@@ -10,6 +10,7 @@ using Looma.Infrastructure.Entity;
 using Looma.Infrastructure.Mapping;
 using Looma.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
+using Looma.Domain.Localization;
 
 namespace Looma.Infrastructure.Repositories;
 
@@ -32,7 +33,7 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
         catch (Exception ex)
         {
-            return ResultT<IReadOnlyList<Project>>.Failure($"Impossible de charger les projets: {ex.Message}");
+            return ResultT<IReadOnlyList<Project>>.Failure(Localizer.Format("Errors_UnableToLoadProjects", ex.Message));
         }
     }
 
@@ -47,12 +48,12 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
                 await context.SaveChangesAsync();
 
             return entity is null
-                ? ResultT<Project>.NotFound($"Le projet {id} est introuvable.")
+                ? ResultT<Project>.NotFound(Localizer.Format("Errors_ProjectNotFound", id))
                 : ResultT<Project>.Ok(ApplyFileMetadata(entity.ToDomain()));
         }
         catch (Exception ex)
         {
-            return ResultT<Project>.Failure($"Impossible de charger le projet {id}: {ex.Message}");
+            return ResultT<Project>.Failure(Localizer.Format("Errors_UnableToLoadProject", id, ex.Message));
         }
     }
 
@@ -62,14 +63,14 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
         {
             var name = request.Name.Trim();
             if (string.IsNullOrWhiteSpace(name))
-                return ResultT<Project>.Failure("Le nom du projet est invalide.");
+                return ResultT<Project>.Failure(Localizer.Get("Errors_InvalidProjectName"));
 
             if (request.PatternId.HasValue && !await context.Patterns.AnyAsync(p => p.PatternId == request.PatternId.Value))
-                return ResultT<Project>.NotFound($"Le patron {request.PatternId} est introuvable.");
+                return ResultT<Project>.NotFound(Localizer.Format("Errors_PatternNotFound", request.PatternId));
 
             var woolIds = request.WoolIds.Distinct().ToList();
             if (!await AllWoolsExistAsync(woolIds))
-                return ResultT<Project>.Failure("Une ou plusieurs laines sélectionnées sont introuvables.");
+                return ResultT<Project>.Failure(Localizer.Get("Errors_WoolsNotFound"));
 
             var entity = new ProjectEntity
             {
@@ -88,11 +89,11 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
         catch (DbUpdateException ex)
         {
-            return ResultT<Project>.Failure($"Impossible d'ajouter le projet: {ex.Message}");
+            return ResultT<Project>.Failure(Localizer.Format("Errors_UnableToAddProject", ex.Message));
         }
         catch (Exception ex)
         {
-            return ResultT<Project>.Failure($"Impossible d'ajouter le projet: {ex.Message}");
+            return ResultT<Project>.Failure(Localizer.Format("Errors_UnableToAddProject", ex.Message));
         }
     }
 
@@ -105,18 +106,18 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
                 .ThenInclude(w => w.WoolEntity)
                 .FirstOrDefaultAsync(p => p.ProjectId == request.Id);
             if (entity is null)
-                return ResultT<Project>.NotFound($"Le projet {request.Id} est introuvable.");
+                return ResultT<Project>.NotFound(Localizer.Format("Errors_ProjectNotFound", request.Id));
 
             var name = request.Name.Trim();
             if (string.IsNullOrWhiteSpace(name))
-                return ResultT<Project>.Failure("Le nom du projet est invalide.");
+                return ResultT<Project>.Failure(Localizer.Get("Errors_InvalidProjectName"));
 
             if (request.PatternId.HasValue && !await context.Patterns.AnyAsync(p => p.PatternId == request.PatternId.Value))
-                return ResultT<Project>.NotFound($"Le patron {request.PatternId} est introuvable.");
+                return ResultT<Project>.NotFound(Localizer.Format("Errors_PatternNotFound", request.PatternId));
 
             var woolIds = request.WoolIds.Distinct().ToList();
             if (!await AllWoolsExistAsync(woolIds))
-                return ResultT<Project>.Failure("Une ou plusieurs laines sélectionnées sont introuvables.");
+                return ResultT<Project>.Failure(Localizer.Get("Errors_WoolsNotFound"));
 
             entity.Name = name;
             entity.Status = request.Status;
@@ -131,11 +132,11 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
         catch (DbUpdateException ex)
         {
-            return ResultT<Project>.Failure($"Impossible de mettre à jour le projet {request.Id}: {ex.Message}");
+            return ResultT<Project>.Failure(Localizer.Format("Errors_UnableToUpdateProject", request.Id, ex.Message));
         }
         catch (Exception ex)
         {
-            return ResultT<Project>.Failure($"Impossible de mettre à jour le projet {request.Id}: {ex.Message}");
+            return ResultT<Project>.Failure(Localizer.Format("Errors_UnableToUpdateProject", request.Id, ex.Message));
         }
     }
 
@@ -147,7 +148,7 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
                 .Include(p => p.Files)
                 .FirstOrDefaultAsync(p => p.ProjectId == id);
             if (entity is null)
-                return Result.NotFound($"Le projet {id} est introuvable.");
+                return Result.NotFound(Localizer.Format("Errors_ProjectNotFound", id));
 
             var documentIds = entity.Files.Select(d => d.DocumentId).ToList();
             context.Documents.RemoveRange(entity.Files);
@@ -161,11 +162,11 @@ public class ProjectRepository(LoomaDbContext context, AppPaths pathManager) : I
         }
         catch (DbUpdateException ex)
         {
-            return Result.Failure($"Impossible de supprimer le projet {id}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToDeleteProject", id, ex.Message));
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Impossible de supprimer le projet {id}: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToDeleteProject", id, ex.Message));
         }
     }
 

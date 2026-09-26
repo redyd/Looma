@@ -21,6 +21,7 @@ public sealed partial class BackupService(AppPaths paths, AppConfigStore configS
     public const string FileExtension = ".looma";
     public const string PreMigrationReason = "pre-migration";
     public const string PreImportReason = "pre-import";
+    public const string PreResetReason = "pre-reset";
     public const int AutomaticBackupsKept = 5;
 
     private const string ManifestPath = "manifest.json";
@@ -62,6 +63,87 @@ public sealed partial class BackupService(AppPaths paths, AppConfigStore configS
     }
 
     public bool HasPendingRestore => File.Exists(Path.Combine(paths.PendingRestoreFolder, ReadyMarker));
+
+    public bool HasPendingReset => File.Exists(paths.PendingResetMarker);
+
+    public Task<Result> ScheduleResetAsync()
+    {
+        try
+        {
+            // A reset supersedes any import waiting for the next start.
+            CancelPendingRestore();
+            AtomicFile.WriteAllText(paths.PendingResetMarker, DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture));
+            return Task.FromResult(Result.Ok());
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure(Localizer.Format("Backup_Errors_UnableToReset", ex.Message)));
+        }
+    }
+
+    public void CancelPendingReset() => TryDeleteFile(paths.PendingResetMarker);
+
+    /// <summary>
+    /// Erases the application data when a reset is pending. Must run before any database connection is opened.
+    /// The current data is backed up first; if that is impossible (e.g. damaged database) it is moved aside instead.
+    /// Returns null when no reset is pending.
+    /// </summary>
+    public Result? ApplyPendingReset()
+    {
+        if (!HasPendingReset)
+            return null;
+
+        try
+        {
+            var databaseState = DatabaseHealth.Check(paths.DatabasePath);
+            var backedUp = false;
+            if (databaseState == DatabaseState.Healthy)
+            {
+                var backup = CreateAutomaticBackup(PreResetReason);
+                if (backup.Failed)
+                {
+                    CancelPendingReset();
+                    return Result.Failure(Localizer.Format("Backup_Errors_UnableToCreateSafetyBackup", backup.Error ?? string.Empty));
+                }
+
+                backedUp = true;
+            }
+
+            if (backedUp)
+            {
+                foreach (var file in DatabaseFiles(paths.DatabasePath))
+                    TryDeleteFile(file);
+                TryDeleteDirectory(paths.DocumentsFolder);
+                TryDeleteDirectory(paths.ThemesFolder);
+            }
+            else
+            {
+                // Nothing could be backed up: keep every file aside rather than erasing it.
+                var previousFolder = Path.Combine(paths.RootPath, $"reset-previous-{DateTime.Now:yyyyMMddHHmmss}");
+                Directory.CreateDirectory(previousFolder);
+                foreach (var file in DatabaseFiles(paths.DatabasePath))
+                    MoveIfExists(file, Path.Combine(previousFolder, Path.GetFileName(file)));
+                MoveIfExists(paths.DocumentsFolder, Path.Combine(previousFolder, "documents"));
+                MoveIfExists(paths.ThemesFolder, Path.Combine(previousFolder, "themes"));
+            }
+
+            configStore.Update(config =>
+            {
+                config.SelectedTheme = null;
+                config.SelectedLanguage = null;
+            });
+
+            CancelPendingRestore();
+            CancelPendingReset();
+            paths.EnsureDirectoriesExist();
+            return Result.Ok();
+        }
+        catch (Exception ex)
+        {
+            CancelPendingReset();
+            return Result.Failure(Localizer.Format("Backup_Errors_UnableToReset", ex.Message));
+        }
+    }
 
     public ResultT<BackupManifest> Export(string destinationPath)
     {
@@ -464,6 +546,7 @@ public sealed partial class BackupService(AppPaths paths, AppConfigStore configS
         var name = Path.GetFileNameWithoutExtension(path);
         var reason = name.StartsWith(PreMigrationReason, StringComparison.Ordinal) ? PreMigrationReason
             : name.StartsWith(PreImportReason, StringComparison.Ordinal) ? PreImportReason
+            : name.StartsWith(PreResetReason, StringComparison.Ordinal) ? PreResetReason
             : name;
         return new BackupInfo(path, reason, info.LastWriteTime, info.Length);
     }

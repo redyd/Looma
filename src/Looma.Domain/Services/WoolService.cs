@@ -77,8 +77,8 @@ public sealed class WoolService(
         var existing = await repository.GetByIdAsync(id);
         if (existing.Failed || existing.Value is null)
             return existing.Status == ResultStatus.NotFound
-                ? Result.NotFound(existing.Error ?? $"La laine {id} est introuvable.")
-                : Result.Failure(existing.Error ?? $"Impossible de charger la laine {id}.");
+                ? Result.NotFound(existing.Error ?? Localizer.Format("Errors_WoolNotFound", id))
+                : Result.Failure(existing.Error ?? Localizer.Format("Errors_UnableToLoadWoolNoDetail", id));
 
         var trackedQuantity = Math.Max(0, existing.Value.Stock + quantity) - existing.Value.Stock;
 
@@ -137,22 +137,22 @@ public sealed class WoolService(
         double needleMaxSize)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure("Le nom de la laine est requis.");
+            return Result.Failure(Localizer.Get("Errors_WoolNameRequired"));
 
         if (string.IsNullOrWhiteSpace(brand))
-            return Result.Failure("La marque de la laine est requise.");
+            return Result.Failure(Localizer.Get("Errors_WoolBrandRequired"));
 
         if (string.IsNullOrWhiteSpace(material))
-            return Result.Failure("La matière de la laine est requise.");
+            return Result.Failure(Localizer.Get("Errors_WoolMaterialRequired"));
 
         if (!double.IsFinite(weight) || weight <= 0)
-            return Result.Failure("Le poids doit être un nombre positif.");
+            return Result.Failure(Localizer.Get("Errors_WoolWeightPositive"));
 
         if (!double.IsFinite(length) || length <= 0)
-            return Result.Failure("La longueur doit être un nombre positif.");
+            return Result.Failure(Localizer.Get("Errors_WoolLengthPositive"));
 
         if (Wool.FindNeedleRange(needleMinSize, needleMaxSize) is null)
-            return Result.Failure("La taille d'aiguilles doit correspondre à une plage de laine connue.");
+            return Result.Failure(Localizer.Get("Errors_WoolNeedleRangeUnknown"));
 
         return Result.Ok();
     }

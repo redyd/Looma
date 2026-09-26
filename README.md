@@ -61,6 +61,7 @@ Page en deux onglets, avec filtres par période (tout, année en cours, six dern
 - Thèmes fournis au démarrage dans `src/Looma.App/Seed/Themes`.
 - Vérification des mises à jour, notes de version et installation via Velopack.
 - Section « Données et sauvegardes » : export, import, vérification et réparation des données.
+- Réinitialisation complète de l'application, avec double confirmation et sauvegarde automatique préalable (`backups/pre-reset-*.looma`).
 
 ### Sauvegardes et intégrité des données
 

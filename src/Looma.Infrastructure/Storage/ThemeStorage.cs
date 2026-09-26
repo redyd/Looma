@@ -77,13 +77,13 @@ public sealed class ThemeStorage(AppPaths paths, AppConfigStore configStore) : I
     public void DeleteTheme(string themePath)
     {
         if (string.IsNullOrWhiteSpace(themePath))
-            throw new ArgumentException("Le chemin du thème est requis.", nameof(themePath));
+            throw new ArgumentException(Localizer.Get("Errors_ThemePathRequired"), nameof(themePath));
 
         var fileName = Path.GetFileName(themePath);
         var destinationPath = Path.Combine(paths.ThemesFolder, fileName);
 
         if (!File.Exists(destinationPath))
-            throw new FileNotFoundException("Le fichier de thème est introuvable.", destinationPath);
+            throw new FileNotFoundException(Localizer.Get("Errors_ThemeFileNotFound"), destinationPath);
 
         File.Delete(destinationPath);
 
@@ -97,10 +97,10 @@ public sealed class ThemeStorage(AppPaths paths, AppConfigStore configStore) : I
     public string ImportTheme(string sourcePath)
     {
         if (!File.Exists(sourcePath))
-            throw new FileNotFoundException("Le fichier de thème est introuvable.", sourcePath);
+            throw new FileNotFoundException(Localizer.Get("Errors_ThemeFileNotFound"), sourcePath);
 
         if (!Path.GetExtension(sourcePath).Equals(".json", StringComparison.OrdinalIgnoreCase))
-            throw new InvalidOperationException("Le thème doit être un fichier JSON.");
+            throw new InvalidOperationException(Localizer.Get("Errors_ThemeMustBeJson"));
 
         if (!AppConfigStore.IsValidJson(sourcePath))
             throw new InvalidOperationException(Localizer.Get("Data_Errors_InvalidThemeJson"));
@@ -140,7 +140,7 @@ public sealed class ThemeStorage(AppPaths paths, AppConfigStore configStore) : I
                 return candidate;
         }
 
-        throw new InvalidOperationException("Impossible de trouver un nom disponible pour ce thème.");
+        throw new InvalidOperationException(Localizer.Get("Errors_NoAvailableThemeName"));
     }
 
     private static string GetDownloadsFolder()

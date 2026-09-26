@@ -46,14 +46,16 @@ Toujours utiliser `--local` pour tester à la main : ne jamais toucher aux donn�
   - Presentation / Views : `Translation["Clé"]`, `Translation.Format("Clé", args)`, `{loc:Loc Clé}` en XAML.
   - Domain / Infrastructure : `Localizer.Get("Clé")` / `Localizer.Format(...)` (`Looma.Domain.Localization`, branché sur `TranslationService` au démarrage).
   - Nommage des clés : `Section_Categorie_Nom` (ex. `Settings_Data_Export`, `Backup_Errors_InvalidArchive`).
-  - Des messages FR codés en dur subsistent dans l'ancien code : ne pas en ajouter de nouveaux.
+  - Les erreurs renvoyées par Domain/Infrastructure (`Result.Error`) sont affichées telles quelles dans les notifications : elles doivent donc aussi passer par le dictionnaire. Aucun message en dur (y compris `?? "..."` de repli et messages d'exception affichés).
+  - Libellés d'enum : `Translation.EnumName(valeur)` (clés `Enum_*`), jamais `GetDisplayName()` directement.
+  - `TranslationCoverageTests` vérifie que les 6 langues ont les mêmes clés, sans valeur vide et avec les mêmes `{0}`.
 - **Styles** : réutiliser les classes existantes (`form-container`, `section-title`, `form-hint`, `form-submit`, `cancel-btn`, `danger-btn`, `alert-error`…) et les brushes `DynamicResource` du thème ; pas de couleurs en dur. Icônes : `LucideIcon Kind="…"` (vérifier que le nom existe, la compilation XAML échoue sinon).
 - **Nouveaux services** : interface dans Domain (`IServices/` ou `Repositories/`), implémentation dans Infrastructure, enregistrement dans `src/Looma.App/DependencyInjection.cs`.
 - **Sous-sections de Settings** : sous-ViewModel dédié (cf. `SettingsUpdaterViewModel`, `SettingsDataViewModel`) plutôt que gonfler `SettingsViewModel`.
 
 ## Données et intégrité (à respecter absolument)
 
-Dossier de données (`AppPaths`) : `looma.db` (+ `-wal`/`-shm`, EF Core active le WAL), `documents/{guid}.ext`, `themes/*.json`, `config.json`, `backups/`, `pending-restore/`.
+Dossier de données (`AppPaths`) : `looma.db` (+ `-wal`/`-shm`, EF Core active le WAL), `documents/{guid}.ext`, `themes/*.json`, `config.json`, `backups/`, `pending-restore/`, `pending-reset` (marqueur).
 
 - **config.json** : uniquement via `AppConfigStore` (écriture atomique + verrou ; un JSON corrompu est renommé `config.json.corrupt-*` et remplacé par les valeurs par défaut). Ne jamais écrire le fichier directement.
 - **Écritures de fichiers** : `AtomicFile` (fichier temporaire + renommage) pour tout fichier qui ne doit jamais être à moitié écrit.
@@ -65,6 +67,7 @@ Dossier de données (`AppPaths`) : `looma.db` (+ `-wal`/`-shm`, EF Core active l
 
 ### Démarrage (`StartupDataGuard`)
 
+0. Applique une réinitialisation demandée (`pending-reset`) : sauvegarde `backups/pre-reset-*.looma` puis effacement ; si la base est illisible, les fichiers sont déplacés dans `reset-previous-*` au lieu d'être effacés.
 1. Applique un import en attente (`pending-restore/`) avant toute ouverture de la base, avec sauvegarde de sécurité `backups/pre-import-*.looma` et rollback en cas d'échec.
 2. Vérifie la base (`DatabaseHealth` : en-tête + `PRAGMA quick_check`). Corrompue → `RecoveryWindow` (restaurer une sauvegarde, importer, repartir de zéro en conservant l'ancienne base).
 3. Migrations en attente → sauvegarde automatique `backups/pre-migration-*.looma` (5 conservées) avant `Migrate()`.

@@ -9,6 +9,7 @@ using Looma.Domain.Logging;
 using Looma.Domain.Refresh;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
+using Looma.Domain.Localization;
 
 namespace Looma.Domain.Services;
 
@@ -63,7 +64,7 @@ public class ProjectService(
             var existing = await repo.GetByIdAsync(request.Id);
             if (existing.Failed || existing.Value is null)
             {
-                return ResultT<Project>.NotFound("Projet non trouvé.");
+                return ResultT<Project>.NotFound(Localizer.Get("Errors_ProjectNotFoundGeneric"));
             }
 
             if (request.Status == Status.Finished && existing.Value.Status != Status.Finished)
@@ -71,7 +72,7 @@ public class ProjectService(
                 var completeResult = await CompleteProjectAsync(request.Id, [.. existing.Value.Wools.Select(w => w.Wool)]);
                 if (completeResult.Failed)
                 {
-                    return ResultT<Project>.Failure(completeResult.Error ?? "Impossible de terminer le projet.");
+                    return ResultT<Project>.Failure(completeResult.Error ?? Localizer.Get("Errors_UnableToFinishProject"));
                 }
 
                 completedProject = true;
@@ -91,7 +92,7 @@ public class ProjectService(
             if (usageResult.Failed)
             {
                 Logger.Log(DomainLogLevel.Warning, $"Projects.Complete({projectId}) failed while reading wool usage {wool.Id}.");
-                return Result.Failure(usageResult.Error ?? "Erreur lors de la récupération de l'usage.");
+                return Result.Failure(usageResult.Error ?? Localizer.Get("Errors_UnableToReadWoolUsage"));
             }
 
             var usage = usageResult.Value!;
@@ -102,21 +103,21 @@ public class ProjectService(
             if (wool.Stock < remainingToDeduct)
             {
                 Logger.Log(DomainLogLevel.Warning, $"Projects.Complete({projectId}) failed because wool {wool.Id} stock is insufficient.");
-                return Result.Failure($"Le stock disponible est insuffisant pour {wool.Name}.");
+                return Result.Failure(Localizer.Format("Errors_InsufficientStockFor", wool.Name));
             }
 
             var stockResult = await woolService.AddStockAsync(wool.Id, -remainingToDeduct, projectId);
             if (stockResult.Failed)
             {
                 Logger.Log(DomainLogLevel.Warning, $"Projects.Complete({projectId}) failed while updating stock for wool {wool.Id}.");
-                return Result.Failure(stockResult.Error ?? "Erreur lors de la mise à jour du stock.");
+                return Result.Failure(stockResult.Error ?? Localizer.Get("Errors_UnableToUpdateStock"));
             }
 
             var alreadyUsedResult = await woolUsageRepository.UpdateStockAlreadyUsedAsync(projectId, wool.Id, usage.StockAlreadyUsed + remainingToDeduct);
             if (alreadyUsedResult.Failed)
             {
                 Logger.Log(DomainLogLevel.Warning, $"Projects.Complete({projectId}) failed while updating already used stock for wool {wool.Id}.");
-                return Result.Failure(alreadyUsedResult.Error ?? "Erreur lors de la mise à jour du stock déjà utilisé.");
+                return Result.Failure(alreadyUsedResult.Error ?? Localizer.Get("Errors_UnableToUpdateStock"));
             }
         }
 

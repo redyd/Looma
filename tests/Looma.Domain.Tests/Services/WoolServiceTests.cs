@@ -25,7 +25,7 @@ public sealed class WoolServiceTests
         var result = await sut.AddAsync(request);
 
         result.Failed.Should().BeTrue();
-        result.Error.Should().Be("La taille d'aiguilles doit correspondre à une plage de laine connue.");
+        result.Error.Should().Be("Errors_WoolNeedleRangeUnknown");
         await repository.DidNotReceive().AddAsync(Arg.Any<CreateWoolRequest>());
     }
 

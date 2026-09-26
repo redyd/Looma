@@ -14,6 +14,7 @@ public class AppPaths(string baseRoot)
     public string ThemesFolder => Path.Combine(baseRoot, "themes");
     public string BackupsFolder => Path.Combine(baseRoot, "backups");
     public string PendingRestoreFolder => Path.Combine(baseRoot, "pending-restore");
+    public string PendingResetMarker => Path.Combine(baseRoot, "pending-reset");
     public string OrphanDocumentsFolder => Path.Combine(DocumentsFolder, ".orphans");
     public string RootPath => baseRoot;
 

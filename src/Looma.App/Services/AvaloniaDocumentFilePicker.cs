@@ -15,13 +15,13 @@ using Looma.Domain.Entities;
 
 namespace Looma.App.Services;
 
-public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
+public sealed class AvaloniaDocumentFilePicker(TranslationService translation) : IDocumentFilePicker
 {
     private static readonly List<string> ImageExtensions = [".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif"];
     public Task<string?> PickAsync(DocumentPickerMode mode) => mode switch
     {
-        DocumentPickerMode.Images => PickFileAsync("Sélectionner une image", false, ImageFileTypes),
-        DocumentPickerMode.All => PickFileAsync("Sélectionner un document", false, AllFileTypes),
+        DocumentPickerMode.Images => PickFileAsync(translation["Pickers_SelectImage"], false, ImageFileTypes),
+        DocumentPickerMode.All => PickFileAsync(translation["Pickers_SelectDocument"], false, AllFileTypes),
         _ => throw new ArgumentOutOfRangeException(nameof(mode))
     };
 
@@ -29,8 +29,8 @@ public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
     {
         var paths = mode switch
         {
-            DocumentPickerMode.Images => await PickFilesAsync("Sélectionner des images", true, ImageFileTypes),
-            DocumentPickerMode.All => await PickFilesAsync("Sélectionner des documents", true, AllFileTypes),
+            DocumentPickerMode.Images => await PickFilesAsync(translation["Pickers_SelectImages"], true, ImageFileTypes),
+            DocumentPickerMode.All => await PickFilesAsync(translation["Pickers_SelectDocuments"], true, AllFileTypes),
             _ => throw new ArgumentOutOfRangeException(nameof(mode))
         };
 
@@ -68,19 +68,19 @@ public sealed class AvaloniaDocumentFilePicker : IDocumentFilePicker
             _ => "image/*"
         };
 
-    private static IReadOnlyList<FilePickerFileType> AllFileTypes =>
+    private IReadOnlyList<FilePickerFileType> AllFileTypes =>
     [
-        new("Tous les fichiers") { Patterns = ["*"] }
+        new(translation["Pickers_AllFiles"]) { Patterns = ["*"] }
     ];
 
-    private static IReadOnlyList<FilePickerFileType> ImageFileTypes =>
+    private IReadOnlyList<FilePickerFileType> ImageFileTypes =>
     [
-        new("Images")
+        new(translation["Pickers_Images"])
         {
             Patterns = ImageExtensions.Select(ext => $"*{ext}").ToArray(),
             MimeTypes = ImageExtensions.Select(ToImageMimeType).ToArray()
         },
-        new("Tous les fichiers")
+        new(translation["Pickers_AllFiles"])
         {
             Patterns = ["*"]
         }

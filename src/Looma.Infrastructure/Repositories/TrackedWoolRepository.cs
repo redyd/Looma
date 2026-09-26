@@ -79,7 +79,7 @@ public sealed class TrackedWoolRepository(LoomaDbContext context) : ITrackedWool
         {
             var wool = await context.Wools.AsNoTracking().FirstOrDefaultAsync(w => w.WoolId == woolId);
             if (wool is null)
-                return Result.NotFound($"La laine {woolId} est introuvable.");
+                return Result.NotFound(Localizer.Format("Errors_WoolNotFound", woolId));
 
             string? projectName = null;
             PatternType? patternType = null;
@@ -96,7 +96,7 @@ public sealed class TrackedWoolRepository(LoomaDbContext context) : ITrackedWool
                     .FirstOrDefaultAsync();
 
                 if (project is null)
-                    return Result.NotFound($"Le projet {projectId.Value} est introuvable.");
+                    return Result.NotFound(Localizer.Format("Errors_ProjectNotFound", projectId.Value));
 
                 projectName = project.Name;
                 patternType = project.PatternType;
@@ -126,11 +126,11 @@ public sealed class TrackedWoolRepository(LoomaDbContext context) : ITrackedWool
         }
         catch (DbUpdateException ex)
         {
-            return Result.Failure($"Impossible d'ajouter le suivi de stock de laine: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToTrackStock", ex.Message));
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Impossible d'ajouter le suivi de stock de laine: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToTrackStock", ex.Message));
         }
     }
 

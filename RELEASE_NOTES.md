@@ -14,6 +14,7 @@
 - Export all your data (yarns, patterns, projects, documents, images, themes and preferences) into a single `.looma` file.
 - Import a backup to restore everything. The file is fully checked before anything is changed, a safety backup of your current data is created first, and Looma restarts to apply it.
 - Looma now backs up your data automatically before each database update (the 5 most recent are kept).
+- Added a **Reset the application** button in the settings, protected by a double confirmation. Your data is backed up automatically before being erased.
 
 ## Data Safety
 

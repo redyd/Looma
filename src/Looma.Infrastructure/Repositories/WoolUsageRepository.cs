@@ -73,7 +73,7 @@ public class WoolUsageRepository(LoomaDbContext context) : IWoolUsageRepository
                 .FirstOrDefaultAsync(w => w.ProjectId == projectId && w.WoolId == woolId);
             if (usage is null)
             {
-                return Result.NotFound("La laine sélectionnée n'est pas liée à ce projet.");
+                return Result.NotFound(Localizer.Get("Errors_WoolNotLinkedToProject"));
             }
 
             usage.StockUsed = Math.Max(0, stockUsed);
@@ -82,11 +82,11 @@ public class WoolUsageRepository(LoomaDbContext context) : IWoolUsageRepository
         }
         catch (DbUpdateException ex)
         {
-            return Result.Failure($"Impossible de mettre à jour l'utilisation de laine: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToUpdateWoolUsageGeneric", ex.Message));
         }
         catch (Exception ex)
         {
-            return Result.Failure($"Impossible de mettre à jour l'utilisation de laine: {ex.Message}");
+            return Result.Failure(Localizer.Format("Errors_UnableToUpdateWoolUsageGeneric", ex.Message));
         }
     }
 

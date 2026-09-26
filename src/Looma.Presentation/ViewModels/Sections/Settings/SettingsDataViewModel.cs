@@ -31,7 +31,7 @@ public partial class SettingsDataViewModel(
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(
-        nameof(ExportCommand), nameof(PickImportCommand), nameof(ConfirmImportCommand),
+        nameof(ExportCommand), nameof(PickImportCommand), nameof(ConfirmImportCommand), nameof(ConfirmResetCommand),
         nameof(CheckIntegrityCommand), nameof(QuarantineOrphansCommand), nameof(RemoveMissingDocumentsCommand))]
     public partial bool IsBusy { get; set; }
 
@@ -57,6 +57,15 @@ public partial class SettingsDataViewModel(
     public partial bool HasMissingDocuments { get; set; }
 
     public bool IsHealthy => IntegrityChecked && !HasIntegrityIssues;
+
+    /// <summary>0 = idle, 1 = first confirmation shown, 2 = final confirmation shown.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsResetIdle), nameof(IsResetFirstConfirmationVisible), nameof(IsResetFinalConfirmationVisible))]
+    public partial int ResetConfirmationStep { get; set; }
+
+    public bool IsResetIdle => ResetConfirmationStep == 0;
+    public bool IsResetFirstConfirmationVisible => ResetConfirmationStep == 1;
+    public bool IsResetFinalConfirmationVisible => ResetConfirmationStep == 2;
 
     private bool CanAct() => !IsBusy;
 
@@ -170,6 +179,44 @@ public partial class SettingsDataViewModel(
 
         await RefreshIntegrityAsync();
     });
+
+    [RelayCommand]
+    private void RequestReset() => ResetConfirmationStep = 1;
+
+    [RelayCommand]
+    private void ContinueReset()
+    {
+        if (ResetConfirmationStep == 1)
+            ResetConfirmationStep = 2;
+    }
+
+    [RelayCommand]
+    private void CancelReset() => ResetConfirmationStep = 0;
+
+    [RelayCommand(CanExecute = nameof(CanAct))]
+    private async Task ConfirmResetAsync()
+    {
+        // Both confirmations are required: the final button does nothing on its own.
+        if (ResetConfirmationStep != 2)
+            return;
+
+        var scheduled = false;
+        await RunBusyAsync(async () =>
+        {
+            var result = await backupService.ScheduleResetAsync();
+            if (result.Failed)
+            {
+                notifications.Error(result.Error ?? Translation["Settings_Data_Notifications_UnableToReset"]);
+                return;
+            }
+
+            scheduled = true;
+        });
+
+        ResetConfirmationStep = 0;
+        if (scheduled)
+            lifetime.Restart();
+    }
 
     [RelayCommand]
     private void OpenBackupsFolder()

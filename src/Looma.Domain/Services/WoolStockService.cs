@@ -26,7 +26,7 @@ public class WoolStockService(
         {
             if (!double.IsFinite(request.Quantity) || request.Quantity <= 0)
             {
-                return Result.Failure("La quantité doit être supérieure à zéro.");
+                return Result.Failure(Localizer.Get("Errors_QuantityMustBePositive"));
             }
 
             return unitOfWork is null
@@ -49,7 +49,7 @@ public class WoolStockService(
         var usageResult = await repository.GetUsageAsync(request.ProjectId, request.WoolId);
         if (usageResult.Failed || usageResult.Value is null)
         {
-            return Result.Failure("Une erreur est survenue lors de la récupération de l'usage de la laine.");
+            return Result.Failure(Localizer.Get("Errors_UnableToReadWoolUsage"));
         }
 
         var usage = usageResult.Value;
@@ -74,7 +74,7 @@ public class WoolStockService(
 
         if (request is { IsAddition: true, DeductImmediately: true } && delta > usage.Wool.Stock)
         {
-            return Result.Failure("Le stock disponible est insuffisant.");
+            return Result.Failure(Localizer.Get("Errors_InsufficientStock"));
         }
 
         var newStockUsed = usage.StockUsed + delta;
@@ -85,7 +85,7 @@ public class WoolStockService(
             var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, restore);
             if (result.Failed)
             {
-                return Result.Failure(result.Error ?? "Erreur inconnue");
+                return Result.Failure(result.Error ?? Localizer.Get("Errors_Unknown"));
             }
 
             var trackingResult = await TrackStockChangeAsync(request.WoolId, restore, request.ProjectId);
@@ -98,7 +98,7 @@ public class WoolStockService(
         var updateResult = await repository.UpdateStockUsedAsync(request.ProjectId, request.WoolId, newStockUsed);
         if (updateResult.Failed)
         {
-            return Result.Failure(updateResult.Error ?? "Erreur inconnue");
+            return Result.Failure(updateResult.Error ?? Localizer.Get("Errors_Unknown"));
         }
 
         if (request.IsAddition && request.DeductImmediately)
@@ -107,7 +107,7 @@ public class WoolStockService(
             var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, stockDelta);
             if (result.Failed)
             {
-                return Result.Failure(result.Error ?? "Erreur inconnue");
+                return Result.Failure(result.Error ?? Localizer.Get("Errors_Unknown"));
             }
 
             var trackingResult = await TrackStockChangeAsync(request.WoolId, stockDelta, request.ProjectId);
@@ -122,7 +122,7 @@ public class WoolStockService(
             var result = await repository.UpdateStockAlreadyUsedAsync(request.ProjectId, request.WoolId, newStockUsed);
             if (result.Failed)
             {
-                return Result.Failure(result.Error ?? "Erreur inconnue");
+                return Result.Failure(result.Error ?? Localizer.Get("Errors_Unknown"));
             }
         }
 
@@ -148,7 +148,7 @@ public class WoolStockService(
 
         var result = await trackedWoolRepository.AddAsync(woolId, quantity, projectId);
         return result.Failed
-            ? Result.Failure(result.Error ?? "Erreur lors de l'ajout du suivi de stock.")
+            ? Result.Failure(result.Error ?? Localizer.Get("Errors_UnableToTrackStockNoDetail"))
             : Result.Ok();
     }
 }

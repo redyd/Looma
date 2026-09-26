@@ -133,6 +133,7 @@ public sealed class RecoveryBackupViewModel(BackupInfo backup, TranslationServic
     {
         "pre-migration" => translation["Backup_Reason_PreMigration"],
         "pre-import" => translation["Backup_Reason_PreImport"],
+        "pre-reset" => translation["Backup_Reason_PreReset"],
         _ => Backup.Reason
     };
 }

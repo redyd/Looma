@@ -139,4 +139,56 @@ public sealed class SettingsDataViewModelTests
         vm.IsHealthy.Should().BeTrue();
         vm.HasOrphanFiles.Should().BeFalse();
     }
+
+    [Fact]
+    public async Task Reset_RequiresBothConfirmationsBeforeScheduling()
+    {
+        var vm = CreateViewModel();
+
+        await vm.ConfirmResetCommand.ExecuteAsync(null);
+        vm.RequestResetCommand.Execute(null);
+        vm.IsResetFirstConfirmationVisible.Should().BeTrue();
+        await vm.ConfirmResetCommand.ExecuteAsync(null);
+
+        _backup.ResetCalls.Should().Be(0, "the final button is ignored until both confirmations are given");
+        _lifetime.RestartCalls.Should().Be(0);
+
+        vm.ContinueResetCommand.Execute(null);
+        vm.IsResetFinalConfirmationVisible.Should().BeTrue();
+        await vm.ConfirmResetCommand.ExecuteAsync(null);
+
+        _backup.ResetCalls.Should().Be(1);
+        _lifetime.RestartCalls.Should().Be(1);
+        vm.IsResetIdle.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Reset_CancelAtAnyStepReturnsToIdle()
+    {
+        var vm = CreateViewModel();
+
+        vm.RequestResetCommand.Execute(null);
+        vm.CancelResetCommand.Execute(null);
+        vm.IsResetIdle.Should().BeTrue();
+
+        vm.RequestResetCommand.Execute(null);
+        vm.ContinueResetCommand.Execute(null);
+        vm.CancelResetCommand.Execute(null);
+        vm.IsResetIdle.Should().BeTrue();
+        _backup.ResetCalls.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task Reset_WhenSchedulingFails_ShowsErrorAndDoesNotRestart()
+    {
+        _backup.ResetResult = Result.Failure("locked");
+        var vm = CreateViewModel();
+        vm.RequestResetCommand.Execute(null);
+        vm.ContinueResetCommand.Execute(null);
+
+        await vm.ConfirmResetCommand.ExecuteAsync(null);
+
+        _lifetime.RestartCalls.Should().Be(0);
+        _notifications.Calls.Should().Contain(call => call.Severity == NotificationSeverity.Error && call.Message == "locked");
+    }
 }

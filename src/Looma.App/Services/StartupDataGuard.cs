@@ -29,6 +29,26 @@ public sealed class StartupDataGuard(AppPaths paths, BackupService backupService
     public (bool Success, string Message)? PendingNotice { get; private set; }
 
     /// <summary>
+    /// Erases the application data when the user asked for a reset. Must run before anything reads the data files.
+    /// </summary>
+    public void ApplyPendingReset()
+    {
+        var result = backupService.ApplyPendingReset();
+        if (result is null)
+            return;
+
+        if (result.Failed)
+        {
+            logger.Log(DomainLogLevel.Error, $"Pending reset failed: {result.Error}");
+            PendingNotice = (false, result.Error ?? Localizer.Get("Backup_Errors_UnableToReset"));
+            return;
+        }
+
+        logger.Log(DomainLogLevel.Information, "Application data reset.");
+        PendingNotice = (true, Localizer.Get("Backup_Notifications_ResetApplied"));
+    }
+
+    /// <summary>
     /// Applies a staged import. Must run before any database connection and before themes are seeded.
     /// </summary>
     public void ApplyPendingRestore()

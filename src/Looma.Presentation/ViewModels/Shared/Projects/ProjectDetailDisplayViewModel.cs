@@ -2,6 +2,7 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
+using Looma.Presentation.Services;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Looma.Domain.Core;
@@ -47,7 +48,7 @@ public partial class ProjectDetailDisplayViewModel : ViewModelBase
     public string StatusDisplay => Translation[$"Enum_{Status}"];
     public string NoteDisplay => string.IsNullOrWhiteSpace(Note) ? Translation["Common_NoNote"] : Note!;
     public string PatternName => Pattern?.Name ?? Translation["Projects_NoPattern"];
-    public string PatternTypeDisplay => Pattern?.Type.GetDisplayName() ?? "-";
+    public string PatternTypeDisplay => (Pattern is null ? "-" : TranslationService.Current.EnumName(Pattern.Type));
     public string PatternNoteDisplay => string.IsNullOrWhiteSpace(Pattern?.Note) ? Translation["Common_NoNote"] : Pattern.Note!;
     public string PatternActionText => Pattern is null ? Translation["Common_Add"] : Translation["Common_Open"];
     public bool HasWools => Wools.Count > 0;

@@ -15,6 +15,7 @@ using Looma.Presentation.Notifications;
 using Looma.Presentation.Services;
 using Looma.Presentation.ViewModels.Base;
 using Looma.Presentation.ViewModels.Shared.Settings;
+using Looma.Domain.Localization;
 
 namespace Looma.Presentation.ViewModels.Sections.Settings;
 
@@ -115,7 +116,7 @@ public partial class SettingsViewModel(
                 || !CultureMatches(value.Culture, CultureInfo.CurrentUICulture))
             {
                 throw new InvalidOperationException(
-                    $"La culture active est {currentCulture}/{currentUiCulture} au lieu de {value.Culture}.");
+                    Localizer.Format("Settings_Errors_CultureMismatch", currentCulture, currentUiCulture, value.Culture));
             }
 
             notifications.Success(translation["Success_SelectedLanguageChanged"]);

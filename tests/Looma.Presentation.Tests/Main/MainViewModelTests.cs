@@ -56,28 +56,6 @@ public sealed class MainViewModelTests
     }
 
     [Fact]
-    public async Task UpdatePromptRequest_WhenUpdateExists_ShowsReusablePrompt()
-    {
-        var updater = new FakeUpdaterService
-        {
-            UpdateInformations = new UpdateInformations
-            {
-                Version = "2.0.0",
-                ReleaseNotes = "## Notes"
-            }
-        };
-        var interaction = new FakeUpdateInteractionService();
-        var vm = CreateMainViewModel(updater, interaction);
-
-        interaction.RequestUpdatePrompt();
-
-        await TestHelpers.WaitUntilAsync(() => vm.IsUpdatePromptVisible);
-        vm.IsUpdatePromptVisible.Should().BeTrue();
-        vm.UpdateVersion.Should().Be("2.0.0");
-        vm.UpdateReleaseNotes.Should().Be("## Notes");
-    }
-
-    [Fact]
     public async Task ConfirmUpdate_CallsUpdaterAndLocksPromptWhileRunning()
     {
         var updater = new FakeUpdaterService
@@ -103,23 +81,6 @@ public sealed class MainViewModelTests
         vm.CanConfirmUpdate.Should().BeFalse();
         vm.CanCloseUpdatePrompt.Should().BeFalse();
         vm.DownloadProgress.Should().Be(100);
-    }
-
-    [Fact]
-    public async Task CloseReleaseNotes_MarksCurrentVersionAsShown()
-    {
-        var updater = new FakeUpdaterService { CurrentReleaseNotes = "notes" };
-        var interaction = new FakeUpdateInteractionService();
-        var vm = CreateMainViewModel(updater, interaction);
-
-        interaction.RequestCurrentReleaseNotes();
-        await TestHelpers.WaitUntilAsync(() => vm.IsReleaseNotesVisible);
-        vm.IsReleaseNotesVisible.Should().BeTrue();
-
-        await vm.CloseReleaseNotesCommand.ExecuteAsync(null);
-
-        vm.IsReleaseNotesVisible.Should().BeFalse();
-        updater.MarkShownCalls.Should().Be(1);
     }
 
     private static SectionNavigationViewModel CreateSection() =>

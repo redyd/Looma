@@ -8,12 +8,13 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Looma.Domain.Services;
+using Looma.Presentation.Services;
 
 namespace Looma.App.Services;
 
-public sealed class AvaloniaThemeFilePicker : IThemeFilePicker
+public sealed class AvaloniaThemeFilePicker(TranslationService translation) : IThemeFilePicker
 {
-    private static readonly FilePickerFileType JsonFileType = new("Thèmes JSON")
+    private FilePickerFileType JsonFileType => new(translation["Pickers_ThemeFileType"])
     {
         Patterns = ["*.json"],
         MimeTypes = ["application/json"]
@@ -30,7 +31,7 @@ public sealed class AvaloniaThemeFilePicker : IThemeFilePicker
 
         var files = await window.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Importer un thème",
+            Title = translation["Pickers_ImportThemeTitle"],
             AllowMultiple = false,
             FileTypeFilter = [JsonFileType]
         });
