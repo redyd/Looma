@@ -26,6 +26,8 @@ using Looma.Presentation.ViewModels.Sections.Patterns;
 using Looma.Presentation.ViewModels.Sections.Statistics;
 using Looma.Presentation.ViewModels.Sections.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Looma.Infrastructure;
 using Looma.Presentation.ViewModels.Shared.Documents;
 using Looma.Domain.IServices;
 
@@ -156,7 +158,14 @@ public static class DependencyInjection
                             sp.GetRequiredService<INotificationService>(),
                             sp.GetRequiredService<IUpdaterService>(),
                             sp.GetRequiredService<IUpdateInteractionService>()),
-                        sp.GetRequiredService<IDomainLogger>())),
+                        sp.GetRequiredService<IDomainLogger>(),
+                        new SettingsDataViewModel(
+                            sp.GetRequiredService<IBackupService>(),
+                            sp.GetRequiredService<IDataIntegrityService>(),
+                            sp.GetRequiredService<IBackupFilePicker>(),
+                            sp.GetRequiredService<IAppLifetimeService>(),
+                            sp.GetRequiredService<INotificationService>(),
+                            sp.GetRequiredService<IDataRefreshService>()))),
                 
                 sp.GetRequiredService<INotificationService>(),
                 sp.GetRequiredService<IUpdaterService>(),
@@ -177,8 +186,24 @@ public static class DependencyInjection
 
         services.AddSingleton<IDocumentFilePicker, AvaloniaDocumentFilePicker>();
         services.AddSingleton<IThemeFilePicker, AvaloniaThemeFilePicker>();
+        services.AddSingleton<AppConfigStore>();
         services.AddSingleton<IThemeStorage, ThemeStorage>();
+        services.AddSingleton<BackupService>();
+        services.AddSingleton<IBackupService>(sp => sp.GetRequiredService<BackupService>());
+        services.AddSingleton<StartupDataGuard>();
+        services.AddSingleton<IDatabaseRecovery>(sp => sp.GetRequiredService<StartupDataGuard>());
+        services.AddSingleton<IBackupFilePicker, AvaloniaBackupFilePicker>();
+        services.AddSingleton<IAppLifetimeService, AppLifetimeService>();
+        services.AddTransient<IDataIntegrityService>(sp =>
+        {
+            var options = sp.GetRequiredService<DbContextOptions<LoomaDbContext>>();
+            return new DataIntegrityService(
+                () => new LoomaDbContext(options),
+                sp.GetRequiredService<AppPaths>(),
+                sp.GetRequiredService<AppConfigStore>());
+        });
         services.AddSingleton<ISettingsRepository, SettingsRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IDocumentRepository, DocumentRepository>();
         services.AddScoped<IPatternRepository, PatternRepository>();
         services.AddScoped<IWoolRepository, WoolRepository>();

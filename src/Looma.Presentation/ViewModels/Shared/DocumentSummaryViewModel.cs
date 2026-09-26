@@ -16,8 +16,10 @@ public record DocumentSummaryViewModel(
     ICommand? EditCommand = null,
     ICommand? DeleteCommand = null)
 {
-    public string TypeDisplay => Document.Type;
-    public string SizeDisplay => Document.SizeBytes.ToBytesDisplay();
+    public bool IsFileMissing => Document.StoragePath is null;
+    public bool CanOpen => !IsFileMissing;
+    public string TypeDisplay => IsFileMissing ? "—" : Document.Type;
+    public string SizeDisplay => IsFileMissing ? "—" : Document.SizeBytes.ToBytesDisplay();
     public bool HasOrigin => Document.PatternId.HasValue || Document.ProjectId.HasValue;
 
     public string OriginTypeDisplay =>

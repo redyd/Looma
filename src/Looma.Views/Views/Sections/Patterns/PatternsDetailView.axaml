@@ -124,15 +124,24 @@
                                                     ColumnDefinitions="*,140,120,Auto"
                                                     MinHeight="56"
                                                 >
-                                                    <TextBlock
-                                                        Grid.Column="0"
-                                                        Text="{Binding Document.Nickname}"
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Foreground="{DynamicResource ListItemPrimaryForegroundBrush}"
-                                                        VerticalAlignment="Center"
-                                                        TextTrimming="CharacterEllipsis"
-                                                    />
+                                                    <StackPanel Grid.Column="0" Spacing="2" VerticalAlignment="Center">
+                                                        <TextBlock
+                                                            Text="{Binding Document.Nickname}"
+                                                            FontSize="14"
+                                                            FontWeight="SemiBold"
+                                                            Foreground="{DynamicResource ListItemPrimaryForegroundBrush}"
+                                                            TextTrimming="CharacterEllipsis"
+                                                        />
+                                                        <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="{Binding IsFileMissing}"
+                                                ToolTip.Tip="{loc:Loc Documents_FileMissingHint}">
+                                        <LucideIcon Kind="TriangleAlert" Size="13"
+                                                    Foreground="{DynamicResource WarningTextForegroundBrush}"
+                                                    VerticalAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Documents_FileMissing}" FontSize="12"
+                                                   Foreground="{DynamicResource WarningTextForegroundBrush}"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                                    </StackPanel>
                                                     <TextBlock
                                                         Grid.Column="1"
                                                         Text="{Binding TypeDisplay}"
@@ -155,6 +164,7 @@
                                                         Grid.Column="3"
                                                         Content="{loc:Loc Common_Open}"
                                                         Command="{Binding OpenCommand}"
+                                                        IsEnabled="{Binding CanOpen}"
                                                         Classes="cancel-btn"
                                                         MinWidth="80"
                                                         VerticalAlignment="Center"

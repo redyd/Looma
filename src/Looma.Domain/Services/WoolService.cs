@@ -9,6 +9,7 @@ using Looma.Domain.Logging;
 using Looma.Domain.Refresh;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
+using Looma.Domain.Localization;
 
 namespace Looma.Domain.Services;
 
@@ -16,7 +17,8 @@ public sealed class WoolService(
     IWoolRepository repository,
     ITrackedWoolRepository trackedWoolRepository,
     IDomainLogger logger,
-    IDataRefreshService? refreshService = null)
+    IDataRefreshService? refreshService = null,
+    IUnitOfWork? unitOfWork = null)
     : DomainServiceBase(logger), IWoolService
 {
     public Task<ResultT<IReadOnlyList<Wool>>> GetAllAsync() =>
@@ -59,32 +61,39 @@ public sealed class WoolService(
 
     public async Task<Result> AddStockAsync(int id, double quantity, int? projectId)
     {
-        var result = await ExecuteAsync($"Wools.AddStock({id}, {quantity})", async () =>
-        {
-            var existing = await repository.GetByIdAsync(id);
-            if (existing.Failed || existing.Value is null)
-                return existing.Status == ResultStatus.NotFound
-                    ? Result.NotFound(existing.Error ?? $"La laine {id} est introuvable.")
-                    : Result.Failure(existing.Error ?? $"Impossible de charger la laine {id}.");
+        if (!double.IsFinite(quantity))
+            return Result.Failure(Localizer.Get("Data_Errors_InvalidStockQuantity"));
 
-            var trackedQuantity = Math.Max(0, existing.Value.Stock + quantity) - existing.Value.Stock;
-
-            var stockResult = await repository.AddStock(id, quantity);
-            if (stockResult.Failed)
-                return stockResult;
-
-            if (trackedQuantity != 0)
-            {
-                var trackingResult = await trackedWoolRepository.AddAsync(id, trackedQuantity, projectId);
-                if (trackingResult.Failed)
-                    return trackingResult;
-            }
-
-            return Result.Ok();
-        });
+        var result = await ExecuteAsync($"Wools.AddStock({id}, {quantity})", () => unitOfWork is null
+            ? ApplyStockChangeAsync(id, quantity, projectId)
+            : unitOfWork.ExecuteAsync(() => ApplyStockChangeAsync(id, quantity, projectId)));
 
         PublishIfSucceeded(result, RefreshScope.Wools, $"Wool {id} stock changed.");
         return result;
+    }
+
+    private async Task<Result> ApplyStockChangeAsync(int id, double quantity, int? projectId)
+    {
+        var existing = await repository.GetByIdAsync(id);
+        if (existing.Failed || existing.Value is null)
+            return existing.Status == ResultStatus.NotFound
+                ? Result.NotFound(existing.Error ?? $"La laine {id} est introuvable.")
+                : Result.Failure(existing.Error ?? $"Impossible de charger la laine {id}.");
+
+        var trackedQuantity = Math.Max(0, existing.Value.Stock + quantity) - existing.Value.Stock;
+
+        var stockResult = await repository.AddStock(id, quantity);
+        if (stockResult.Failed)
+            return stockResult;
+
+        if (trackedQuantity != 0)
+        {
+            var trackingResult = await trackedWoolRepository.AddAsync(id, trackedQuantity, projectId);
+            if (trackingResult.Failed)
+                return trackingResult;
+        }
+
+        return Result.Ok();
     }
 
     private void PublishIfSucceeded(ResultBase result, RefreshScope scope, string reason)
@@ -93,8 +102,12 @@ public sealed class WoolService(
             refreshService?.RequestRefresh(scope, reason);
     }
 
-    private static Result Validate(CreateWoolRequest request) =>
-        ValidateWool(
+    private static Result Validate(CreateWoolRequest request)
+    {
+        if (!double.IsFinite(request.Stock) || request.Stock < 0)
+            return Result.Failure(Localizer.Get("Data_Errors_StockMustBePositive"));
+
+        return ValidateWool(
             request.Name,
             request.Brand,
             request.Material,
@@ -102,6 +115,7 @@ public sealed class WoolService(
             request.Length,
             request.NeedleMinSize,
             request.NeedleMaxSize);
+    }
 
     private static Result Validate(UpdateWoolRequest request) =>
         ValidateWool(
@@ -131,10 +145,10 @@ public sealed class WoolService(
         if (string.IsNullOrWhiteSpace(material))
             return Result.Failure("La matière de la laine est requise.");
 
-        if (weight <= 0)
+        if (!double.IsFinite(weight) || weight <= 0)
             return Result.Failure("Le poids doit être un nombre positif.");
 
-        if (length <= 0)
+        if (!double.IsFinite(length) || length <= 0)
             return Result.Failure("La longueur doit être un nombre positif.");
 
         if (Wool.FindNeedleRange(needleMinSize, needleMaxSize) is null)

@@ -5,10 +5,11 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Resources;
+using Looma.Domain.Localization;
 
 namespace Looma.Presentation.Services;
 
-public sealed class TranslationService : INotifyPropertyChanged
+public sealed class TranslationService : INotifyPropertyChanged, ILocalizer
 {
     public static readonly string[] SupportedLanguage = ["fr", "en", "nl", "de", "es"];
     public static TranslationService Current { get; private set; } = new();
@@ -19,6 +20,7 @@ public sealed class TranslationService : INotifyPropertyChanged
     public TranslationService()
     {
         Current = this;
+        Localizer.Current = this;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -115,6 +115,15 @@
                                             FontWeight="SemiBold"
                                             TextTrimming="CharacterEllipsis"
                                         />
+                                        <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="{Binding IsFileMissing}"
+                                                ToolTip.Tip="{loc:Loc Documents_FileMissingHint}">
+                                        <LucideIcon Kind="TriangleAlert" Size="13"
+                                                    Foreground="{DynamicResource WarningTextForegroundBrush}"
+                                                    VerticalAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Documents_FileMissing}" FontSize="12"
+                                                   Foreground="{DynamicResource WarningTextForegroundBrush}"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
                                     </StackPanel>
                                     <TextBlock
                                         Grid.Column="1"
@@ -162,6 +171,7 @@
                                         <Button
                                             Content="{loc:Loc Common_Open}"
                                             Command="{Binding OpenCommand}"
+                                            IsEnabled="{Binding CanOpen}"
                                             Classes="cancel-btn"
                                             MinWidth="80"
                                         />

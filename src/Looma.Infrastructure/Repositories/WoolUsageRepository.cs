@@ -7,6 +7,7 @@ using Looma.Domain.Entities;
 using Looma.Domain.Repositories;
 using Looma.Infrastructure.Mapping;
 using Microsoft.EntityFrameworkCore;
+using Looma.Domain.Localization;
 
 namespace Looma.Infrastructure.Repositories;
 
@@ -91,38 +92,65 @@ public class WoolUsageRepository(LoomaDbContext context) : IWoolUsageRepository
 
     public async Task<Result> UpdateCurrentStockUsageAsync(int projectId, int woolId, double stockUsed)
     {
-        var usage = context.WoolsForProjects
-            .Where(w => w.ProjectId == projectId && w.WoolId == woolId)
-            .Include(w => w.WoolEntity)
-            .FirstOrDefault();
+        if (!double.IsFinite(stockUsed))
+            return Result.Failure(Localizer.Get("Data_Errors_InvalidStockQuantity"));
 
-        if (usage is null)
+        try
         {
-            return Result.NotFound($"No usage found for project {projectId} and wool {woolId}");
+            var usage = await context.WoolsForProjects
+                .Where(w => w.ProjectId == projectId && w.WoolId == woolId)
+                .Include(w => w.WoolEntity)
+                .FirstOrDefaultAsync();
+
+            if (usage is null)
+            {
+                return Result.NotFound($"No usage found for project {projectId} and wool {woolId}");
+            }
+
+            usage.WoolEntity.Stock = Math.Max(0, usage.WoolEntity.Stock + stockUsed);
+            usage.StockAlreadyUsed = Math.Max(0, usage.StockAlreadyUsed - stockUsed);
+
+            await context.SaveChangesAsync();
+            return Result.Ok();
         }
-
-        usage.WoolEntity.Stock = Math.Max(0, usage.WoolEntity.Stock + stockUsed);
-        usage.StockAlreadyUsed = Math.Max(0, usage.StockAlreadyUsed - stockUsed);
-
-        await context.SaveChangesAsync();
-        return Result.Ok();
+        catch (DbUpdateException ex)
+        {
+            return Result.Failure(Localizer.Format("Data_Errors_UnableToUpdateWoolStock", woolId, ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(Localizer.Format("Data_Errors_UnableToUpdateWoolStock", woolId, ex.Message));
+        }
     }
 
     public async Task<Result> UpdateStockAlreadyUsedAsync(int projectId, int woolId, double stockAlreadyUsed)
     {
-        var usage = context.WoolsForProjects
-            .Where(w => w.ProjectId == projectId && w.WoolId == woolId)
-            .Include(w => w.WoolEntity)
-            .FirstOrDefault();
+        if (!double.IsFinite(stockAlreadyUsed))
+            return Result.Failure(Localizer.Get("Data_Errors_InvalidStockQuantity"));
 
-        if (usage is null)
+        try
         {
-            return Result.NotFound($"No usage found for project {projectId} and wool {woolId}");
+            var usage = await context.WoolsForProjects
+                .Where(w => w.ProjectId == projectId && w.WoolId == woolId)
+                .FirstOrDefaultAsync();
+
+            if (usage is null)
+            {
+                return Result.NotFound($"No usage found for project {projectId} and wool {woolId}");
+            }
+
+            usage.StockAlreadyUsed = Math.Max(0, stockAlreadyUsed);
+
+            await context.SaveChangesAsync();
+            return Result.Ok();
         }
-
-        usage.StockAlreadyUsed = stockAlreadyUsed;
-
-        await context.SaveChangesAsync();
-        return Result.Ok();
+        catch (DbUpdateException ex)
+        {
+            return Result.Failure(Localizer.Format("Data_Errors_UnableToUpdateWoolUsage", woolId, ex.Message));
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(Localizer.Format("Data_Errors_UnableToUpdateWoolUsage", woolId, ex.Message));
+        }
     }
 }

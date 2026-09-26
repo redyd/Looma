@@ -19,7 +19,7 @@ public sealed class ThemeStorageTests : IDisposable
         var paths = new AppPaths(_rootPath);
         paths.EnsureDirectoriesExist();
         var sourceFolder = CreateSeedFolder(("looma.json", """{"Name":"Looma"}"""));
-        var storage = new ThemeStorage(paths);
+        var storage = new ThemeStorage(paths, new AppConfigStore(paths));
 
         var copied = storage.SeedThemeFiles(sourceFolder);
 
@@ -35,7 +35,7 @@ public sealed class ThemeStorageTests : IDisposable
         var destinationPath = Path.Combine(paths.ThemesFolder, "looma.json");
         File.WriteAllText(destinationPath, """{"Name":"User theme"}""");
         var sourceFolder = CreateSeedFolder(("looma.json", """{"Name":"Seed theme"}"""));
-        var storage = new ThemeStorage(paths);
+        var storage = new ThemeStorage(paths, new AppConfigStore(paths));
 
         var copied = storage.SeedThemeFiles(sourceFolder);
 
@@ -49,7 +49,7 @@ public sealed class ThemeStorageTests : IDisposable
         var paths = new AppPaths(_rootPath);
         paths.EnsureDirectoriesExist();
         var sourceFolder = CreateSeedFolder(("ignored.txt", "not a theme"));
-        var storage = new ThemeStorage(paths);
+        var storage = new ThemeStorage(paths, new AppConfigStore(paths));
 
         var copied = storage.SeedThemeFiles(sourceFolder);
 
@@ -64,7 +64,7 @@ public sealed class ThemeStorageTests : IDisposable
         paths.EnsureDirectoriesExist();
         var themePath = Path.Combine(paths.ThemesFolder, "looma.json");
         File.WriteAllText(themePath, """{"Name":"Theme"}""");
-        var storage = new ThemeStorage(paths);
+        var storage = new ThemeStorage(paths, new AppConfigStore(paths));
 
         storage.DeleteTheme(themePath);
 
@@ -78,7 +78,7 @@ public sealed class ThemeStorageTests : IDisposable
         paths.EnsureDirectoriesExist();
         var themePath = Path.Combine(paths.ThemesFolder, "looma.json");
         File.WriteAllText(themePath, """{"Name":"Theme"}""");
-        var storage = new ThemeStorage(paths);
+        var storage = new ThemeStorage(paths, new AppConfigStore(paths));
         storage.SaveSelectedTheme(themePath);
 
         storage.DeleteTheme(themePath);
@@ -94,7 +94,7 @@ public sealed class ThemeStorageTests : IDisposable
         var themePath = Path.Combine(paths.ThemesFolder, "looma.json");
         File.WriteAllText(themePath, """{"Name":"Theme"}""");
         File.WriteAllText(paths.ConfigPath, """{"SelectedLanguage":"es"}""");
-        var storage = new ThemeStorage(paths);
+        var storage = new ThemeStorage(paths, new AppConfigStore(paths));
 
         storage.SaveSelectedTheme(themePath);
 
@@ -103,17 +103,46 @@ public sealed class ThemeStorageTests : IDisposable
     }
 
     [Fact]
-    public void GetSelectedThemePath_WhenConfigJsonIsInvalid_ThrowsClearError()
+    public void GetSelectedThemePath_WhenConfigJsonIsInvalid_ReturnsNullAndSetsFileAside()
     {
         var paths = new AppPaths(_rootPath);
         paths.EnsureDirectoriesExist();
         File.WriteAllText(paths.ConfigPath, """{"SelectedTheme":""");
-        var storage = new ThemeStorage(paths);
+        var storage = new ThemeStorage(paths, new AppConfigStore(paths));
 
-        var exception = Assert.Throws<InvalidOperationException>(() => storage.GetSelectedThemePath());
+        var selected = storage.GetSelectedThemePath();
 
-        Assert.Contains("Le fichier de configuration \"config.json\" contient un JSON invalide.", exception.Message);
-        Assert.Contains("Vérifiez la syntaxe du fichier.", exception.Message);
+        Assert.Null(selected);
+        Assert.Single(Directory.EnumerateFiles(_rootPath, "config.json.corrupt-*"));
+    }
+
+    [Fact]
+    public void SeedThemeFiles_ReplacesCorruptedThemeAndKeepsCopy()
+    {
+        var paths = new AppPaths(_rootPath);
+        paths.EnsureDirectoriesExist();
+        var destinationPath = Path.Combine(paths.ThemesFolder, "looma.json");
+        File.WriteAllText(destinationPath, """{"Name":""");
+        var sourceFolder = CreateSeedFolder(("looma.json", """{"Name":"Seed theme"}"""));
+        var storage = new ThemeStorage(paths, new AppConfigStore(paths));
+
+        var copied = storage.SeedThemeFiles(sourceFolder);
+
+        Assert.Equal(1, copied);
+        Assert.Equal("""{"Name":"Seed theme"}""", File.ReadAllText(destinationPath));
+        Assert.Single(Directory.EnumerateFiles(paths.ThemesFolder, "looma.json.corrupt-*"));
+    }
+
+    [Fact]
+    public void ImportTheme_RejectsInvalidJson()
+    {
+        var paths = new AppPaths(_rootPath);
+        paths.EnsureDirectoriesExist();
+        var sourceFolder = CreateSeedFolder(("broken.json", "{not json"));
+        var storage = new ThemeStorage(paths, new AppConfigStore(paths));
+
+        Assert.Throws<InvalidOperationException>(() => storage.ImportTheme(Path.Combine(sourceFolder, "broken.json")));
+        Assert.Empty(Directory.EnumerateFiles(paths.ThemesFolder));
     }
 
     public void Dispose()

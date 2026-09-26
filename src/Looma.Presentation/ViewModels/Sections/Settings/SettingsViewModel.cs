@@ -27,7 +27,8 @@ public partial class SettingsViewModel(
     INotificationService notifications,
     TranslationService translation,
     SettingsUpdaterViewModel updater,
-    IDomainLogger logger)
+    IDomainLogger logger,
+    SettingsDataViewModel data)
     : PageViewModelBase
 {
     private bool _isLoadingThemes;
@@ -38,6 +39,7 @@ public partial class SettingsViewModel(
     public ObservableCollection<ThemeOptionViewModel> Themes { get; } = [];
     public ObservableCollection<LanguageOptionViewModel> Languages { get; } = [];
     public SettingsUpdaterViewModel Updater { get; } = updater;
+    public SettingsDataViewModel Data { get; } = data;
 
     [ObservableProperty]
     public partial ThemeOptionViewModel? SelectedTheme { get; set; }

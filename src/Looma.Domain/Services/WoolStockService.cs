@@ -8,6 +8,7 @@ using Looma.Domain.Logging;
 using Looma.Domain.Refresh;
 using Looma.Domain.Repositories;
 using Looma.Domain.Request;
+using Looma.Domain.Localization;
 
 namespace Looma.Domain.Services;
 
@@ -15,94 +16,22 @@ public class WoolStockService(
     IWoolUsageRepository repository,
     ITrackedWoolRepository? trackedWoolRepository = null,
     IDomainLogger? logger = null,
-    IDataRefreshService? refreshService = null)
+    IDataRefreshService? refreshService = null,
+    IUnitOfWork? unitOfWork = null)
     : DomainServiceBase(logger), IWoolStockService
 {
     public async Task<Result> AdjustWoolUsageAsync(AdjustProjectWoolUsageRequest request)
     {
         var result = await ExecuteAsync($"WoolUsage.Adjust(project:{request.ProjectId}, wool:{request.WoolId})", async () =>
         {
-            if (request.Quantity <= 0)
+            if (!double.IsFinite(request.Quantity) || request.Quantity <= 0)
             {
                 return Result.Failure("La quantité doit être supérieure à zéro.");
             }
 
-            var usageResult = await repository.GetUsageAsync(request.ProjectId, request.WoolId);
-            if (usageResult.Failed || usageResult.Value is null)
-            {
-                return Result.Failure("Une erreur est survenue lors de la récupération de l'usage de la laine.");
-            }
-
-            var usage = usageResult.Value;
-            var factor = request.Mode switch
-            {
-                StockAdjustmentMode.ByBall => 0,
-                StockAdjustmentMode.ByWeight => usage.Wool.Weight,
-                StockAdjustmentMode.ByLength => usage.Wool.Length,
-                _ => 0
-            };
-            var delta = ComputeStockQuantity(request.Mode, request.IsAddition, request.Quantity, factor);
-
-            if (!request.IsAddition && Math.Abs(delta) > usage.StockUsed)
-            {
-                delta = -usage.StockUsed;
-            }
-
-            if (request is { IsAddition: true, DeductImmediately: true } && delta > usage.Wool.Stock)
-            {
-                return Result.Failure("Le stock disponible est insuffisant.");
-            }
-
-            var newStockUsed = usage.StockUsed + delta;
-
-            if (request is { IsAddition: false, DeductImmediately: true })
-            {
-                var restore = Math.Min(Math.Abs(delta), usage.StockAlreadyUsed);
-                var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, restore);
-                if (result.Failed)
-                {
-                    return Result.Failure(result.Error ?? "Erreur inconnue");
-                }
-
-                var trackingResult = await TrackStockChangeAsync(request.WoolId, restore, request.ProjectId);
-                if (trackingResult.Failed)
-                {
-                    return trackingResult;
-                }
-            }
-
-            var updateResult = await repository.UpdateStockUsedAsync(request.ProjectId, request.WoolId, newStockUsed);
-            if (updateResult.Failed)
-            {
-                return Result.Failure(updateResult.Error ?? "Erreur inconnue");
-            }
-
-            if (request.IsAddition && request.DeductImmediately)
-            {
-                var stockDelta = -delta;
-                var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, stockDelta);
-                if (result.Failed)
-                {
-                    return Result.Failure(result.Error ?? "Erreur inconnue");
-                }
-
-                var trackingResult = await TrackStockChangeAsync(request.WoolId, stockDelta, request.ProjectId);
-                if (trackingResult.Failed)
-                {
-                    return trackingResult;
-                }
-            }
-
-            if (usage.StockAlreadyUsed > newStockUsed)
-            {
-                var result = await repository.UpdateStockAlreadyUsedAsync(request.ProjectId, request.WoolId, newStockUsed);
-                if (result.Failed)
-                {
-                    return Result.Failure(result.Error ?? "Erreur inconnue");
-                }
-            }
-
-            return Result.Ok();
+            return unitOfWork is null
+                ? await ApplyAdjustmentAsync(request)
+                : await unitOfWork.ExecuteAsync(() => ApplyAdjustmentAsync(request));
         });
 
         var scope = RefreshScope.Projects;
@@ -113,6 +42,91 @@ public class WoolStockService(
             refreshService?.RequestRefresh(scope, $"Wool usage changed for project {request.ProjectId}.");
 
         return result;
+    }
+
+    private async Task<Result> ApplyAdjustmentAsync(AdjustProjectWoolUsageRequest request)
+    {
+        var usageResult = await repository.GetUsageAsync(request.ProjectId, request.WoolId);
+        if (usageResult.Failed || usageResult.Value is null)
+        {
+            return Result.Failure("Une erreur est survenue lors de la récupération de l'usage de la laine.");
+        }
+
+        var usage = usageResult.Value;
+        var factor = request.Mode switch
+        {
+            StockAdjustmentMode.ByBall => 0,
+            StockAdjustmentMode.ByWeight => usage.Wool.Weight,
+            StockAdjustmentMode.ByLength => usage.Wool.Length,
+            _ => 0
+        };
+        if (request.Mode != StockAdjustmentMode.ByBall && (!double.IsFinite(factor) || factor <= 0))
+        {
+            return Result.Failure(Localizer.Get("Data_Errors_InvalidWoolWeightOrLength"));
+        }
+
+        var delta = ComputeStockQuantity(request.Mode, request.IsAddition, request.Quantity, factor);
+
+        if (!request.IsAddition && Math.Abs(delta) > usage.StockUsed)
+        {
+            delta = -usage.StockUsed;
+        }
+
+        if (request is { IsAddition: true, DeductImmediately: true } && delta > usage.Wool.Stock)
+        {
+            return Result.Failure("Le stock disponible est insuffisant.");
+        }
+
+        var newStockUsed = usage.StockUsed + delta;
+
+        if (request is { IsAddition: false, DeductImmediately: true })
+        {
+            var restore = Math.Min(Math.Abs(delta), usage.StockAlreadyUsed);
+            var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, restore);
+            if (result.Failed)
+            {
+                return Result.Failure(result.Error ?? "Erreur inconnue");
+            }
+
+            var trackingResult = await TrackStockChangeAsync(request.WoolId, restore, request.ProjectId);
+            if (trackingResult.Failed)
+            {
+                return trackingResult;
+            }
+        }
+
+        var updateResult = await repository.UpdateStockUsedAsync(request.ProjectId, request.WoolId, newStockUsed);
+        if (updateResult.Failed)
+        {
+            return Result.Failure(updateResult.Error ?? "Erreur inconnue");
+        }
+
+        if (request.IsAddition && request.DeductImmediately)
+        {
+            var stockDelta = -delta;
+            var result = await repository.UpdateCurrentStockUsageAsync(request.ProjectId, request.WoolId, stockDelta);
+            if (result.Failed)
+            {
+                return Result.Failure(result.Error ?? "Erreur inconnue");
+            }
+
+            var trackingResult = await TrackStockChangeAsync(request.WoolId, stockDelta, request.ProjectId);
+            if (trackingResult.Failed)
+            {
+                return trackingResult;
+            }
+        }
+
+        if (usage.StockAlreadyUsed > newStockUsed)
+        {
+            var result = await repository.UpdateStockAlreadyUsedAsync(request.ProjectId, request.WoolId, newStockUsed);
+            if (result.Failed)
+            {
+                return Result.Failure(result.Error ?? "Erreur inconnue");
+            }
+        }
+
+        return Result.Ok();
     }
 
     private static double ComputeStockQuantity(StockAdjustmentMode mode, bool isAddition, double quantity, double factor)

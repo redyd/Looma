@@ -12,12 +12,17 @@ public class AppPaths(string baseRoot)
     public string ConfigPath => Path.Combine(baseRoot, "config.json");
     public string DocumentsFolder => Path.Combine(baseRoot, "documents");
     public string ThemesFolder => Path.Combine(baseRoot, "themes");
+    public string BackupsFolder => Path.Combine(baseRoot, "backups");
+    public string PendingRestoreFolder => Path.Combine(baseRoot, "pending-restore");
+    public string OrphanDocumentsFolder => Path.Combine(DocumentsFolder, ".orphans");
+    public string RootPath => baseRoot;
 
     public void EnsureDirectoriesExist()
     {
         Directory.CreateDirectory(baseRoot);
         Directory.CreateDirectory(DocumentsFolder);
         Directory.CreateDirectory(ThemesFolder);
+        Directory.CreateDirectory(BackupsFolder);
     }
 
     public void EnsureDatabaseCreated(LoomaDbContext context)
@@ -46,6 +51,25 @@ public class AppPaths(string baseRoot)
             .FirstOrDefault();
 
         return match ?? exact;
+    }
+
+    /// <summary>
+    /// Deletes the stored file of a document. Call only after the database change is committed:
+    /// a leftover file is recoverable (orphan), a dangling database row pointing to nothing is not.
+    /// </summary>
+    public bool TryDeleteDocumentFile(Guid id)
+    {
+        try
+        {
+            var filePath = GetDocumentStoragePath(id);
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+            return true;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            return false;
+        }
     }
 
     public static string BuildDocumentFileName(Guid id, string sourcePath)

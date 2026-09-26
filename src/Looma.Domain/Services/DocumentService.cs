@@ -12,7 +12,11 @@ using Looma.Domain.Request;
 
 namespace Looma.Domain.Services;
 
-public sealed class DocumentService(IDocumentRepository repository, IDomainLogger logger, IDataRefreshService? refreshService = null)
+public sealed class DocumentService(
+    IDocumentRepository repository,
+    IDomainLogger logger,
+    IDataRefreshService? refreshService = null,
+    IUnitOfWork? unitOfWork = null)
     : DomainServiceBase(logger), IDocumentService
 {
     public Task<ResultT<IReadOnlyList<Document>>> GetAllAsync() =>
@@ -30,24 +34,17 @@ public sealed class DocumentService(IDocumentRepository repository, IDomainLogge
 
     public async Task<ResultT<IReadOnlyList<Document>>> AddAllAsync(IReadOnlyList<CreateDocumentRequest> requests)
     {
-        var result = await ExecuteAsync("Documents.AddAll", async () =>
+        var added = new List<Document>(requests.Count);
+        var result = await ExecuteAsync("Documents.AddAll", () => unitOfWork is null
+            ? AddEachAsync()
+            : unitOfWork.ExecuteAsync(AddEachAsync));
+
+        // All-or-nothing: when the batch fails, files already copied for it must not linger.
+        if (result.Failed && unitOfWork is not null)
         {
-            var documents = new List<Document>(requests.Count);
-
-            foreach (var request in requests)
-            {
-                var documentResult = await repository.AddAsync(request);
-                if (documentResult.Failed || documentResult.Value is null)
-                {
-                    return ResultT<IReadOnlyList<Document>>.Failure(
-                        documentResult.Error ?? "Impossible d'ajouter les documents.");
-                }
-
-                documents.Add(documentResult.Value);
-            }
-
-            return ResultT<IReadOnlyList<Document>>.Ok(documents);
-        });
+            foreach (var document in added)
+                repository.DiscardStoredFile(document.Id);
+        }
 
         if (requests.Count > 0)
         {
@@ -59,6 +56,23 @@ public sealed class DocumentService(IDocumentRepository repository, IDomainLogge
         }
 
         return result;
+
+        async Task<ResultT<IReadOnlyList<Document>>> AddEachAsync()
+        {
+            foreach (var request in requests)
+            {
+                var documentResult = await repository.AddAsync(request);
+                if (documentResult.Failed || documentResult.Value is null)
+                {
+                    return ResultT<IReadOnlyList<Document>>.Failure(
+                        documentResult.Error ?? "Impossible d'ajouter les documents.");
+                }
+
+                added.Add(documentResult.Value);
+            }
+
+            return ResultT<IReadOnlyList<Document>>.Ok(added.ToList());
+        }
     }
 
     public async Task<ResultT<Document>> UpdateAsync(UpdateDocumentRequest request)

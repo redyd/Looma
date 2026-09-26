@@ -50,4 +50,10 @@ public interface IDocumentRepository
     /// <param name="id">The ID of the document to open.</param>
     /// <returns>A Result indicating the success or failure of the operation.</returns>
     Task<Result> OpenAsync(Guid id);
+
+    /// <summary>
+    /// Deletes the stored file of a document whose database row was rolled back.
+    /// </summary>
+    /// <param name="id">The ID of the discarded document.</param>
+    void DiscardStoredFile(Guid id);
 }

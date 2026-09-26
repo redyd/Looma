@@ -959,4 +959,211 @@
   <data name="SettingsReport_Notifications_UnableToSend" xml:space="preserve">
     <value>Meldung konnte nicht gesendet werden: {0}</value>
   </data>
+  <data name="Data_Errors_InvalidThemeJson" xml:space="preserve">
+    <value>Die Theme-Datei enthält ungültiges JSON.</value>
+  </data>
+  <data name="Data_Errors_DocumentStorageConflict" xml:space="preserve">
+    <value>Die Speicherdatei für Dokument {0} existiert bereits.</value>
+  </data>
+  <data name="Data_Errors_InvalidWoolWeightOrLength" xml:space="preserve">
+    <value>Gewicht oder Länge des Garns ist ungültig.</value>
+  </data>
+  <data name="Data_Errors_InvalidStockQuantity" xml:space="preserve">
+    <value>Die Bestandsmenge ist ungültig.</value>
+  </data>
+  <data name="Data_Errors_StockMustBePositive" xml:space="preserve">
+    <value>Der Bestand muss eine positive Zahl sein.</value>
+  </data>
+  <data name="Data_Errors_UnableToUpdateWoolStock" xml:space="preserve">
+    <value>Der Bestand von Garn {0} kann nicht aktualisiert werden: {1}</value>
+  </data>
+  <data name="Data_Errors_UnableToUpdateWoolUsage" xml:space="preserve">
+    <value>Die Verwendung von Garn {0} kann nicht aktualisiert werden: {1}</value>
+  </data>
+  <data name="Data_Errors_InvalidNumericValue" xml:space="preserve">
+    <value>Ungültiger Zahlenwert für {0}.{1}.</value>
+  </data>
+  <data name="Data_Errors_UnableToCheckIntegrity" xml:space="preserve">
+    <value>Die Datenintegrität kann nicht geprüft werden: {0}</value>
+  </data>
+  <data name="Data_Errors_UnableToQuarantineOrphans" xml:space="preserve">
+    <value>Verwaiste Dateien können nicht in Quarantäne verschoben werden: {0}</value>
+  </data>
+  <data name="Data_Errors_UnableToRemoveMissingDocuments" xml:space="preserve">
+    <value>Dokumente mit fehlenden Dateien können nicht entfernt werden: {0}</value>
+  </data>
+  <data name="Backup_Errors_InvalidDestination" xml:space="preserve">
+    <value>Der Speicherort der Sicherung ist ungültig.</value>
+  </data>
+  <data name="Backup_Errors_DatabaseCorrupt" xml:space="preserve">
+    <value>Die Datenbank ist beschädigt.</value>
+  </data>
+  <data name="Backup_Errors_UnableToExport" xml:space="preserve">
+    <value>Die Daten können nicht exportiert werden: {0}</value>
+  </data>
+  <data name="Backup_Errors_UnableToImport" xml:space="preserve">
+    <value>Die Daten können nicht importiert werden: {0}</value>
+  </data>
+  <data name="Backup_Errors_UnableToCreateSafetyBackup" xml:space="preserve">
+    <value>Die Sicherheitssicherung der aktuellen Daten kann nicht erstellt werden: {0}</value>
+  </data>
+  <data name="Backup_Errors_ArchiveNotFound" xml:space="preserve">
+    <value>Die Sicherungsdatei wurde nicht gefunden.</value>
+  </data>
+  <data name="Backup_Errors_UnsupportedFormat" xml:space="preserve">
+    <value>Dieses Sicherungsformat wird von dieser Looma-Version nicht unterstützt.</value>
+  </data>
+  <data name="Backup_Errors_NewerVersion" xml:space="preserve">
+    <value>Diese Sicherung stammt aus einer neueren Looma-Version. Aktualisieren Sie zuerst die Anwendung.</value>
+  </data>
+  <data name="Backup_Errors_ChecksumMismatch" xml:space="preserve">
+    <value>Die Sicherung ist beschädigt: {0} stimmt nicht mit der Prüfsumme überein.</value>
+  </data>
+  <data name="Backup_Errors_InvalidArchive" xml:space="preserve">
+    <value>Diese Datei ist keine gültige Looma-Sicherung ({0}).</value>
+  </data>
+  <data name="Backup_FileType" xml:space="preserve">
+    <value>Looma-Sicherungen</value>
+  </data>
+  <data name="Backup_Notifications_ImportApplied" xml:space="preserve">
+    <value>Ihre Daten wurden aus der Sicherung wiederhergestellt.</value>
+  </data>
+  <data name="Backup_PickerExportTitle" xml:space="preserve">
+    <value>Meine Daten exportieren</value>
+  </data>
+  <data name="Backup_PickerImportTitle" xml:space="preserve">
+    <value>Eine Sicherung importieren</value>
+  </data>
+  <data name="Backup_Reason_PreImport" xml:space="preserve">
+    <value>vor dem Import</value>
+  </data>
+  <data name="Backup_Reason_PreMigration" xml:space="preserve">
+    <value>vor dem Update</value>
+  </data>
+  <data name="Integrity_Issue_ConfigRecovered" xml:space="preserve">
+    <value>Die Einstellungsdatei war beschädigt und wurde zurückgesetzt (Kopie behalten: {0}).</value>
+  </data>
+  <data name="Integrity_Issue_DatabaseCorrupt" xml:space="preserve">
+    <value>Die Datenbank ist beschädigt: {0}</value>
+  </data>
+  <data name="Integrity_Issue_DocumentFileMissing" xml:space="preserve">
+    <value>Die Datei des Dokuments „{0}“ fehlt.</value>
+  </data>
+  <data name="Integrity_Issue_DocumentFileOrphan" xml:space="preserve">
+    <value>Die Datei „{0}“ ist mit keinem Dokument verknüpft.</value>
+  </data>
+  <data name="Integrity_Issue_ThemeInvalid" xml:space="preserve">
+    <value>Das Theme „{0}“ ist kein gültiges JSON.</value>
+  </data>
+  <data name="Integrity_Notifications_IssuesFound" xml:space="preserve">
+    <value>{0} Datenproblem(e) erkannt. Siehe Einstellungen &gt; Daten.</value>
+  </data>
+  <data name="Recovery_BackupLabel" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="Recovery_DatabaseCorrupt" xml:space="preserve">
+    <value>Looma kann Ihre Datenbank nicht öffnen, da sie beschädigt ist ({0}).</value>
+  </data>
+  <data name="Recovery_Explanation" xml:space="preserve">
+    <value>Ihre aktuellen Daten werden nie gelöscht: Sie werden daneben aufbewahrt. Wählen Sie, wie es weitergehen soll.</value>
+  </data>
+  <data name="Recovery_ImportArchive" xml:space="preserve">
+    <value>Eine Sicherungsdatei importieren…</value>
+  </data>
+  <data name="Recovery_MigrationFailed" xml:space="preserve">
+    <value>Looma konnte Ihre Datenbank nicht aktualisieren: {0}</value>
+  </data>
+  <data name="Recovery_NoBackup" xml:space="preserve">
+    <value>Es ist keine automatische Sicherung verfügbar.</value>
+  </data>
+  <data name="Recovery_PreMigrationBackupFailed" xml:space="preserve">
+    <value>Looma muss Ihre Datenbank aktualisieren, konnte sie aber vorher nicht sichern; nichts wurde geändert: {0}</value>
+  </data>
+  <data name="Recovery_Quit" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="Recovery_RestoreBackup" xml:space="preserve">
+    <value>Diese Sicherung wiederherstellen</value>
+  </data>
+  <data name="Recovery_RestoreBackupTitle" xml:space="preserve">
+    <value>Eine Sicherung wiederherstellen</value>
+  </data>
+  <data name="Recovery_StartEmpty" xml:space="preserve">
+    <value>Mit leeren Daten beginnen</value>
+  </data>
+  <data name="Recovery_StartEmptyHint" xml:space="preserve">
+    <value>Die beschädigte Datenbank wird umbenannt und im Looma-Ordner behalten, dann startet Looma mit einer leeren Datenbank neu.</value>
+  </data>
+  <data name="Recovery_StartEmptyTitle" xml:space="preserve">
+    <value>Neu beginnen</value>
+  </data>
+  <data name="Recovery_Title" xml:space="preserve">
+    <value>Datenwiederherstellung</value>
+  </data>
+  <data name="Recovery_UnableToSetAsideDatabase" xml:space="preserve">
+    <value>Die beschädigte Datenbank kann nicht beiseitegelegt werden: {0}</value>
+  </data>
+  <data name="Settings_Data_CheckIntegrity" xml:space="preserve">
+    <value>Meine Daten prüfen</value>
+  </data>
+  <data name="Settings_Data_Export" xml:space="preserve">
+    <value>Exportieren</value>
+  </data>
+  <data name="Settings_Data_Healthy" xml:space="preserve">
+    <value>Kein Problem erkannt.</value>
+  </data>
+  <data name="Settings_Data_Hint" xml:space="preserve">
+    <value>Exportieren Sie alle Ihre Daten (Garne, Anleitungen, Projekte, Dokumente, Themes) in eine Datei oder stellen Sie sie aus einer Sicherung wieder her. Looma sichert außerdem automatisch vor jedem Update.</value>
+  </data>
+  <data name="Settings_Data_Import" xml:space="preserve">
+    <value>Importieren</value>
+  </data>
+  <data name="Settings_Data_ImportConfirm" xml:space="preserve">
+    <value>Ersetzen und neu starten</value>
+  </data>
+  <data name="Settings_Data_ImportConfirmTitle" xml:space="preserve">
+    <value>Alle Ihre Daten ersetzen?</value>
+  </data>
+  <data name="Settings_Data_ImportConfirmWarning" xml:space="preserve">
+    <value>Alle aktuellen Daten werden durch diese Sicherung ersetzt. Zuvor wird eine Sicherheitssicherung erstellt, dann startet Looma neu.</value>
+  </data>
+  <data name="Settings_Data_ImportSummary" xml:space="preserve">
+    <value>Sicherung vom {0} (Looma {1}) mit {2} Dokument(en) und {3} Theme(s).</value>
+  </data>
+  <data name="Settings_Data_Notifications_Exported" xml:space="preserve">
+    <value>Daten exportiert nach {0}</value>
+  </data>
+  <data name="Settings_Data_Notifications_InvalidArchive" xml:space="preserve">
+    <value>Diese Datei ist keine gültige Looma-Sicherung.</value>
+  </data>
+  <data name="Settings_Data_Notifications_MissingDocumentsRemoved" xml:space="preserve">
+    <value>{0} Dokument(e) ohne Datei entfernt.</value>
+  </data>
+  <data name="Settings_Data_Notifications_OrphansQuarantined" xml:space="preserve">
+    <value>{0} verwaiste Datei(en) nach documents/.orphans verschoben.</value>
+  </data>
+  <data name="Settings_Data_Notifications_RepairFailed" xml:space="preserve">
+    <value>Der Vorgang an Ihren Daten ist fehlgeschlagen.</value>
+  </data>
+  <data name="Settings_Data_Notifications_UnableToExport" xml:space="preserve">
+    <value>Die Daten können nicht exportiert werden.</value>
+  </data>
+  <data name="Settings_Data_OpenBackupsFolder" xml:space="preserve">
+    <value>Automatische Sicherungen</value>
+  </data>
+  <data name="Settings_Data_QuarantineOrphans" xml:space="preserve">
+    <value>Verwaiste Dateien in Quarantäne verschieben</value>
+  </data>
+  <data name="Settings_Data_RemoveMissingDocuments" xml:space="preserve">
+    <value>Dokumente ohne Datei entfernen</value>
+  </data>
+  <data name="Settings_Data_Title" xml:space="preserve">
+    <value>Daten und Sicherungen</value>
+  </data>
+  <data name="Documents_FileMissing" xml:space="preserve">
+    <value>Datei fehlt</value>
+  </data>
+  <data name="Documents_FileMissingHint" xml:space="preserve">
+    <value>Die gespeicherte Datei dieses Dokuments wurde nicht gefunden. Stellen Sie eine Sicherung wieder her oder entfernen Sie es unter Einstellungen &gt; Daten.</value>
+  </data>
 </root>

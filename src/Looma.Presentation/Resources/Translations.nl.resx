@@ -959,4 +959,211 @@
   <data name="SettingsReport_Notifications_UnableToSend" xml:space="preserve">
     <value>Kan de melding niet verzenden: {0}</value>
   </data>
+  <data name="Data_Errors_InvalidThemeJson" xml:space="preserve">
+    <value>Het themabestand bevat ongeldige JSON.</value>
+  </data>
+  <data name="Data_Errors_DocumentStorageConflict" xml:space="preserve">
+    <value>Het opslagbestand voor document {0} bestaat al.</value>
+  </data>
+  <data name="Data_Errors_InvalidWoolWeightOrLength" xml:space="preserve">
+    <value>Het gewicht of de lengte van het garen is ongeldig.</value>
+  </data>
+  <data name="Data_Errors_InvalidStockQuantity" xml:space="preserve">
+    <value>De voorraadhoeveelheid is ongeldig.</value>
+  </data>
+  <data name="Data_Errors_StockMustBePositive" xml:space="preserve">
+    <value>De voorraad moet een positief getal zijn.</value>
+  </data>
+  <data name="Data_Errors_UnableToUpdateWoolStock" xml:space="preserve">
+    <value>Kan de voorraad van garen {0} niet bijwerken: {1}</value>
+  </data>
+  <data name="Data_Errors_UnableToUpdateWoolUsage" xml:space="preserve">
+    <value>Kan het gebruik van garen {0} niet bijwerken: {1}</value>
+  </data>
+  <data name="Data_Errors_InvalidNumericValue" xml:space="preserve">
+    <value>Ongeldige numerieke waarde voor {0}.{1}.</value>
+  </data>
+  <data name="Data_Errors_UnableToCheckIntegrity" xml:space="preserve">
+    <value>Kan de gegevensintegriteit niet controleren: {0}</value>
+  </data>
+  <data name="Data_Errors_UnableToQuarantineOrphans" xml:space="preserve">
+    <value>Kan verweesde bestanden niet in quarantaine plaatsen: {0}</value>
+  </data>
+  <data name="Data_Errors_UnableToRemoveMissingDocuments" xml:space="preserve">
+    <value>Kan documenten met ontbrekende bestanden niet verwijderen: {0}</value>
+  </data>
+  <data name="Backup_Errors_InvalidDestination" xml:space="preserve">
+    <value>De bestemming van de back-up is ongeldig.</value>
+  </data>
+  <data name="Backup_Errors_DatabaseCorrupt" xml:space="preserve">
+    <value>De database is beschadigd.</value>
+  </data>
+  <data name="Backup_Errors_UnableToExport" xml:space="preserve">
+    <value>Kan de gegevens niet exporteren: {0}</value>
+  </data>
+  <data name="Backup_Errors_UnableToImport" xml:space="preserve">
+    <value>Kan de gegevens niet importeren: {0}</value>
+  </data>
+  <data name="Backup_Errors_UnableToCreateSafetyBackup" xml:space="preserve">
+    <value>Kan geen veiligheidsback-up van de huidige gegevens maken: {0}</value>
+  </data>
+  <data name="Backup_Errors_ArchiveNotFound" xml:space="preserve">
+    <value>Het back-upbestand is niet gevonden.</value>
+  </data>
+  <data name="Backup_Errors_UnsupportedFormat" xml:space="preserve">
+    <value>Dit back-upformaat wordt niet ondersteund door deze versie van Looma.</value>
+  </data>
+  <data name="Backup_Errors_NewerVersion" xml:space="preserve">
+    <value>Deze back-up is gemaakt met een nieuwere versie van Looma. Werk eerst de applicatie bij.</value>
+  </data>
+  <data name="Backup_Errors_ChecksumMismatch" xml:space="preserve">
+    <value>De back-up is beschadigd: {0} komt niet overeen met de controlesom.</value>
+  </data>
+  <data name="Backup_Errors_InvalidArchive" xml:space="preserve">
+    <value>Dit bestand is geen geldige Looma-back-up ({0}).</value>
+  </data>
+  <data name="Backup_FileType" xml:space="preserve">
+    <value>Looma-back-ups</value>
+  </data>
+  <data name="Backup_Notifications_ImportApplied" xml:space="preserve">
+    <value>Je gegevens zijn hersteld vanuit de back-up.</value>
+  </data>
+  <data name="Backup_PickerExportTitle" xml:space="preserve">
+    <value>Mijn gegevens exporteren</value>
+  </data>
+  <data name="Backup_PickerImportTitle" xml:space="preserve">
+    <value>Een back-up importeren</value>
+  </data>
+  <data name="Backup_Reason_PreImport" xml:space="preserve">
+    <value>vóór import</value>
+  </data>
+  <data name="Backup_Reason_PreMigration" xml:space="preserve">
+    <value>vóór update</value>
+  </data>
+  <data name="Integrity_Issue_ConfigRecovered" xml:space="preserve">
+    <value>Het voorkeurenbestand was beschadigd en is opnieuw ingesteld (kopie bewaard: {0}).</value>
+  </data>
+  <data name="Integrity_Issue_DatabaseCorrupt" xml:space="preserve">
+    <value>De database is beschadigd: {0}</value>
+  </data>
+  <data name="Integrity_Issue_DocumentFileMissing" xml:space="preserve">
+    <value>Het bestand van document "{0}" ontbreekt.</value>
+  </data>
+  <data name="Integrity_Issue_DocumentFileOrphan" xml:space="preserve">
+    <value>Het bestand "{0}" is aan geen enkel document gekoppeld.</value>
+  </data>
+  <data name="Integrity_Issue_ThemeInvalid" xml:space="preserve">
+    <value>Het thema "{0}" is geen geldige JSON.</value>
+  </data>
+  <data name="Integrity_Notifications_IssuesFound" xml:space="preserve">
+    <value>{0} gegevensprobleem/-problemen gevonden. Zie Instellingen &gt; Gegevens.</value>
+  </data>
+  <data name="Recovery_BackupLabel" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="Recovery_DatabaseCorrupt" xml:space="preserve">
+    <value>Looma kan je database niet openen omdat deze beschadigd is ({0}).</value>
+  </data>
+  <data name="Recovery_Explanation" xml:space="preserve">
+    <value>Je huidige gegevens worden nooit verwijderd: ze worden apart bewaard. Kies hoe je verder wilt.</value>
+  </data>
+  <data name="Recovery_ImportArchive" xml:space="preserve">
+    <value>Een back-upbestand importeren…</value>
+  </data>
+  <data name="Recovery_MigrationFailed" xml:space="preserve">
+    <value>Looma kon je database niet bijwerken: {0}</value>
+  </data>
+  <data name="Recovery_NoBackup" xml:space="preserve">
+    <value>Er is geen automatische back-up beschikbaar.</value>
+  </data>
+  <data name="Recovery_PreMigrationBackupFailed" xml:space="preserve">
+    <value>Looma moet je database bijwerken maar kon er eerst geen back-up van maken; er is niets gewijzigd: {0}</value>
+  </data>
+  <data name="Recovery_Quit" xml:space="preserve">
+    <value>Afsluiten</value>
+  </data>
+  <data name="Recovery_RestoreBackup" xml:space="preserve">
+    <value>Deze back-up herstellen</value>
+  </data>
+  <data name="Recovery_RestoreBackupTitle" xml:space="preserve">
+    <value>Een back-up herstellen</value>
+  </data>
+  <data name="Recovery_StartEmpty" xml:space="preserve">
+    <value>Beginnen met lege gegevens</value>
+  </data>
+  <data name="Recovery_StartEmptyHint" xml:space="preserve">
+    <value>De beschadigde database wordt hernoemd en bewaard in de Looma-map, daarna start Looma opnieuw met een lege database.</value>
+  </data>
+  <data name="Recovery_StartEmptyTitle" xml:space="preserve">
+    <value>Opnieuw beginnen</value>
+  </data>
+  <data name="Recovery_Title" xml:space="preserve">
+    <value>Gegevensherstel</value>
+  </data>
+  <data name="Recovery_UnableToSetAsideDatabase" xml:space="preserve">
+    <value>Kan de beschadigde database niet apart zetten: {0}</value>
+  </data>
+  <data name="Settings_Data_CheckIntegrity" xml:space="preserve">
+    <value>Mijn gegevens controleren</value>
+  </data>
+  <data name="Settings_Data_Export" xml:space="preserve">
+    <value>Exporteren</value>
+  </data>
+  <data name="Settings_Data_Healthy" xml:space="preserve">
+    <value>Geen problemen gevonden.</value>
+  </data>
+  <data name="Settings_Data_Hint" xml:space="preserve">
+    <value>Exporteer al je gegevens (garens, patronen, projecten, documenten, thema's) naar één bestand, of herstel ze vanuit een back-up. Looma maakt ook automatisch een back-up vóór elke update.</value>
+  </data>
+  <data name="Settings_Data_Import" xml:space="preserve">
+    <value>Importeren</value>
+  </data>
+  <data name="Settings_Data_ImportConfirm" xml:space="preserve">
+    <value>Vervangen en herstarten</value>
+  </data>
+  <data name="Settings_Data_ImportConfirmTitle" xml:space="preserve">
+    <value>Al je gegevens vervangen?</value>
+  </data>
+  <data name="Settings_Data_ImportConfirmWarning" xml:space="preserve">
+    <value>Alle huidige gegevens worden vervangen door deze back-up. Eerst wordt een veiligheidsback-up gemaakt, daarna start Looma opnieuw.</value>
+  </data>
+  <data name="Settings_Data_ImportSummary" xml:space="preserve">
+    <value>Back-up van {0} (Looma {1}) met {2} document(en) en {3} thema('s).</value>
+  </data>
+  <data name="Settings_Data_Notifications_Exported" xml:space="preserve">
+    <value>Gegevens geëxporteerd naar {0}</value>
+  </data>
+  <data name="Settings_Data_Notifications_InvalidArchive" xml:space="preserve">
+    <value>Dit bestand is geen geldige Looma-back-up.</value>
+  </data>
+  <data name="Settings_Data_Notifications_MissingDocumentsRemoved" xml:space="preserve">
+    <value>{0} document(en) zonder bestand verwijderd.</value>
+  </data>
+  <data name="Settings_Data_Notifications_OrphansQuarantined" xml:space="preserve">
+    <value>{0} verweesd(e) bestand(en) verplaatst naar documents/.orphans.</value>
+  </data>
+  <data name="Settings_Data_Notifications_RepairFailed" xml:space="preserve">
+    <value>De bewerking op je gegevens is mislukt.</value>
+  </data>
+  <data name="Settings_Data_Notifications_UnableToExport" xml:space="preserve">
+    <value>Kan de gegevens niet exporteren.</value>
+  </data>
+  <data name="Settings_Data_OpenBackupsFolder" xml:space="preserve">
+    <value>Automatische back-ups</value>
+  </data>
+  <data name="Settings_Data_QuarantineOrphans" xml:space="preserve">
+    <value>Verweesde bestanden in quarantaine plaatsen</value>
+  </data>
+  <data name="Settings_Data_RemoveMissingDocuments" xml:space="preserve">
+    <value>Documenten zonder bestand verwijderen</value>
+  </data>
+  <data name="Settings_Data_Title" xml:space="preserve">
+    <value>Gegevens en back-ups</value>
+  </data>
+  <data name="Documents_FileMissing" xml:space="preserve">
+    <value>Bestand ontbreekt</value>
+  </data>
+  <data name="Documents_FileMissingHint" xml:space="preserve">
+    <value>Het opgeslagen bestand van dit document is niet gevonden. Herstel een back-up of verwijder het via Instellingen &gt; Gegevens.</value>
+  </data>
 </root>

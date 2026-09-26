@@ -24,6 +24,11 @@ using Looma.Views.Views.Main;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Avalonia.Threading;
+using Looma.Domain.Localization;
+using Looma.Domain.Logging;
+using Looma.Presentation.Notifications;
+using Looma.Presentation.ViewModels.Recovery;
+using Looma.Views.Views.Recovery;
 
 namespace Looma.App;
 
@@ -80,7 +85,17 @@ public partial class App : Application
         }
 
         pathManager.EnsureDirectoriesExist();
+
+        // Domain and infrastructure messages use the same dictionary as the screens.
+        Localizer.Current = Services.GetRequiredService<TranslationService>();
+        ApplyStoredLanguage();
+
+        // A staged import replaces the data files: it must happen before anything reads them.
+        var dataGuard = Services.GetRequiredService<StartupDataGuard>();
+        dataGuard.ApplyPendingRestore();
+
         SeedInternalThemes();
+        // The restored preferences may carry another language.
         ApplyStoredLanguage();
 
         using var scope = Services.CreateScope();
@@ -92,7 +107,13 @@ public partial class App : Application
             pathManager.ClearDocuments();
         }
 
-        pathManager.EnsureDatabaseCreated(db);
+        var databaseResult = dataGuard.PrepareDatabase(db);
+        if (databaseResult.Failed)
+        {
+            ShowRecoveryWindow(databaseResult.Error ?? string.Empty);
+            base.OnFrameworkInitializationCompleted();
+            return;
+        }
 
         ApplyStoredTheme();
 
@@ -115,6 +136,56 @@ public partial class App : Application
 
         base.OnFrameworkInitializationCompleted();
         _ = HandleStartupUpdatesAsync();
+        _ = ReportDataHealthAsync(dataGuard);
+    }
+
+    private void ShowRecoveryWindow(string problem)
+    {
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+
+        ApplyStoredTheme();
+        desktop.MainWindow = new RecoveryWindow
+        {
+            DataContext = new RecoveryViewModel(
+                problem,
+                Services.GetRequiredService<IBackupService>(),
+                Services.GetRequiredService<IBackupFilePicker>(),
+                Services.GetRequiredService<IDatabaseRecovery>(),
+                Services.GetRequiredService<IAppLifetimeService>())
+        };
+    }
+
+    private static async Task ReportDataHealthAsync(StartupDataGuard dataGuard)
+    {
+        var notifications = Services.GetRequiredService<INotificationService>();
+        var translation = Services.GetRequiredService<TranslationService>();
+
+        if (dataGuard.PendingNotice is { } notice)
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (notice.Success)
+                    notifications.Success(notice.Message);
+                else
+                    notifications.Error(notice.Message);
+            });
+        }
+
+        try
+        {
+            var report = await Services.GetRequiredService<IDataIntegrityService>().CheckAsync();
+            if (report.Succeeded && report.Value is { IsHealthy: false } value)
+            {
+                Dispatcher.UIThread.Post(() => notifications.Warning(
+                    translation.Format("Integrity_Notifications_IssuesFound", value.Issues.Count),
+                    duration: TimeSpan.FromSeconds(12)));
+            }
+        }
+        catch (Exception ex)
+        {
+            Services.GetRequiredService<IDomainLogger>().Log(DomainLogLevel.Warning, "Startup integrity check failed.", ex);
+        }
     }
 
     private async Task HandleStartupUpdatesAsync()

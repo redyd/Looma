@@ -555,4 +555,50 @@ public class WoolStockServiceTests
         result.Failed.Should().BeTrue();
         result.Error.Should().Be("db error");
     }
+
+    // ---------------------------------------------------------------------------
+    // Data integrity
+    // ---------------------------------------------------------------------------
+
+    [Theory]
+    [InlineData(double.NaN)]
+    [InlineData(double.PositiveInfinity)]
+    public async Task AdjustWoolUsageAsync_NonFiniteQuantity_ReturnsFailure(double quantity)
+    {
+        var repo = Substitute.For<IWoolUsageRepository>();
+        var sut = new WoolStockService(repo);
+
+        var result = await sut.AdjustWoolUsageAsync(MakeRequest(quantity: quantity));
+
+        result.Failed.Should().BeTrue();
+        await repo.DidNotReceive().GetUsageAsync(Arg.Any<int>(), Arg.Any<int>());
+    }
+
+    [Fact]
+    public async Task AdjustWoolUsageAsync_ByWeightWithZeroWoolWeight_ReturnsFailure()
+    {
+        var repo = MakeRepo(MakeUsage(wool: MakeWool(weight: 0)));
+        var sut = new WoolStockService(repo);
+
+        var result = await sut.AdjustWoolUsageAsync(MakeRequest(mode: StockAdjustmentMode.ByWeight, quantity: 50));
+
+        result.Failed.Should().BeTrue();
+        await repo.DidNotReceive().UpdateStockUsedAsync(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<double>());
+    }
+
+    [Fact]
+    public async Task AdjustWoolUsageAsync_RunsAllWritesInsideUnitOfWork()
+    {
+        var repo = MakeRepo(MakeUsage());
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        unitOfWork.ExecuteAsync(Arg.Any<Func<Task<Result>>>())
+            .Returns(call => call.Arg<Func<Task<Result>>>()());
+        var sut = new WoolStockService(repo, unitOfWork: unitOfWork);
+
+        var result = await sut.AdjustWoolUsageAsync(MakeRequest(deductImmediately: true));
+
+        result.Succeeded.Should().BeTrue(result.Error);
+        await unitOfWork.Received(1).ExecuteAsync(Arg.Any<Func<Task<Result>>>());
+        await repo.Received(1).UpdateCurrentStockUsageAsync(1, 1, Arg.Any<double>());
+    }
 }
