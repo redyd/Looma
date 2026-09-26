@@ -70,7 +70,7 @@ See LICENSE in the project root for full license text.
                                         Classes="danger-btn"
                                         Command="{Binding DeleteSelectedThemeCommand}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <LucideIcon Kind="Trash2"
+                                        <LucideIcon Kind="Trash"
                                                     Size="16"
                                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                                     VerticalAlignment="Center" />
@@ -121,6 +121,121 @@ See LICENSE in the project root for full license text.
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="form-container">
+                        <StackPanel Spacing="18">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="{loc:Loc Settings_Data_Title}"
+                                           Classes="section-title" />
+                                <TextBlock Text="{loc:Loc Settings_Data_Hint}"
+                                           Classes="form-hint"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+
+                            <WrapPanel ItemSpacing="12" LineSpacing="12">
+                                <Button Classes="form-submit"
+                                        Command="{Binding Data.ExportCommand}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <LucideIcon Kind="Download"
+                                                    Size="16"
+                                                    Foreground="{DynamicResource SubmitButtonIconForegroundBrush}"
+                                                    VerticalAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Settings_Data_Export}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Classes="cancel-btn"
+                                        Command="{Binding Data.PickImportCommand}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <LucideIcon Kind="Upload"
+                                                    Size="16"
+                                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                    VerticalAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Settings_Data_Import}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Classes="cancel-btn"
+                                        Command="{Binding Data.CheckIntegrityCommand}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <LucideIcon Kind="ShieldCheck"
+                                                    Size="16"
+                                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                    VerticalAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Settings_Data_CheckIntegrity}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Classes="cancel-btn"
+                                        Command="{Binding Data.OpenBackupsFolderCommand}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <LucideIcon Kind="FolderOpen"
+                                                    Size="16"
+                                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                    VerticalAlignment="Center" />
+                                        <TextBlock Text="{loc:Loc Settings_Data_OpenBackupsFolder}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </WrapPanel>
+
+                            <Border Classes="alert-error"
+                                    Padding="16"
+                                    IsVisible="{Binding Data.IsImportConfirmationVisible}">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="{loc:Loc Settings_Data_ImportConfirmTitle}"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource WarningTextForegroundBrush}" />
+                                    <TextBlock Text="{Binding Data.ImportSummary}"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource FormLabelForegroundBrush}" />
+                                    <TextBlock Text="{loc:Loc Settings_Data_ImportConfirmWarning}"
+                                               Classes="form-hint"
+                                               TextWrapping="Wrap" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                        <Button Classes="cancel-btn"
+                                                Content="{loc:Loc Common_Cancel}"
+                                                Command="{Binding Data.CancelImportCommand}" />
+                                        <Button Classes="danger-btn"
+                                                Content="{loc:Loc Settings_Data_ImportConfirm}"
+                                                Command="{Binding Data.ConfirmImportCommand}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Text="{loc:Loc Settings_Data_Healthy}"
+                                       Classes="form-hint"
+                                       IsVisible="{Binding Data.IsHealthy}" />
+
+                            <StackPanel Spacing="10" IsVisible="{Binding Data.HasIntegrityIssues}">
+                                <ItemsControl ItemsSource="{Binding Data.IntegrityIssues}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0 2">
+                                                <LucideIcon Kind="TriangleAlert"
+                                                            Size="14"
+                                                            Foreground="{DynamicResource WarningTextForegroundBrush}"
+                                                            VerticalAlignment="Top" />
+                                                <TextBlock Text="{Binding}"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource FormLabelForegroundBrush}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <WrapPanel ItemSpacing="12" LineSpacing="12">
+                                    <Button Classes="cancel-btn"
+                                            Content="{loc:Loc Settings_Data_QuarantineOrphans}"
+                                            IsVisible="{Binding Data.HasOrphanFiles}"
+                                            Command="{Binding Data.QuarantineOrphansCommand}" />
+                                    <Button Classes="danger-btn"
+                                            Content="{loc:Loc Settings_Data_RemoveMissingDocuments}"
+                                            IsVisible="{Binding Data.HasMissingDocuments}"
+                                            Command="{Binding Data.RemoveMissingDocumentsCommand}" />
+                                </WrapPanel>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
 

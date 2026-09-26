@@ -1,0 +1,91 @@
+<!--
+    Copyright (c) 2026 SOEUR Timëo. All rights reserved.
+    This file is part of Looma, licensed under the AGPL-3.0.
+    See LICENSE in the project root for full license text.
+-->
+
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:loc="clr-namespace:Looma.Views.Markup"
+        xmlns:vm="using:Looma.Presentation.ViewModels.Recovery"
+        x:Class="Looma.Views.Views.Recovery.RecoveryWindow"
+        x:DataType="vm:RecoveryViewModel"
+        Icon="avares://Looma.App/Assets/icon.ico"
+        Title="{loc:Loc Recovery_Title}"
+        Width="640" Height="560" MinWidth="480" MinHeight="420"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource BackgroundBrush}">
+
+    <ScrollViewer>
+        <StackPanel Spacing="20" Margin="32">
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <LucideIcon Kind="DatabaseZap" Size="28"
+                            Foreground="{DynamicResource WarningTextForegroundBrush}"
+                            VerticalAlignment="Center" />
+                <TextBlock Text="{loc:Loc Recovery_Title}" Classes="page-title" VerticalAlignment="Center" />
+            </StackPanel>
+
+            <Border Classes="alert-error" Padding="12">
+                <TextBlock Text="{Binding Problem}"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource WarningTextForegroundBrush}" />
+            </Border>
+
+            <TextBlock Text="{loc:Loc Recovery_Explanation}" Classes="form-hint" TextWrapping="Wrap" />
+
+            <Border Classes="form-container">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{loc:Loc Recovery_RestoreBackupTitle}" Classes="section-title" />
+                    <TextBlock Text="{loc:Loc Recovery_NoBackup}" Classes="form-hint"
+                               IsVisible="{Binding !HasBackups}" TextWrapping="Wrap" />
+                    <ComboBox Classes="form-select"
+                              IsVisible="{Binding HasBackups}"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding Backups}"
+                              SelectedItem="{Binding SelectedBackup}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:RecoveryBackupViewModel">
+                                <TextBlock Text="{Binding Label}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Button Classes="form-submit"
+                                Content="{loc:Loc Recovery_RestoreBackup}"
+                                Command="{Binding RestoreSelectedBackupCommand}" />
+                        <Button Classes="cancel-btn"
+                                Content="{loc:Loc Recovery_ImportArchive}"
+                                Command="{Binding ImportArchiveCommand}" />
+                        <Button Classes="cancel-btn"
+                                Content="{loc:Loc Settings_Data_OpenBackupsFolder}"
+                                Command="{Binding OpenBackupsFolderCommand}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="form-container">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{loc:Loc Recovery_StartEmptyTitle}" Classes="section-title" />
+                    <TextBlock Text="{loc:Loc Recovery_StartEmptyHint}" Classes="form-hint" TextWrapping="Wrap" />
+                    <Button Classes="danger-btn"
+                            HorizontalAlignment="Left"
+                            Content="{loc:Loc Recovery_StartEmpty}"
+                            Command="{Binding StartEmptyCommand}" />
+                </StackPanel>
+            </Border>
+
+            <Border Classes="alert-error" Padding="12"
+                    IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding ErrorMessage}"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource WarningTextForegroundBrush}" />
+            </Border>
+
+            <Button Classes="cancel-btn"
+                    HorizontalAlignment="Right"
+                    Content="{loc:Loc Recovery_Quit}"
+                    Command="{Binding QuitCommand}" />
+        </StackPanel>
+    </ScrollViewer>
+</Window>

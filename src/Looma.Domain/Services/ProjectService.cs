@@ -17,7 +17,8 @@ public class ProjectService(
     IWoolService woolService,
     IWoolUsageRepository woolUsageRepository,
     IDomainLogger? logger = null,
-    IDataRefreshService? refreshService = null)
+    IDataRefreshService? refreshService = null,
+    IUnitOfWork? unitOfWork = null)
     : DomainServiceBase(logger), IProjectService
 {
     public Task<ResultT<IReadOnlyList<Project>>> GetAllAsync() =>
@@ -43,8 +44,22 @@ public class ProjectService(
     public async Task<ResultT<Project>> UpdateAsync(UpdateProjectRequest request)
     {
         var completedProject = false;
-        var result = await ExecuteAsync($"Projects.Update({request.Id})", async () =>
+        var result = await ExecuteAsync($"Projects.Update({request.Id})", () => unitOfWork is null
+            ? ApplyUpdateAsync()
+            : unitOfWork.ExecuteAsync(ApplyUpdateAsync));
+
+        var scope = RefreshScope.Projects | RefreshScope.Patterns;
+        if (completedProject)
+            scope |= RefreshScope.Wools;
+
+        PublishIfSucceeded(result, scope, $"Project {request.Id} updated.");
+        return result;
+
+        // Finishing a project deducts stock for every wool then updates the project:
+        // all of it must land together or not at all.
+        async Task<ResultT<Project>> ApplyUpdateAsync()
         {
+            completedProject = false;
             var existing = await repo.GetByIdAsync(request.Id);
             if (existing.Failed || existing.Value is null)
             {
@@ -63,14 +78,7 @@ public class ProjectService(
             }
 
             return await repo.UpdateAsync(request);
-        });
-
-        var scope = RefreshScope.Projects | RefreshScope.Patterns;
-        if (completedProject)
-            scope |= RefreshScope.Wools;
-
-        PublishIfSucceeded(result, scope, $"Project {request.Id} updated.");
-        return result;
+        }
     }
 
     private async Task<Result> CompleteProjectAsync(int projectId, IEnumerable<Wool> wools)

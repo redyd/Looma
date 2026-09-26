@@ -212,6 +212,7 @@ public sealed class SettingsViewModelTests
         FakeSettingsService? settingsService = null,
         TranslationService? translation = null) =>
         new(
+            new FakeNavigationService(),
             new ThemeService(),
             themeStorage ?? new FakeThemeStorage(),
             new FakeThemeFilePicker(),
@@ -219,5 +220,11 @@ public sealed class SettingsViewModelTests
             notifications,
             translation ?? new TranslationService(),
             new SettingsUpdaterViewModel(notifications, updater, interaction),
-            NullDomainLogger.Instance);
+            NullDomainLogger.Instance,
+            new SettingsDataViewModel(
+                new FakeBackupService(),
+                new FakeDataIntegrityService(),
+                new FakeBackupFilePicker(),
+                new FakeAppLifetimeService(),
+                notifications));
 }

@@ -2,21 +2,13 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Looma.Domain.Services;
+using Looma.Domain.Localization;
 
 namespace Looma.Infrastructure.Storage;
 
-public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
+public sealed class ThemeStorage(AppPaths paths, AppConfigStore configStore) : IThemeStorage
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        WriteIndented = true
-    };
-
     public IReadOnlyList<string> GetThemeFiles()
     {
         Directory.CreateDirectory(paths.ThemesFolder);
@@ -29,7 +21,7 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
 
     public string? GetSelectedThemePath()
     {
-        var config = ReadConfig();
+        var config = configStore.Read();
         if (string.IsNullOrWhiteSpace(config.SelectedTheme))
             return null;
 
@@ -54,10 +46,19 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
             var fileName = Path.GetFileName(sourcePath);
             var destinationPath = Path.Combine(paths.ThemesFolder, fileName);
 
-            if (File.Exists(destinationPath))
+            if (!AppConfigStore.IsValidJson(sourcePath))
                 continue;
 
-            File.Copy(sourcePath, destinationPath, overwrite: false);
+            if (File.Exists(destinationPath))
+            {
+                if (AppConfigStore.IsValidJson(destinationPath))
+                    continue;
+
+                // A corrupted built-in theme is set aside, never silently discarded.
+                File.Move(destinationPath, $"{destinationPath}.corrupt-{DateTime.Now:yyyyMMddHHmmss}", overwrite: true);
+            }
+
+            AtomicFile.Copy(sourcePath, destinationPath);
             copied++;
         }
 
@@ -70,17 +71,7 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
             ? null
             : Path.GetFileName(themePath);
 
-        var config = ReadConfig();
-        config.SelectedTheme = selectedTheme;
-
-        var directory = Path.GetDirectoryName(paths.ConfigPath);
-        if (!string.IsNullOrWhiteSpace(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-
-        var json = JsonSerializer.Serialize(config, JsonOptions);
-        File.WriteAllText(paths.ConfigPath, json);
+        configStore.Update(config => config.SelectedTheme = selectedTheme);
     }
 
     public void DeleteTheme(string themePath)
@@ -96,7 +87,7 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
 
         File.Delete(destinationPath);
 
-        var config = ReadConfig();
+        var config = configStore.Read();
         if (string.Equals(config.SelectedTheme, fileName, StringComparison.OrdinalIgnoreCase))
         {
             SaveSelectedTheme(null);
@@ -111,6 +102,9 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
         if (!Path.GetExtension(sourcePath).Equals(".json", StringComparison.OrdinalIgnoreCase))
             throw new InvalidOperationException("Le thème doit être un fichier JSON.");
 
+        if (!AppConfigStore.IsValidJson(sourcePath))
+            throw new InvalidOperationException(Localizer.Get("Data_Errors_InvalidThemeJson"));
+
         Directory.CreateDirectory(paths.ThemesFolder);
 
         var fileName = Path.GetFileName(sourcePath);
@@ -121,7 +115,7 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
             destinationPath = BuildAvailableThemePath(fileName);
         }
 
-        File.Copy(sourcePath, destinationPath);
+        AtomicFile.Copy(sourcePath, destinationPath);
         return destinationPath;
     }
 
@@ -155,46 +149,5 @@ public sealed class ThemeStorage(AppPaths paths) : IThemeStorage
         return string.IsNullOrWhiteSpace(userProfile)
             ? Environment.CurrentDirectory
             : Path.Combine(userProfile, "Downloads");
-    }
-
-    private AppConfig ReadConfig()
-    {
-        if (!File.Exists(paths.ConfigPath))
-            return new AppConfig();
-
-        try
-        {
-            var json = File.ReadAllText(paths.ConfigPath);
-            return JsonSerializer.Deserialize<AppConfig>(json, JsonOptions) ?? new AppConfig();
-        }
-        catch (JsonException ex)
-        {
-            throw new InvalidOperationException(
-                BuildConfigJsonErrorMessage(ex),
-                ex);
-        }
-    }
-
-    private string BuildConfigJsonErrorMessage(JsonException ex)
-    {
-        var location = ex.LineNumber is null || ex.BytePositionInLine is null
-            ? string.Empty
-            : $" Ligne {ex.LineNumber + 1}, colonne {ex.BytePositionInLine + 1}.";
-
-        return $"Le fichier de configuration \"{Path.GetFileName(paths.ConfigPath)}\" contient un JSON invalide.{location} Vérifiez la syntaxe du fichier.";
-    }
-
-    private sealed class AppConfig
-    {
-        public string? SelectedTheme { get; set; }
-        public string? SelectedLanguage { get; set; }
-        public string? Version { get; set; }
-        public Dictionary<string, ReleaseNoteConfig> ReleaseNotes { get; set; } = [];
-    }
-
-    private sealed class ReleaseNoteConfig
-    {
-        public string Markdown { get; set; } = string.Empty;
-        public bool Shown { get; set; }
     }
 }

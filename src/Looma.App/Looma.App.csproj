@@ -9,16 +9,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.0.3" />
-        <PackageReference Include="Avalonia.Desktop" Version="12.0.3" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.3" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">
+        <PackageReference Include="Avalonia" Version="12.1.3" />
+        <PackageReference Include="Avalonia.Desktop" Version="12.1.3" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.3" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
-        <PackageReference Include="Velopack" Version="0.0.1589-ga2c5a97" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.12" />
+        <PackageReference Include="Velopack" Version="1.2.158" />
     </ItemGroup>
 
     <ItemGroup>

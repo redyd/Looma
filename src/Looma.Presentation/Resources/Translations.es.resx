@@ -959,4 +959,211 @@
   <data name="SettingsReport_Notifications_UnableToSend" xml:space="preserve">
     <value>No se pudo enviar el informe: {0}</value>
   </data>
+  <data name="Data_Errors_InvalidThemeJson" xml:space="preserve">
+    <value>El archivo de tema contiene un JSON no válido.</value>
+  </data>
+  <data name="Data_Errors_DocumentStorageConflict" xml:space="preserve">
+    <value>El archivo de almacenamiento del documento {0} ya existe.</value>
+  </data>
+  <data name="Data_Errors_InvalidWoolWeightOrLength" xml:space="preserve">
+    <value>El peso o la longitud de la lana no es válido.</value>
+  </data>
+  <data name="Data_Errors_InvalidStockQuantity" xml:space="preserve">
+    <value>La cantidad de stock no es válida.</value>
+  </data>
+  <data name="Data_Errors_StockMustBePositive" xml:space="preserve">
+    <value>El stock debe ser un número positivo.</value>
+  </data>
+  <data name="Data_Errors_UnableToUpdateWoolStock" xml:space="preserve">
+    <value>No se puede actualizar el stock de la lana {0}: {1}</value>
+  </data>
+  <data name="Data_Errors_UnableToUpdateWoolUsage" xml:space="preserve">
+    <value>No se puede actualizar el uso de la lana {0}: {1}</value>
+  </data>
+  <data name="Data_Errors_InvalidNumericValue" xml:space="preserve">
+    <value>Valor numérico no válido para {0}.{1}.</value>
+  </data>
+  <data name="Data_Errors_UnableToCheckIntegrity" xml:space="preserve">
+    <value>No se puede comprobar la integridad de los datos: {0}</value>
+  </data>
+  <data name="Data_Errors_UnableToQuarantineOrphans" xml:space="preserve">
+    <value>No se pueden poner en cuarentena los archivos huérfanos: {0}</value>
+  </data>
+  <data name="Data_Errors_UnableToRemoveMissingDocuments" xml:space="preserve">
+    <value>No se pueden eliminar los documentos con archivos faltantes: {0}</value>
+  </data>
+  <data name="Backup_Errors_InvalidDestination" xml:space="preserve">
+    <value>El destino de la copia de seguridad no es válido.</value>
+  </data>
+  <data name="Backup_Errors_DatabaseCorrupt" xml:space="preserve">
+    <value>La base de datos está dañada.</value>
+  </data>
+  <data name="Backup_Errors_UnableToExport" xml:space="preserve">
+    <value>No se pueden exportar los datos: {0}</value>
+  </data>
+  <data name="Backup_Errors_UnableToImport" xml:space="preserve">
+    <value>No se pueden importar los datos: {0}</value>
+  </data>
+  <data name="Backup_Errors_UnableToCreateSafetyBackup" xml:space="preserve">
+    <value>No se puede crear la copia de seguridad de los datos actuales: {0}</value>
+  </data>
+  <data name="Backup_Errors_ArchiveNotFound" xml:space="preserve">
+    <value>No se encuentra el archivo de copia de seguridad.</value>
+  </data>
+  <data name="Backup_Errors_UnsupportedFormat" xml:space="preserve">
+    <value>Esta versión de Looma no admite este formato de copia de seguridad.</value>
+  </data>
+  <data name="Backup_Errors_NewerVersion" xml:space="preserve">
+    <value>Esta copia se hizo con una versión más reciente de Looma. Actualiza primero la aplicación.</value>
+  </data>
+  <data name="Backup_Errors_ChecksumMismatch" xml:space="preserve">
+    <value>La copia está dañada: {0} no coincide con su suma de verificación.</value>
+  </data>
+  <data name="Backup_Errors_InvalidArchive" xml:space="preserve">
+    <value>Este archivo no es una copia de seguridad válida de Looma ({0}).</value>
+  </data>
+  <data name="Backup_FileType" xml:space="preserve">
+    <value>Copias de seguridad de Looma</value>
+  </data>
+  <data name="Backup_Notifications_ImportApplied" xml:space="preserve">
+    <value>Tus datos se han restaurado desde la copia de seguridad.</value>
+  </data>
+  <data name="Backup_PickerExportTitle" xml:space="preserve">
+    <value>Exportar mis datos</value>
+  </data>
+  <data name="Backup_PickerImportTitle" xml:space="preserve">
+    <value>Importar una copia de seguridad</value>
+  </data>
+  <data name="Backup_Reason_PreImport" xml:space="preserve">
+    <value>antes de importar</value>
+  </data>
+  <data name="Backup_Reason_PreMigration" xml:space="preserve">
+    <value>antes de actualizar</value>
+  </data>
+  <data name="Integrity_Issue_ConfigRecovered" xml:space="preserve">
+    <value>El archivo de preferencias estaba dañado y se ha restablecido (copia conservada: {0}).</value>
+  </data>
+  <data name="Integrity_Issue_DatabaseCorrupt" xml:space="preserve">
+    <value>La base de datos está dañada: {0}</value>
+  </data>
+  <data name="Integrity_Issue_DocumentFileMissing" xml:space="preserve">
+    <value>Falta el archivo del documento «{0}».</value>
+  </data>
+  <data name="Integrity_Issue_DocumentFileOrphan" xml:space="preserve">
+    <value>El archivo «{0}» no está vinculado a ningún documento.</value>
+  </data>
+  <data name="Integrity_Issue_ThemeInvalid" xml:space="preserve">
+    <value>El tema «{0}» no es un JSON válido.</value>
+  </data>
+  <data name="Integrity_Notifications_IssuesFound" xml:space="preserve">
+    <value>Se detectaron {0} problema(s) de datos. Ver Ajustes &gt; Datos.</value>
+  </data>
+  <data name="Recovery_BackupLabel" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="Recovery_DatabaseCorrupt" xml:space="preserve">
+    <value>Looma no puede abrir tu base de datos porque está dañada ({0}).</value>
+  </data>
+  <data name="Recovery_Explanation" xml:space="preserve">
+    <value>Tus datos actuales nunca se eliminan: se conservan aparte. Elige cómo continuar.</value>
+  </data>
+  <data name="Recovery_ImportArchive" xml:space="preserve">
+    <value>Importar un archivo de copia…</value>
+  </data>
+  <data name="Recovery_MigrationFailed" xml:space="preserve">
+    <value>Looma no pudo actualizar tu base de datos: {0}</value>
+  </data>
+  <data name="Recovery_NoBackup" xml:space="preserve">
+    <value>No hay ninguna copia automática disponible.</value>
+  </data>
+  <data name="Recovery_PreMigrationBackupFailed" xml:space="preserve">
+    <value>Looma debe actualizar tu base de datos pero no pudo hacer una copia antes; no se ha modificado nada: {0}</value>
+  </data>
+  <data name="Recovery_Quit" xml:space="preserve">
+    <value>Salir</value>
+  </data>
+  <data name="Recovery_RestoreBackup" xml:space="preserve">
+    <value>Restaurar esta copia</value>
+  </data>
+  <data name="Recovery_RestoreBackupTitle" xml:space="preserve">
+    <value>Restaurar una copia de seguridad</value>
+  </data>
+  <data name="Recovery_StartEmpty" xml:space="preserve">
+    <value>Empezar con datos vacíos</value>
+  </data>
+  <data name="Recovery_StartEmptyHint" xml:space="preserve">
+    <value>La base dañada se renombra y se conserva en la carpeta de Looma; después Looma se reinicia con una base vacía.</value>
+  </data>
+  <data name="Recovery_StartEmptyTitle" xml:space="preserve">
+    <value>Empezar de nuevo</value>
+  </data>
+  <data name="Recovery_Title" xml:space="preserve">
+    <value>Recuperación de datos</value>
+  </data>
+  <data name="Recovery_UnableToSetAsideDatabase" xml:space="preserve">
+    <value>No se puede apartar la base dañada: {0}</value>
+  </data>
+  <data name="Settings_Data_CheckIntegrity" xml:space="preserve">
+    <value>Comprobar mis datos</value>
+  </data>
+  <data name="Settings_Data_Export" xml:space="preserve">
+    <value>Exportar</value>
+  </data>
+  <data name="Settings_Data_Healthy" xml:space="preserve">
+    <value>No se detectó ningún problema.</value>
+  </data>
+  <data name="Settings_Data_Hint" xml:space="preserve">
+    <value>Exporta todos tus datos (lanas, patrones, proyectos, documentos, temas) en un único archivo o restáuralos desde una copia. Looma también hace una copia automática antes de cada actualización.</value>
+  </data>
+  <data name="Settings_Data_Import" xml:space="preserve">
+    <value>Importar</value>
+  </data>
+  <data name="Settings_Data_ImportConfirm" xml:space="preserve">
+    <value>Reemplazar y reiniciar</value>
+  </data>
+  <data name="Settings_Data_ImportConfirmTitle" xml:space="preserve">
+    <value>¿Reemplazar todos tus datos?</value>
+  </data>
+  <data name="Settings_Data_ImportConfirmWarning" xml:space="preserve">
+    <value>Todos los datos actuales se reemplazarán por esta copia. Antes se crea una copia de seguridad de tus datos actuales y Looma se reinicia.</value>
+  </data>
+  <data name="Settings_Data_ImportSummary" xml:space="preserve">
+    <value>Copia del {0} (Looma {1}) con {2} documento(s) y {3} tema(s).</value>
+  </data>
+  <data name="Settings_Data_Notifications_Exported" xml:space="preserve">
+    <value>Datos exportados a {0}</value>
+  </data>
+  <data name="Settings_Data_Notifications_InvalidArchive" xml:space="preserve">
+    <value>Este archivo no es una copia válida de Looma.</value>
+  </data>
+  <data name="Settings_Data_Notifications_MissingDocumentsRemoved" xml:space="preserve">
+    <value>{0} documento(s) sin archivo eliminado(s).</value>
+  </data>
+  <data name="Settings_Data_Notifications_OrphansQuarantined" xml:space="preserve">
+    <value>{0} archivo(s) huérfano(s) movido(s) a documents/.orphans.</value>
+  </data>
+  <data name="Settings_Data_Notifications_RepairFailed" xml:space="preserve">
+    <value>La operación sobre tus datos ha fallado.</value>
+  </data>
+  <data name="Settings_Data_Notifications_UnableToExport" xml:space="preserve">
+    <value>No se pueden exportar los datos.</value>
+  </data>
+  <data name="Settings_Data_OpenBackupsFolder" xml:space="preserve">
+    <value>Copias automáticas</value>
+  </data>
+  <data name="Settings_Data_QuarantineOrphans" xml:space="preserve">
+    <value>Poner en cuarentena los archivos huérfanos</value>
+  </data>
+  <data name="Settings_Data_RemoveMissingDocuments" xml:space="preserve">
+    <value>Eliminar documentos sin archivo</value>
+  </data>
+  <data name="Settings_Data_Title" xml:space="preserve">
+    <value>Datos y copias de seguridad</value>
+  </data>
+  <data name="Documents_FileMissing" xml:space="preserve">
+    <value>Archivo faltante</value>
+  </data>
+  <data name="Documents_FileMissingHint" xml:space="preserve">
+    <value>No se encuentra el archivo de este documento. Restaura una copia o elimínalo desde Ajustes &gt; Datos.</value>
+  </data>
 </root>

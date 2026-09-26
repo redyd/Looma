@@ -11,6 +11,7 @@ using Looma.Infrastructure.Entity;
 using Looma.Infrastructure.Mapping;
 using Looma.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
+using Looma.Domain.Localization;
 
 namespace Looma.Infrastructure.Repositories;
 
@@ -118,7 +119,10 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             }
 
             Directory.CreateDirectory(pathManager.DocumentsFolder);
-            File.Copy(request.SourcePath, destinationPath, overwrite: false);
+            if (File.Exists(destinationPath))
+                return ResultT<Document>.Conflict(Localizer.Format("Data_Errors_DocumentStorageConflict", id));
+
+            AtomicFile.Copy(request.SourcePath, destinationPath);
 
             var fileInfo = new FileInfo(destinationPath);
             var entity = new DocumentEntity
@@ -196,14 +200,9 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
                 return Result.NotFound($"Le document {id} est introuvable.");
             }
 
-            var filePath = pathManager.GetDocumentStoragePath(id);
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
             context.Documents.Remove(entity);
             await context.SaveChangesAsync();
+            pathManager.TryDeleteDocumentFile(id);
             return Result.Ok();
         }
         catch (DbUpdateException ex)
@@ -238,6 +237,8 @@ public class DocumentRepository(LoomaDbContext context, AppPaths pathManager) : 
             return Task.FromResult(Result.Failure($"Impossible d'ouvrir le document {id}: {ex.Message}"));
         }
     }
+
+    public void DiscardStoredFile(Guid id) => pathManager.TryDeleteDocumentFile(id);
 
     private static Document ApplyFileMetadata(Document document, AppPaths pathManager)
     {

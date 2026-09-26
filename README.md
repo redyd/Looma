@@ -59,10 +59,21 @@ Looma est construit avec [Avalonia UI](https://avaloniaui.net/) et vise Windows,
 - Thèmes JSON importables, exportables, ouvrables et supprimables.
 - Thèmes fournis au démarrage dans `src/Looma.App/Seed/Themes`.
 - Vérification des mises à jour, notes de version et installation via Velopack.
+- Section « Données et sauvegardes » : export, import, vérification et réparation des données.
+
+### Sauvegardes et intégrité des données
+
+- Export complet dans un fichier `.looma` : base de données, documents, images, thèmes et préférences.
+- Import d'une sauvegarde en remplacement total des données : l'archive est entièrement vérifiée (empreintes SHA-256, chemins, intégrité SQLite, version) avant toute modification, une sauvegarde de sécurité des données actuelles est créée, puis Looma redémarre pour l'appliquer. En cas d'échec, les données précédentes sont remises en place.
+- Sauvegarde automatique avant chaque migration de la base (5 conservées dans le dossier `backups`).
+- Écran de récupération au démarrage si la base est endommagée : restaurer une sauvegarde, importer un fichier ou repartir de zéro en conservant l'ancienne base.
+- Vérification des données : documents dont le fichier manque (signalés dans les listes), fichiers orphelins (mis en quarantaine dans `documents/.orphans`), thèmes invalides, préférences corrompues (réinitialisées, copie conservée).
+- Écritures atomiques et transactions : une erreur ne laisse jamais de modification à moitié appliquée.
 
 ### Stockage local
 
 - Base de données SQLite.
+- Préférences dans `config.json`, sauvegardes automatiques dans `backups`.
 - Documents importés copiés dans le dossier de données de l'application.
 - Images de projets stockées comme documents locaux.
 - Aucun compte, aucune synchronisation cloud imposée.
@@ -72,16 +83,16 @@ Looma est construit avec [Avalonia UI](https://avaloniaui.net/) et vise Windows,
 ## Stack technique
 
 - .NET 10
-- Avalonia UI 12
-- Entity Framework Core
+- Avalonia UI 12.1
+- Entity Framework Core 10
 - SQLite
-- Velopack
+- Velopack 1.2
 - xUnit, FluentAssertions et NSubstitute
 
 La solution est découpée en plusieurs projets :
 
 - `src/Looma.Domain` : entités, services métier, recherches, statistiques et contrats.
-- `src/Looma.Infrastructure` : SQLite, repositories, migrations EF Core et stockage local.
+- `src/Looma.Infrastructure` : SQLite, repositories, migrations EF Core, stockage local, sauvegardes et contrôle d'intégrité.
 - `src/Looma.Presentation` : view models, navigation, traductions, notifications et thèmes.
 - `src/Looma.Views` : vues Avalonia, styles, contrôles et converters.
 - `src/Looma.App` : application de bureau, injection de dépendances, assets, seeds et mises à jour.
@@ -112,6 +123,10 @@ dotnet test
 dotnet build
 ```
 
+### Conventions
+
+Les règles à respecter pour contribuer (architecture, traductions, intégrité des données, tests) sont décrites dans [`AGENTS.md`](AGENTS.md).
+
 ### Langues
 
 Les traductions de l'application sont dans `src/Looma.Presentation/Resources` :
@@ -124,6 +139,8 @@ Les traductions de l'application sont dans `src/Looma.Presentation/Resources` :
 - `Translations.es.resx` : espagnol.
 
 La liste des langues affichées dans les réglages est déclarée dans `TranslationService.SupportedLanguage`.
+
+Tout texte visible par l'utilisateur doit être ajouté dans les six fichiers. Les couches Domain et Infrastructure y accèdent via `Localizer` (`Looma.Domain.Localization`).
 
 ---
 
@@ -149,7 +166,7 @@ Sans `--local`, Looma stocke ses données dans le dossier applicatif du système
 
 ### `--clear`
 
-Supprime la base SQLite et vide le dossier de documents avant le démarrage.
+Supprime la base SQLite et vide le dossier de documents avant le démarrage. Les sauvegardes du dossier `backups` ne sont pas supprimées.
 
 À utiliser avec attention :
 
