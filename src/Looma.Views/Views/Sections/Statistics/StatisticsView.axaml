@@ -7,84 +7,314 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:loc="clr-namespace:Looma.Views.Markup"
-             xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+             xmlns:stats="using:Looma.Views.UserControls.Statistics"
+             xmlns:uc="using:Looma.Views.UserControls"
              xmlns:vm="using:Looma.Presentation.ViewModels.Sections.Statistics"
              x:Class="Looma.Views.Views.Sections.Statistics.StatisticsView"
              x:DataType="vm:StatisticsViewModel">
 
-    <DockPanel Margin="32">
-        <DockPanel DockPanel.Dock="Top"
-                   Margin="0 0 0 20"
-                   HorizontalSpacing="20">
-            <StackPanel Spacing="4">
-                <TextBlock Text="{loc:Loc Statistics_Title}"
-                           Classes="page-title" />
-                <TextBlock Text="{loc:Loc Statistics_YarnUsedByReference}"
-                           Classes="page-subtitle" />
-            </StackPanel>
-        </DockPanel>
-
-        <Border DockPanel.Dock="Top"
-                Classes="surface-panel"
-                Padding="16"
-                Margin="0 0 0 18">
-            <Grid ColumnDefinitions="Auto,Auto,Auto"
-                  ColumnSpacing="8"
-                  HorizontalAlignment="Left">
-                <StackPanel Grid.Column="0"
-                            Classes="form-field"
-                            Margin="0"
-                            Width="180">
-                    <TextBlock Text="{loc:Loc Statistics_Period}" Classes="form-label" />
-                    <ComboBox Classes="form-select"
-                              ItemsSource="{Binding RangeOptions}"
-                              SelectedItem="{Binding SelectedRange}" />
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="vm:StatisticsKpiViewModel">
+            <Border Classes="stat-card">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <TextBlock Text="{Binding Title}"
+                                   Classes="stat-label"
+                                   VerticalAlignment="Center" />
+                        <Border Grid.Column="1" Classes="stat-icon">
+                            <LucideIcon Kind="{Binding Icon}" Size="18" />
+                        </Border>
+                    </Grid>
+                    <TextBlock Text="{Binding Value}" Classes="stat-value" />
+                    <Border IsVisible="{Binding HasTrend}"
+                            Classes="stat-trend"
+                            Classes.up="{Binding IsTrendUp}">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <LucideIcon Kind="TrendingUp" Size="13" IsVisible="{Binding IsTrendUp}" />
+                            <LucideIcon Kind="TrendingDown" Size="13" IsVisible="{Binding IsTrendDown}" />
+                            <TextBlock Text="{Binding TrendText}" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Text="{Binding Caption}"
+                               IsVisible="{Binding HasCaption}"
+                               Classes="stat-caption" />
                 </StackPanel>
+            </Border>
+        </DataTemplate>
 
-                <StackPanel Grid.Column="1"
-                            Classes="form-field"
-                            Margin="0"
-                            Width="150">
-                    <TextBlock Text="{loc:Loc Statistics_Unit}" Classes="form-label" />
-                    <ComboBox Classes="form-select"
-                              ItemsSource="{Binding QuantityUnitOptions}"
-                              SelectedItem="{Binding SelectedQuantityUnit}" />
+        <DataTemplate DataType="vm:StatisticsRankRowViewModel">
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto"
+                  ColumnSpacing="12"
+                  Margin="0 6">
+                <TextBlock Text="{Binding Rank}"
+                           Classes="stat-rank"
+                           VerticalAlignment="Center" />
+                <uc:ColorPieControl Grid.Column="1"
+                                    Width="28"
+                                    Height="28"
+                                    IsVisible="{Binding HasColors}"
+                                    Colors="{Binding Colors}"
+                                    BorderBrush="{DynamicResource SurfaceCardBorderBrush}"
+                                    VerticalAlignment="Center" />
+                <StackPanel Grid.Column="2" Spacing="4" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="{Binding Title}"
+                                   Classes="stat-legend-label"
+                                   FontWeight="Medium"
+                                   TextTrimming="CharacterEllipsis" />
+                        <Border IsVisible="{Binding HasBadge}" Classes="stat-trend">
+                            <TextBlock Text="{Binding Badge}" />
+                        </Border>
+                    </StackPanel>
+                    <TextBlock Text="{Binding Subtitle}"
+                               IsVisible="{Binding HasSubtitle}"
+                               Classes="stat-caption" />
+                    <ProgressBar Classes="stat-rank-bar" Value="{Binding Ratio}" />
                 </StackPanel>
-
-                <StackPanel Grid.Column="2"
-                            Classes="form-field"
-                            Margin="0"
-                            Width="180">
-                    <TextBlock Text="{loc:Loc Common_PatternType}" Classes="form-label" />
-                    <ComboBox Classes="form-select"
-                              ItemsSource="{Binding PatternTypeOptions}"
-                              SelectedItem="{Binding SelectedPatternType}" />
-                </StackPanel>
+                <TextBlock Grid.Column="3"
+                           Text="{Binding Value}"
+                           Classes="stat-legend-value"
+                           VerticalAlignment="Center" />
             </Grid>
-        </Border>
+        </DataTemplate>
+    </UserControl.DataTemplates>
 
-        <Border Classes="surface-card"
-                Padding="18"
-                ClipToBounds="True">
-            <Grid MinHeight="420">
-                <lvc:CartesianChart x:Name="LineChart"
-                                    LegendPosition="Hidden"
-                                    PointerWheelChanged="OnChartPointerWheelChanged"
-                                    PointerPressed="OnChartPointerPressed"
-                                    PointerMoved="OnChartPointerMoved"
-                                    PointerReleased="OnChartPointerReleased" />
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="32" Spacing="20">
 
-                <Border IsVisible="{Binding !HasData}"
-                        Classes="empty-state">
-                    <StackPanel Spacing="8"
-                                HorizontalAlignment="Center">
-                        <TextBlock Text="{loc:Loc Statistics_NoData}"
-                                   Classes="empty-state-title" />
-                        <TextBlock Text="{loc:Loc Statistics_AddWoolMovements}"
-                                   Classes="empty-state-message" />
+            <!-- En-tête : titre + onglets -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="20">
+                <StackPanel Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="{loc:Loc Statistics_Title}" Classes="page-title" />
+                    <TextBlock Text="{loc:Loc Statistics_Subtitle}"
+                               Classes="page-subtitle"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+                <Border Grid.Column="1"
+                        Classes="segmented-group"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <Button Content="{loc:Loc Statistics_Tabs_Wool}"
+                                Command="{Binding SelectWoolTabCommand}"
+                                Classes="segmented-btn"
+                                Classes.active="{Binding IsWoolTab}" />
+                        <Button Content="{loc:Loc Statistics_Tabs_Global}"
+                                Command="{Binding SelectGlobalTabCommand}"
+                                Classes="segmented-btn"
+                                Classes.active="{Binding IsGlobalTab}" />
                     </StackPanel>
                 </Border>
             </Grid>
-        </Border>
-    </DockPanel>
+
+            <!-- Filtres -->
+            <Border Classes="surface-panel" Padding="16">
+                <WrapPanel ItemSpacing="12" LineSpacing="8">
+                    <StackPanel Classes="form-field" Margin="0" Width="190">
+                        <TextBlock Text="{loc:Loc Statistics_Period}" Classes="form-label" />
+                        <ComboBox Classes="form-select"
+                                  HorizontalAlignment="Stretch"
+                                  ItemsSource="{Binding RangeOptions}"
+                                  SelectedItem="{Binding SelectedRange}" />
+                    </StackPanel>
+                    <StackPanel Classes="form-field"
+                                Margin="0"
+                                Width="160"
+                                IsVisible="{Binding IsWoolTab}">
+                        <TextBlock Text="{loc:Loc Statistics_Unit}" Classes="form-label" />
+                        <ComboBox Classes="form-select"
+                                  HorizontalAlignment="Stretch"
+                                  ItemsSource="{Binding QuantityUnitOptions}"
+                                  SelectedItem="{Binding SelectedQuantityUnit}" />
+                    </StackPanel>
+                    <StackPanel Classes="form-field" Margin="0" Width="190">
+                        <TextBlock Text="{loc:Loc Common_PatternType}" Classes="form-label" />
+                        <ComboBox Classes="form-select"
+                                  HorizontalAlignment="Stretch"
+                                  ItemsSource="{Binding PatternTypeOptions}"
+                                  SelectedItem="{Binding SelectedPatternType}" />
+                    </StackPanel>
+                </WrapPanel>
+            </Border>
+
+            <!-- État vide global -->
+            <Border IsVisible="{Binding !HasData}"
+                    Classes="empty-state"
+                    Padding="32">
+                <StackPanel Spacing="8" HorizontalAlignment="Center">
+                    <TextBlock Text="{loc:Loc Statistics_NoData}" Classes="empty-state-title" />
+                    <TextBlock Text="{loc:Loc Statistics_Empty_Wool}"
+                               IsVisible="{Binding IsWoolTab}"
+                               Classes="empty-state-message" />
+                    <TextBlock Text="{loc:Loc Statistics_Empty_Global}"
+                               IsVisible="{Binding IsGlobalTab}"
+                               Classes="empty-state-message" />
+                </StackPanel>
+            </Border>
+
+            <!-- Onglet Laine -->
+            <StackPanel Spacing="16">
+                <StackPanel.IsVisible>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding Path="IsWoolTab" />
+                        <Binding Path="HasData" />
+                    </MultiBinding>
+                </StackPanel.IsVisible>
+
+                <ItemsControl ItemsSource="{Binding WoolReport.Kpis}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <stats:ResponsiveUniformGrid MinColumnWidth="210"
+                                                         ColumnSpacing="16"
+                                                         RowSpacing="16" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <Border Classes="stat-card">
+                    <StackPanel Spacing="12">
+                        <StackPanel Spacing="2">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_WoolTimeline}" Classes="stat-card-title" />
+                            <TextBlock Text="{loc:Loc Statistics_Charts_WoolTimelineHint}" Classes="stat-card-subtitle" />
+                        </StackPanel>
+                        <stats:TimelineChart Height="310"
+                                             Chart="{Binding WoolReport.Timeline}"
+                                             EmptyText="{loc:Loc Statistics_Empty_Period}" />
+                    </StackPanel>
+                </Border>
+
+                <stats:ResponsiveUniformGrid MinColumnWidth="340" MaxColumns="3" ColumnSpacing="16" RowSpacing="16">
+                    <Border Classes="stat-card">
+                        <StackPanel Spacing="14">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_UsedByMaterial}" Classes="stat-card-title" />
+                            <stats:DonutChart Chart="{Binding WoolReport.ByMaterial}"
+                                              EmptyText="{loc:Loc Statistics_Empty_Period}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="stat-card">
+                        <StackPanel Spacing="14">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_UsedByWeightClass}" Classes="stat-card-title" />
+                            <stats:DonutChart Chart="{Binding WoolReport.ByWeightClass}"
+                                              EmptyText="{loc:Loc Statistics_Empty_Period}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="stat-card">
+                        <StackPanel Spacing="14">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_StockByWeightClass}" Classes="stat-card-title" />
+                            <stats:DonutChart Chart="{Binding WoolReport.StockByWeightClass}"
+                                              EmptyText="{loc:Loc Statistics_Empty_Stock}" />
+                        </StackPanel>
+                    </Border>
+                </stats:ResponsiveUniformGrid>
+
+                <stats:ResponsiveUniformGrid MinColumnWidth="360" MaxColumns="2" ColumnSpacing="16" RowSpacing="16">
+                    <Border Classes="stat-card">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_TopWools}" Classes="stat-card-title" />
+                            <ItemsControl ItemsSource="{Binding WoolReport.TopWools}" />
+                            <TextBlock Text="{loc:Loc Statistics_Empty_Period}"
+                                       IsVisible="{Binding !WoolReport.HasTopWools}"
+                                       Classes="empty-state-message" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="stat-card">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_TopProjects}" Classes="stat-card-title" />
+                            <ItemsControl ItemsSource="{Binding WoolReport.TopProjects}" />
+                            <TextBlock Text="{loc:Loc Statistics_Empty_Projects}"
+                                       IsVisible="{Binding !WoolReport.HasTopProjects}"
+                                       Classes="empty-state-message" />
+                        </StackPanel>
+                    </Border>
+                </stats:ResponsiveUniformGrid>
+            </StackPanel>
+
+            <!-- Onglet Global -->
+            <StackPanel Spacing="16">
+                <StackPanel.IsVisible>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding Path="IsGlobalTab" />
+                        <Binding Path="HasData" />
+                    </MultiBinding>
+                </StackPanel.IsVisible>
+
+                <ItemsControl ItemsSource="{Binding GlobalReport.Kpis}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <stats:ResponsiveUniformGrid MinColumnWidth="210"
+                                                         ColumnSpacing="16"
+                                                         RowSpacing="16" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <Border Classes="stat-card">
+                    <StackPanel Spacing="12">
+                        <StackPanel Spacing="2">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_ProjectTimeline}" Classes="stat-card-title" />
+                            <TextBlock Text="{loc:Loc Statistics_Charts_ProjectTimelineHint}" Classes="stat-card-subtitle" />
+                        </StackPanel>
+                        <stats:TimelineChart Height="310"
+                                             Chart="{Binding GlobalReport.Timeline}"
+                                             EmptyText="{loc:Loc Statistics_Empty_ProjectDates}" />
+                    </StackPanel>
+                </Border>
+
+                <stats:ResponsiveUniformGrid MinColumnWidth="360" MaxColumns="2" ColumnSpacing="16" RowSpacing="16">
+                    <Border Classes="stat-card">
+                        <StackPanel Spacing="14">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_ProjectsByStatus}" Classes="stat-card-title" />
+                            <stats:DonutChart Chart="{Binding GlobalReport.ByStatus}"
+                                              EmptyText="{loc:Loc Statistics_Empty_Projects}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="stat-card">
+                        <StackPanel Spacing="14">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_ProjectsByPatternType}" Classes="stat-card-title" />
+                            <stats:DonutChart Chart="{Binding GlobalReport.ByPatternType}"
+                                              EmptyText="{loc:Loc Statistics_Empty_Projects}" />
+                        </StackPanel>
+                    </Border>
+                </stats:ResponsiveUniformGrid>
+
+                <stats:ResponsiveUniformGrid MinColumnWidth="360" MaxColumns="2" ColumnSpacing="16" RowSpacing="16">
+                    <Border Classes="stat-card">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_LongestProjects}" Classes="stat-card-title" />
+                            <ItemsControl ItemsSource="{Binding GlobalReport.LongestProjects}" />
+                            <TextBlock Text="{loc:Loc Statistics_Empty_ProjectDates}"
+                                       IsVisible="{Binding !GlobalReport.HasLongestProjects}"
+                                       Classes="empty-state-message" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="stat-card">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="{loc:Loc Statistics_Charts_Library}" Classes="stat-card-title" />
+                            <ItemsControl ItemsSource="{Binding GlobalReport.Library}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="vm:StatisticsKpiViewModel">
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Margin="0 6">
+                                            <Border Classes="stat-icon">
+                                                <LucideIcon Kind="{Binding Icon}" Size="18" />
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Title}" Classes="stat-legend-label" FontWeight="Medium" />
+                                                <TextBlock Text="{Binding Caption}"
+                                                           IsVisible="{Binding HasCaption}"
+                                                           Classes="stat-caption" />
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding Value}"
+                                                       Classes="stat-value"
+                                                       FontSize="22"
+                                                       VerticalAlignment="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </stats:ResponsiveUniformGrid>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

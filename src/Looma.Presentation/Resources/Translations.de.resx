@@ -266,9 +266,6 @@
   <data name="Statistics_Title" xml:space="preserve">
     <value>Statistiken</value>
   </data>
-  <data name="Statistics_YarnUsedByReference" xml:space="preserve">
-    <value>Verwendetes Garn nach Referenz</value>
-  </data>
   <data name="Statistics_Period" xml:space="preserve">
     <value>Zeitraum</value>
   </data>
@@ -277,9 +274,6 @@
   </data>
   <data name="Statistics_NoData" xml:space="preserve">
     <value>Keine Daten</value>
-  </data>
-  <data name="Statistics_AddWoolMovements" xml:space="preserve">
-    <value>Füge mit Projekten verknüpfte Garnbewegungen hinzu, um Fortschritt anzuzeigen.</value>
   </data>
   <data name="Settings_Title" xml:space="preserve">
     <value>Einstellungen</value>
@@ -1165,5 +1159,203 @@
   </data>
   <data name="Documents_FileMissingHint" xml:space="preserve">
     <value>Die gespeicherte Datei dieses Dokuments wurde nicht gefunden. Stellen Sie eine Sicherung wieder her oder entfernen Sie es unter Einstellungen &gt; Daten.</value>
+  </data>
+  <data name="Statistics_Subtitle" xml:space="preserve">
+    <value>Dein Garn und deine Projekte auf einen Blick.</value>
+  </data>
+  <data name="Statistics_Tabs_Wool" xml:space="preserve">
+    <value>Garn</value>
+  </data>
+  <data name="Statistics_Tabs_Global" xml:space="preserve">
+    <value>Überblick</value>
+  </data>
+  <data name="Statistics_Empty_Wool" xml:space="preserve">
+    <value>Füge Garn hinzu und passe den Bestand an, um deinen Verbrauch hier zu sehen.</value>
+  </data>
+  <data name="Statistics_Empty_Global" xml:space="preserve">
+    <value>Lege Projekte und Anleitungen an, um hier deinen Überblick zu sehen.</value>
+  </data>
+  <data name="Statistics_Empty_Period" xml:space="preserve">
+    <value>In diesem Zeitraum wurde nichts erfasst.</value>
+  </data>
+  <data name="Statistics_Empty_Stock" xml:space="preserve">
+    <value>Kein Garn auf Lager.</value>
+  </data>
+  <data name="Statistics_Empty_Projects" xml:space="preserve">
+    <value>Kein Projekt in diesem Zeitraum.</value>
+  </data>
+  <data name="Statistics_Empty_ProjectDates" xml:space="preserve">
+    <value>Trage Start- und Enddaten deiner Projekte ein, um sie hier zu sehen.</value>
+  </data>
+  <data name="Statistics_Charts_WoolTimeline" xml:space="preserve">
+    <value>Verbrauch und Käufe</value>
+  </data>
+  <data name="Statistics_Charts_WoolTimelineHint" xml:space="preserve">
+    <value>Verbrauchtes und hinzugefügtes Garn im Zeitverlauf.</value>
+  </data>
+  <data name="Statistics_Charts_UsedByMaterial" xml:space="preserve">
+    <value>Verbrauch nach Material</value>
+  </data>
+  <data name="Statistics_Charts_UsedByWeightClass" xml:space="preserve">
+    <value>Verbrauch nach Garnstärke</value>
+  </data>
+  <data name="Statistics_Charts_StockByWeightClass" xml:space="preserve">
+    <value>Aktueller Bestand nach Garnstärke</value>
+  </data>
+  <data name="Statistics_Charts_TopWools" xml:space="preserve">
+    <value>Meistverwendete Garne</value>
+  </data>
+  <data name="Statistics_Charts_TopProjects" xml:space="preserve">
+    <value>Projekte mit dem meisten Garn</value>
+  </data>
+  <data name="Statistics_Charts_ProjectTimeline" xml:space="preserve">
+    <value>Begonnene und beendete Projekte</value>
+  </data>
+  <data name="Statistics_Charts_ProjectTimelineHint" xml:space="preserve">
+    <value>Basierend auf den Start- und Enddaten deiner Projekte.</value>
+  </data>
+  <data name="Statistics_Charts_ProjectsByStatus" xml:space="preserve">
+    <value>Projekte nach Status</value>
+  </data>
+  <data name="Statistics_Charts_ProjectsByPatternType" xml:space="preserve">
+    <value>Projekte nach Technik</value>
+  </data>
+  <data name="Statistics_Charts_LongestProjects" xml:space="preserve">
+    <value>Längste Projekte</value>
+  </data>
+  <data name="Statistics_Charts_Library" xml:space="preserve">
+    <value>Deine Bibliothek</value>
+  </data>
+  <data name="Statistics_Kpi_Used" xml:space="preserve">
+    <value>Verbrauchtes Garn</value>
+  </data>
+  <data name="Statistics_Kpi_UsedCaption" xml:space="preserve">
+    <value>Im gewählten Zeitraum</value>
+  </data>
+  <data name="Statistics_Kpi_Added" xml:space="preserve">
+    <value>Hinzugefügtes Garn</value>
+  </data>
+  <data name="Statistics_Kpi_AddedCaption" xml:space="preserve">
+    <value>Käufe und Bestandserhöhungen</value>
+  </data>
+  <data name="Statistics_Kpi_Stock" xml:space="preserve">
+    <value>Aktueller Bestand</value>
+  </data>
+  <data name="Statistics_Kpi_StockCaption" xml:space="preserve">
+    <value>{0} Garn(e) auf Lager</value>
+  </data>
+  <data name="Statistics_Kpi_ProjectsSupplied" xml:space="preserve">
+    <value>Versorgte Projekte</value>
+  </data>
+  <data name="Statistics_Kpi_ProjectsSuppliedCaption" xml:space="preserve">
+    <value>Projekte mit Garnverbrauch</value>
+  </data>
+  <data name="Statistics_Kpi_FinishedInPeriod" xml:space="preserve">
+    <value>Beendete Projekte</value>
+  </data>
+  <data name="Statistics_Kpi_FinishedTotalCaption" xml:space="preserve">
+    <value>{0} insgesamt beendet</value>
+  </data>
+  <data name="Statistics_Kpi_StartedInPeriod" xml:space="preserve">
+    <value>Begonnene Projekte</value>
+  </data>
+  <data name="Statistics_Kpi_InProgressCaption" xml:space="preserve">
+    <value>{0} derzeit in Arbeit</value>
+  </data>
+  <data name="Statistics_Kpi_AverageDuration" xml:space="preserve">
+    <value>Durchschnittliche Dauer</value>
+  </data>
+  <data name="Statistics_Kpi_AverageDurationCaption" xml:space="preserve">
+    <value>Der im Zeitraum beendeten Projekte</value>
+  </data>
+  <data name="Statistics_Kpi_Projects" xml:space="preserve">
+    <value>Alle Projekte</value>
+  </data>
+  <data name="Statistics_Kpi_ProjectsCaption" xml:space="preserve">
+    <value>Alle Status zusammen</value>
+  </data>
+  <data name="Statistics_Kpi_Patterns" xml:space="preserve">
+    <value>Anleitungen</value>
+  </data>
+  <data name="Statistics_Kpi_PersonalPatternsCaption" xml:space="preserve">
+    <value>Davon {0} eigene</value>
+  </data>
+  <data name="Statistics_Kpi_Wools" xml:space="preserve">
+    <value>Garne</value>
+  </data>
+  <data name="Statistics_Kpi_Documents" xml:space="preserve">
+    <value>Dokumente</value>
+  </data>
+  <data name="Statistics_Series_Used" xml:space="preserve">
+    <value>Verbraucht</value>
+  </data>
+  <data name="Statistics_Series_Added" xml:space="preserve">
+    <value>Hinzugefügt</value>
+  </data>
+  <data name="Statistics_Series_Started" xml:space="preserve">
+    <value>Begonnen</value>
+  </data>
+  <data name="Statistics_Series_Finished" xml:space="preserve">
+    <value>Beendet</value>
+  </data>
+  <data name="Statistics_Format_Skeins" xml:space="preserve">
+    <value>{0} Knäuel</value>
+  </data>
+  <data name="Statistics_Format_Days" xml:space="preserve">
+    <value>{0} T</value>
+  </data>
+  <data name="Statistics_Trend_New" xml:space="preserve">
+    <value>Neu in diesem Zeitraum</value>
+  </data>
+  <data name="Statistics_Trend_Stable" xml:space="preserve">
+    <value>Stabil ggü. Vorzeitraum</value>
+  </data>
+  <data name="Statistics_Trend_VsPrevious" xml:space="preserve">
+    <value>{0} ggü. Vorzeitraum</value>
+  </data>
+  <data name="Statistics_Other" xml:space="preserve">
+    <value>Sonstige</value>
+  </data>
+  <data name="Statistics_Unknown" xml:space="preserve">
+    <value>Nicht angegeben</value>
+  </data>
+  <data name="Statistics_NoPattern" xml:space="preserve">
+    <value>Ohne Anleitung</value>
+  </data>
+  <data name="Statistics_Badge_Deleted" xml:space="preserve">
+    <value>Gelöscht</value>
+  </data>
+  <data name="Statistics_Rank_WoolCount" xml:space="preserve">
+    <value>{0} Garn(e)</value>
+  </data>
+  <data name="Statistics_Errors_UnableToLoad" xml:space="preserve">
+    <value>Statistiken können nicht geladen werden.</value>
+  </data>
+  <data name="Statistics_Errors_UnableToLoadMovements" xml:space="preserve">
+    <value>Garnbewegungen können nicht geladen werden: {0}</value>
+  </data>
+  <data name="Enum_Lace" xml:space="preserve">
+    <value>Lace</value>
+  </data>
+  <data name="Enum_SuperFine" xml:space="preserve">
+    <value>Superfein</value>
+  </data>
+  <data name="Enum_Fine" xml:space="preserve">
+    <value>Fein</value>
+  </data>
+  <data name="Enum_Light" xml:space="preserve">
+    <value>Leicht</value>
+  </data>
+  <data name="Enum_Medium" xml:space="preserve">
+    <value>Mittel</value>
+  </data>
+  <data name="Enum_Bulky" xml:space="preserve">
+    <value>Dick</value>
+  </data>
+  <data name="Enum_SuperBulky" xml:space="preserve">
+    <value>Sehr dick</value>
+  </data>
+  <data name="Enum_Jumbo" xml:space="preserve">
+    <value>Jumbo</value>
   </data>
 </root>

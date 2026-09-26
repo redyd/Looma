@@ -43,17 +43,25 @@ public partial class StatisticsViewModel(
     public partial StatisticsOptionViewModel<PatternType?>? SelectedPatternType { get; set; }
 
     [ObservableProperty]
-    public partial IReadOnlyList<string> Labels { get; set; } = [];
+    [NotifyPropertyChangedFor(nameof(IsWoolTab), nameof(IsGlobalTab))]
+    public partial StatisticsTab SelectedTab { get; set; } = StatisticsTab.Wool;
 
     [ObservableProperty]
-    public partial IReadOnlyList<StatisticsSeries> Series { get; set; } = [];
+    [NotifyPropertyChangedFor(nameof(HasData))]
+    public partial StatisticsWoolReportViewModel WoolReport { get; set; } = StatisticsWoolReportViewModel.Empty;
 
     [ObservableProperty]
-    public partial bool HasData { get; set; }
+    [NotifyPropertyChangedFor(nameof(HasData))]
+    public partial StatisticsGlobalReportViewModel GlobalReport { get; set; } = StatisticsGlobalReportViewModel.Empty;
+
+    public bool IsWoolTab => SelectedTab == StatisticsTab.Wool;
+    public bool IsGlobalTab => SelectedTab == StatisticsTab.Global;
+
+    public bool HasData => IsWoolTab ? WoolReport.HasData : GlobalReport.HasData;
 
     public override async void OnNavigatedTo()
     {
-        RegisterRefresh(refreshService, RefreshScope.Wools, LoadAsync);
+        RegisterRefresh(refreshService, RefreshScope.All, LoadAsync);
         RegisterTranslationRefresh();
         RefreshOptions();
 
@@ -88,7 +96,11 @@ public partial class StatisticsViewModel(
         _isListeningTranslation = true;
     }
 
-    private void OnTranslationChanged(object? sender, PropertyChangedEventArgs e) => RefreshOptions();
+    private void OnTranslationChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        RefreshOptions();
+        _ = LoadAsync();
+    }
 
     private void RefreshOptions()
     {
@@ -132,44 +144,64 @@ public partial class StatisticsViewModel(
     }
 
     [RelayCommand]
+    private void SelectWoolTab() => SelectedTab = StatisticsTab.Wool;
+
+    [RelayCommand]
+    private void SelectGlobalTab() => SelectedTab = StatisticsTab.Global;
+
+    [RelayCommand]
     public async Task LoadAsync()
     {
         if (!_isInitialized || SelectedRange is null || SelectedQuantityUnit is null || SelectedPatternType is null)
-        {
             return;
-        }
+
+        var filter = new StatisticsFilter(
+            SelectedRange.Value,
+            SelectedQuantityUnit.Value,
+            SelectedPatternType.Value,
+            DateOnly.FromDateTime(DateTime.Today));
 
         IsBusy = true;
         try
         {
-            var query = new StatisticsQuery(
-                StatisticsChartKind.Line,
-                StatisticsDataKind.Wool,
-                SelectedRange.Value,
-                SelectedPatternType.Value,
-                null,
-                StatisticsProjectGrouping.Status,
-                SelectedQuantityUnit.Value,
-                DateOnly.FromDateTime(DateTime.Today));
-
-            var result = await statisticsService.GetAsync(query);
-            if (result.Failed || result.Value is null)
+            if (IsWoolTab)
             {
-                notifications.Error(result.Error ?? Translation["Statistics_Notifications_UnableToLoadStatistics"]);
-                Labels = [];
-                Series = [];
-                HasData = false;
-                return;
-            }
+                var result = await statisticsService.GetWoolStatisticsAsync(filter);
+                if (result.Failed || result.Value is null)
+                {
+                    notifications.Error(result.Error ?? Translation["Statistics_Notifications_UnableToLoadStatistics"]);
+                    WoolReport = StatisticsWoolReportViewModel.Empty;
+                    return;
+                }
 
-            Labels = result.Value.Labels;
-            Series = result.Value.Series;
-            HasData = !result.Value.IsEmpty;
+                WoolReport = StatisticsWoolReportViewModel.From(result.Value, Translation);
+            }
+            else
+            {
+                var result = await statisticsService.GetGlobalStatisticsAsync(filter);
+                if (result.Failed || result.Value is null)
+                {
+                    notifications.Error(result.Error ?? Translation["Statistics_Notifications_UnableToLoadStatistics"]);
+                    GlobalReport = StatisticsGlobalReportViewModel.Empty;
+                    return;
+                }
+
+                GlobalReport = StatisticsGlobalReportViewModel.From(result.Value, Translation);
+            }
         }
         finally
         {
             IsBusy = false;
         }
+    }
+
+    partial void OnSelectedTabChanged(StatisticsTab value)
+    {
+        OnPropertyChanged(nameof(HasData));
+        if (!_isInitialized)
+            return;
+
+        _ = LoadAsync();
     }
 
     partial void OnSelectedRangeChanged(StatisticsOptionViewModel<StatisticsRange>? value)

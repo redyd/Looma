@@ -4,8 +4,5 @@
 
 namespace Looma.Domain.Statistics;
 
-public enum StatisticsProjectGrouping
-{
-    Status,
-    PatternType
-}
+/// <summary>Valeur d'une période (jour, semaine, mois ou année selon la granularité du rapport).</summary>
+public sealed record StatisticsBucketValue(DateOnly Start, double Value);

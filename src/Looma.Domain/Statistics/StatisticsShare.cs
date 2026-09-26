@@ -4,4 +4,5 @@
 
 namespace Looma.Domain.Statistics;
 
-public sealed record StatisticsSeries(string Name, IReadOnlyList<StatisticsPoint> Points);
+/// <summary>Part d'un total, triée par valeur décroissante dans les rapports.</summary>
+public sealed record StatisticsShare<TKey>(TKey Key, double Value);

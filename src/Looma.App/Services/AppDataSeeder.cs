@@ -22,6 +22,8 @@ public sealed class AppDataSeeder(
     IDocumentService documentService,
     ITrackedWoolRepository trackedWoolRepository) : IAppDataSeeder
 {
+    private const int SeedHistoryMonths = 18;
+
     public async Task SeedAsync(int? itemCount = null)
     {
         await EnsureDatabaseIsEmptyAsync();
@@ -29,7 +31,8 @@ public sealed class AppDataSeeder(
         var wools = await SeedWoolsAsync(itemCount);
         var patterns = await SeedPatternsAsync(itemCount);
         var projects = await SeedProjectsAsync(wools, patterns, itemCount);
-        await SeedTrackedWoolAsync(wools, projects, itemCount);
+        await SeedTrackedWoolAsync(wools, projects);
+        await SeedDeletedWoolHistoryAsync(projects);
     }
 
     private async Task EnsureDatabaseIsEmptyAsync()
@@ -121,13 +124,12 @@ public sealed class AppDataSeeder(
         var projects = (existing.Value ?? []).ToList();
 
         var statuses = Enum.GetValues<Status>();
-        var projectCount = itemCount ?? statuses.Length;
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        var projectCount = itemCount ?? statuses.Length * 3;
         for (var i = 0; i < projectCount; i++)
         {
             var status = statuses[i % statuses.Length];
-            var name = itemCount.HasValue
-                ? $"Seed - Projet {i + 1:000} - {GetStatusLabel(status)}"
-                : $"Seed - Projet {GetStatusLabel(status)}";
+            var name = $"Seed - Projet {i + 1:000} - {GetStatusLabel(status)}";
             if (existingNames.Contains(name))
                 continue;
 
@@ -145,8 +147,8 @@ public sealed class AppDataSeeder(
                 name,
                 status,
                 $"Projet de demonstration pour le statut {GetStatusLabel(status)}.",
-                new DateOnly(2026, 1, 5).AddMonths(i),
-                status == Status.Finished ? new DateOnly(2026, 2, 15).AddMonths(i) : null,
+                SeedBeginDate(status, i, today),
+                SeedEndDate(status, i, today),
                 patternId,
                 woolIds));
 
@@ -157,48 +159,110 @@ public sealed class AppDataSeeder(
         return projects;
     }
 
-    private async Task SeedTrackedWoolAsync(
-        IReadOnlyList<Wool> wools,
-        IReadOnlyList<Project> projects,
-        int? itemCount)
+    /// <summary>
+    /// Historique de stock sur ~18 mois : achats réguliers, consommations réparties sur la durée
+    /// de chaque projet et quelques ajustements récents, pour alimenter toutes les périodes des statistiques.
+    /// </summary>
+    private async Task SeedTrackedWoolAsync(IReadOnlyList<Wool> wools, IReadOnlyList<Project> projects)
     {
-        var today = DateTime.UtcNow.Date;
-        var yearStart = new DateTime(today.Year, 1, 1, 10, 0, 0, DateTimeKind.Utc);
-        var sixMonthsAgo = DateTime.SpecifyKind(today.AddMonths(-5), DateTimeKind.Utc);
-        var monthStart = new DateTime(today.Year, today.Month, 1, 14, 0, 0, DateTimeKind.Utc);
-        var movementCount = itemCount ?? Math.Max(wools.Count, projects.Count * 3);
-        for (var i = 0; i < wools.Count && i < movementCount; i++)
-        {
-            var wool = wools[i];
-            var quantity = 450 + (i % 5) * 150;
-            var date = ClampSeedDate(yearStart.AddDays(i * 18), today);
-            var result = await trackedWoolRepository.AddAsync(wool.Id, quantity, date: date);
-            EnsureSucceeded(result, $"ajouter le mouvement de stock pour {wool.Brand} {wool.Name}");
-        }
+        var random = new Random(42);
+        var today = DateTime.Today;
+        var historyStart = today.AddMonths(-SeedHistoryMonths);
 
-        for (var i = 0; i < projects.Count && i < movementCount; i++)
+        foreach (var (wool, index) in wools.Select((wool, index) => (wool, index)))
         {
-            var project = projects[i];
-            var projectWools = project.Wools.Count == 0
-                ? wools.Skip(i).Take(2).ToList()
-                : project.Wools.Select(usage => usage.Wool).ToList();
-
-            foreach (var wool in projectWools.Take(3).Select((wool, index) => (wool, index)))
+            // Achat initial puis réassort environ tous les quatre mois.
+            for (var date = historyStart.AddDays(index * 5 % 40); date <= today; date = date.AddMonths(3 + random.Next(3)))
             {
-                var quantity = -Math.Min(1_100, 260 + (i + wool.index) % 6 * 120);
-                var date = ClampSeedDate(sixMonthsAgo.AddDays(i * 11 + wool.index * 6), today);
-                var result = await trackedWoolRepository.AddAsync(wool.wool.Id, quantity, project.ProjectId, date);
-                EnsureSucceeded(result, $"ajouter le retrait de stock pour {project.Name}");
+                var quantity = 1_000 * (1 + random.Next(4));
+                var result = await trackedWoolRepository.AddAsync(wool.Id, quantity, date: SeedMoment(date, today));
+                EnsureSucceeded(result, $"ajouter l'achat de {wool.Brand} {wool.Name}");
             }
         }
 
-        foreach (var wool in wools.Take(Math.Min(6, wools.Count)).Select((wool, index) => (wool, index)))
+        foreach (var project in projects)
         {
-            var quantity = wool.index % 2 == 0 ? -150 : 250;
-            var date = ClampSeedDate(monthStart.AddDays(wool.index * 3), today);
-            var result = await trackedWoolRepository.AddAsync(wool.wool.Id, quantity, date: date);
-            EnsureSucceeded(result, $"ajouter l'ajustement de stock pour {wool.wool.Brand} {wool.wool.Name}");
+            if (project.Status == Status.Wishlist || project.BeginDate is null)
+                continue;
+
+            var begin = project.BeginDate.Value.ToDateTime(TimeOnly.MinValue);
+            var end = (project.EndDate ?? DateOnly.FromDateTime(today)).ToDateTime(TimeOnly.MinValue);
+            var span = Math.Max(1, (end - begin).Days);
+
+            foreach (var usage in project.Wools.Take(3))
+            {
+                var steps = 2 + random.Next(3);
+                for (var step = 0; step < steps; step++)
+                {
+                    var date = begin.AddDays(span * (step + 0.5) / steps + random.Next(-2, 3));
+                    var quantity = -(150 + random.Next(10) * 60);
+                    var result = await trackedWoolRepository.AddAsync(
+                        usage.Wool.Id,
+                        quantity,
+                        project.ProjectId,
+                        SeedMoment(date, today));
+                    EnsureSucceeded(result, $"ajouter la consommation de {project.Name}");
+                }
+            }
         }
+
+        // Ajustements manuels récents (semaine et mois en cours).
+        foreach (var (wool, index) in wools.Take(Math.Min(6, wools.Count)).Select((wool, index) => (wool, index)))
+        {
+            var quantity = index % 2 == 0 ? -150 - index * 40 : 500;
+            var result = await trackedWoolRepository.AddAsync(wool.Id, quantity, date: SeedMoment(today.AddDays(-index * 4), today));
+            EnsureSucceeded(result, $"ajouter l'ajustement de stock pour {wool.Brand} {wool.Name}");
+        }
+    }
+
+    /// <summary>
+    /// Laine achetée, utilisée puis supprimée : son historique reste visible dans les statistiques.
+    /// </summary>
+    private async Task SeedDeletedWoolHistoryAsync(IReadOnlyList<Project> projects)
+    {
+        var added = await woolService.AddAsync(new CreateWoolRequest(
+            "Vintage Mohair", "Seed Archive", "Mohair", ["#C9ADA7", "#9A8C98"], 25, 210, 3000, 3.25, 3.75));
+        EnsureSucceeded(added, "ajouter la laine archivee");
+        var wool = added.Value!;
+
+        var today = DateTime.Today;
+        var purchase = await trackedWoolRepository.AddAsync(wool.Id, 4_000, date: SeedMoment(today.AddMonths(-10), today));
+        EnsureSucceeded(purchase, "ajouter l'achat de la laine archivee");
+
+        var project = projects.FirstOrDefault(p => p.Status == Status.Finished);
+        for (var i = 0; i < 4; i++)
+        {
+            var result = await trackedWoolRepository.AddAsync(
+                wool.Id,
+                -(600 + i * 150),
+                project?.ProjectId,
+                SeedMoment(today.AddMonths(-9 + i * 2), today));
+            EnsureSucceeded(result, "ajouter la consommation de la laine archivee");
+        }
+
+        var deleted = await woolService.DeleteAsync(wool.Id);
+        EnsureSucceeded(deleted, "supprimer la laine archivee");
+    }
+
+    private static DateOnly? SeedBeginDate(Status status, int index, DateOnly today) =>
+        status == Status.Wishlist
+            ? null
+            : today.AddDays(-(20 + index * 37 % (SeedHistoryMonths * 30 - 40)));
+
+    private static DateOnly? SeedEndDate(Status status, int index, DateOnly today)
+    {
+        if (status != Status.Finished || SeedBeginDate(status, index, today) is not { } begin)
+            return null;
+
+        var end = begin.AddDays(12 + index * 13 % 110);
+        return end > today ? today : end;
+    }
+
+    private static DateTime SeedMoment(DateTime date, DateTime today)
+    {
+        var moment = date.Date.AddHours(14);
+        var latest = today.Date.AddHours(12);
+        return moment > latest ? latest : moment < today.AddMonths(-SeedHistoryMonths) ? today.AddMonths(-SeedHistoryMonths) : moment;
     }
 
     private async Task AddPatternDocumentsAsync(Pattern pattern, int documentCount)
@@ -333,15 +397,6 @@ public sealed class AppDataSeeder(
         Status.Paused => "en pause",
         _ => status.ToString()
     };
-
-    private static DateTime ClampSeedDate(DateTime date, DateTime today)
-    {
-        var latest = today.AddHours(18);
-        if (date <= latest)
-            return DateTime.SpecifyKind(date, DateTimeKind.Utc);
-
-        return DateTime.SpecifyKind(latest, DateTimeKind.Utc);
-    }
 
     private static string SanitizeFileName(string value)
     {

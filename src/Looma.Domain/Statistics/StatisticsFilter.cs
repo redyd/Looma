@@ -2,10 +2,12 @@
 // This file is part of Looma, licensed under the AGPL-3.0.
 // See LICENSE in the project root for full license text.
 
+using Looma.Domain.Core;
+
 namespace Looma.Domain.Statistics;
 
-public enum StatisticsChartKind
-{
-    Line,
-    Pie
-}
+public sealed record StatisticsFilter(
+    StatisticsRange Range,
+    StatisticsQuantityUnit Unit,
+    PatternType? PatternType,
+    DateOnly Today);

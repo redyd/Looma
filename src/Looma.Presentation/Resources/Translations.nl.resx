@@ -266,9 +266,6 @@
   <data name="Statistics_Title" xml:space="preserve">
     <value>Statistieken</value>
   </data>
-  <data name="Statistics_YarnUsedByReference" xml:space="preserve">
-    <value>Garen gebruikt per referentie</value>
-  </data>
   <data name="Statistics_Period" xml:space="preserve">
     <value>Periode</value>
   </data>
@@ -277,9 +274,6 @@
   </data>
   <data name="Statistics_NoData" xml:space="preserve">
     <value>Geen gegevens</value>
-  </data>
-  <data name="Statistics_AddWoolMovements" xml:space="preserve">
-    <value>Voeg garenbewegingen toe die aan projecten zijn gekoppeld om voortgang te tonen.</value>
   </data>
   <data name="Settings_Title" xml:space="preserve">
     <value>Instellingen</value>
@@ -1165,5 +1159,203 @@
   </data>
   <data name="Documents_FileMissingHint" xml:space="preserve">
     <value>Het opgeslagen bestand van dit document is niet gevonden. Herstel een back-up of verwijder het via Instellingen &gt; Gegevens.</value>
+  </data>
+  <data name="Statistics_Subtitle" xml:space="preserve">
+    <value>Je garen en projecten in één oogopslag.</value>
+  </data>
+  <data name="Statistics_Tabs_Wool" xml:space="preserve">
+    <value>Garen</value>
+  </data>
+  <data name="Statistics_Tabs_Global" xml:space="preserve">
+    <value>Overzicht</value>
+  </data>
+  <data name="Statistics_Empty_Wool" xml:space="preserve">
+    <value>Voeg garen toe en pas de voorraad aan om je verbruik hier te zien.</value>
+  </data>
+  <data name="Statistics_Empty_Global" xml:space="preserve">
+    <value>Maak projecten en patronen aan om hier je overzicht te zien.</value>
+  </data>
+  <data name="Statistics_Empty_Period" xml:space="preserve">
+    <value>Niets geregistreerd in deze periode.</value>
+  </data>
+  <data name="Statistics_Empty_Stock" xml:space="preserve">
+    <value>Geen garen op voorraad.</value>
+  </data>
+  <data name="Statistics_Empty_Projects" xml:space="preserve">
+    <value>Geen project in deze periode.</value>
+  </data>
+  <data name="Statistics_Empty_ProjectDates" xml:space="preserve">
+    <value>Vul begin- en einddatums van je projecten in om ze hier te zien.</value>
+  </data>
+  <data name="Statistics_Charts_WoolTimeline" xml:space="preserve">
+    <value>Verbruik en aankopen</value>
+  </data>
+  <data name="Statistics_Charts_WoolTimelineHint" xml:space="preserve">
+    <value>Gebruikt en toegevoegd garen in de loop van de tijd.</value>
+  </data>
+  <data name="Statistics_Charts_UsedByMaterial" xml:space="preserve">
+    <value>Gebruikt per materiaal</value>
+  </data>
+  <data name="Statistics_Charts_UsedByWeightClass" xml:space="preserve">
+    <value>Gebruikt per garendikte</value>
+  </data>
+  <data name="Statistics_Charts_StockByWeightClass" xml:space="preserve">
+    <value>Huidige voorraad per garendikte</value>
+  </data>
+  <data name="Statistics_Charts_TopWools" xml:space="preserve">
+    <value>Meest gebruikte garens</value>
+  </data>
+  <data name="Statistics_Charts_TopProjects" xml:space="preserve">
+    <value>Projecten met het meeste garen</value>
+  </data>
+  <data name="Statistics_Charts_ProjectTimeline" xml:space="preserve">
+    <value>Gestarte en afgeronde projecten</value>
+  </data>
+  <data name="Statistics_Charts_ProjectTimelineHint" xml:space="preserve">
+    <value>Op basis van de begin- en einddatums van je projecten.</value>
+  </data>
+  <data name="Statistics_Charts_ProjectsByStatus" xml:space="preserve">
+    <value>Projecten per status</value>
+  </data>
+  <data name="Statistics_Charts_ProjectsByPatternType" xml:space="preserve">
+    <value>Projecten per techniek</value>
+  </data>
+  <data name="Statistics_Charts_LongestProjects" xml:space="preserve">
+    <value>Langste projecten</value>
+  </data>
+  <data name="Statistics_Charts_Library" xml:space="preserve">
+    <value>Je bibliotheek</value>
+  </data>
+  <data name="Statistics_Kpi_Used" xml:space="preserve">
+    <value>Gebruikt garen</value>
+  </data>
+  <data name="Statistics_Kpi_UsedCaption" xml:space="preserve">
+    <value>In de gekozen periode</value>
+  </data>
+  <data name="Statistics_Kpi_Added" xml:space="preserve">
+    <value>Toegevoegd garen</value>
+  </data>
+  <data name="Statistics_Kpi_AddedCaption" xml:space="preserve">
+    <value>Aankopen en voorraadaanvullingen</value>
+  </data>
+  <data name="Statistics_Kpi_Stock" xml:space="preserve">
+    <value>Huidige voorraad</value>
+  </data>
+  <data name="Statistics_Kpi_StockCaption" xml:space="preserve">
+    <value>{0} garen(s) op voorraad</value>
+  </data>
+  <data name="Statistics_Kpi_ProjectsSupplied" xml:space="preserve">
+    <value>Bevoorrade projecten</value>
+  </data>
+  <data name="Statistics_Kpi_ProjectsSuppliedCaption" xml:space="preserve">
+    <value>Projecten die garen gebruikten</value>
+  </data>
+  <data name="Statistics_Kpi_FinishedInPeriod" xml:space="preserve">
+    <value>Afgeronde projecten</value>
+  </data>
+  <data name="Statistics_Kpi_FinishedTotalCaption" xml:space="preserve">
+    <value>{0} in totaal afgerond</value>
+  </data>
+  <data name="Statistics_Kpi_StartedInPeriod" xml:space="preserve">
+    <value>Gestarte projecten</value>
+  </data>
+  <data name="Statistics_Kpi_InProgressCaption" xml:space="preserve">
+    <value>{0} momenteel bezig</value>
+  </data>
+  <data name="Statistics_Kpi_AverageDuration" xml:space="preserve">
+    <value>Gemiddelde duur</value>
+  </data>
+  <data name="Statistics_Kpi_AverageDurationCaption" xml:space="preserve">
+    <value>Van projecten afgerond in de periode</value>
+  </data>
+  <data name="Statistics_Kpi_Projects" xml:space="preserve">
+    <value>Alle projecten</value>
+  </data>
+  <data name="Statistics_Kpi_ProjectsCaption" xml:space="preserve">
+    <value>Alle statussen samen</value>
+  </data>
+  <data name="Statistics_Kpi_Patterns" xml:space="preserve">
+    <value>Patronen</value>
+  </data>
+  <data name="Statistics_Kpi_PersonalPatternsCaption" xml:space="preserve">
+    <value>Waarvan {0} eigen</value>
+  </data>
+  <data name="Statistics_Kpi_Wools" xml:space="preserve">
+    <value>Garens</value>
+  </data>
+  <data name="Statistics_Kpi_Documents" xml:space="preserve">
+    <value>Documenten</value>
+  </data>
+  <data name="Statistics_Series_Used" xml:space="preserve">
+    <value>Gebruikt</value>
+  </data>
+  <data name="Statistics_Series_Added" xml:space="preserve">
+    <value>Toegevoegd</value>
+  </data>
+  <data name="Statistics_Series_Started" xml:space="preserve">
+    <value>Gestart</value>
+  </data>
+  <data name="Statistics_Series_Finished" xml:space="preserve">
+    <value>Afgerond</value>
+  </data>
+  <data name="Statistics_Format_Skeins" xml:space="preserve">
+    <value>{0} bollen</value>
+  </data>
+  <data name="Statistics_Format_Days" xml:space="preserve">
+    <value>{0} d</value>
+  </data>
+  <data name="Statistics_Trend_New" xml:space="preserve">
+    <value>Nieuw in deze periode</value>
+  </data>
+  <data name="Statistics_Trend_Stable" xml:space="preserve">
+    <value>Stabiel t.o.v. vorige periode</value>
+  </data>
+  <data name="Statistics_Trend_VsPrevious" xml:space="preserve">
+    <value>{0} t.o.v. vorige periode</value>
+  </data>
+  <data name="Statistics_Other" xml:space="preserve">
+    <value>Overige</value>
+  </data>
+  <data name="Statistics_Unknown" xml:space="preserve">
+    <value>Niet ingevuld</value>
+  </data>
+  <data name="Statistics_NoPattern" xml:space="preserve">
+    <value>Zonder patroon</value>
+  </data>
+  <data name="Statistics_Badge_Deleted" xml:space="preserve">
+    <value>Verwijderd</value>
+  </data>
+  <data name="Statistics_Rank_WoolCount" xml:space="preserve">
+    <value>{0} garen(s)</value>
+  </data>
+  <data name="Statistics_Errors_UnableToLoad" xml:space="preserve">
+    <value>Kan statistieken niet laden.</value>
+  </data>
+  <data name="Statistics_Errors_UnableToLoadMovements" xml:space="preserve">
+    <value>Kan garenbewegingen niet laden: {0}</value>
+  </data>
+  <data name="Enum_Lace" xml:space="preserve">
+    <value>Kant</value>
+  </data>
+  <data name="Enum_SuperFine" xml:space="preserve">
+    <value>Superfijn</value>
+  </data>
+  <data name="Enum_Fine" xml:space="preserve">
+    <value>Fijn</value>
+  </data>
+  <data name="Enum_Light" xml:space="preserve">
+    <value>Licht</value>
+  </data>
+  <data name="Enum_Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="Enum_Bulky" xml:space="preserve">
+    <value>Dik</value>
+  </data>
+  <data name="Enum_SuperBulky" xml:space="preserve">
+    <value>Extra dik</value>
+  </data>
+  <data name="Enum_Jumbo" xml:space="preserve">
+    <value>Jumbo</value>
   </data>
 </root>

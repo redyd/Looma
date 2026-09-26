@@ -266,9 +266,6 @@
   <data name="Statistics_Title" xml:space="preserve">
     <value>Estadísticas</value>
   </data>
-  <data name="Statistics_YarnUsedByReference" xml:space="preserve">
-    <value>Hilo usado por referencia</value>
-  </data>
   <data name="Statistics_Period" xml:space="preserve">
     <value>Periodo</value>
   </data>
@@ -277,9 +274,6 @@
   </data>
   <data name="Statistics_NoData" xml:space="preserve">
     <value>Sin datos</value>
-  </data>
-  <data name="Statistics_AddWoolMovements" xml:space="preserve">
-    <value>Añade movimientos de hilo vinculados a proyectos para mostrar el progreso.</value>
   </data>
   <data name="Settings_Title" xml:space="preserve">
     <value>Ajustes</value>
@@ -1165,5 +1159,203 @@
   </data>
   <data name="Documents_FileMissingHint" xml:space="preserve">
     <value>No se encuentra el archivo de este documento. Restaura una copia o elimínalo desde Ajustes &gt; Datos.</value>
+  </data>
+  <data name="Statistics_Subtitle" xml:space="preserve">
+    <value>Tu lana y tus proyectos de un vistazo.</value>
+  </data>
+  <data name="Statistics_Tabs_Wool" xml:space="preserve">
+    <value>Lana</value>
+  </data>
+  <data name="Statistics_Tabs_Global" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="Statistics_Empty_Wool" xml:space="preserve">
+    <value>Añade lanas y ajusta su stock para ver tu consumo aquí.</value>
+  </data>
+  <data name="Statistics_Empty_Global" xml:space="preserve">
+    <value>Crea proyectos y patrones para ver tu resumen aquí.</value>
+  </data>
+  <data name="Statistics_Empty_Period" xml:space="preserve">
+    <value>Nada registrado en este periodo.</value>
+  </data>
+  <data name="Statistics_Empty_Stock" xml:space="preserve">
+    <value>No hay lana en stock.</value>
+  </data>
+  <data name="Statistics_Empty_Projects" xml:space="preserve">
+    <value>Ningún proyecto en este periodo.</value>
+  </data>
+  <data name="Statistics_Empty_ProjectDates" xml:space="preserve">
+    <value>Indica las fechas de inicio y fin de tus proyectos para verlos aquí.</value>
+  </data>
+  <data name="Statistics_Charts_WoolTimeline" xml:space="preserve">
+    <value>Consumo y compras</value>
+  </data>
+  <data name="Statistics_Charts_WoolTimelineHint" xml:space="preserve">
+    <value>Lana usada y añadida a tu stock a lo largo del tiempo.</value>
+  </data>
+  <data name="Statistics_Charts_UsedByMaterial" xml:space="preserve">
+    <value>Usada por material</value>
+  </data>
+  <data name="Statistics_Charts_UsedByWeightClass" xml:space="preserve">
+    <value>Usada por grosor</value>
+  </data>
+  <data name="Statistics_Charts_StockByWeightClass" xml:space="preserve">
+    <value>Stock actual por grosor</value>
+  </data>
+  <data name="Statistics_Charts_TopWools" xml:space="preserve">
+    <value>Lanas más usadas</value>
+  </data>
+  <data name="Statistics_Charts_TopProjects" xml:space="preserve">
+    <value>Proyectos que más lana usan</value>
+  </data>
+  <data name="Statistics_Charts_ProjectTimeline" xml:space="preserve">
+    <value>Proyectos empezados y terminados</value>
+  </data>
+  <data name="Statistics_Charts_ProjectTimelineHint" xml:space="preserve">
+    <value>Según las fechas de inicio y fin de tus proyectos.</value>
+  </data>
+  <data name="Statistics_Charts_ProjectsByStatus" xml:space="preserve">
+    <value>Proyectos por estado</value>
+  </data>
+  <data name="Statistics_Charts_ProjectsByPatternType" xml:space="preserve">
+    <value>Proyectos por técnica</value>
+  </data>
+  <data name="Statistics_Charts_LongestProjects" xml:space="preserve">
+    <value>Proyectos más largos</value>
+  </data>
+  <data name="Statistics_Charts_Library" xml:space="preserve">
+    <value>Tu biblioteca</value>
+  </data>
+  <data name="Statistics_Kpi_Used" xml:space="preserve">
+    <value>Lana usada</value>
+  </data>
+  <data name="Statistics_Kpi_UsedCaption" xml:space="preserve">
+    <value>En el periodo elegido</value>
+  </data>
+  <data name="Statistics_Kpi_Added" xml:space="preserve">
+    <value>Lana añadida</value>
+  </data>
+  <data name="Statistics_Kpi_AddedCaption" xml:space="preserve">
+    <value>Compras y aumentos de stock</value>
+  </data>
+  <data name="Statistics_Kpi_Stock" xml:space="preserve">
+    <value>Stock actual</value>
+  </data>
+  <data name="Statistics_Kpi_StockCaption" xml:space="preserve">
+    <value>{0} lana(s) en stock</value>
+  </data>
+  <data name="Statistics_Kpi_ProjectsSupplied" xml:space="preserve">
+    <value>Proyectos abastecidos</value>
+  </data>
+  <data name="Statistics_Kpi_ProjectsSuppliedCaption" xml:space="preserve">
+    <value>Proyectos que usaron lana</value>
+  </data>
+  <data name="Statistics_Kpi_FinishedInPeriod" xml:space="preserve">
+    <value>Proyectos terminados</value>
+  </data>
+  <data name="Statistics_Kpi_FinishedTotalCaption" xml:space="preserve">
+    <value>{0} terminado(s) en total</value>
+  </data>
+  <data name="Statistics_Kpi_StartedInPeriod" xml:space="preserve">
+    <value>Proyectos empezados</value>
+  </data>
+  <data name="Statistics_Kpi_InProgressCaption" xml:space="preserve">
+    <value>{0} en curso actualmente</value>
+  </data>
+  <data name="Statistics_Kpi_AverageDuration" xml:space="preserve">
+    <value>Duración media</value>
+  </data>
+  <data name="Statistics_Kpi_AverageDurationCaption" xml:space="preserve">
+    <value>De los proyectos terminados en el periodo</value>
+  </data>
+  <data name="Statistics_Kpi_Projects" xml:space="preserve">
+    <value>Todos los proyectos</value>
+  </data>
+  <data name="Statistics_Kpi_ProjectsCaption" xml:space="preserve">
+    <value>Todos los estados</value>
+  </data>
+  <data name="Statistics_Kpi_Patterns" xml:space="preserve">
+    <value>Patrones</value>
+  </data>
+  <data name="Statistics_Kpi_PersonalPatternsCaption" xml:space="preserve">
+    <value>De ellos {0} personal(es)</value>
+  </data>
+  <data name="Statistics_Kpi_Wools" xml:space="preserve">
+    <value>Lanas</value>
+  </data>
+  <data name="Statistics_Kpi_Documents" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="Statistics_Series_Used" xml:space="preserve">
+    <value>Usada</value>
+  </data>
+  <data name="Statistics_Series_Added" xml:space="preserve">
+    <value>Añadida</value>
+  </data>
+  <data name="Statistics_Series_Started" xml:space="preserve">
+    <value>Empezados</value>
+  </data>
+  <data name="Statistics_Series_Finished" xml:space="preserve">
+    <value>Terminados</value>
+  </data>
+  <data name="Statistics_Format_Skeins" xml:space="preserve">
+    <value>{0} ovillos</value>
+  </data>
+  <data name="Statistics_Format_Days" xml:space="preserve">
+    <value>{0} d</value>
+  </data>
+  <data name="Statistics_Trend_New" xml:space="preserve">
+    <value>Nuevo en este periodo</value>
+  </data>
+  <data name="Statistics_Trend_Stable" xml:space="preserve">
+    <value>Estable vs periodo anterior</value>
+  </data>
+  <data name="Statistics_Trend_VsPrevious" xml:space="preserve">
+    <value>{0} vs periodo anterior</value>
+  </data>
+  <data name="Statistics_Other" xml:space="preserve">
+    <value>Otros</value>
+  </data>
+  <data name="Statistics_Unknown" xml:space="preserve">
+    <value>Sin indicar</value>
+  </data>
+  <data name="Statistics_NoPattern" xml:space="preserve">
+    <value>Sin patrón</value>
+  </data>
+  <data name="Statistics_Badge_Deleted" xml:space="preserve">
+    <value>Eliminado</value>
+  </data>
+  <data name="Statistics_Rank_WoolCount" xml:space="preserve">
+    <value>{0} lana(s)</value>
+  </data>
+  <data name="Statistics_Errors_UnableToLoad" xml:space="preserve">
+    <value>No se pueden cargar las estadísticas.</value>
+  </data>
+  <data name="Statistics_Errors_UnableToLoadMovements" xml:space="preserve">
+    <value>No se pueden cargar los movimientos de lana: {0}</value>
+  </data>
+  <data name="Enum_Lace" xml:space="preserve">
+    <value>Encaje</value>
+  </data>
+  <data name="Enum_SuperFine" xml:space="preserve">
+    <value>Superfino</value>
+  </data>
+  <data name="Enum_Fine" xml:space="preserve">
+    <value>Fino</value>
+  </data>
+  <data name="Enum_Light" xml:space="preserve">
+    <value>Ligero</value>
+  </data>
+  <data name="Enum_Medium" xml:space="preserve">
+    <value>Medio</value>
+  </data>
+  <data name="Enum_Bulky" xml:space="preserve">
+    <value>Grueso</value>
+  </data>
+  <data name="Enum_SuperBulky" xml:space="preserve">
+    <value>Muy grueso</value>
+  </data>
+  <data name="Enum_Jumbo" xml:space="preserve">
+    <value>Jumbo</value>
   </data>
 </root>

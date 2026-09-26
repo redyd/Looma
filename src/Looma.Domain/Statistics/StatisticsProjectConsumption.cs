@@ -4,4 +4,8 @@
 
 namespace Looma.Domain.Statistics;
 
-public sealed record StatisticsPoint(string Label, DateOnly Date, double Value);
+public sealed record StatisticsProjectConsumption(
+    int? ProjectId,
+    string Name,
+    double Used,
+    int WoolCount);

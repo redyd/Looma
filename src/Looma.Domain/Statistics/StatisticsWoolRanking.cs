@@ -4,8 +4,10 @@
 
 namespace Looma.Domain.Statistics;
 
-public enum StatisticsDataKind
-{
-    Wool,
-    Project
-}
+public sealed record StatisticsWoolRanking(
+    int? WoolId,
+    string Name,
+    string Brand,
+    IReadOnlyList<string> Colors,
+    double Used,
+    bool Exists);

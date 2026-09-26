@@ -21,7 +21,9 @@ public class TrackedWoolConfiguration : IEntityTypeConfiguration<TrackedWool>
         builder
             .HasOne(t => t.WoolEntity)
             .WithMany(w => w.TrackedWools)
-            .HasForeignKey(t => t.WoolId);
+            .HasForeignKey(t => t.WoolId)
+            .OnDelete(DeleteBehavior.SetNull);
+        builder.Property(t => t.PatternType).HasConversion<string>();
 
         builder
             .HasOne(t => t.ProjectEntity)
