@@ -48,10 +48,11 @@ Looma est construit avec [Avalonia UI](https://avaloniaui.net/) et vise Windows,
 
 ### Statistiques
 
-- Graphique d'utilisation de laine basé sur les mouvements de stock.
-- Filtres par période : tout, année en cours, six derniers mois, mois en cours ou semaine en cours.
-- Filtre par type de patron.
-- Affichage des quantités en pelotes, grammes ou mètres.
+Page en deux onglets, avec filtres par période (tout, année en cours, six derniers mois, mois en cours, semaine en cours) et par type de patron. Le découpage des graphiques s'adapte à la période (jour, semaine, mois ou année).
+
+- **Laine** : chiffres clés (laine utilisée avec tendance vs période précédente, laine ajoutée, stock actuel, projets alimentés), colonnes « utilisée / ajoutée » dans le temps, répartitions par matière et par grosseur, stock par grosseur, top 5 des laines et des projets les plus gourmands. Quantités en pelotes, grammes ou mètres.
+- **Global** : projets terminés (avec tendance), commencés, durée moyenne, total ; projets commencés / terminés dans le temps ; répartitions par statut et par technique ; projets les plus longs ; nombre de patrons, laines et documents.
+- L'historique de consommation est conservé même après la suppression d'une laine ou d'un projet : chaque mouvement de stock garde une copie des caractéristiques de la laine et du projet au moment où il a été enregistré.
 
 ### Réglages
 
@@ -180,8 +181,10 @@ Remplit une base vide avec des données de démonstration :
 
 - 10 laines
 - 3 patrons
-- 1 projet par statut
+- 12 projets (3 par statut) avec dates de début et de fin
 - documents de démonstration attachés aux patrons
+- environ 18 mois d'historique de stock (achats, consommations réparties sur la durée des projets, ajustements récents) pour alimenter les statistiques
+- une laine utilisée puis supprimée, pour illustrer la conservation de l'historique
 
 Le seeder ne s'exécute que sur une base vide. Pour régénérer les données de démo, combine-le avec `--clear` :
 

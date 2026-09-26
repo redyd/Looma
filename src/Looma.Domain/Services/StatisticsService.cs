@@ -5,6 +5,8 @@
 using Looma.Domain.Core;
 using Looma.Domain.Entities;
 using Looma.Domain.IServices;
+using Looma.Domain.Localization;
+using Looma.Domain.Logging;
 using Looma.Domain.Repositories;
 using Looma.Domain.Statistics;
 
@@ -12,143 +14,241 @@ namespace Looma.Domain.Services;
 
 public sealed class StatisticsService(
     ITrackedWoolRepository trackedWoolRepository,
-    IWoolRepository woolRepository)
-    : IStatisticsService
+    IWoolRepository woolRepository,
+    IProjectRepository projectRepository,
+    IPatternRepository patternRepository,
+    IDocumentRepository documentRepository,
+    IDomainLogger? logger = null)
+    : DomainServiceBase(logger), IStatisticsService
 {
-    public async Task<ResultT<StatisticsSnapshot>> GetAsync(StatisticsQuery query)
-    {
-        var movementsResult = await trackedWoolRepository.GetMovementsAsync();
-        if (movementsResult.Failed || movementsResult.Value is null)
-            return ResultT<StatisticsSnapshot>.Failure(movementsResult.Error ?? "Impossible de charger les mouvements de laine.");
+    private const int RankingSize = 5;
 
-        var woolsResult = await woolRepository.GetAllAsync();
-        if (woolsResult.Failed || woolsResult.Value is null)
-            return ResultT<StatisticsSnapshot>.Failure(woolsResult.Error ?? "Impossible de charger les laines.");
+    public Task<ResultT<WoolStatistics>> GetWoolStatisticsAsync(StatisticsFilter filter) =>
+        ExecuteAsync("Statistics.GetWool", async () =>
+        {
+            var movements = await trackedWoolRepository.GetMovementsAsync();
+            if (movements.Failed || movements.Value is null)
+                return ResultT<WoolStatistics>.Failure(movements.Error ?? Localizer.Get("Statistics_Errors_UnableToLoad"));
 
-        return ResultT<StatisticsSnapshot>.Ok(BuildUsedWoolByWoolLine(movementsResult.Value, woolsResult.Value, query));
-    }
+            var wools = await woolRepository.GetAllAsync();
+            if (wools.Failed || wools.Value is null)
+                return ResultT<WoolStatistics>.Failure(wools.Error ?? Localizer.Get("Statistics_Errors_UnableToLoad"));
 
-    private static StatisticsSnapshot BuildUsedWoolByWoolLine(
+            return ResultT<WoolStatistics>.Ok(BuildWoolStatistics(movements.Value, wools.Value, filter));
+        });
+
+    public Task<ResultT<GlobalStatistics>> GetGlobalStatisticsAsync(StatisticsFilter filter) =>
+        ExecuteAsync("Statistics.GetGlobal", async () =>
+        {
+            var projects = await projectRepository.GetAllAsync();
+            if (projects.Failed || projects.Value is null)
+                return ResultT<GlobalStatistics>.Failure(projects.Error ?? Localizer.Get("Statistics_Errors_UnableToLoad"));
+
+            var patterns = await patternRepository.GetAllAsync();
+            if (patterns.Failed || patterns.Value is null)
+                return ResultT<GlobalStatistics>.Failure(patterns.Error ?? Localizer.Get("Statistics_Errors_UnableToLoad"));
+
+            var wools = await woolRepository.GetAllAsync();
+            if (wools.Failed || wools.Value is null)
+                return ResultT<GlobalStatistics>.Failure(wools.Error ?? Localizer.Get("Statistics_Errors_UnableToLoad"));
+
+            var documents = await documentRepository.GetAllAsync();
+            if (documents.Failed || documents.Value is null)
+                return ResultT<GlobalStatistics>.Failure(documents.Error ?? Localizer.Get("Statistics_Errors_UnableToLoad"));
+
+            return ResultT<GlobalStatistics>.Ok(BuildGlobalStatistics(
+                projects.Value,
+                patterns.Value,
+                wools.Value.Count,
+                documents.Value.Count,
+                filter));
+        });
+
+    private static WoolStatistics BuildWoolStatistics(
         IReadOnlyList<TrackedWoolMovement> movements,
         IReadOnlyList<Wool> wools,
-        StatisticsQuery query)
+        StatisticsFilter filter)
     {
-        var usedMovements = movements
+        // Le filtre par type de patron ne concerne que la consommation : les achats ne sont liés à aucun projet.
+        var used = movements
             .Where(m => m.Quantity < 0)
-            .Where(m => query.PatternType is null || m.PatternType == query.PatternType)
+            .Where(m => filter.PatternType is null || m.PatternType == filter.PatternType)
             .ToList();
-        if (usedMovements.Count == 0)
-            return new StatisticsSnapshot([], [], []);
+        var added = movements.Where(m => m.Quantity > 0).ToList();
 
-        var minDate = GetMinDate(query);
-        var firstAvailableDate = DateOnly.FromDateTime(usedMovements.Min(m => m.Date));
-        var firstDate = minDate ?? firstAvailableDate;
-        if (query.Range == StatisticsRange.All && firstAvailableDate < firstDate)
-            firstDate = firstAvailableDate;
+        var earliest = used.Concat(added).Select(DateOf).DefaultIfEmpty(filter.Today).Min();
+        var period = StatisticsPeriod.Create(filter.Range, filter.Today, earliest);
 
-        var buckets = BuildBuckets(firstDate, query.Today, query.Range);
-        var woolsById = wools.ToDictionary(w => w.Id);
-        var series = usedMovements
-            .GroupBy(m => new
-            {
-                m.WoolId,
-                m.WoolBrand,
-                m.WoolName
-            })
-            .Select(group => new StatisticsSeries(
-                $"{group.Key.WoolBrand} - {group.Key.WoolName}",
-                BuildUsedWoolPoints(group, buckets, query.Range, query.QuantityUnit, woolsById.GetValueOrDefault(group.Key.WoolId))))
-            .Where(s => s.Points.Any(p => p.Value > 0))
-            .OrderBy(s => s.Name)
-            .ToList();
+        var usedInPeriod = used.Where(m => period.Contains(DateOf(m))).ToList();
+        double Amount(TrackedWoolMovement m) => Convert(Math.Abs(m.Skeins), filter.Unit, m.WoolWeight, m.WoolLength);
 
-        return new StatisticsSnapshot(
-            buckets.Select(b => b.Label).ToList(),
-            series,
-            []);
-    }
+        var stocked = wools.Where(w => w.Stock > 0).ToList();
 
-    private static IReadOnlyList<StatisticsPoint> BuildUsedWoolPoints(
-        IEnumerable<TrackedWoolMovement> movements,
-        IReadOnlyList<StatisticsBucket> buckets,
-        StatisticsRange range,
-        StatisticsQuantityUnit quantityUnit,
-        Wool? wool)
-    {
-        var orderedMovements = movements
-            .OrderBy(m => m.Date)
-            .ToList();
-
-        return buckets
-            .Select(bucket =>
-            {
-                var nextBucketStart = AddBucket(bucket.Start, range).ToDateTime(TimeOnly.MinValue);
-                var value = orderedMovements
-                    .Where(m => m.Date < nextBucketStart)
-                    .Sum(m => ConvertQuantity(Math.Abs(m.Quantity), quantityUnit, wool));
-
-                return new StatisticsPoint(bucket.Label, bucket.Start, value);
-            })
-            .ToList();
-    }
-
-    private static IReadOnlyList<StatisticsBucket> BuildBuckets(DateOnly firstDate, DateOnly today, StatisticsRange range)
-    {
-        var first = BucketStart(firstDate, range);
-        var last = BucketStart(today, range);
-        if (first > last)
-            last = first;
-
-        var buckets = new List<StatisticsBucket>();
-        for (var cursor = first; cursor <= last; cursor = AddBucket(cursor, range))
+        return new WoolStatistics
         {
-            buckets.Add(new StatisticsBucket(cursor, FormatBucketLabel(cursor, range)));
-        }
-
-        return buckets;
-    }
-
-    private static DateOnly? GetMinDate(StatisticsQuery query) =>
-        query.Range switch
-        {
-            StatisticsRange.All => null,
-            StatisticsRange.ThisYear => new DateOnly(query.Today.Year, 1, 1),
-            StatisticsRange.LastSixMonths => query.Today.AddMonths(-6),
-            StatisticsRange.ThisMonth => new DateOnly(query.Today.Year, query.Today.Month, 1),
-            StatisticsRange.ThisWeek => query.Today.AddDays(-DaysSinceMonday(query.Today)),
-            _ => null
+            Granularity = period.Granularity,
+            Unit = filter.Unit,
+            Used = usedInPeriod.Sum(Amount),
+            Added = added.Where(m => period.Contains(DateOf(m))).Sum(Amount),
+            UsedPreviousPeriod = period.PreviousStart is null
+                ? null
+                : used.Where(m => period.ContainsPrevious(DateOf(m))).Sum(Amount),
+            CurrentStock = stocked.Sum(w => Convert(w.BatchQuantity, filter.Unit, w.Weight, w.Length)),
+            WoolsInStock = stocked.Count,
+            ProjectsSupplied = usedInPeriod
+                .Where(m => m.ProjectId is not null || m.ProjectName is not null)
+                .Select(m => (m.ProjectId, m.ProjectName))
+                .Distinct()
+                .Count(),
+            UsedTimeline = period.Timeline(used, DateOf, Amount),
+            AddedTimeline = period.Timeline(added, DateOf, Amount),
+            UsedByMaterial = Shares(usedInPeriod, m => NormalizeMaterial(m.WoolMaterial), Amount),
+            UsedByWeightClass = Shares(
+                usedInPeriod.Where(m => WeightClass(m.WoolNeedleMinSize, m.WoolNeedleMaxSize) is not null),
+                m => WeightClass(m.WoolNeedleMinSize, m.WoolNeedleMaxSize)!.Value,
+                Amount),
+            StockByWeightClass = Shares(
+                stocked.Where(w => WeightClass(w.NeedleMinSize, w.NeedleMaxSize) is not null),
+                w => WeightClass(w.NeedleMinSize, w.NeedleMaxSize)!.Value,
+                w => Convert(w.BatchQuantity, filter.Unit, w.Weight, w.Length)),
+            TopWools = usedInPeriod
+                .GroupBy(m => (m.WoolId, m.WoolId is null ? m.WoolBrand + "\u001f" + m.WoolName : null))
+                .Select(group =>
+                {
+                    var latest = group.MaxBy(m => m.Date)!;
+                    return new StatisticsWoolRanking(
+                        group.Key.WoolId,
+                        latest.WoolName,
+                        latest.WoolBrand,
+                        latest.WoolColors,
+                        group.Sum(Amount),
+                        latest.WoolExists);
+                })
+                .OrderByDescending(r => r.Used)
+                .ThenBy(r => r.Name, StringComparer.CurrentCultureIgnoreCase)
+                .Take(RankingSize)
+                .ToList(),
+            TopProjects = usedInPeriod
+                .Where(m => m.ProjectId is not null || m.ProjectName is not null)
+                .GroupBy(m => (m.ProjectId, m.ProjectName))
+                .Select(group => new StatisticsProjectConsumption(
+                    group.Key.ProjectId,
+                    group.Key.ProjectName ?? string.Empty,
+                    group.Sum(Amount),
+                    group.Select(m => (m.WoolId, m.WoolName, m.WoolBrand)).Distinct().Count()))
+                .OrderByDescending(p => p.Used)
+                .ThenBy(p => p.Name, StringComparer.CurrentCultureIgnoreCase)
+                .Take(RankingSize)
+                .ToList()
         };
+    }
 
-    private static DateOnly BucketStart(DateOnly date, StatisticsRange range) =>
-        range is StatisticsRange.ThisMonth or StatisticsRange.LastSixMonths or StatisticsRange.ThisWeek
-            ? date
-            : new DateOnly(date.Year, date.Month, 1);
-
-    private static DateOnly AddBucket(DateOnly date, StatisticsRange range) =>
-        range is StatisticsRange.ThisMonth or StatisticsRange.LastSixMonths or StatisticsRange.ThisWeek
-            ? date.AddDays(1)
-            : date.AddMonths(1);
-
-    private static string FormatBucketLabel(DateOnly date, StatisticsRange range) =>
-        range is StatisticsRange.ThisMonth or StatisticsRange.LastSixMonths or StatisticsRange.ThisWeek
-            ? date.ToString("dd/MM")
-            : date.ToString("MM/yyyy");
-
-    private static double ConvertQuantity(double quantity, StatisticsQuantityUnit quantityUnit, Wool? wool)
+    private static GlobalStatistics BuildGlobalStatistics(
+        IReadOnlyList<Project> allProjects,
+        IReadOnlyList<Pattern> allPatterns,
+        int woolCount,
+        int documentCount,
+        StatisticsFilter filter)
     {
-        var skeins = quantity / 1000;
-        return quantityUnit switch
+        var projects = allProjects
+            .Where(p => filter.PatternType is null || p.Pattern?.Type == filter.PatternType)
+            .ToList();
+        var patterns = allPatterns
+            .Where(p => filter.PatternType is null || p.Type == filter.PatternType)
+            .ToList();
+
+        var today = filter.Today;
+        var earliest = projects
+            .SelectMany(p => new[] { p.BeginDate, p.EndDate })
+            .Where(date => date is not null && date <= today)
+            .Select(date => date!.Value)
+            .DefaultIfEmpty(today)
+            .Min();
+        var period = StatisticsPeriod.Create(filter.Range, today, earliest);
+
+        var finished = projects
+            .Where(p => p.Status == Status.Finished && p.EndDate is not null)
+            .ToList();
+        var finishedInPeriod = finished.Where(p => period.Contains(p.EndDate!.Value)).ToList();
+        var started = projects.Where(p => p.BeginDate is not null).ToList();
+
+        var durations = finishedInPeriod
+            .Where(p => p.BeginDate is not null && p.BeginDate <= p.EndDate)
+            .Select(p => (double)DurationDays(p.BeginDate!.Value, p.EndDate!.Value))
+            .ToList();
+
+        return new GlobalStatistics
         {
-            StatisticsQuantityUnit.Weight => skeins * (wool?.Weight ?? 0),
-            StatisticsQuantityUnit.Length => skeins * (wool?.Length ?? 0),
+            Granularity = period.Granularity,
+            TotalProjects = projects.Count,
+            ProjectsInProgress = projects.Count(p => p.Status == Status.InProgress),
+            ProjectsFinished = projects.Count(p => p.Status == Status.Finished),
+            FinishedInPeriod = finishedInPeriod.Count,
+            FinishedPreviousPeriod = period.PreviousStart is null
+                ? null
+                : finished.Count(p => period.ContainsPrevious(p.EndDate!.Value)),
+            StartedInPeriod = started.Count(p => period.Contains(p.BeginDate!.Value)),
+            AverageDurationDays = durations.Count == 0 ? null : durations.Average(),
+            TotalPatterns = patterns.Count,
+            PersonalPatterns = patterns.Count(p => p.IsPersonal),
+            TotalWools = woolCount,
+            TotalDocuments = documentCount,
+            StartedTimeline = period.Timeline(started, p => p.BeginDate!.Value, _ => 1),
+            FinishedTimeline = period.Timeline(finished, p => p.EndDate!.Value, _ => 1),
+            ProjectsByStatus = Shares(projects, p => p.Status, _ => 1),
+            ProjectsByPatternType = Shares(projects, p => p.Pattern?.Type, _ => 1),
+            LongestProjects = projects
+                .Where(p => p.BeginDate is not null && p.BeginDate <= today && p.Status != Status.Wishlist)
+                .Select(p =>
+                {
+                    var isOngoing = p.Status != Status.Finished || p.EndDate is null;
+                    var end = isOngoing ? today : p.EndDate!.Value;
+                    return (Project: p, End: end, IsOngoing: isOngoing);
+                })
+                .Where(x => x.End >= x.Project.BeginDate && x.End >= period.Start)
+                .Select(x => new StatisticsProjectDuration(
+                    x.Project.ProjectId,
+                    x.Project.Name,
+                    x.Project.Status,
+                    DurationDays(x.Project.BeginDate!.Value, x.End),
+                    x.IsOngoing))
+                .OrderByDescending(d => d.Days)
+                .ThenBy(d => d.Name, StringComparer.CurrentCultureIgnoreCase)
+                .Take(RankingSize)
+                .ToList()
+        };
+    }
+
+    private static IReadOnlyList<StatisticsShare<TKey>> Shares<T, TKey>(
+        IEnumerable<T> items,
+        Func<T, TKey> key,
+        Func<T, double> value) =>
+        items
+            .GroupBy(key)
+            .Select(group => new StatisticsShare<TKey>(group.Key, group.Sum(value)))
+            .Where(share => share.Value > 0)
+            .OrderByDescending(share => share.Value)
+            .ToList();
+
+    private static DateOnly DateOf(TrackedWoolMovement movement) => DateOnly.FromDateTime(movement.Date);
+
+    /// <summary>Nombre de jours calendaires, bornes incluses : un projet commencé et fini le même jour dure 1 jour.</summary>
+    private static int DurationDays(DateOnly begin, DateOnly end) => end.DayNumber - begin.DayNumber + 1;
+
+    private static WoolType? WeightClass(double needleMinSize, double needleMaxSize) =>
+        Wool.FindContainingNeedleRange(needleMinSize, needleMaxSize)?.Type;
+
+    private static string NormalizeMaterial(string material)
+    {
+        var trimmed = material.Trim();
+        return trimmed.Length == 0 ? string.Empty : char.ToUpper(trimmed[0]) + trimmed[1..].ToLowerInvariant();
+    }
+
+    private static double Convert(double skeins, StatisticsQuantityUnit unit, double weightPerSkein, double lengthPerSkein) =>
+        unit switch
+        {
+            StatisticsQuantityUnit.Weight => skeins * weightPerSkein,
+            StatisticsQuantityUnit.Length => skeins * lengthPerSkein,
             _ => skeins
         };
-    }
-
-    private static int DaysSinceMonday(DateOnly date) =>
-        date.DayOfWeek == DayOfWeek.Sunday
-            ? 6
-            : (int)date.DayOfWeek - (int)DayOfWeek.Monday;
-
-    private sealed record StatisticsBucket(DateOnly Start, string Label);
 }

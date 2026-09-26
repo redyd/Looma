@@ -1,5 +1,13 @@
 # Update
 
+## Statistics
+
+- Redesigned the **Statistics** page with two tabs: **Yarn** and **Overview**.
+- Yarn tab: key figures (yarn used with a trend vs the previous period, yarn added, current stock, projects supplied), a chart of yarn used and added over time, breakdowns by material and yarn weight, current stock by yarn weight, and the most used yarns and most yarn-hungry projects.
+- Overview tab: projects finished (with trend), started, average duration and total, a chart of projects started and finished over time, breakdowns by status and technique, the longest projects, and a summary of your patterns, yarns and documents.
+- Charts now adapt to the selected period (per day, week, month or year) and show values per period instead of running totals.
+- Deleting a yarn or a project no longer erases its consumption history: past stock movements keep the yarn and project details they were recorded with.
+
 ## Backup & Restore
 
 - Added a **Data & backups** section in the settings.

@@ -9,5 +9,6 @@ namespace Looma.Domain.IServices;
 
 public interface IStatisticsService
 {
-    Task<ResultT<StatisticsSnapshot>> GetAsync(StatisticsQuery query);
+    Task<ResultT<WoolStatistics>> GetWoolStatisticsAsync(StatisticsFilter filter);
+    Task<ResultT<GlobalStatistics>> GetGlobalStatisticsAsync(StatisticsFilter filter);
 }

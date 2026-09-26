@@ -87,4 +87,69 @@ public sealed class TrackedWoolRepositoryTests
         recent.PatternType.Should().Be(Looma.Domain.Core.PatternType.Tricot);
         result.Value!.First(m => m.Id == "adjustment").ProjectId.Should().BeNull();
     }
+
+    [Fact]
+    public async Task AddAsync_Stores_Wool_And_Project_Snapshot()
+    {
+        using var fixture = new RepositoryTestFixture();
+        var pattern = await fixture.AddPatternAsync(type: Looma.Domain.Core.PatternType.Tricot);
+        var wool = await fixture.AddWoolAsync("Alpaca", "Drops");
+        var project = await fixture.AddProjectAsync(pattern.PatternId, [wool.WoolId], "Pull");
+
+        await using var context = fixture.CreateContext();
+        var result = await new TrackedWoolRepository(context).AddAsync(wool.WoolId, -250, project.ProjectId);
+
+        result.Succeeded.Should().BeTrue(result.Error);
+        var tracked = await context.TrackedWools.SingleAsync();
+        tracked.WoolName.Should().Be("Alpaca");
+        tracked.WoolBrand.Should().Be("Drops");
+        tracked.WoolMaterial.Should().Be(wool.Material);
+        tracked.WoolColor.Should().Be(wool.Color);
+        tracked.WoolWeight.Should().Be(wool.Weight);
+        tracked.WoolLength.Should().Be(wool.Length);
+        tracked.WoolNeedleMinSize.Should().Be(wool.NeedleMinSize);
+        tracked.WoolNeedleMaxSize.Should().Be(wool.NeedleMaxSize);
+        tracked.ProjectName.Should().Be("Pull");
+        tracked.PatternType.Should().Be(Looma.Domain.Core.PatternType.Tricot);
+    }
+
+    [Fact]
+    public async Task Deleting_Wool_And_Project_Keeps_Movement_History()
+    {
+        using var fixture = new RepositoryTestFixture();
+        var pattern = await fixture.AddPatternAsync(type: Looma.Domain.Core.PatternType.Crochet);
+        var wool = await fixture.AddWoolAsync("Mohair", "Archive");
+        var project = await fixture.AddProjectAsync(pattern.PatternId, [wool.WoolId], "Châle");
+
+        await using (var context = fixture.CreateContext())
+        {
+            var added = await new TrackedWoolRepository(context).AddAsync(wool.WoolId, -1_500, project.ProjectId);
+            added.Succeeded.Should().BeTrue(added.Error);
+        }
+
+        await using (var context = fixture.CreateContext())
+        {
+            (await new ProjectRepository(context, fixture.Paths).DeleteAsync(project.ProjectId)).Succeeded.Should().BeTrue();
+        }
+
+        await using (var context = fixture.CreateContext())
+        {
+            (await new WoolRepository(context).DeleteAsync(wool.WoolId)).Succeeded.Should().BeTrue();
+        }
+
+        await using var readContext = fixture.CreateContext();
+        var result = await new TrackedWoolRepository(readContext).GetMovementsAsync();
+
+        result.Succeeded.Should().BeTrue(result.Error);
+        var movement = result.Value!.Should().ContainSingle().Subject;
+        movement.WoolId.Should().BeNull();
+        movement.WoolExists.Should().BeFalse();
+        movement.WoolName.Should().Be("Mohair");
+        movement.WoolBrand.Should().Be("Archive");
+        movement.WoolWeight.Should().Be(wool.Weight);
+        movement.ProjectId.Should().BeNull();
+        movement.ProjectName.Should().Be("Châle");
+        movement.PatternType.Should().Be(Looma.Domain.Core.PatternType.Crochet);
+        movement.Quantity.Should().Be(-1_500);
+    }
 }
